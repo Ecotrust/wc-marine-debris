@@ -1,4 +1,4 @@
-from marine_debris.datasheets.models import DataSheet, Field, DataSheetField
+from datasheets.models import DataSheet, Field, DataSheetField
 from django.contrib import admin
 from django.contrib import databrowse
 from django.forms import TextInput, Textarea
