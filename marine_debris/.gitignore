@@ -1,0 +1,4 @@
+*.pyc
+debris_app/install-media/**/*
+*.bat
+settings_local.py
