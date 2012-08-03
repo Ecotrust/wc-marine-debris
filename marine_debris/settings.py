@@ -9,9 +9,9 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-# DATABASES = {         #SET IN ./settings_local.py
+# DATABASES = {
     # 'default': {
-        # 'ENGINE': 'django.contrib.gis.db.backends.', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        # 'ENGINE': 'django.contrib.gis.db.backends.postgis', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         # 'NAME': '',                      # Or path to database file if using sqlite3.
         # 'USER': '',                      # Not used with sqlite3.
         # 'PASSWORD': '',                  # Not used with sqlite3.
@@ -23,7 +23,10 @@ MANAGERS = ADMINS
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
-# In a Windows environment this must be set to your system time zone.
+# On Unix systems, a value of None will cause Django to use the same
+# timezone as the operating system.
+# If running in a Windows environment this must be set to the same as your
+# system time zone.
 TIME_ZONE = 'America/Chicago'
 
 # Language code for this installation. All choices can be found here:
@@ -37,11 +40,8 @@ SITE_ID = 1
 USE_I18N = True
 
 # If you set this to False, Django will not format dates, numbers and
-# calendars according to the current locale.
+# calendars according to the current locale
 USE_L10N = True
-
-# If you set this to False, Django will not use timezone-aware datetimes.
-USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
@@ -78,7 +78,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'SET_IN_SETTINGS_LOCAL'
+SECRET_KEY = 'g3w$gdt&ayaj+qji(a!hwts8i-g^g3mb8*$c3#028!c1p)9m_^'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -99,9 +99,6 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'marine_debris.urls'
 
-# Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'marine_debris.wsgi.application'
-
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
@@ -119,7 +116,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'marine_debris.debris_app',
+    'datasheets'
 )
 
 # A sample logging configuration. The only tangible logging
@@ -132,7 +129,8 @@ LOGGING = {
     'disable_existing_loggers': False,
     'filters': {
         'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': lambda r: not DEBUG
         }
     },
     'handlers': {
