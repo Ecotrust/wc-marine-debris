@@ -1,4 +1,5 @@
 *.pyc
-debris_app/install-media/**/*
+install-media/*
 *.bat
 settings_local.py
+*.sh
