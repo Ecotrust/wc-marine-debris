@@ -8,6 +8,9 @@ class Unit (models.Model):
     
     def __unicode__(self):
         return self.long_name
+        
+    class Meta:
+        ordering = ['long_name']
     
 class Organization (models.Model):
     orgname = models.TextField()
@@ -17,6 +20,9 @@ class Organization (models.Model):
     
     def __unicode__(self):
         return self.orgname
+        
+    class Meta:
+        ordering = ['orgname']
     
 class Media (models.Model):
     type = models.TextField()
@@ -27,11 +33,17 @@ class Media (models.Model):
     def __unicode__(self):
         return self.org_id.orgname + '-' + self.filename
         
+    class Meta:
+        ordering = ['org_id__orgname', 'filename']
+        
 class Category (models.Model):
     name = models.TextField()
     
     def __unicode__(self):
         return self.name
+        
+    class Meta:
+        ordering = ['name']
 
 class Field (models.Model):
     dataTypeChoices = (
@@ -56,6 +68,9 @@ class Field (models.Model):
     
     def __unicode__(self):
         return self.internal_name
+        
+    class Meta:
+        ordering = ['internal_name']
     
 class DataSheet (models.Model):
     sheetname = models.TextField()
@@ -66,6 +81,9 @@ class DataSheet (models.Model):
     
     def __unicode__(self):
         return self.sheetname
+        
+    class Meta:
+        ordering = ['sheetname']
     
 class DataSheetField (models.Model):
     field_id = models.ForeignKey(Field)
@@ -78,4 +96,7 @@ class DataSheetField (models.Model):
     def __unicode__(self):
         readable_name = self.field_name + '-' + self.sheet_id.sheetname + '-' + self.field_id.internal_name
         return readable_name
+        
+    class Meta:
+        ordering = ['field_name', 'sheet_id__sheetname', 'field_id__internal_name']
     
