@@ -47,19 +47,20 @@ class Category (models.Model):
 
 class Field (models.Model):
     dataTypeChoices = (
-        ('text', 'Text'),
-        ('number', 'Number'),
-        ('weight', 'Weight'),
-        ('distance', 'Distance'),
         ('area', 'Area'),
-        ('volume', 'Volume'),
-        ('date', 'Date'),
-        ('duration', 'Duration'),
         ('boolean', 'True/False'),
+        ('date', 'Date'),
+        ('distance', 'Distance'),
+        ('duration', 'Duration'),
+        ('location', 'Location'),
+        ('number', 'Number'),
+        ('text', 'Text'),
+        ('volume', 'Volume'),
+        ('weight', 'Weight'),
         ('yes_no', 'Yes/No'),
         ('other', 'Other')
     )
-    unit_id = models.ForeignKey(Unit) 
+    unit_id = models.ForeignKey(Unit, blank=True, null=True) 
     internal_name = models.TextField()
     datatype = models.CharField(max_length=255, choices=dataTypeChoices)
     minvalue = models.IntegerField(blank=True, null=True)
@@ -90,7 +91,7 @@ class DataSheetField (models.Model):
     sheet_id = models.ForeignKey(DataSheet)
     print_name = models.TextField()
     field_name = models.TextField()
-    unit_id = models.ForeignKey(Unit)
+    unit_id = models.ForeignKey(Unit, blank=True, null=True)
     category = models.ForeignKey(Category, null=True, blank=True)
     
     def __unicode__(self):
