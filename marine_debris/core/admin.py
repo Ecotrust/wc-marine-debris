@@ -40,8 +40,7 @@ class CategoryAdmin(admin.ModelAdmin):
         },
     }
     
-    
-class DataSheetFieldInline(admin.StackedInline):
+class DataSheetFieldInline(admin.TabularInline):
     model = DataSheet.field.through
     formfield_overrides = {
         models.TextField: {

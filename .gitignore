@@ -3,8 +3,7 @@ marine_debris/install-media/*
 marine_debris/*.bat
 marine_debris/settings_local.py
 marine_debris/*.sh
-marine_debris/datasheets/fixtures/*
-marine_debris/datasheets/*.pyc
+marine_debris/datasheets
 marine_debris/core/fixtures/*
 marine_debris/core/*.pyc
 cdb.bat
