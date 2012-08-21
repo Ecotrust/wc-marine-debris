@@ -89,7 +89,7 @@ class DataSheet (models.Model):
 class DataSheetField (models.Model):
     field_id = models.ForeignKey(Field)
     sheet_id = models.ForeignKey(DataSheet)
-    print_name = models.TextField()
+    print_name = models.TextField(blank=True, null=True)
     field_name = models.TextField()
     unit_id = models.ForeignKey(Unit, blank=True, null=True)
     category = models.ForeignKey(Category, null=True, blank=True)
