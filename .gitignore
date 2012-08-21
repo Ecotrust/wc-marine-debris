@@ -1,0 +1,16 @@
+marine_debris/*.pyc
+marine_debris/install-media/*
+marine_debris/*.bat
+marine_debris/settings_local.py
+marine_debris/*.sh
+marine_debris/datasheets/fixtures/*
+marine_debris/datasheets/*.pyc
+marine_debris/core/fixtures/*
+marine_debris/core/*.pyc
+cdb.bat
+ddb.bat
+env/
+manage_1.py
+marine_debris_1/
+run.bat
+tmp/
