@@ -3,3 +3,4 @@ install-media/*
 *.bat
 settings_local.py
 *.sh
+datasheets/fixtures/*

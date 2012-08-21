@@ -1,4 +1,4 @@
-from datasheets.models import DataSheet, Field, DataSheetField, Unit, Organization, Media, Category
+from core.models import DataSheet, Field, DataSheetField, Unit, Organization, Media, Category
 from django.contrib import admin
 from django.contrib import databrowse
 from django.forms import TextInput, Textarea
