@@ -17,6 +17,7 @@ databrowse.site.register(EventType)
 databrowse.site.register(Event)
 
 class UnitAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'short_name')
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -24,6 +25,7 @@ class UnitAdmin(admin.ModelAdmin):
     }
     
 class OrganizationAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'orgname', 'contact', 'phone', 'address')
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -31,6 +33,7 @@ class OrganizationAdmin(admin.ModelAdmin):
     }
     
 class MediaAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'filename', 'type', 'proj_id', 'published')
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -53,6 +56,7 @@ class DataSheetFieldInline(admin.TabularInline):
     }
     
 class DataSheetAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'sheetname', 'created_by', 'year_started')
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -63,6 +67,7 @@ class DataSheetAdmin(admin.ModelAdmin):
     ]
 
 class FieldAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'internal_name', 'datatype', 'unit_id', 'minvalue', 'maxvalue', 'default_value')
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -70,6 +75,7 @@ class FieldAdmin(admin.ModelAdmin):
     }
     
 class DataSheetFieldAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'field_name', 'sheet_id', 'field_id', 'print_name', 'category', 'unit_id')
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -77,6 +83,7 @@ class DataSheetFieldAdmin(admin.ModelAdmin):
     }
     
 class ProjectAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'projname', 'website', 'contact_name', 'contact_email', 'contact_phone')
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -84,6 +91,7 @@ class ProjectAdmin(admin.ModelAdmin):
     }
     
 class ProjectOrganizationAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'organization_id', 'project_id', 'is_lead')
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -98,6 +106,7 @@ class EventTypeAdmin(admin.ModelAdmin):
     }
     
 class EventAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'proj_id', 'type_id', 'cleanupdate', 'datasheet_id', 'sitename', 'lat', 'lon', 'city', 'state', 'county')
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()

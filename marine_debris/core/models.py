@@ -48,7 +48,7 @@ class ProjectOrganization (models.Model):
         return readable_name
         
     class Meta:
-        ordering = ['oragnization_id__orgname', 'project_id__projname']
+        ordering = ['organization_id__orgname', 'project_id__projname']
 
 class Media (models.Model):
     type = models.TextField()
@@ -115,8 +115,8 @@ class DataSheet (models.Model):
 class DataSheetField (models.Model):
     field_id = models.ForeignKey(Field)
     sheet_id = models.ForeignKey(DataSheet)
-    print_name = models.TextField(blank=True, null=True)
     field_name = models.TextField()
+    print_name = models.TextField(blank=True, null=True)
     unit_id = models.ForeignKey(Unit, blank=True, null=True)
     category = models.ForeignKey(Category, null=True, blank=True)
     
