@@ -26,7 +26,7 @@ class Organization (models.Model):
     
 class Project (models.Model):
     projname = models.TextField()
-    organizations = models.ManyToManyField(Organization, through='ProjectOrganization')
+    organization = models.ManyToManyField(Organization, through='ProjectOrganization')
     website = models.TextField(blank=True, null=True)
     contact_name = models.TextField(blank=True, null=True)
     contact_email = models.TextField(blank=True, null=True)

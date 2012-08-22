@@ -82,6 +82,14 @@ class DataSheetFieldAdmin(admin.ModelAdmin):
         },
     }
     
+class ProjectOrganizationInline(admin.TabularInline):
+    model = Project.organization.through
+    formfield_overrides = {
+        models.TextField: {
+            'widget': TextInput()
+        },
+    }
+    
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'projname', 'website', 'contact_name', 'contact_email', 'contact_phone')
     formfield_overrides = {
@@ -89,6 +97,9 @@ class ProjectAdmin(admin.ModelAdmin):
             'widget': TextInput()
         },
     }
+    inlines = [
+        ProjectOrganizationInline,
+    ]
     
 class ProjectOrganizationAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'organization_id', 'project_id', 'is_lead')
