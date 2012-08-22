@@ -11,7 +11,7 @@ class Unit (models.Model):
         
     class Meta:
         ordering = ['long_name']
-    
+        
 class Organization (models.Model):
     orgname = models.TextField()
     contact = models.TextField()
@@ -24,18 +24,44 @@ class Organization (models.Model):
     class Meta:
         ordering = ['orgname']
     
+class Project (models.Model):
+    projname = models.TextField()
+    organizations = models.ManyToManyField(Organization, through='ProjectOrganization')
+    website = models.TextField(blank=True, null=True)
+    contact_name = models.TextField(blank=True, null=True)
+    contact_email = models.TextField(blank=True, null=True)
+    contact_phone = models.TextField(blank=True, null=True)
+    
+    def __unicode__(self):
+        return self.projname
+        
+    class Meta:
+        ordering = ['projname']
+    
+class ProjectOrganization (models.Model):
+    organization_id = models.ForeignKey(Organization)
+    project_id = models.ForeignKey(Project)
+    is_lead = models.BooleanField(default=False)
+    
+    def __unicode__(self):
+        readable_name = self.organization_id.orgname + '-' + self.project_id.projname
+        return readable_name
+        
+    class Meta:
+        ordering = ['oragnization_id__orgname', 'project_id__projname']
+
 class Media (models.Model):
     type = models.TextField()
     filename = models.TextField()
-    org_id = models.ForeignKey(Organization)
+    proj_id = models.ForeignKey(Project)
     published = models.DateTimeField( blank=True, null=True, default=datetime.datetime.now)
     
     def __unicode__(self):
-        return self.org_id.orgname + '-' + self.filename
+        return self.proj_id.projname + '-' + self.filename
         
     class Meta:
-        ordering = ['org_id__orgname', 'filename']
-        
+        ordering = ['proj_id__projname', 'filename']
+    
 class Category (models.Model):
     name = models.TextField()
     
@@ -100,4 +126,31 @@ class DataSheetField (models.Model):
         
     class Meta:
         ordering = ['field_name', 'sheet_id__sheetname', 'field_id__internal_name']
+    
+class EventType (models.Model):
+    type = models.TextField()
+    
+    def __unicode__(self):
+        return self.type
+        
+    class Meta:
+        ordering = ['type']
+    
+class Event (models.Model):
+    datasheet_id = models.ForeignKey(DataSheet)
+    proj_id = models.ForeignKey(Project)
+    type_id = models.ForeignKey(EventType)
+    cleanupdate = models.DateTimeField(default=datetime.datetime.now)
+    sitename = models.TextField(blank=True, null=True)
+    lat = models.FloatField(blank=True, null=True)
+    lon = models.FloatField(blank=True, null=True)
+    city = models.TextField(blank=True, null=True)
+    state = models.TextField(blank=True, null=True)
+    county = models.TextField(blank=True, null=True)
+    
+    def __unicode__(self):
+        return self.proj_id.projname + '-' + self.sitename + '-' + self.cleanupdate.date().isoformat()
+        
+    class Meta:
+        ordering = ['proj_id__projname', 'sitename', 'cleanupdate']
     
