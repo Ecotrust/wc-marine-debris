@@ -1,0 +1,25 @@
+<HTML>
+<HEAD>
+</HEAD>
+<BODY>
+    <h1>Events</h1>
+    <h2>Oh golly! Look at all them events!</h2>
+    <h3>...Comets.</h3>
+    <p>Mohn Jadden</p>
+    
+{% block content %}
+{% for r in result %}
+    <p>{{r.event}}: <a href="/event/edit/{{r.event.id}}">edit</a></p>
+{% endfor %}    
+
+<a href="/event/create">Create New Event</a>
+
+{% endblock %}    
+    
+    <p>
+        <a href="/events">Events</a>
+        <a href="/organizations">Organizations</a>
+        <a href="/projects">Projects</a>
+    </p>
+</BODY>
+</HTML>
