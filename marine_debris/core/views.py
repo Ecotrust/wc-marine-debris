@@ -33,15 +33,48 @@ def events(request):
     
 # @login_required
 def create_event(request):
-    form = EventForm()
-    # EventFormSet = modelformset_factory(Event)
-    # form = EventFormSet()
-    return render_to_response('create_event.html', RequestContext(request,{'form':form}))
-    
+    if request.method == 'GET':
+        form = EventForm()
+        # EventFormSet = modelformset_factory(Event)
+        # form = EventFormSet()
+        return render_to_response('create_event.html', RequestContext(request,{'form':form.as_p()}))
+    else :
+        eventForm = EventForm
+        form = eventForm(request.POST)
+        if form.is_valid():
+            new_event = form.save()
+            datasheet_id = form.data['datasheet_id']
+            return HttpResponseRedirect('/datasheet/fill/'+datasheet_id+'/'+str(new_event.id))
+        else:
+            return render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'error':'Form is not valid, please review.'}))
+        
 # @login_required    
 def edit_event(request, event_id):
     event = Event.objects.get(id=event_id)
     return render_to_response( 'edit_event.html', RequestContext(request,{'event':event}))
+    
+# @login_required
+def datasheets(request):
+    qs = DataSheet.objects.filter()
+    result = []
+    for datasheet in qs.all():
+        result.append({'datasheet': datasheet})
+        
+    return render_to_response('datasheets.html', RequestContext(request, {'result':result}))
+    
+# @login_required
+def fill_datasheet(request, datasheet_id, event_id):
+    if request.method == 'GET':
+        form = DataSheetForm(datasheet_id, event_id)
+        return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p()}))
+    else:
+        datasheetForm = DataSheetForm
+        form = datasheetForm(datasheet_id, event_id, request.POST)
+        if form.is_valid():
+            new_datasheet = form.save()
+            return HttpResponseRedirect('/')
+        else:
+            return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'error': 'Form is not valid, please review.'}))
     
 # @login_required
 def organizations(request): 

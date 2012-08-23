@@ -12,5 +12,7 @@ urlpatterns = patterns('',
     url(r'^event/edit/([A-Za-z0-9_-]+)$', edit_event),
     url(r'^organizations$', organizations),
     url(r'^projects$', projects),
+    url(r'^datasheets$', datasheets),
+    url(r'^datasheet/fill/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)$', fill_datasheet),
         
 )

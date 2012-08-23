@@ -154,3 +154,15 @@ class Event (models.Model):
     class Meta:
         ordering = ['proj_id__projname', 'sitename', 'cleanupdate']
     
+class FieldValue (models.Model):
+    field_id = models.ForeignKey(Field)
+    event_id = models.ForeignKey(Event)
+    field_value = models.TextField(blank=True, null=True)
+    
+    def __unicode__(self):
+        readable_name = str(self.event_id) + '-' + self.field_id.internal_name
+        return readable_name
+        
+    class Meta:
+        ordering = ['event_id', 'field_id__internal_name']
+    

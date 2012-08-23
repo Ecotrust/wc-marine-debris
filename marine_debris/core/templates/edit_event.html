@@ -1,8 +1,5 @@
-<HTML>
-<HEAD>
-</HEAD>
-<BODY>
-    
+{% extends "base.html" %}
+
 {% block content %}
     <h1>{{event}}</h1>
     <h2>ID: {{event.id}}</h2>
@@ -12,11 +9,3 @@
 <a href="/event/create">Create New Event</a>
 
 {% endblock %}    
-    
-    <p>
-        <a href="/events">Events</a>
-        <a href="/organizations">Organizations</a>
-        <a href="/projects">Projects</a>
-    </p>
-</BODY>
-</HTML>

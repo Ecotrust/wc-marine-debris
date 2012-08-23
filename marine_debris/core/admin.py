@@ -5,6 +5,7 @@ from django.forms import TextInput, Textarea
 from django.db import models
 
 databrowse.site.register(Field)
+databrowse.site.register(FieldValue)
 databrowse.site.register(DataSheet)
 databrowse.site.register(DataSheetField)
 databrowse.site.register(Unit)
@@ -74,6 +75,14 @@ class FieldAdmin(admin.ModelAdmin):
         },
     }
     
+class FieldValueAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'field_value', 'event_id', 'field_id', 'id')
+    formfield_overrides = {
+        models.TextField: {
+            'widget': TextInput()
+        },
+    }
+    
 class DataSheetFieldAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'field_name', 'sheet_id', 'field_id', 'print_name', 'category', 'unit_id')
     formfield_overrides = {
@@ -129,6 +138,7 @@ admin.site.register(Organization,OrganizationAdmin)
 admin.site.register(Media,MediaAdmin)
 admin.site.register(Category,CategoryAdmin)
 admin.site.register(Field,FieldAdmin)
+admin.site.register(FieldValue,FieldValueAdmin)
 admin.site.register(DataSheet,DataSheetAdmin)
 admin.site.register(DataSheetField,DataSheetFieldAdmin)
 admin.site.register(Project,ProjectAdmin)
