@@ -2,10 +2,6 @@
 
 {% block content %}
     <h1>Events</h1>
-    <h2>Oh golly! Look at all them events!</h2>
-    <h3>...Comets.</h3>
-    <p>Mohn Jadden</p>
-    
 {% for r in result %}
     <p>{{r.event}}: <a href="/event/edit/{{r.event.id}}">edit</a></p>
 {% endfor %}    

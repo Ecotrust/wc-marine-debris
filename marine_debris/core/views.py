@@ -35,8 +35,6 @@ def events(request):
 def create_event(request):
     if request.method == 'GET':
         form = EventForm()
-        # EventFormSet = modelformset_factory(Event)
-        # form = EventFormSet()
         return render_to_response('create_event.html', RequestContext(request,{'form':form.as_p()}))
     else :
         eventForm = EventForm
@@ -51,7 +49,23 @@ def create_event(request):
 # @login_required    
 def edit_event(request, event_id):
     event = Event.objects.get(id=event_id)
-    return render_to_response( 'edit_event.html', RequestContext(request,{'event':event}))
+    eventForm = EventForm
+    if request.method == 'GET':
+        form = eventForm(instance=event)
+    else:
+        old_datasheet_id = event.datasheet_id.id
+        form = eventForm(request.POST, instance=event)
+        if form.is_valid():
+            if int(form.data['datasheet_id']) == old_datasheet_id:
+                form.save()
+            else:
+                FieldValue.objects.filter(event_id=event).delete()
+                form.save()
+                return HttpResponseRedirect('/datasheet/fill/'+form.data['datasheet_id']+'/'+event_id)
+            return HttpResponseRedirect('/events')
+        else:
+            return render_to_response( 'edit_event.html', RequestContext(request,{'event':event, 'form':form.as_p(), 'error':'Form is not valid, please review.'}))
+    return render_to_response( 'edit_event.html', RequestContext(request,{'event':event, 'form':form.as_p()}))
     
 # @login_required
 def datasheets(request):

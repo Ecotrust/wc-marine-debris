@@ -3,9 +3,11 @@
 {% block content %}
     <h1>{{event}}</h1>
     <h2>ID: {{event.id}}</h2>
-    <h3>...Comets.</h3>
-    <p>Mohn Jadden</p>
-    
-<a href="/event/create">Create New Event</a>
-
-{% endblock %}    
+    <form class="event-form" method="post" action="{% if action %}{{ action }}{% else %}{{event.id}}{% endif %}">
+    {{form}}
+    <p><input id="submit" type="submit" value="Continue" style="margin:15px"/>
+    {% if action %}<button type="button" class="event_cancel" id="cancel" value="Cancel">Cancel</button>{% endif %}
+    </p>
+    </form>
+    <!-- <a href="/event/create">Create New Event</a> -->
+{% endblock %}
