@@ -6,6 +6,7 @@ marine_debris/*.sh
 marine_debris/datasheets
 marine_debris/core/fixtures/*
 marine_debris/core/*.pyc
+marine_debris/core/migrations/*.pyc
 cdb.bat
 ddb.bat
 env/
