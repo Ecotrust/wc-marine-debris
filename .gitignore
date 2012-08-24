@@ -7,6 +7,7 @@ marine_debris/datasheets
 marine_debris/core/fixtures/*
 marine_debris/core/*.pyc
 marine_debris/core/migrations/*.pyc
+marine_debris/registration_custom/*.pyc
 cdb.bat
 ddb.bat
 env/

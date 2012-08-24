@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Account activation{% endblock %}
+{% block content_header %}Account activation{% endblock %}
+{% block content %}
+{% load humanize %}
+{% if account %}
+<p>Your account has been activated! Login to start contributing.</p><a href="/">Login Page</a>
+{% else %}
+<p>Activation was not successful.  If you have already activated your account, proceed to the login page:</p>
+<p><a href="/">Login Page</a></p>
+<p>Otherwise, either your activation link was incorrect or the activation key for your account has expired; activation keys are only valid for {{ expiration_days|apnumber }} days after registration.</p>
+
+<p>Please email <a href="mailto:fish@ecotrust.org">fish@ecotrust.org</a> if you are unable to log in.</p>
+{% endif %}
+{% endblock %}

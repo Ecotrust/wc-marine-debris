@@ -31,7 +31,7 @@ def events(request):
             
     return render_to_response( 'events.html', RequestContext(request,{'result':result}))
     
-# @login_required
+@login_required
 def create_event(request):
     if request.method == 'GET':
         form = EventForm()
@@ -46,7 +46,7 @@ def create_event(request):
         else:
             return render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'error':'Form is not valid, please review.'}))
         
-# @login_required    
+@login_required    
 def edit_event(request, event_id):
     event = Event.objects.get(id=event_id)
     eventForm = EventForm
@@ -87,7 +87,7 @@ def datasheets(request):
         
     return render_to_response('datasheets.html', RequestContext(request, {'result':result}))
     
-# @login_required
+@login_required
 def fill_datasheet(request, datasheet_id, event_id):
     if request.method == 'GET':
         form = DataSheetForm(datasheet_id, event_id)

@@ -1,7 +1,17 @@
-<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
 <HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>WCGA Marine Debris Database</title>
 </HEAD>
 <BODY>
+<p align="right">
+{% if user.is_authenticated %}
+    <a href="/accounts/logout">Log out</a>
+{% else %}
+    <a href="/accounts/login">Log in</a>
+{% endif %}
+</p>
 {% block content %}
 {% endblock %}
     <p>
@@ -10,6 +20,7 @@
         <a href="/organizations">Organizations</a>
         <a href="/projects">Projects</a>
         <a href="/datasheets">Datasheets</a>
+        <a href="/admin">Admin</a>
     </p>
 </BODY>
 </HTML>

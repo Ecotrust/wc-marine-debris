@@ -4,6 +4,7 @@
     <h1>Fill Out Data Sheet</h1>
     {% if error %}<p style="color:red">{{error}}</p>{% endif %}
     <form class="datasheet-form" method="post" {% if action %}action="{{ action }}"{% endif %}>
+    {% csrf_token %}
     {{form}}
     <p><input id="submit" type="submit" value="Continue" style="margin:15px"/>
     {% if action %}<button type="button" class="datasheet_cancel" id="cancel" value="Cancel">Cancel</button>{% endif %}

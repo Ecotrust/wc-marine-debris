@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Sign up{% endblock %}
+
+{% block content_header %}Sign up{% endblock %}
+
+{% block content %}
+
+<p>Please, fill out the registration form (all fields are required), and your account will be created.<br/>
+You'll be sent an email with instructions on how to finish your registration.</p>
+<p>If you are an Oregon recreational fisherman and you ONLY fish from charter boats, please don't create an account - there is a separate survey for the charter boat companies, and we will get input from them directly.</p>
+
+{% if form.errors %}
+<p class="register-field-error">Please correct the errors below:</p>
+{% endif %}
+
+<form method="post" action="">
+<table>
+<tr>
+  <td><label for="id_username">Username:</label></td>
+  <td>{{ form.username }}</td>
+  {% if form.username.errors %}<td><span class="register-field-error">{{ form.username.errors|join:", " }}</span></td>{% endif %}
+</tr>
+<tr>
+  <td><label for="id_email">Email address:</label></td>
+  <td>{{ form.email }}</td>
+  {% if form.email.errors %}<td><span class="register-field-error">{{ form.email.errors|join:", " }}</span></td>{% endif %}
+</tr>  
+<tr>
+  <td><label for="id_password1">Password:</label></td>
+  <td>{{ form.password1 }}</td>
+  {% if form.password1.errors %}<td><span class="register-field-error">{{ form.password1.errors|join:", " }}</span></td>{% endif %}
+</tr>
+<tr>
+  <td><label for="id_password2">Password (type again to catch any typos):</label></td>
+  <td>{{ form.password2 }}</td>
+  {% if form.password2.errors %}<td><span class="register-field-error">{{ form.password2.errors|join:", " }}</span></td>{% endif %}
+</tr>
+<tr><td colspan='2' align='right'>
+<input type="submit" value="Register" style="margin-top:9px"/></td></tr>
+</td></tr>
+</table>
+</form>
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
