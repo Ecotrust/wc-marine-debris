@@ -3,7 +3,7 @@
 {% block content %}
     <h1>Events</h1>
 {% for r in result %}
-    <p>{{r.event}}: <a href="/event/edit/{{r.event.id}}">edit</a></p>
+    <p><a href="/event/view/{{r.event.id}}">{{r.event}}</a>: <a href="/event/edit/{{r.event.id}}">edit</a></p>
 {% endfor %}    
 
 <a href="/event/create">Create New Event</a>

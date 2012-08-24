@@ -53,9 +53,21 @@ class DataSheetForm(forms.Form):
                 
             elif question.field_id.datatype == 'date':
                 if answer.count() == 1:
-                    dynamic_args['initial']=datetime.datetime.strptime(answer[0].field_value, "%Y-%m-%d %H:%M:%S.%f")
+                    try:
+                        dynamic_args['initial']=datetime.datetime.strptime(answer[0].field_value, "%Y-%m-%d %H:%M:%S.%f")
+                    except: 
+                        try:
+                            dynamic_args['initial']=datetime.datetime.strptime(answer[0].field_value, "%Y-%m-%d %H:%M:%S")
+                        except:
+                            dynamic_args['initial']=datetime.datetime.strptime(answer[0].field_value, "%Y-%m-%d")
                 elif question.field_id.default_value  != '':
-                    dynamic_args['initial']=datetime.datetime.strptime(question.field_id.default_value, "%Y-%m-%d %H:%M:%S.%f")
+                    try:
+                        dynamic_args['initial']=datetime.datetime.strptime(question.field_id.default_value, "%Y-%m-%d %H:%M:%S.%f")
+                    except:
+                        try:
+                            dynamic_args['initial']=datetime.datetime.strptime(question.field_id.default_value, "%Y-%m-%d %H:%M:%S")
+                        except:
+                            dynamic_args['initial']=datetime.datetime.strptime(question.field_id.default_value, "%Y-%m-%d")
                 else:
                     dynamic_args['initial']=datetime.datetime.now()
                 self.fields['question_' + str(question.id) + '_' + self.event_id] = forms.DateField( **dynamic_args )
@@ -82,7 +94,6 @@ class DataSheetForm(forms.Form):
             self.fields['question_' + str(question.id) + '_' + self.event_id].answer = answer
             self.fields['question_' + str(question.id) + '_' + self.event_id].event = event
             
-    # def save(self, user):
     def save(self):
         for field_name in self.fields:
             field = self.fields[field_name]

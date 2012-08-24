@@ -151,6 +151,9 @@ class Event (models.Model):
     def __unicode__(self):
         return self.proj_id.projname + '-' + self.sitename + '-' + self.cleanupdate.date().isoformat()
         
+    def get_fields(self):
+        return[(field.name, field.value_to_string(self)) for field in Event._meta.fields]
+        
     class Meta:
         ordering = ['proj_id__projname', 'sitename', 'cleanupdate']
     
