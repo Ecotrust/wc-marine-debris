@@ -15,5 +15,6 @@ urlpatterns = patterns('',
     url(r'^projects$', projects),
     url(r'^datasheets$', datasheets),
     url(r'^datasheet/fill/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)$', fill_datasheet),
+    url(r'^site-media/(?P<path>.*)$','django.views.static.serve',{'document_root': settings.MEDIA_ROOT, 'show_indexes': True})
         
 )

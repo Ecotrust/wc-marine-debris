@@ -10,4 +10,12 @@
     {% if action %}<button type="button" class="datasheet_cancel" id="cancel" value="Cancel">Cancel</button>{% endif %}
     </p>
     </form>
-{% endblock %}    
+{% endblock %}
+    
+{% block js %}
+
+	$(function() {
+		$( ".date" ).datetimepicker({dateFormat: 'yy-mm-dd', timeFormat: 'hh:mm:ss.l'});
+	});
+    
+{% endblock %}

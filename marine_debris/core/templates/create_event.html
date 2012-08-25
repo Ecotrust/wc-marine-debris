@@ -4,9 +4,6 @@
 
 {% endblock %}
 
-{% block js %}
-
-{% endblock %}
 
 {% block content %}
     <h1>Create a New Event</h1>
@@ -19,3 +16,11 @@
     </p>
     </form>
 {% endblock %}    
+
+{% block js %}
+
+	$(function() {
+		$( "#id_cleanupdate" ).datepicker({dateFormat: 'yy-mm-dd'});
+	});
+    
+{% endblock %}

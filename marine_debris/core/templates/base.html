@@ -1,34 +1,81 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<HTML xmlns="http://www.w3.org/1999/xhtml">
-<HEAD>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta http-equiv="Content-Language" content="en-us" />
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
 <title>{% block title %}WCGA Marine Debris Database{% endblock %}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+
+    <link href="/site-media/third-party/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="/site-media/third-party/jquery/css/ui-lightness/jquery-ui-1.8.23.custom.css" rel="stylesheet">
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+    </style>
+    <link href="/site-media/third-party/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/site-media/third-party/timepicker/css/timepicker.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
 {% block styles %}
 
 {% endblock %}
-<SCRIPT TYPE="text/javascript">
+</HEAD>
+<BODY>
+<div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">Marine Debris</a>
+          <div class="nav-collapse collapse">
+
+            <ul class="nav">
+              <li class="active"><a href="/">Home</a></li>
+                <li><a href="/events">Events</a></li>
+                <li><a href="/organizations">Organizations</a></li>
+                <li><a href="/projects">Projects</a></li>
+                <li><a href="/datasheets">Datasheets</a></li>
+                <li><a href="/admin">Admin</a></li>
+            </ul>
+            <div class="navbar-text pull-right">
+            {% if user.is_authenticated %}
+                <a href="/accounts/logout">Log out</a>
+            {% else %}
+                <a href="/accounts/login">Log in</a>
+            {% endif %}
+            </div>
+          </div><!--/.nav-collapse -->
+        </div>
+
+      </div>
+    </div>
+    
+    
+
+<div class="container">
+{% block content %}
+{% endblock %}
+</div>
+<SCRIPT src="/site-media/third-party/jquery/js/jquery-1.8.0.min.js" ></SCRIPT>
+<SCRIPT src="/site-media/third-party/jquery/js/jquery-ui-1.8.23.custom.min.js" ></SCRIPT>
+<SCRIPT src="/site-media/third-party/timepicker/js/jquery-ui-timepicker-addon.js" ></SCRIPT>
+<SCRIPT>
 {% block js %}
 
 {% endblock %}
 </SCRIPT>
-</HEAD>
-<BODY>
-<table style="width:100%"><tr><td><p align="left">
-    <a href="/">Home</a>
-    <a href="/events">Events</a>
-    <a href="/organizations">Organizations</a>
-    <a href="/projects">Projects</a>
-    <a href="/datasheets">Datasheets</a>
-    <a href="/admin">Admin</a>
-</p></td><td><p align="right">
-{% if user.is_authenticated %}
-    <a href="/accounts/logout">Log out</a>
-{% else %}
-    <a href="/accounts/login">Log in</a>
-{% endif %}
-</p></td></tr></table>
-{% block content %}
-{% endblock %}
+
 </BODY>
 </HTML>

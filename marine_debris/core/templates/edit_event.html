@@ -12,3 +12,11 @@
     </form>
     <!-- <a href="/event/create">Create New Event</a> -->
 {% endblock %}
+
+{% block js %}
+
+	$(function() {
+		$( "#id_cleanupdate" ).datepicker({dateFormat: 'yy-mm-dd'});
+	});
+    
+{% endblock %}

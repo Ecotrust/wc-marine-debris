@@ -10,6 +10,7 @@ class EventForm(forms.ModelForm):
         model = Event
         fields = ('id', 'proj_id', 'type_id', 'cleanupdate', 'datasheet_id', 'sitename', 'city', 'state', 'county', 'lat', 'lon')
         widgets = {
+            'cleanupdate': TextInput(),
             'sitename': TextInput(),
             'city': TextInput(),
             'state': TextInput(),
@@ -70,6 +71,7 @@ class DataSheetForm(forms.Form):
                             dynamic_args['initial']=datetime.datetime.strptime(question.field_id.default_value, "%Y-%m-%d")
                 else:
                     dynamic_args['initial']=datetime.datetime.now()
+                dynamic_args['widget']=forms.TextInput(attrs={'class':'date'})
                 self.fields['question_' + str(question.id) + '_' + self.event_id] = forms.DateField( **dynamic_args )
                 
                 # elif question.field_id.datatype == 'location':
