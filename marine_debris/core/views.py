@@ -20,7 +20,7 @@ from django.forms.models import modelformset_factory
 
 # @login_required
 def index(request): 
-    return render_to_response( 'index.html', RequestContext(request,{}))
+    return render_to_response( 'index.html', RequestContext(request,{'active':'home'}))
 
 # @login_required
 def events(request): 
@@ -29,13 +29,13 @@ def events(request):
     for event in qs.all(): 
         result.append({'event':event})
             
-    return render_to_response( 'events.html', RequestContext(request,{'result':result}))
+    return render_to_response( 'events.html', RequestContext(request,{'result':result, 'active':'events'}))
     
 @login_required
 def create_event(request):
     if request.method == 'GET':
         form = EventForm()
-        return render_to_response('create_event.html', RequestContext(request,{'form':form.as_p()}))
+        return render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'active':'events'}))
     else :
         eventForm = EventForm
         form = eventForm(request.POST)
@@ -44,7 +44,7 @@ def create_event(request):
             datasheet_id = form.data['datasheet_id']
             return HttpResponseRedirect('/datasheet/fill/'+datasheet_id+'/'+str(new_event.id))
         else:
-            return render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'error':'Form is not valid, please review.'}))
+            return render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'error':'Form is not valid, please review.', 'active':'events'}))
         
 @login_required    
 def edit_event(request, event_id):
@@ -64,8 +64,8 @@ def edit_event(request, event_id):
                 return HttpResponseRedirect('/datasheet/fill/'+form.data['datasheet_id']+'/'+event_id)
             return HttpResponseRedirect('/events')
         else:
-            return render_to_response( 'edit_event.html', RequestContext(request,{'event':event, 'form':form.as_p(), 'error':'Form is not valid, please review.'}))
-    return render_to_response( 'edit_event.html', RequestContext(request,{'event':event, 'form':form.as_p()}))
+            return render_to_response( 'edit_event.html', RequestContext(request,{'event':event, 'form':form.as_p(), 'error':'Form is not valid, please review.', 'active':'events'}))
+    return render_to_response( 'edit_event.html', RequestContext(request,{'event':event, 'form':form.as_p(), 'active':'events'}))
     
 # @login_required
 def view_event(request, event_id):
@@ -76,7 +76,7 @@ def view_event(request, event_id):
         field_name = Field.objects.get(id=value.field_id.id).internal_name
         field = (field_name, value.field_value)
         fields.append(field)
-    return render_to_response('view_event.html', RequestContext(request,{'event':event, 'fields':fields}))
+    return render_to_response('view_event.html', RequestContext(request,{'event':event, 'fields':fields, 'active':'events'}))
     
 # @login_required
 def datasheets(request):
@@ -85,13 +85,13 @@ def datasheets(request):
     for datasheet in qs.all():
         result.append({'datasheet': datasheet})
         
-    return render_to_response('datasheets.html', RequestContext(request, {'result':result}))
+    return render_to_response('datasheets.html', RequestContext(request, {'result':result, 'active':'datasheets'}))
     
 @login_required
 def fill_datasheet(request, datasheet_id, event_id):
     if request.method == 'GET':
         form = DataSheetForm(datasheet_id, event_id)
-        return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p()}))
+        return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'active':'datasheets'}))
     else:
         datasheetForm = DataSheetForm
         form = datasheetForm(datasheet_id, event_id, request.POST)
@@ -99,7 +99,7 @@ def fill_datasheet(request, datasheet_id, event_id):
             new_datasheet = form.save()
             return HttpResponseRedirect('/')
         else:
-            return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'error': 'Form is not valid, please review.'}))
+            return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'error': 'Form is not valid, please review.', 'active':'datasheets'}))
     
 # @login_required
 def organizations(request): 
@@ -108,7 +108,7 @@ def organizations(request):
     for organization in qs.all(): 
         result.append({'organization':organization})
             
-    return render_to_response( 'organizations.html', RequestContext(request,{'result':result}))
+    return render_to_response( 'organizations.html', RequestContext(request,{'result':result, 'active':'organizations'}))
 
 # @login_required
 def projects(request): 
@@ -117,4 +117,4 @@ def projects(request):
     for project in qs.all(): 
         result.append({'project':project})
             
-    return render_to_response( 'projects.html', RequestContext(request,{'result':result}))    
+    return render_to_response( 'projects.html', RequestContext(request,{'result':result, 'active':'projects'}))    

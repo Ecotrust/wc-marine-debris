@@ -42,12 +42,12 @@
           <div class="nav-collapse collapse">
 
             <ul class="nav">
-              <li class="active"><a href="/">Home</a></li>
-                <li><a href="/events">Events</a></li>
-                <li><a href="/organizations">Organizations</a></li>
-                <li><a href="/projects">Projects</a></li>
-                <li><a href="/datasheets">Datasheets</a></li>
-                <li><a href="/admin">Admin</a></li>
+              {% ifequal active 'home' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/">Home</a></li>
+                {% ifequal active 'events' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/events">Events</a></li>
+                {% ifequal active 'organizations' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/organizations">Organizations</a></li>
+                {% ifequal active 'projects' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/projects">Projects</a></li>
+                {% ifequal active 'datasheets' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/datasheets">Datasheets</a></li>
+                {% ifequal active 'admin' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/admin">Admin</a></li>
             </ul>
             <div class="navbar-text pull-right">
             {% if user.is_authenticated %}
