@@ -52,13 +52,13 @@ MEDIA_ROOT = os.path.abspath(os.path.dirname(sys.argv[0])) + '/media'
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 MEDIA_URL = '/site-media/'
-ADMIN_MEDIA_PREFIX = '/install-media/admin/'
+# ADMIN_MEDIA_PREFIX = '/install-media/admin/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = ''
+STATIC_ROOT = 'set-in-local_settings'
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
