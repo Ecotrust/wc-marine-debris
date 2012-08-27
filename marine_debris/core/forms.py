@@ -25,12 +25,13 @@ class DataSheetForm(forms.Form):
         answers = FieldValue.objects.filter(event_id=event_id)
         event = Event.objects.get(id=event_id)
         self.answers = answers
-        forms.Form.__init__(self, *args, **kwargs)            
+        forms.Form.__init__(self, *args, **kwargs)
         for i, question in enumerate(questions):
             dynamic_args = {}
             other_dynamic_args = {}
             field = Field.objects.get(id = question.field_id.id)
             dynamic_args['label'] = question.print_name
+            dynamic_args['required']=question.required
             answer = answers.filter(field_id = question.field_id.id)
             
             if question.field_id.datatype == 'area' or question.field_id.datatype == 'distance' or question.field_id.datatype == 'duration' or question.field_id.datatype == 'number' or question.field_id.datatype == 'volume' or question.field_id.datatype == 'weight': # decimal
@@ -72,7 +73,7 @@ class DataSheetForm(forms.Form):
                 else:
                     dynamic_args['initial']=datetime.datetime.now()
                 dynamic_args['widget']=forms.TextInput(attrs={'class':'date'})
-                self.fields['question_' + str(question.id) + '_' + self.event_id] = forms.DateField( **dynamic_args )
+                self.fields['question_' + str(question.id) + '_' + self.event_id] = forms.CharField( **dynamic_args )
                 
                 # elif question.field_id.datatype == 'location':
             

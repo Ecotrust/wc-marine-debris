@@ -119,6 +119,7 @@ class DataSheetField (models.Model):
     print_name = models.TextField(blank=True, null=True)
     unit_id = models.ForeignKey(Unit, blank=True, null=True)
     category = models.ForeignKey(Category, null=True, blank=True)
+    required = models.BooleanField(default=False)
     
     def __unicode__(self):
         readable_name = self.field_name + '-' + self.sheet_id.sheetname + '-' + self.field_id.internal_name
@@ -140,7 +141,7 @@ class Event (models.Model):
     datasheet_id = models.ForeignKey(DataSheet)
     proj_id = models.ForeignKey(Project)
     type_id = models.ForeignKey(EventType)
-    cleanupdate = models.DateTimeField(default=datetime.datetime.now)
+    cleanupdate = models.DateTimeField(default=datetime.date.today)
     sitename = models.TextField(blank=True, null=True)
     lat = models.FloatField(blank=True, null=True)
     lon = models.FloatField(blank=True, null=True)
