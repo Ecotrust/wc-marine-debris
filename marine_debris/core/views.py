@@ -114,7 +114,7 @@ def fill_datasheet(request, datasheet_id, event_id):
         form = datasheetForm(datasheet_id, event_id, request.POST)
         if form.is_valid():
             new_datasheet = form.save()
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect('/events')
         else:
             return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'error': 'Form is not valid, please review.', 'active':'datasheets'}))
     

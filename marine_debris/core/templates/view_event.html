@@ -2,18 +2,23 @@
 
 {% block content %}
     <h1>View Event</h1>
+    <table><tr><td valign="top" style="padding-right:10px">
     <h3>{{event}}</h3>
     <table class='table table-condensed'><tr><th>Field</th><th>Value</th></tr>
     {% for field, value in event.get_fields %}
         <tr><td>{{field}}</td><td>{{value}}</td></tr>
     {% endfor %}
     </table>
-
-<a href="/event/edit/{{event.id}}">Edit this event</a>
-    <br />
     
+    <form method="get" action="/event/edit/{{event.id}}">
+        <input id='edit-event' name='edit-event' class='btn' value='Edit Event' type="submit" />
+    </form>
+
+
+
+    </td><td>
     <h3>Data Sheet: {{datasheet}}</h3>
-    <table><tr><th>Field</th><th>Value</th></tr>
+    <table class='table table-condensed'><tr><th>Field</th><th>Value</th></tr>
 {% for field in fields %}
     <tr>
     {% for item in field %}
@@ -22,10 +27,10 @@
     </tr>
 {% endfor %}    
     </table>
-    <br />
-    <a href="/datasheet/fill/{{event.datasheet_id.id}}/{{event.id}}">Edit this datasheet</a>
-    <br />
-<br />
+    <form method="get" action="/datasheet/fill/{{event.datasheet_id.id}}/{{event.id}}">
+        <input id='edit-datasheet' name='edit-datasheet' class='btn' value='Edit Datasheet' type="submit" />
+    </form>
+    </td></tr></table>
 
 {% endblock %}    
     

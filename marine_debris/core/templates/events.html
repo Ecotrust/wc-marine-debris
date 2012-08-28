@@ -2,11 +2,19 @@
 
 {% block content %}
     <h1>Events</h1>
+    <table class="table table-condensed" style="width:450px">
 {% for r in result %}
-    <p><a href="/event/view/{{r.event.id}}">{{r.event}}</a>: <a href="/event/edit/{{r.event.id}}">edit</a> <a href="/event/delete/{{r.event.id}}">delete</a></p>
+    <tr><td><a href="/event/view/{{r.event.id}}">{{r.event}}</a></td>
+    <td><form method="get" action="/event/edit/{{r.event.id}}">
+        <input id="edit" class='btn' name="edit" type="submit" value="Edit"  />
+    </form></td>
+    <td><form method="get" action="/event/delete/{{r.event.id}}">
+        <input id="delete-view" class='btn' name="delete-view" type="submit" value="Delete" />
+    </form></td>
+    </tr>
 {% endfor %}    
-
-<a href="/event/create">Create New Event</a>
+    </table>
+<a class='btn' href="/event/create">Create New Event</a>
 
 {% endblock %}    
     
