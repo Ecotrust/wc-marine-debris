@@ -78,6 +78,23 @@ def view_event(request, event_id):
         fields.append(field)
     return render_to_response('view_event.html', RequestContext(request,{'event':event, 'fields':fields, 'active':'events'}))
     
+@login_required
+def delete_event(request, event_id):
+    event = Event.objects.get(id=event_id)
+    if request.GET.has_key('delete'):
+        event.delete()
+        return HttpResponseRedirect('/events')
+    if request.GET.has_key('cancel'):
+        return HttpResponseRedirect('/events')
+    values = FieldValue.objects.filter(event_id=event_id)
+    fields = []
+    for value in values:
+        field_name = Field.objects.get(id=value.field_id.id).internal_name
+        field = (field_name, value.field_value)
+        fields.append(field)
+    return render_to_response('delete_event.html', RequestContext(request,{'event':event, 'fields':fields, 'active':'events'}))
+    
+        
 # @login_required
 def datasheets(request):
     qs = DataSheet.objects.filter()

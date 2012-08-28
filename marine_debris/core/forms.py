@@ -13,7 +13,6 @@ class EventForm(forms.ModelForm):
             'cleanupdate': TextInput(),
             'sitename': TextInput(),
             'city': TextInput(),
-            'state': TextInput(),
             'county': TextInput(),
         }
         

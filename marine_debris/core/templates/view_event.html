@@ -3,12 +3,12 @@
 {% block content %}
     <h1>View Event</h1>
     <h3>{{event}}</h3>
-    <table><tr><th>Field</th><th>Value</th></tr>
+    <table class='table table-condensed'><tr><th>Field</th><th>Value</th></tr>
     {% for field, value in event.get_fields %}
         <tr><td>{{field}}</td><td>{{value}}</td></tr>
     {% endfor %}
     </table>
-    <br />
+
 <a href="/event/edit/{{event.id}}">Edit this event</a>
     <br />
     

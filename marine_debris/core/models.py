@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 import datetime
 
 # Create your models here.
@@ -138,15 +139,20 @@ class EventType (models.Model):
         ordering = ['type']
     
 class Event (models.Model):
+    stateChoices = (
+        ('WA', 'Washington'),
+        ('OR', 'Oregon'),
+        ('CA', 'California')
+    )
     datasheet_id = models.ForeignKey(DataSheet)
     proj_id = models.ForeignKey(Project)
     type_id = models.ForeignKey(EventType)
     cleanupdate = models.DateTimeField(default=datetime.date.today)
     sitename = models.TextField(blank=True, null=True)
-    lat = models.FloatField(blank=True, null=True)
-    lon = models.FloatField(blank=True, null=True)
+    lat = models.FloatField(blank=True, null=True, validators=[MinValueValidator(32.5), MaxValueValidator(49.1)])
+    lon = models.FloatField(blank=True, null=True, validators=[MinValueValidator(-124.8), MaxValueValidator(-117)])
     city = models.TextField(blank=True, null=True)
-    state = models.TextField(blank=True, null=True)
+    state = models.CharField(blank=True, null=True, max_length=30, choices=stateChoices)
     county = models.TextField(blank=True, null=True)
     
     def __unicode__(self):
