@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Projects</h1>
+{% for r in result %}
+    <p>{{r.project}}</p>
+{% endfor %}    
+{% endblock %}    

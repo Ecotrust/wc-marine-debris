@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Delete Event</h1>
+    <h2>Are you sure you want to delete the following event?</h2>
+    <table><tr><td>
+    <h3>{{event}}</h3>
+    <table><tr><th>Field</th><th>Value</th></tr>
+    {% for field, value in event.get_fields %}
+        <tr><td>{{field}}</td><td>{{value}}</td></tr>
+    {% endfor %}
+    </table>
+    </td>
+    <td>
+    <h3>Data Sheet: {{datasheet}}</h3>
+    <table><tr><th>Field</th><th>Value</th></tr>
+{% for field in fields %}
+    <tr>
+    {% for item in field %}
+        <td>{{item}}</td>
+    {% endfor %}
+    </tr>
+{% endfor %}    
+    </table>
+    </td></tr></table>
+    <form class="gwst-form" method="get" action="/event/delete/{{event.id}}">
+        <input id="delete" class='btn' name="delete" type="submit" value="Yes - Delete Event" onclick='return confirm("Are you sure you want to delete all record of this event?  Click \"Ok\" if Yes, \"Cancel\" if No.")'/ >
+        <input id="cancel" class='btn' name="cancel" type="submit" value="No - Cancel"  />
+    </form>
+
+{% endblock %}    
+    

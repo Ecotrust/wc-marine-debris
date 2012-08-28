@@ -1,0 +1,25 @@
+Thank you for registering for the Oregon Recreational Fishing Survey
+Your login information is below:
+
+Username: {{ username }}
+Password: {{ password }}
+
+To activate your account, please click the link below:
+http://{{site.domain}}/accounts/activate/{{activation_key}}/
+
+To return to your survey again, go directly to the survey homepage at the link below:
+http://{{site.domain}}/
+
+You have until May 31st, 2010 to finish this web survey.  It will likely take you at least 20 minutes to an hour to complete so give yourself enough time.  You can leave and come back to the survey as many times as you'd like until you're done, but it's important that you finish the whole thing or we can't use your information at all.  If you need additional help please first refer to all instructions, videos and frequently asked questions provided.  If you still find yourself not able to complete this survey online, please contact us using the info at the end of this email and we will find a way to get your information.
+
+By activating your account and logging in you agree to participate under the following conditions:
+
+The goal of the Recreational Fisheries Uses Project is to characterize recreational fishing areas of relative importance and recreational fishing use patterns along the Oregon coast, using the expert knowledge of fishermen themselves. This kind of spatially explicit information on recreational fisheries and their value to fishermen has the potential to ensure representation of socioeconomic values in the design and implementation of a spatially explicit designation of special use areas, specifically for wave energy facility development within the Oregon Territorial Sea Plan (TSP). The purpose of this project is twofold:
+
+1.  Develop accurate maps of the local recreational fishing grounds and characterize their relative importance to recreational fishermen; and 2.  Incorporate recreational fishermen's knowledge into the development of future amendments to the Oregon Territorial Sea Plan (TSP);
+
+This kind of spatially explicit information on recreational fisheries will ensure representation of recreational values in the design, implementation and management of marine protected areas. 
+
+During the winter and spring of 2010, Ecotrust personnel will be contacting recreational fishermen along the Oregon coast to be interviewed. The format will be on-line, with follow-up meetings by user group in which the information collected will be validated by fishermen. Due to the sensitive nature of the information, only Ecotrust staff (operating under a strict confidentiality protocol) will handle the raw data generated during the interviews. All information collected in the interviews is anonymous and confidential on the individual level. All analyses and results will be presented only in aggregate form. The information will be used to create a comprehensive profile of the recreational fishing use patterns and values along Oregon's coast, and may also be written up in a peer-reviewed journal. If appropriate, there may be the opportunity for release of aggregated study results for uses other than the Oregon TSP process, but in line with the purposes of this research; however, your individual results will never be included in any release of aggregated results without your explicit consent. 
+
+Your willingness to participate is not only appreciated, but indeed vital to the success of this project.  If you have any questions or concerns, contact the Ecotrust team at fish@ecotrust.org or call Jon Bonkoski at 503.467.0804. The project website is www.ecotrust.org/tsp
