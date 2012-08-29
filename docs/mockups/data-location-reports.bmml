@@ -73,10 +73,10 @@
         <text>Washington%20%2831%29</text>
       </controlProperties>
     </control>
-    <control controlID="46" controlTypeID="com.balsamiq.mockups::Label" x="382" y="246" w="91" h="24" measuredW="87" measuredH="24" zOrder="13" locked="false" isInGroup="-1">
+    <control controlID="46" controlTypeID="com.balsamiq.mockups::Label" x="382" y="246" w="111" h="24" measuredW="97" measuredH="24" zOrder="13" locked="false" isInGroup="-1">
       <controlProperties>
         <size>16</size>
-        <text>plastic%20bags</text>
+        <text>Glass%20Bottles</text>
       </controlProperties>
     </control>
     <control controlID="47" controlTypeID="com.balsamiq.mockups::Label" x="378" y="281" w="-1" h="-1" measuredW="149" measuredH="24" zOrder="14" locked="false" isInGroup="-1">
@@ -103,6 +103,7 @@
     <control controlID="53" controlTypeID="com.balsamiq.mockups::CheckBox" x="620" y="407" w="-1" h="-1" measuredW="257" measuredH="22" zOrder="17" locked="false" isInGroup="-1">
       <controlProperties>
         <italic>true</italic>
+        <state>selected</state>
         <text>Only%20Show%20Reports%20Within%20Extent%20of%20Map</text>
       </controlProperties>
     </control>
@@ -153,7 +154,9 @@
     </control>
     <control controlID="63" controlTypeID="com.balsamiq.mockups::Button" x="765" y="700" w="-1" h="-1" measuredW="119" measuredH="38" zOrder="21" locked="false" isInGroup="-1">
       <controlProperties>
+        <href>create-event-1%26bm%3Bcreate-event-1.bmml%26bm%3Bcreate-event-1.bmml%26bm%3Bcreate-event-1.bmml</href>
         <icon>CircledPlusIcon%7Cmedium</icon>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22434%2C685%2C553%2C723%22%20href%3D%22create-event-1.bmml%22%20alt%3D%22create-event-1%22%20id%3D%2263%22/%3E</map>
         <text>Add%20Event</text>
       </controlProperties>
     </control>

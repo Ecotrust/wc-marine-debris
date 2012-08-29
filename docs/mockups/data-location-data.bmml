@@ -73,10 +73,10 @@
         <text>Washington%20%2831%29</text>
       </controlProperties>
     </control>
-    <control controlID="46" controlTypeID="com.balsamiq.mockups::Label" x="382" y="246" w="91" h="24" measuredW="87" measuredH="24" zOrder="13" locked="false" isInGroup="-1">
+    <control controlID="46" controlTypeID="com.balsamiq.mockups::Label" x="382" y="246" w="110" h="24" measuredW="97" measuredH="24" zOrder="13" locked="false" isInGroup="-1">
       <controlProperties>
         <size>16</size>
-        <text>plastic%20bags</text>
+        <text>Glass%20Bottles</text>
       </controlProperties>
     </control>
     <control controlID="47" controlTypeID="com.balsamiq.mockups::Label" x="378" y="281" w="-1" h="-1" measuredW="149" measuredH="24" zOrder="14" locked="false" isInGroup="-1">
@@ -93,8 +93,8 @@
     </control>
     <control controlID="51" controlTypeID="com.balsamiq.mockups::ButtonBar" x="940" y="205" w="-1" h="-1" measuredW="230" measuredH="34" zOrder="16" locked="false" isInGroup="-1">
       <controlProperties>
-        <hrefs>data-location-map%26bm%3Bdata-location-map.bmml%26bm%3Bdata-location-map.bmml%26bm%3Bdata-location-map.bmml%2C%2C</hrefs>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22609%2C190%2C680%2C224%22%20href%3D%22data-location-map.bmml%22%20alt%3D%22data-location-map%22%20id%3D%2251_0%22/%3E%0A</map>
+        <hrefs>data-location-map%26bm%3Bdata-location-map.bmml%26bm%3Bdata-location-map.bmml%26bm%3Bdata-location-map.bmml%2C%2Cdata-location-reports%26bm%3Bdata-location-reports.bmml%26bm%3Bdata-location-reports.bmml%26bm%3Bdata-location-reports.bmml</hrefs>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22609%2C190%2C680%2C224%22%20href%3D%22data-location-map.bmml%22%20alt%3D%22data-location-map%22%20id%3D%2251_0%22/%3E%0A%3Carea%20shape%3D%22rect%22%20coords%3D%22751%2C190%2C843%2C224%22%20href%3D%22data-location-reports.bmml%22%20alt%3D%22data-location-reports%22%20id%3D%2251_1%22/%3E%0A</map>
         <selectedIndex>1</selectedIndex>
         <size>18</size>
         <text>Maps%2C%20Data%2C%20Reports</text>
@@ -103,6 +103,7 @@
     <control controlID="53" controlTypeID="com.balsamiq.mockups::CheckBox" x="620" y="407" w="-1" h="-1" measuredW="257" measuredH="22" zOrder="17" locked="false" isInGroup="-1">
       <controlProperties>
         <italic>true</italic>
+        <state>selected</state>
         <text>Only%20Show%20Reports%20Within%20Extent%20of%20Map</text>
       </controlProperties>
     </control>
@@ -178,6 +179,14 @@
       <controlProperties>
         <icon>DownloadIcon%7Cmedium</icon>
         <text>Download%20Data</text>
+      </controlProperties>
+    </control>
+    <control controlID="66" controlTypeID="com.balsamiq.mockups::Button" x="620" y="700" w="-1" h="-1" measuredW="141" measuredH="38" zOrder="25" locked="false" isInGroup="-1">
+      <controlProperties>
+        <href>bulk-event-1%26bm%3Bbulk-event-1.bmml%26bm%3Bbulk-event-1.bmml%26bm%3Bbulk-event-1.bmml</href>
+        <icon>CircledPlusIcon%7Cmedium</icon>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22289%2C685%2C430%2C723%22%20href%3D%22bulk-event-1.bmml%22%20alt%3D%22bulk-event-1%22%20id%3D%2266%22/%3E</map>
+        <text>Import%20Events</text>
       </controlProperties>
     </control>
   </controls>
