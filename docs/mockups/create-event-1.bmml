@@ -52,19 +52,14 @@
         <text/>
       </controlProperties>
     </control>
-    <control controlID="41" controlTypeID="com.balsamiq.mockups::ButtonBar" x="992" y="156" w="-1" h="-1" measuredW="346" measuredH="29" zOrder="7" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Events%2C%20Organizations%2C%20Projects%2C%20Datasheets</text>
-      </controlProperties>
-    </control>
-    <control controlID="42" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="263" w="204" h="-1" measuredW="87" measuredH="23" zOrder="8" locked="false" isInGroup="-1">
+    <control controlID="42" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="263" w="204" h="-1" measuredW="87" measuredH="23" zOrder="7" locked="false" isInGroup="-1">
       <controlProperties>
         <href>create-event-2%26bm%3Bcreate-event-2.bmml%26bm%3Bcreate-event-2.bmml%26bm%3Bcreate-event-2.bmml</href>
         <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22192%2C248%2C396%2C271%22%20href%3D%22create-event-2.bmml%22%20alt%3D%22create-event-2%22%20id%3D%2242%22/%3E</map>
         <text>--%20Select%20--</text>
       </controlProperties>
     </control>
-    <control controlID="43" controlTypeID="com.balsamiq.mockups::Label" x="410" y="263" w="-1" h="-1" measuredW="83" measuredH="21" zOrder="9" locked="false" isInGroup="-1">
+    <control controlID="43" controlTypeID="com.balsamiq.mockups::Label" x="410" y="263" w="-1" h="-1" measuredW="83" measuredH="21" zOrder="8" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Organization%20%3A</text>
       </controlProperties>
