@@ -156,15 +156,15 @@
             <text>File%20Name%20%3A</text>
           </controlProperties>
         </control>
-        <control controlID="7" controlTypeID="com.balsamiq.mockups::TextInput" x="165" y="313" w="252" h="-1" measuredW="180" measuredH="27" zOrder="3" locked="false" isInGroup="90">
+        <control controlID="7" controlTypeID="com.balsamiq.mockups::TextInput" x="165" y="313" w="252" h="-1" measuredW="214" measuredH="27" zOrder="3" locked="false" isInGroup="90">
           <controlProperties>
-            <text>SOS_Beach_Cleanup_Table</text>
+            <text>SOS_Beach_Cleanup_Table_Raw</text>
           </controlProperties>
         </control>
         <control controlID="8" controlTypeID="com.balsamiq.mockups::Button" x="432" y="311" w="70" h="27" measuredW="54" measuredH="27" zOrder="4" locked="false" isInGroup="90">
           <controlProperties>
-            <href>bulk-event-7c%26bm%3Bbulk-event-7c.bmml%26bm%3Bbulk-event-7c.bmml%26bm%3Bbulk-event-7c.bmml</href>
-            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22617%2C443%2C687%2C470%22%20href%3D%22bulk-event-7c.bmml%22%20alt%3D%22bulk-event-7c%22%20id%3D%228%22/%3E</map>
+            <href>bulk-error-2a%26bm%3Bbulk-error-2a.bmml%26bm%3Bbulk-error-2a.bmml%26bm%3Bbulk-error-2a.bmml</href>
+            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22617%2C443%2C687%2C470%22%20href%3D%22bulk-error-2a.bmml%22%20alt%3D%22bulk-error-2a%22%20id%3D%228%22/%3E</map>
             <text>Open</text>
           </controlProperties>
         </control>
@@ -176,10 +176,7 @@
           </controlProperties>
         </control>
         <control controlID="10" controlTypeID="__group__" x="242" y="139" w="240" h="24" measuredW="240" measuredH="24" zOrder="6" locked="false" isInGroup="90">
-          <controlProperties>
-            <href>bulk-event-7b%26bm%3Bbulk-event-7b.bmml%26bm%3Bbulk-event-7b.bmml%26bm%3Bbulk-event-7b.bmml</href>
-            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22427%2C271%2C667%2C295%22%20href%3D%22bulk-event-7b.bmml%22%20alt%3D%22bulk-event-7b%22%20id%3D%2210%22/%3E</map>
-          </controlProperties>
+          <controlProperties/>
           <groupChildrenDescriptors>
             <control controlID="0" controlTypeID="com.balsamiq.mockups::Icon" x="0" y="0" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="0" locked="false" isInGroup="10">
               <controlProperties>
@@ -194,6 +191,10 @@
           </groupChildrenDescriptors>
         </control>
         <control controlID="11" controlTypeID="__group__" x="242" y="91" w="132" h="24" measuredW="132" measuredH="24" zOrder="7" locked="false" isInGroup="90">
+          <controlProperties>
+            <href>bulk-error-1%26bm%3Bbulk-error-1.bmml%26bm%3Bbulk-error-1.bmml%26bm%3Bbulk-error-1.bmml</href>
+            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22427%2C223%2C559%2C247%22%20href%3D%22bulk-error-1.bmml%22%20alt%3D%22bulk-error-1%22%20id%3D%2211%22/%3E</map>
+          </controlProperties>
           <groupChildrenDescriptors>
             <control controlID="0" controlTypeID="com.balsamiq.mockups::Icon" x="0" y="0" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="0" locked="false" isInGroup="11">
               <controlProperties>
@@ -202,8 +203,6 @@
             </control>
             <control controlID="1" controlTypeID="com.balsamiq.mockups::Label" x="34" y="1" w="-1" h="-1" measuredW="98" measuredH="21" zOrder="1" locked="false" isInGroup="11">
               <controlProperties>
-                <href>bulk-error-1%26bm%3Bbulk-error-1.bmml%26bm%3Bbulk-error-1.bmml%26bm%3Bbulk-error-1.bmml</href>
-                <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22461%2C224%2C559%2C245%22%20href%3D%22bulk-error-1.bmml%22%20alt%3D%22bulk-error-1%22%20id%3D%221%22/%3E</map>
                 <text>Something_Else</text>
               </controlProperties>
             </control>

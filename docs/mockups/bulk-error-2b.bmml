@@ -40,7 +40,7 @@
     </control>
     <control controlID="23" controlTypeID="com.balsamiq.mockups::Canvas" x="359" y="191" w="480" h="561" measuredW="100" measuredH="70" zOrder="2" locked="true" isInGroup="-1"/>
     <control controlID="24" controlTypeID="com.balsamiq.mockups::Canvas" x="858" y="191" w="480" h="561" measuredW="100" measuredH="70" zOrder="5" locked="true" isInGroup="-1"/>
-    <control controlID="26" controlTypeID="com.balsamiq.mockups::SubTitle" x="372" y="205" w="-1" h="-1" measuredW="153" measuredH="33" zOrder="6" locked="true" isInGroup="-1">
+    <control controlID="26" controlTypeID="com.balsamiq.mockups::SubTitle" x="372" y="205" w="-1" h="-1" measuredW="153" measuredH="33" zOrder="6" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Import%20Events</text>
       </controlProperties>
@@ -72,79 +72,88 @@
         <text>State%20%3A</text>
       </controlProperties>
     </control>
-    <control controlID="66" controlTypeID="com.balsamiq.mockups::Label" x="523" y="263" w="-1" h="-1" measuredW="105" measuredH="21" zOrder="11" locked="false" isInGroup="-1">
+    <control controlID="72" controlTypeID="com.balsamiq.mockups::Label" x="410" y="438" w="-1" h="-1" measuredW="76" measuredH="21" zOrder="11" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>Save%20Our%20Shores</text>
+        <text>Events%20File%20%3A</text>
       </controlProperties>
     </control>
-    <control controlID="67" controlTypeID="com.balsamiq.mockups::Label" x="523" y="306" w="-1" h="-1" measuredW="91" measuredH="21" zOrder="12" locked="false" isInGroup="-1">
+    <control controlID="73" controlTypeID="com.balsamiq.mockups::TextInput" x="523" y="438" w="202" h="-1" measuredW="159" measuredH="27" zOrder="12" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>Beach%20Cleanup</text>
+        <text>C%3A%5CDocs%5CSOS_Beach_Cleanup_Table_Raw</text>
       </controlProperties>
     </control>
-    <control controlID="68" controlTypeID="com.balsamiq.mockups::Label" x="523" y="350" w="-1" h="-1" measuredW="176" measuredH="21" zOrder="13" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>SOS%202011-2012%20Cleanup%20Data</text>
-      </controlProperties>
-    </control>
-    <control controlID="69" controlTypeID="com.balsamiq.mockups::Label" x="523" y="396" w="-1" h="-1" measuredW="58" measuredH="21" zOrder="14" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>California</text>
-      </controlProperties>
-    </control>
-    <control controlID="74" controlTypeID="com.balsamiq.mockups::Button" x="731" y="439" w="85" h="27" measuredW="76" measuredH="27" zOrder="15" locked="false" isInGroup="-1">
+    <control controlID="74" controlTypeID="com.balsamiq.mockups::Button" x="731" y="439" w="85" h="27" measuredW="76" measuredH="27" zOrder="13" locked="false" isInGroup="-1">
       <controlProperties>
         <href>bulk-event-7a%26bm%3Bbulk-event-7a.bmml%26bm%3Bbulk-event-7a.bmml%26bm%3Bbulk-event-7a.bmml</href>
         <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22400%2C424%2C485%2C451%22%20href%3D%22bulk-event-7a.bmml%22%20alt%3D%22bulk-event-7a%22%20id%3D%2274%22/%3E</map>
         <text>Browse...</text>
       </controlProperties>
     </control>
-    <control controlID="75" controlTypeID="com.balsamiq.mockups::Label" x="410" y="439" w="-1" h="-1" measuredW="76" measuredH="21" zOrder="16" locked="false" isInGroup="-1">
+    <control controlID="75" controlTypeID="com.balsamiq.mockups::Button" x="707" y="681" w="109" h="36" measuredW="61" measuredH="27" zOrder="14" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>Events%20File%20%3A</text>
-      </controlProperties>
-    </control>
-    <control controlID="76" controlTypeID="com.balsamiq.mockups::TextInput" x="523" y="439" w="204" h="-1" measuredW="232" measuredH="27" zOrder="17" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>C%3A%5CDocs%5CSOS_Beach_Cleanup_Table</text>
-      </controlProperties>
-    </control>
-    <control controlID="77" controlTypeID="com.balsamiq.mockups::Button" x="707" y="681" w="109" h="36" measuredW="61" measuredH="27" zOrder="18" locked="false" isInGroup="-1">
-      <controlProperties>
-        <href>bulk-event-8%26bm%3Bbulk-event-8.bmml%26bm%3Bbulk-event-8.bmml%26bm%3Bbulk-event-8.bmml</href>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22376%2C666%2C485%2C702%22%20href%3D%22bulk-event-8.bmml%22%20alt%3D%22bulk-event-8%22%20id%3D%2277%22/%3E</map>
+        <state>disabled</state>
         <text>Import</text>
       </controlProperties>
     </control>
-    <control controlID="78" controlTypeID="com.balsamiq.mockups::Button" x="578" y="681" w="114" h="36" measuredW="105" measuredH="27" zOrder="19" locked="false" isInGroup="-1">
+    <control controlID="76" controlTypeID="com.balsamiq.mockups::Button" x="578" y="681" w="114" h="36" measuredW="105" measuredH="27" zOrder="15" locked="false" isInGroup="-1">
       <controlProperties>
         <href>data-location-data%26bm%3Bdata-location-data.bmml%26bm%3Bdata-location-data.bmml%26bm%3Bdata-location-data.bmml</href>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22247%2C666%2C361%2C702%22%20href%3D%22data-location-data.bmml%22%20alt%3D%22data-location-data%22%20id%3D%2278%22/%3E</map>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22247%2C666%2C361%2C702%22%20href%3D%22data-location-data.bmml%22%20alt%3D%22data-location-data%22%20id%3D%2276%22/%3E</map>
         <text>Cancel%20Import</text>
       </controlProperties>
     </control>
-    <control controlID="79" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="306" w="204" h="-1" measuredW="117" measuredH="23" zOrder="20" locked="false" isInGroup="-1">
+    <control controlID="77" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="306" w="204" h="-1" measuredW="117" measuredH="23" zOrder="16" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Beach%20Cleanup</text>
       </controlProperties>
     </control>
-    <control controlID="80" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="263" w="204" h="-1" measuredW="131" measuredH="23" zOrder="21" locked="false" isInGroup="-1">
+    <control controlID="78" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="263" w="204" h="-1" measuredW="131" measuredH="23" zOrder="17" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Save%20Our%20Shores</text>
       </controlProperties>
     </control>
-    <control controlID="81" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="350" w="204" h="-1" measuredW="202" measuredH="23" zOrder="22" locked="false" isInGroup="-1">
+    <control controlID="79" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="350" w="204" h="-1" measuredW="202" measuredH="23" zOrder="18" locked="false" isInGroup="-1">
       <controlProperties>
         <href>bulk-event-6%26bm%3Bbulk-event-6.bmml%26bm%3Bbulk-event-6.bmml%26bm%3Bbulk-event-6.bmml</href>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22192%2C335%2C396%2C358%22%20href%3D%22bulk-event-6.bmml%22%20alt%3D%22bulk-event-6%22%20id%3D%2281%22/%3E</map>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22192%2C335%2C396%2C358%22%20href%3D%22bulk-event-6.bmml%22%20alt%3D%22bulk-event-6%22%20id%3D%2279%22/%3E</map>
         <text>SOS%202011-2012%20Cleanup%20Data</text>
       </controlProperties>
     </control>
-    <control controlID="82" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="396" w="204" h="-1" measuredW="84" measuredH="23" zOrder="23" locked="false" isInGroup="-1">
+    <control controlID="80" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="396" w="204" h="-1" measuredW="84" measuredH="23" zOrder="19" locked="false" isInGroup="-1">
       <controlProperties>
         <href>bulk-event-6b%26bm%3Bbulk-event-6b.bmml%26bm%3Bbulk-event-6b.bmml%26bm%3Bbulk-event-6b.bmml</href>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22192%2C381%2C396%2C404%22%20href%3D%22bulk-event-6b.bmml%22%20alt%3D%22bulk-event-6b%22%20id%3D%2282%22/%3E</map>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22192%2C381%2C396%2C404%22%20href%3D%22bulk-event-6b.bmml%22%20alt%3D%22bulk-event-6b%22%20id%3D%2280%22/%3E</map>
         <text>California</text>
+      </controlProperties>
+    </control>
+    <control controlID="81" controlTypeID="com.balsamiq.mockups::SubTitle" x="887" y="205" w="-1" h="-1" measuredW="221" measuredH="33" zOrder="20" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Error%20Importing%20Data</text>
+      </controlProperties>
+    </control>
+    <control controlID="82" controlTypeID="com.balsamiq.mockups::Label" x="899" y="253" w="-1" h="-1" measuredW="316" measuredH="21" zOrder="21" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Error%3A%20Number%20Field%20does%20not%20contain%20number%20value%20%282%29</text>
+      </controlProperties>
+    </control>
+    <control controlID="83" controlTypeID="com.balsamiq.mockups::Label" x="935" y="274" w="-1" h="-1" measuredW="245" measuredH="21" zOrder="22" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Row%204%3A%20Number%20expected%2C%20received%20%27five%27</text>
+      </controlProperties>
+    </control>
+    <control controlID="89" controlTypeID="com.balsamiq.mockups::Label" x="935" y="295" w="-1" h="-1" measuredW="274" measuredH="21" zOrder="23" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Row%209%3A%20Number%20expected%2C%20received%20%27forty-two%27</text>
+      </controlProperties>
+    </control>
+    <control controlID="90" controlTypeID="com.balsamiq.mockups::Label" x="899" y="316" w="-1" h="-1" measuredW="313" measuredH="21" zOrder="24" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Error%3A%20Boolean%20Field%20does%20not%20contain%20boolean%20value%20%281%29</text>
+      </controlProperties>
+    </control>
+    <control controlID="91" controlTypeID="com.balsamiq.mockups::Label" x="935" y="337" w="-1" h="-1" measuredW="261" measuredH="21" zOrder="25" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Row%207%3A%20Boolean%20expected%2C%20received%20%27maybe%27</text>
       </controlProperties>
     </control>
   </controls>

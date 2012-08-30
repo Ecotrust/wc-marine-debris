@@ -97,18 +97,18 @@
         <text>Events%20File%20%3A</text>
       </controlProperties>
     </control>
-    <control controlID="77" controlTypeID="com.balsamiq.mockups::Image" x="873" y="238" w="449" h="240" measuredW="607" measuredH="457" zOrder="17" locked="false" isInGroup="-1">
+    <control controlID="77" controlTypeID="com.balsamiq.mockups::Image" x="873" y="236" w="449" h="240" measuredW="607" measuredH="457" zOrder="28" locked="false" isInGroup="-1">
       <controlProperties>
         <src>./assets/bing.png</src>
         <text/>
       </controlProperties>
     </control>
-    <control controlID="87" controlTypeID="com.balsamiq.mockups::Label" x="523" y="439" w="-1" h="-1" measuredW="224" measuredH="21" zOrder="28" locked="false" isInGroup="-1">
+    <control controlID="87" controlTypeID="com.balsamiq.mockups::Label" x="523" y="439" w="-1" h="-1" measuredW="224" measuredH="21" zOrder="16" locked="false" isInGroup="-1">
       <controlProperties>
         <text>C%3A%5CDocs%5CSOS_Beach_Cleanup_Table</text>
       </controlProperties>
     </control>
-    <control controlID="88" controlTypeID="com.balsamiq.mockups::Button" x="1078" y="682" w="109" h="36" measuredW="64" measuredH="27" zOrder="16" locked="false" isInGroup="-1">
+    <control controlID="88" controlTypeID="com.balsamiq.mockups::Button" x="1078" y="682" w="109" h="36" measuredW="64" measuredH="27" zOrder="17" locked="false" isInGroup="-1">
       <controlProperties>
         <href>bulk-event-7c%26bm%3Bbulk-event-7c.bmml%26bm%3Bbulk-event-7c.bmml%26bm%3Bbulk-event-7c.bmml</href>
         <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22747%2C667%2C856%2C703%22%20href%3D%22bulk-event-7c.bmml%22%20alt%3D%22bulk-event-7c%22%20id%3D%2288%22/%3E</map>
@@ -188,48 +188,103 @@
         <text>Cancel%20Import</text>
       </controlProperties>
     </control>
-    <control controlID="105" controlTypeID="com.balsamiq.mockups::Icon" x="724" y="197" w="-1" h="-1" measuredW="32" measuredH="32" zOrder="36" locked="false" isInGroup="-1">
-      <controlProperties>
-        <borderStyle>none</borderStyle>
-        <color>16777215</color>
-        <icon>SquaredPlusIcon%7Cmedium</icon>
-      </controlProperties>
-    </control>
-    <control controlID="106" controlTypeID="com.balsamiq.mockups::Icon" x="724" y="229" w="-1" h="-1" measuredW="32" measuredH="32" zOrder="37" locked="false" isInGroup="-1">
-      <controlProperties>
-        <color>16777215</color>
-        <icon>SquaredMinusIcon%7Cmedium</icon>
-      </controlProperties>
-    </control>
-    <control controlID="111" controlTypeID="com.balsamiq.mockups::TitleWindow" x="503" y="155" w="688" h="514" measuredW="450" measuredH="400" zOrder="31" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Update%20Location%20-%2021st%20Ave%20County%20Park</text>
-      </controlProperties>
-    </control>
-    <control controlID="112" controlTypeID="com.balsamiq.mockups::Image" x="707" y="180" w="480" h="464" measuredW="480" measuredH="465" zOrder="32" locked="false" isInGroup="-1">
-      <controlProperties>
-        <href>bulk-event-8b%26bm%3Bbulk-event-8b.bmml%26bm%3Bbulk-event-8b.bmml%26bm%3Bbulk-event-8b.bmml</href>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22376%2C165%2C856%2C629%22%20href%3D%22bulk-event-8b.bmml%22%20alt%3D%22bulk-event-8b%22%20id%3D%22112%22/%3E</map>
-        <src>./assets/bing_santa_cruz_480x465.png</src>
-        <text/>
-      </controlProperties>
-    </control>
-    <control controlID="113" controlTypeID="com.balsamiq.mockups::Paragraph" x="511" y="197" w="200" h="72" measuredW="200" measuredH="140" zOrder="33" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Zoom%20in%20to%20find%20your%20location.%0AYou%20can%20either%20select%20an%20existing%0Alocation%2C%20or%20create%20a%20new%0Aone%20with%20the%20button%20below.</text>
-      </controlProperties>
-    </control>
-    <control controlID="114" controlTypeID="com.balsamiq.mockups::Button" x="523" y="269" w="159" h="42" measuredW="146" measuredH="27" zOrder="34" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Create%20New%20Location</text>
-      </controlProperties>
-    </control>
-    <control controlID="115" controlTypeID="com.balsamiq.mockups::Button" x="523" y="321" w="159" h="41" measuredW="64" measuredH="27" zOrder="35" locked="false" isInGroup="-1">
-      <controlProperties>
-        <href>bulk-event-8%26bm%3Bbulk-event-8.bmml%26bm%3Bbulk-event-8.bmml%26bm%3Bbulk-event-8.bmml</href>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22192%2C306%2C351%2C347%22%20href%3D%22bulk-event-8.bmml%22%20alt%3D%22bulk-event-8%22%20id%3D%22115%22/%3E</map>
-        <text>Cancel</text>
-      </controlProperties>
+    <control controlID="102" controlTypeID="__group__" x="503" y="155" w="688" h="514" measuredW="688" measuredH="514" zOrder="31" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::TitleWindow" x="0" y="0" w="688" h="514" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="102">
+          <controlProperties>
+            <text>Update%20Location%20-%2021st%20Ave%20County%20Park</text>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::Image" x="204" y="25" w="480" h="464" measuredW="693" measuredH="534" zOrder="1" locked="false" isInGroup="102">
+          <controlProperties>
+            <src>./assets/bing_2st_ave_prk_mark.png</src>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="2" controlTypeID="com.balsamiq.mockups::Paragraph" x="8" y="42" w="181" h="35" measuredW="200" measuredH="140" zOrder="2" locked="false" isInGroup="102">
+          <controlProperties>
+            <text>Enter%20the%20data%20for%20this%0Anew%20location.</text>
+          </controlProperties>
+        </control>
+        <control controlID="4" controlTypeID="com.balsamiq.mockups::Button" x="23" y="438" w="159" h="41" measuredW="64" measuredH="27" zOrder="3" locked="false" isInGroup="102">
+          <controlProperties>
+            <href>bulk-event-8%26bm%3Bbulk-event-8.bmml%26bm%3Bbulk-event-8.bmml%26bm%3Bbulk-event-8.bmml</href>
+            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22195%2C578%2C354%2C619%22%20href%3D%22bulk-event-8.bmml%22%20alt%3D%22bulk-event-8%22%20id%3D%224%22/%3E</map>
+            <text>Cancel</text>
+          </controlProperties>
+        </control>
+        <control controlID="5" controlTypeID="com.balsamiq.mockups::Button" x="23" y="384" w="159" h="41" measuredW="117" measuredH="27" zOrder="4" locked="false" isInGroup="102">
+          <controlProperties>
+            <href>bulk-event-8d%26bm%3Bbulk-event-8d.bmml%26bm%3Bbulk-event-8d.bmml%26bm%3Bbulk-event-8d.bmml</href>
+            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22195%2C524%2C354%2C565%22%20href%3D%22bulk-event-8d.bmml%22%20alt%3D%22bulk-event-8d%22%20id%3D%225%22/%3E</map>
+            <state>up</state>
+            <text>Create%20Location</text>
+          </controlProperties>
+        </control>
+        <control controlID="6" controlTypeID="com.balsamiq.mockups::Label" x="12" y="80" w="-1" h="-1" measuredW="71" measuredH="21" zOrder="5" locked="false" isInGroup="102">
+          <controlProperties>
+            <text>Site%20Name%3A</text>
+          </controlProperties>
+        </control>
+        <control controlID="7" controlTypeID="com.balsamiq.mockups::TextInput" x="15" y="105" w="174" h="-1" measuredW="140" measuredH="27" zOrder="6" locked="false" isInGroup="102">
+          <controlProperties>
+            <text>21st%20Ave%20County%20Park</text>
+          </controlProperties>
+        </control>
+        <control controlID="8" controlTypeID="com.balsamiq.mockups::Label" x="15" y="141" w="-1" h="-1" measuredW="46" measuredH="21" zOrder="7" locked="false" isInGroup="102">
+          <controlProperties>
+            <text>County</text>
+          </controlProperties>
+        </control>
+        <control controlID="9" controlTypeID="com.balsamiq.mockups::TextInput" x="18" y="166" w="174" h="-1" measuredW="77" measuredH="27" zOrder="8" locked="false" isInGroup="102">
+          <controlProperties>
+            <text>Santa%20Cruz</text>
+          </controlProperties>
+        </control>
+        <control controlID="10" controlTypeID="com.balsamiq.mockups::Label" x="15" y="202" w="-1" h="-1" measuredW="38" measuredH="21" zOrder="9" locked="false" isInGroup="102">
+          <controlProperties>
+            <text>State</text>
+          </controlProperties>
+        </control>
+        <control controlID="11" controlTypeID="com.balsamiq.mockups::TextInput" x="18" y="227" w="174" h="-1" measuredW="66" measuredH="27" zOrder="10" locked="false" isInGroup="102">
+          <controlProperties>
+            <text>California</text>
+          </controlProperties>
+        </control>
+        <control controlID="12" controlTypeID="com.balsamiq.mockups::Label" x="15" y="265" w="-1" h="-1" measuredW="52" measuredH="21" zOrder="11" locked="false" isInGroup="102">
+          <controlProperties>
+            <text>Latitude</text>
+          </controlProperties>
+        </control>
+        <control controlID="13" controlTypeID="com.balsamiq.mockups::TextInput" x="18" y="290" w="174" h="-1" measuredW="56" measuredH="27" zOrder="12" locked="false" isInGroup="102">
+          <controlProperties>
+            <text>36.960</text>
+          </controlProperties>
+        </control>
+        <control controlID="14" controlTypeID="com.balsamiq.mockups::Label" x="15" y="322" w="-1" h="-1" measuredW="60" measuredH="21" zOrder="13" locked="false" isInGroup="102">
+          <controlProperties>
+            <text>Longitude</text>
+          </controlProperties>
+        </control>
+        <control controlID="15" controlTypeID="com.balsamiq.mockups::TextInput" x="18" y="347" w="174" h="-1" measuredW="65" measuredH="27" zOrder="14" locked="false" isInGroup="102">
+          <controlProperties>
+            <text>-121.985</text>
+          </controlProperties>
+        </control>
+        <control controlID="16" controlTypeID="com.balsamiq.mockups::Icon" x="221" y="42" w="-1" h="-1" measuredW="32" measuredH="32" zOrder="15" locked="false" isInGroup="102">
+          <controlProperties>
+            <borderStyle>none</borderStyle>
+            <color>16777215</color>
+            <icon>SquaredPlusIcon%7Cmedium</icon>
+          </controlProperties>
+        </control>
+        <control controlID="17" controlTypeID="com.balsamiq.mockups::Icon" x="221" y="74" w="-1" h="-1" measuredW="32" measuredH="32" zOrder="16" locked="false" isInGroup="102">
+          <controlProperties>
+            <color>16777215</color>
+            <icon>SquaredMinusIcon%7Cmedium</icon>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
     </control>
   </controls>
 </mockup>

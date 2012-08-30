@@ -1,0 +1,171 @@
+<mockup version="1.0" skin="sketch" measuredW="1364" measuredH="809" mockupW="1033" mockupH="794">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="331" y="15" w="1033" h="794" measuredW="450" measuredH="400" zOrder="0" locked="true" isInGroup="-1">
+      <controlProperties>
+        <text>West%20Coast%20Governer%27s%20Association%20Marine%20Debris%20Database%0Ahttp%3A//www.westcoastoceans.gov/debris</text>
+      </controlProperties>
+    </control>
+    <control controlID="9" controlTypeID="com.balsamiq.mockups::ButtonBar" x="1078" y="111" w="260" h="36" measuredW="255" measuredH="36" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <selectedIndex>0</selectedIndex>
+        <size>20</size>
+        <text>Data%2C%20News%2C%20Partners</text>
+      </controlProperties>
+    </control>
+    <control controlID="20" controlTypeID="__group__" x="359" y="100" w="653" h="76" measuredW="653" measuredH="76" zOrder="4" locked="true" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::Canvas" x="0" y="0" w="653" h="69" measuredW="100" measuredH="70" zOrder="0" locked="false" isInGroup="20">
+          <controlProperties>
+            <backgroundAlpha>0.25</backgroundAlpha>
+            <borderStyle>none</borderStyle>
+            <color>9684093</color>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::Title" x="11" y="4" w="191" h="-1" measuredW="191" measuredH="72" zOrder="1" locked="false" isInGroup="20">
+          <controlProperties>
+            <color>16777215</color>
+            <size>60</size>
+            <text>WCGA</text>
+          </controlProperties>
+        </control>
+        <control controlID="2" controlTypeID="com.balsamiq.mockups::Paragraph" x="206" y="15" w="432" h="39" measuredW="200" measuredH="140" zOrder="2" locked="false" isInGroup="20">
+          <controlProperties>
+            <align>center</align>
+            <color>16777215</color>
+            <size>40</size>
+            <text>Marine%20Debris%20Database</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="23" controlTypeID="com.balsamiq.mockups::Canvas" x="359" y="191" w="480" h="561" measuredW="100" measuredH="70" zOrder="2" locked="true" isInGroup="-1"/>
+    <control controlID="24" controlTypeID="com.balsamiq.mockups::Canvas" x="858" y="191" w="480" h="561" measuredW="100" measuredH="70" zOrder="5" locked="true" isInGroup="-1"/>
+    <control controlID="26" controlTypeID="com.balsamiq.mockups::SubTitle" x="372" y="205" w="-1" h="-1" measuredW="153" measuredH="33" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Import%20Events</text>
+      </controlProperties>
+    </control>
+    <control controlID="38" controlTypeID="com.balsamiq.mockups::Image" x="335" y="88" w="1025" h="131" measuredW="1025" measuredH="131" zOrder="1" locked="true" isInGroup="-1">
+      <controlProperties>
+        <crop>0%2C278%2C1000%2C361</crop>
+        <src>./assets/ocean.jpg</src>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="43" controlTypeID="com.balsamiq.mockups::Label" x="410" y="263" w="-1" h="-1" measuredW="83" measuredH="21" zOrder="7" locked="true" isInGroup="-1">
+      <controlProperties>
+        <text>Organization%20%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="44" controlTypeID="com.balsamiq.mockups::Label" x="410" y="306" w="-1" h="-1" measuredW="56" measuredH="21" zOrder="9" locked="true" isInGroup="-1">
+      <controlProperties>
+        <text>Project%20%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="48" controlTypeID="com.balsamiq.mockups::Label" x="410" y="350" w="-1" h="-1" measuredW="80" measuredH="21" zOrder="10" locked="true" isInGroup="-1">
+      <controlProperties>
+        <text>Data%20Sheet%20%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="55" controlTypeID="com.balsamiq.mockups::Label" x="410" y="396" w="-1" h="-1" measuredW="46" measuredH="21" zOrder="8" locked="true" isInGroup="-1">
+      <controlProperties>
+        <text>State%20%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="72" controlTypeID="com.balsamiq.mockups::Label" x="410" y="438" w="-1" h="-1" measuredW="76" measuredH="21" zOrder="11" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Events%20File%20%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="73" controlTypeID="com.balsamiq.mockups::TextInput" x="523" y="438" w="202" h="-1" measuredW="159" measuredH="27" zOrder="12" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>C%3A%5CDocs%5CSomething_Else</text>
+      </controlProperties>
+    </control>
+    <control controlID="74" controlTypeID="com.balsamiq.mockups::Button" x="731" y="439" w="85" h="27" measuredW="76" measuredH="27" zOrder="13" locked="false" isInGroup="-1">
+      <controlProperties>
+        <href>bulk-event-7a%26bm%3Bbulk-event-7a.bmml%26bm%3Bbulk-event-7a.bmml%26bm%3Bbulk-event-7a.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22400%2C424%2C485%2C451%22%20href%3D%22bulk-event-7a.bmml%22%20alt%3D%22bulk-event-7a%22%20id%3D%2274%22/%3E</map>
+        <text>Browse...</text>
+      </controlProperties>
+    </control>
+    <control controlID="75" controlTypeID="com.balsamiq.mockups::Button" x="707" y="681" w="109" h="36" measuredW="61" measuredH="27" zOrder="14" locked="false" isInGroup="-1">
+      <controlProperties>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22376%2C666%2C485%2C702%22%20href%3D%22bulk-event-8.bmml%22%20alt%3D%22bulk-event-8%22%20id%3D%2275%22/%3E</map>
+        <state>disabled</state>
+        <text>Import</text>
+      </controlProperties>
+    </control>
+    <control controlID="76" controlTypeID="com.balsamiq.mockups::Button" x="578" y="681" w="114" h="36" measuredW="105" measuredH="27" zOrder="15" locked="false" isInGroup="-1">
+      <controlProperties>
+        <href>data-location-data%26bm%3Bdata-location-data.bmml%26bm%3Bdata-location-data.bmml%26bm%3Bdata-location-data.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22247%2C666%2C361%2C702%22%20href%3D%22data-location-data.bmml%22%20alt%3D%22data-location-data%22%20id%3D%2276%22/%3E</map>
+        <text>Cancel%20Import</text>
+      </controlProperties>
+    </control>
+    <control controlID="77" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="306" w="204" h="-1" measuredW="117" measuredH="23" zOrder="16" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Beach%20Cleanup</text>
+      </controlProperties>
+    </control>
+    <control controlID="78" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="263" w="204" h="-1" measuredW="131" measuredH="23" zOrder="17" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Save%20Our%20Shores</text>
+      </controlProperties>
+    </control>
+    <control controlID="79" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="350" w="204" h="-1" measuredW="202" measuredH="23" zOrder="18" locked="false" isInGroup="-1">
+      <controlProperties>
+        <href>bulk-event-6%26bm%3Bbulk-event-6.bmml%26bm%3Bbulk-event-6.bmml%26bm%3Bbulk-event-6.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22192%2C335%2C396%2C358%22%20href%3D%22bulk-event-6.bmml%22%20alt%3D%22bulk-event-6%22%20id%3D%2279%22/%3E</map>
+        <text>SOS%202011-2012%20Cleanup%20Data</text>
+      </controlProperties>
+    </control>
+    <control controlID="80" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="396" w="204" h="-1" measuredW="84" measuredH="23" zOrder="19" locked="false" isInGroup="-1">
+      <controlProperties>
+        <href>bulk-event-6b%26bm%3Bbulk-event-6b.bmml%26bm%3Bbulk-event-6b.bmml%26bm%3Bbulk-event-6b.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22192%2C381%2C396%2C404%22%20href%3D%22bulk-event-6b.bmml%22%20alt%3D%22bulk-event-6b%22%20id%3D%2280%22/%3E</map>
+        <text>California</text>
+      </controlProperties>
+    </control>
+    <control controlID="81" controlTypeID="com.balsamiq.mockups::SubTitle" x="887" y="205" w="-1" h="-1" measuredW="221" measuredH="33" zOrder="20" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Error%20Importing%20Data</text>
+      </controlProperties>
+    </control>
+    <control controlID="82" controlTypeID="com.balsamiq.mockups::Label" x="899" y="253" w="-1" h="-1" measuredW="254" measuredH="21" zOrder="21" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Error%3A%20Data%20does%20not%20match%20datasheet%20%2865%29</text>
+      </controlProperties>
+    </control>
+    <control controlID="83" controlTypeID="com.balsamiq.mockups::Label" x="935" y="274" w="-1" h="-1" measuredW="188" measuredH="21" zOrder="22" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Column%20missing%3A%20%23%20of%20Volunteers</text>
+      </controlProperties>
+    </control>
+    <control controlID="84" controlTypeID="com.balsamiq.mockups::Label" x="935" y="295" w="-1" h="-1" measuredW="173" measuredH="21" zOrder="23" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Column%20missing%3A%20Aluminum%20Foil</text>
+      </controlProperties>
+    </control>
+    <control controlID="85" controlTypeID="com.balsamiq.mockups::Label" x="935" y="316" w="-1" h="-1" measuredW="159" measuredH="21" zOrder="24" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Column%20missing%3A%20Appliances</text>
+      </controlProperties>
+    </control>
+    <control controlID="86" controlTypeID="com.balsamiq.mockups::Label" x="935" y="337" w="188" h="21" measuredW="196" measuredH="21" zOrder="25" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Column%20missing%3A%20Balloons%20or%20ribbon</text>
+      </controlProperties>
+    </control>
+    <control controlID="87" controlTypeID="com.balsamiq.mockups::Label" x="935" y="360" w="-1" h="-1" measuredW="48" measuredH="21" zOrder="26" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>More%20...</text>
+      </controlProperties>
+    </control>
+    <control controlID="88" controlTypeID="com.balsamiq.mockups::Icon" x="989" y="362" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="27" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>DownFillTriangleIcon%7Cxsmall</icon>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

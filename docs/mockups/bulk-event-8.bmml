@@ -117,7 +117,7 @@
         <text/>
       </controlProperties>
     </control>
-    <control controlID="79" controlTypeID="com.balsamiq.mockups::DataGrid" x="873" y="497" w="449" h="169" measuredW="392" measuredH="175" zOrder="19" locked="false" isInGroup="-1">
+    <control controlID="79" controlTypeID="com.balsamiq.mockups::DataGrid" x="873" y="497" w="449" h="169" measuredW="393" measuredH="175" zOrder="19" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Site%20Name%2C%20Lat%2C%20Lon%2C%20%20%0ATwin%20Lakes%20State%20Beach%2C%2036.962%2C%20-121.998%2C%20%20---------------------------%0ACowell%20Beach%2C%2036.962%2C%20-122.024%2C%20%0AHidden%20Beach%2C%2036.958%2C%20-121.889%2C%20%20%0ASeacliffs%20State%20Beach%2C%2036.972%2C%20-121.914%2C%20%0A21st%20Ave%20County%20Park%2C%20%2C%20%2C%20</text>
       </controlProperties>

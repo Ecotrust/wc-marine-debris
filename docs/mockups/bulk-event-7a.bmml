@@ -92,107 +92,33 @@
         <text>California</text>
       </controlProperties>
     </control>
-    <control controlID="70" controlTypeID="com.balsamiq.mockups::Button" x="708" y="205" w="109" h="43" measuredW="90" measuredH="27" zOrder="15" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Edit%20Events</text>
-      </controlProperties>
-    </control>
-    <control controlID="71" controlTypeID="com.balsamiq.mockups::Button" x="656" y="432" w="85" h="27" measuredW="76" measuredH="27" zOrder="16" locked="false" isInGroup="-1">
+    <control controlID="71" controlTypeID="com.balsamiq.mockups::Button" x="656" y="432" w="85" h="27" measuredW="76" measuredH="27" zOrder="15" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Browse...</text>
       </controlProperties>
     </control>
-    <control controlID="72" controlTypeID="com.balsamiq.mockups::Label" x="410" y="432" w="-1" h="-1" measuredW="76" measuredH="21" zOrder="17" locked="false" isInGroup="-1">
+    <control controlID="72" controlTypeID="com.balsamiq.mockups::Label" x="410" y="432" w="-1" h="-1" measuredW="76" measuredH="21" zOrder="16" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Events%20File%20%3A</text>
       </controlProperties>
     </control>
-    <control controlID="73" controlTypeID="com.balsamiq.mockups::TextInput" x="499" y="432" w="157" h="-1" measuredW="79" measuredH="27" zOrder="18" locked="false" isInGroup="-1">
+    <control controlID="73" controlTypeID="com.balsamiq.mockups::TextInput" x="499" y="432" w="157" h="-1" measuredW="79" measuredH="27" zOrder="17" locked="false" isInGroup="-1">
       <controlProperties>
         <text/>
       </controlProperties>
     </control>
-    <control controlID="90" controlTypeID="__group__" x="516" y="147" w="626" h="400" measuredW="626" measuredH="400" zOrder="19" locked="false" isInGroup="-1">
+    <control controlID="90" controlTypeID="__group__" x="516" y="153" w="626" h="400" measuredW="626" measuredH="400" zOrder="18" locked="false" isInGroup="-1">
+      <controlProperties/>
       <groupChildrenDescriptors>
-        <control controlID="0" controlTypeID="__group__" x="0" y="0" w="626" h="400" measuredW="626" measuredH="400" zOrder="0" locked="false" isInGroup="90">
-          <groupChildrenDescriptors>
-            <control controlID="0" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="0" y="0" w="626" h="400" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="0">
-              <controlProperties>
-                <text>File%20Upload%0A%20%20%20%20%20%20%20%20%3E%20%20Computer%20%20%3E%20%20C%3A%5C%20%20%3E%20%20Docs%20%20%3E</text>
-              </controlProperties>
-            </control>
-            <control controlID="1" controlTypeID="com.balsamiq.mockups::Tree" x="17" y="79" w="263" h="242" measuredW="300" measuredH="225" zOrder="1" locked="false" isInGroup="0">
-              <controlProperties>
-                <borderStyle>none</borderStyle>
-                <text>F%20Computer%0A.F%20C%3A%5C%0A..F%20Docs%0A..f%20Program%20Files%0A..f%20Windows%0A.f%20D%3A%5C</text>
-              </controlProperties>
-            </control>
-            <control controlID="2" controlTypeID="com.balsamiq.mockups::HSplitter" x="209" y="75" w="-1" h="221" measuredW="12" measuredH="100" zOrder="2" locked="false" isInGroup="0"/>
-            <control controlID="3" controlTypeID="com.balsamiq.mockups::Icon" x="166" y="32" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="3" locked="false" isInGroup="0">
-              <controlProperties>
-                <icon>FolderIcon%7Cxsmall</icon>
-              </controlProperties>
-            </control>
-            <control controlID="4" controlTypeID="com.balsamiq.mockups::Icon" x="188" y="34" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="4" locked="false" isInGroup="0">
-              <controlProperties>
-                <icon>RightFillTriangleIcon%7Cxsmall</icon>
-              </controlProperties>
-            </control>
-            <control controlID="5" controlTypeID="com.balsamiq.mockups::Icon" x="269" y="34" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="5" locked="false" isInGroup="0">
-              <controlProperties>
-                <icon>RightFillTriangleIcon%7Cxsmall</icon>
-              </controlProperties>
-            </control>
-            <control controlID="6" controlTypeID="com.balsamiq.mockups::Icon" x="314" y="34" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="6" locked="false" isInGroup="0">
-              <controlProperties>
-                <icon>RightFillTriangleIcon%7Cxsmall</icon>
-              </controlProperties>
-            </control>
-            <control controlID="7" controlTypeID="com.balsamiq.mockups::Icon" x="364" y="34" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="7" locked="false" isInGroup="0">
-              <controlProperties>
-                <icon>RightFillTriangleIcon%7Cxsmall</icon>
-              </controlProperties>
-            </control>
-          </groupChildrenDescriptors>
-        </control>
-        <control controlID="2" controlTypeID="com.balsamiq.mockups::Icon" x="242" y="115" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="1" locked="false" isInGroup="90">
-          <controlProperties>
-            <icon>TableIcon%7Csmall</icon>
-          </controlProperties>
-        </control>
-        <control controlID="4" controlTypeID="com.balsamiq.mockups::Label" x="276" y="116" w="-1" h="-1" measuredW="98" measuredH="21" zOrder="3" locked="false" isInGroup="90">
-          <controlProperties>
-            <text>Something_Else</text>
-          </controlProperties>
-        </control>
-        <control controlID="5" controlTypeID="com.balsamiq.mockups::VSplitter" x="0" y="292" w="626" h="-1" measuredW="100" measuredH="12" zOrder="4" locked="false" isInGroup="90"/>
-        <control controlID="6" controlTypeID="com.balsamiq.mockups::Label" x="83" y="314" w="-1" h="-1" measuredW="72" measuredH="21" zOrder="5" locked="false" isInGroup="90">
+        <control controlID="6" controlTypeID="com.balsamiq.mockups::Label" x="83" y="314" w="-1" h="-1" measuredW="72" measuredH="21" zOrder="3" locked="false" isInGroup="90">
           <controlProperties>
             <text>File%20Name%20%3A</text>
           </controlProperties>
         </control>
-        <control controlID="7" controlTypeID="com.balsamiq.mockups::TextInput" x="165" y="313" w="252" h="-1" measuredW="79" measuredH="27" zOrder="6" locked="false" isInGroup="90">
-          <controlProperties>
-            <text/>
-          </controlProperties>
-        </control>
-        <control controlID="8" controlTypeID="com.balsamiq.mockups::Button" x="432" y="311" w="70" h="27" measuredW="54" measuredH="27" zOrder="7" locked="false" isInGroup="90">
-          <controlProperties>
-            <state>disabled</state>
-            <text>Open</text>
-          </controlProperties>
-        </control>
-        <control controlID="9" controlTypeID="com.balsamiq.mockups::Button" x="502" y="311" w="69" h="27" measuredW="64" measuredH="27" zOrder="8" locked="false" isInGroup="90">
-          <controlProperties>
-            <href>bulk-event-7%26bm%3Bbulk-event-7.bmml%26bm%3Bbulk-event-7.bmml%26bm%3Bbulk-event-7.bmml</href>
-            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22687%2C443%2C756%2C470%22%20href%3D%22bulk-event-7.bmml%22%20alt%3D%22bulk-event-7%22%20id%3D%229%22/%3E</map>
-            <text>Cancel</text>
-          </controlProperties>
-        </control>
-        <control controlID="10" controlTypeID="__group__" x="242" y="89" w="206" h="24" measuredW="206" measuredH="24" zOrder="2" locked="false" isInGroup="90">
+        <control controlID="10" controlTypeID="__group__" x="242" y="139" w="240" h="24" measuredW="240" measuredH="24" zOrder="1" locked="false" isInGroup="90">
           <controlProperties>
             <href>bulk-event-7b%26bm%3Bbulk-event-7b.bmml%26bm%3Bbulk-event-7b.bmml%26bm%3Bbulk-event-7b.bmml</href>
-            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22427%2C221%2C633%2C245%22%20href%3D%22bulk-event-7b.bmml%22%20alt%3D%22bulk-event-7b%22%20id%3D%2210%22/%3E</map>
+            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22427%2C277%2C667%2C301%22%20href%3D%22bulk-event-7b.bmml%22%20alt%3D%22bulk-event-7b%22%20id%3D%2210%22/%3E</map>
           </controlProperties>
           <groupChildrenDescriptors>
             <control controlID="0" controlTypeID="com.balsamiq.mockups::Icon" x="0" y="0" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="0" locked="false" isInGroup="10">
@@ -200,9 +126,107 @@
                 <icon>TableIcon%7Csmall</icon>
               </controlProperties>
             </control>
-            <control controlID="1" controlTypeID="com.balsamiq.mockups::Label" x="34" y="0" w="-1" h="-1" measuredW="172" measuredH="21" zOrder="1" locked="false" isInGroup="10">
+            <control controlID="1" controlTypeID="com.balsamiq.mockups::Label" x="34" y="0" w="-1" h="-1" measuredW="206" measuredH="21" zOrder="1" locked="false" isInGroup="10">
+              <controlProperties>
+                <text>SOS_Beach_Cleanup_Table_Raw</text>
+              </controlProperties>
+            </control>
+          </groupChildrenDescriptors>
+        </control>
+        <control controlID="11" controlTypeID="__group__" x="242" y="91" w="132" h="24" measuredW="132" measuredH="24" zOrder="2" locked="false" isInGroup="90">
+          <groupChildrenDescriptors>
+            <control controlID="0" controlTypeID="com.balsamiq.mockups::Icon" x="0" y="0" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="0" locked="false" isInGroup="11">
+              <controlProperties>
+                <icon>TableIcon%7Csmall</icon>
+              </controlProperties>
+            </control>
+            <control controlID="1" controlTypeID="com.balsamiq.mockups::Label" x="34" y="1" w="-1" h="-1" measuredW="98" measuredH="21" zOrder="1" locked="false" isInGroup="11">
+              <controlProperties>
+                <href>bulk-error-1%26bm%3Bbulk-error-1.bmml%26bm%3Bbulk-error-1.bmml%26bm%3Bbulk-error-1.bmml</href>
+                <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22461%2C230%2C559%2C251%22%20href%3D%22bulk-error-1.bmml%22%20alt%3D%22bulk-error-1%22%20id%3D%221%22/%3E</map>
+                <text>Something_Else</text>
+              </controlProperties>
+            </control>
+          </groupChildrenDescriptors>
+        </control>
+        <control controlID="12" controlTypeID="__group__" x="242" y="115" w="206" h="24" measuredW="206" measuredH="24" zOrder="4" locked="false" isInGroup="90">
+          <controlProperties>
+            <href>bulk-event-7b%26bm%3Bbulk-event-7b.bmml%26bm%3Bbulk-event-7b.bmml%26bm%3Bbulk-event-7b.bmml</href>
+            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22427%2C253%2C633%2C277%22%20href%3D%22bulk-event-7b.bmml%22%20alt%3D%22bulk-event-7b%22%20id%3D%2212%22/%3E</map>
+          </controlProperties>
+          <groupChildrenDescriptors>
+            <control controlID="0" controlTypeID="com.balsamiq.mockups::Icon" x="0" y="0" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="0" locked="false" isInGroup="12">
+              <controlProperties>
+                <icon>TableIcon%7Csmall</icon>
+              </controlProperties>
+            </control>
+            <control controlID="1" controlTypeID="com.balsamiq.mockups::Label" x="34" y="0" w="-1" h="-1" measuredW="172" measuredH="21" zOrder="1" locked="false" isInGroup="12">
               <controlProperties>
                 <text>SOS_Beach_Cleanup_Table</text>
+              </controlProperties>
+            </control>
+          </groupChildrenDescriptors>
+        </control>
+        <control controlID="13" controlTypeID="__group__" x="0" y="0" w="626" h="400" measuredW="626" measuredH="400" zOrder="0" locked="true" isInGroup="90">
+          <groupChildrenDescriptors>
+            <control controlID="0" controlTypeID="__group__" x="0" y="0" w="626" h="400" measuredW="626" measuredH="400" zOrder="0" locked="false" isInGroup="13">
+              <groupChildrenDescriptors>
+                <control controlID="0" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="0" y="0" w="626" h="400" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="0">
+                  <controlProperties>
+                    <text>File%20Upload%0A%20%20%20%20%20%20%20%20%3E%20%20Computer%20%20%3E%20%20C%3A%5C%20%20%3E%20%20Docs%20%20%3E</text>
+                  </controlProperties>
+                </control>
+                <control controlID="1" controlTypeID="com.balsamiq.mockups::Tree" x="17" y="79" w="263" h="242" measuredW="300" measuredH="225" zOrder="1" locked="false" isInGroup="0">
+                  <controlProperties>
+                    <borderStyle>none</borderStyle>
+                    <text>F%20Computer%0A.F%20C%3A%5C%0A..F%20Docs%0A..f%20Program%20Files%0A..f%20Windows%0A.f%20D%3A%5C</text>
+                  </controlProperties>
+                </control>
+                <control controlID="2" controlTypeID="com.balsamiq.mockups::HSplitter" x="209" y="75" w="-1" h="221" measuredW="12" measuredH="100" zOrder="2" locked="false" isInGroup="0"/>
+                <control controlID="3" controlTypeID="com.balsamiq.mockups::Icon" x="166" y="32" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="3" locked="false" isInGroup="0">
+                  <controlProperties>
+                    <icon>FolderIcon%7Cxsmall</icon>
+                  </controlProperties>
+                </control>
+                <control controlID="4" controlTypeID="com.balsamiq.mockups::Icon" x="188" y="34" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="4" locked="false" isInGroup="0">
+                  <controlProperties>
+                    <icon>RightFillTriangleIcon%7Cxsmall</icon>
+                  </controlProperties>
+                </control>
+                <control controlID="5" controlTypeID="com.balsamiq.mockups::Icon" x="269" y="34" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="5" locked="false" isInGroup="0">
+                  <controlProperties>
+                    <icon>RightFillTriangleIcon%7Cxsmall</icon>
+                  </controlProperties>
+                </control>
+                <control controlID="6" controlTypeID="com.balsamiq.mockups::Icon" x="314" y="34" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="6" locked="false" isInGroup="0">
+                  <controlProperties>
+                    <icon>RightFillTriangleIcon%7Cxsmall</icon>
+                  </controlProperties>
+                </control>
+                <control controlID="7" controlTypeID="com.balsamiq.mockups::Icon" x="364" y="34" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="7" locked="false" isInGroup="0">
+                  <controlProperties>
+                    <icon>RightFillTriangleIcon%7Cxsmall</icon>
+                  </controlProperties>
+                </control>
+              </groupChildrenDescriptors>
+            </control>
+            <control controlID="1" controlTypeID="com.balsamiq.mockups::VSplitter" x="0" y="292" w="626" h="-1" measuredW="100" measuredH="12" zOrder="1" locked="false" isInGroup="13"/>
+            <control controlID="2" controlTypeID="com.balsamiq.mockups::TextInput" x="165" y="313" w="252" h="-1" measuredW="79" measuredH="27" zOrder="2" locked="false" isInGroup="13">
+              <controlProperties>
+                <text/>
+              </controlProperties>
+            </control>
+            <control controlID="3" controlTypeID="com.balsamiq.mockups::Button" x="432" y="311" w="70" h="27" measuredW="54" measuredH="27" zOrder="3" locked="false" isInGroup="13">
+              <controlProperties>
+                <state>disabled</state>
+                <text>Open</text>
+              </controlProperties>
+            </control>
+            <control controlID="4" controlTypeID="com.balsamiq.mockups::Button" x="502" y="311" w="69" h="27" measuredW="64" measuredH="27" zOrder="4" locked="false" isInGroup="13">
+              <controlProperties>
+                <href>bulk-event-7%26bm%3Bbulk-event-7.bmml%26bm%3Bbulk-event-7.bmml%26bm%3Bbulk-event-7.bmml</href>
+                <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22687%2C449%2C756%2C476%22%20href%3D%22bulk-event-7.bmml%22%20alt%3D%22bulk-event-7%22%20id%3D%224%22/%3E</map>
+                <text>Cancel</text>
               </controlProperties>
             </control>
           </groupChildrenDescriptors>
