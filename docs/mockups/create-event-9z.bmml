@@ -222,8 +222,8 @@
     </control>
     <control controlID="90" controlTypeID="com.balsamiq.mockups::Button" x="1199" y="698" w="-1" h="-1" measuredW="101" measuredH="27" zOrder="40" locked="false" isInGroup="-1">
       <controlProperties>
-        <href>data-location-data%26bm%3Bdata-location-data.bmml%26bm%3Bdata-location-data.bmml%26bm%3Bdata-location-data.bmml</href>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22868%2C683%2C969%2C710%22%20href%3D%22data-location-data.bmml%22%20alt%3D%22data-location-data%22%20id%3D%2290%22/%3E</map>
+        <href>create-event-thankyou%26bm%3Bcreate-event-thankyou.bmml%26bm%3Bcreate-event-thankyou.bmml%26bm%3Bcreate-event-thankyou.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22868%2C683%2C969%2C710%22%20href%3D%22create-event-thankyou.bmml%22%20alt%3D%22create-event-thankyou%22%20id%3D%2290%22/%3E</map>
         <text>Submit%20Event</text>
       </controlProperties>
     </control>
