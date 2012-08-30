@@ -92,35 +92,23 @@
         <text>California</text>
       </controlProperties>
     </control>
-    <control controlID="70" controlTypeID="com.balsamiq.mockups::Button" x="707" y="205" w="109" h="43" measuredW="90" measuredH="27" zOrder="15" locked="false" isInGroup="-1">
-      <controlProperties>
-        <href>bulk-event-6c%26bm%3Bbulk-event-6c.bmml%26bm%3Bbulk-event-6c.bmml%26bm%3Bbulk-event-6c.bmml</href>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22376%2C190%2C485%2C233%22%20href%3D%22bulk-event-6c.bmml%22%20alt%3D%22bulk-event-6c%22%20id%3D%2270%22/%3E</map>
-        <text>Edit%20Events</text>
-      </controlProperties>
-    </control>
-    <control controlID="72" controlTypeID="com.balsamiq.mockups::Label" x="410" y="439" w="-1" h="-1" measuredW="76" measuredH="21" zOrder="16" locked="false" isInGroup="-1">
+    <control controlID="72" controlTypeID="com.balsamiq.mockups::Label" x="410" y="439" w="-1" h="-1" measuredW="76" measuredH="21" zOrder="15" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Events%20File%20%3A</text>
       </controlProperties>
     </control>
-    <control controlID="76" controlTypeID="com.balsamiq.mockups::Button" x="707" y="681" w="109" h="36" measuredW="64" measuredH="27" zOrder="17" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Cancel</text>
-      </controlProperties>
-    </control>
-    <control controlID="77" controlTypeID="com.balsamiq.mockups::Image" x="873" y="234" w="449" h="242" measuredW="693" measuredH="534" zOrder="30" locked="false" isInGroup="-1">
+    <control controlID="77" controlTypeID="com.balsamiq.mockups::Image" x="873" y="234" w="449" h="242" measuredW="693" measuredH="534" zOrder="28" locked="false" isInGroup="-1">
       <controlProperties>
         <src>./assets/bing_2st_ave_prk_mark.png</src>
         <text/>
       </controlProperties>
     </control>
-    <control controlID="96" controlTypeID="com.balsamiq.mockups::Label" x="523" y="439" w="-1" h="-1" measuredW="224" measuredH="21" zOrder="18" locked="false" isInGroup="-1">
+    <control controlID="96" controlTypeID="com.balsamiq.mockups::Label" x="523" y="439" w="-1" h="-1" measuredW="224" measuredH="21" zOrder="16" locked="false" isInGroup="-1">
       <controlProperties>
         <text>C%3A%5CDocs%5CSOS_Beach_Cleanup_Table</text>
       </controlProperties>
     </control>
-    <control controlID="97" controlTypeID="__group__" x="745" y="359" w="238" h="194" measuredW="238" measuredH="194" zOrder="31" locked="false" isInGroup="-1">
+    <control controlID="97" controlTypeID="__group__" x="745" y="359" w="238" h="194" measuredW="238" measuredH="194" zOrder="29" locked="false" isInGroup="-1">
       <groupChildrenDescriptors>
         <control controlID="0" controlTypeID="com.balsamiq.mockups::TitleWindow" x="0" y="0" w="238" h="194" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="97">
           <controlProperties>
@@ -148,31 +136,31 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="98" controlTypeID="com.balsamiq.mockups::Button" x="1078" y="682" w="109" h="36" measuredW="64" measuredH="27" zOrder="19" locked="false" isInGroup="-1">
+    <control controlID="98" controlTypeID="com.balsamiq.mockups::Button" x="1078" y="682" w="109" h="36" measuredW="64" measuredH="27" zOrder="17" locked="false" isInGroup="-1">
       <controlProperties>
         <href>bulk-event-7c%26bm%3Bbulk-event-7c.bmml%26bm%3Bbulk-event-7c.bmml%26bm%3Bbulk-event-7c.bmml</href>
         <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22747%2C667%2C856%2C703%22%20href%3D%22bulk-event-7c.bmml%22%20alt%3D%22bulk-event-7c%22%20id%3D%2298%22/%3E</map>
         <text>Cancel</text>
       </controlProperties>
     </control>
-    <control controlID="99" controlTypeID="com.balsamiq.mockups::DataGrid" x="873" y="497" w="449" h="169" measuredW="392" measuredH="175" zOrder="20" locked="false" isInGroup="-1">
+    <control controlID="99" controlTypeID="com.balsamiq.mockups::DataGrid" x="873" y="497" w="449" h="169" measuredW="392" measuredH="175" zOrder="18" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Site%20Name%2C%20Lat%2C%20Lon%2C%20%20%0ATwin%20Lakes%20State%20Beach%2C%2036.962%2C%20-121.998%2C%20%20---------------------------%0ACowell%20Beach%2C%2036.962%2C%20-122.024%2C%20%0AHidden%20Beach%2C%2036.958%2C%20-121.889%2C%20%20%0ASeacliffs%20State%20Beach%2C%2036.972%2C%20-121.914%2C%20%0A21st%20Ave%20County%20Park%2C%20%2C%20%2C%20</text>
       </controlProperties>
     </control>
-    <control controlID="100" controlTypeID="com.balsamiq.mockups::Button" x="1202" y="681" w="100" h="39" measuredW="54" measuredH="27" zOrder="21" locked="false" isInGroup="-1">
+    <control controlID="100" controlTypeID="com.balsamiq.mockups::Button" x="1202" y="681" w="100" h="39" measuredW="54" measuredH="27" zOrder="19" locked="false" isInGroup="-1">
       <controlProperties>
         <state>disabled</state>
         <text>Finish</text>
       </controlProperties>
     </control>
-    <control controlID="101" controlTypeID="com.balsamiq.mockups::Button" x="1205" y="517" w="108" h="27" measuredW="117" measuredH="27" zOrder="22" locked="false" isInGroup="-1">
+    <control controlID="101" controlTypeID="com.balsamiq.mockups::Button" x="1205" y="517" w="108" h="27" measuredW="117" measuredH="27" zOrder="20" locked="false" isInGroup="-1">
       <controlProperties>
         <state>disabled</state>
         <text>Update%20Location</text>
       </controlProperties>
     </control>
-    <control controlID="102" controlTypeID="com.balsamiq.mockups::RoundButton" x="873" y="639" w="449" h="27" measuredW="32" measuredH="32" zOrder="23" locked="false" isInGroup="-1">
+    <control controlID="102" controlTypeID="com.balsamiq.mockups::RoundButton" x="873" y="639" w="449" h="27" measuredW="32" measuredH="32" zOrder="21" locked="false" isInGroup="-1">
       <controlProperties>
         <backgroundAlpha>0.5</backgroundAlpha>
         <color>13576743</color>
@@ -180,38 +168,52 @@
         <text/>
       </controlProperties>
     </control>
-    <control controlID="103" controlTypeID="com.balsamiq.mockups::Button" x="1205" y="639" w="108" h="27" measuredW="117" measuredH="27" zOrder="24" locked="false" isInGroup="-1">
+    <control controlID="103" controlTypeID="com.balsamiq.mockups::Button" x="1205" y="639" w="108" h="27" measuredW="117" measuredH="27" zOrder="22" locked="false" isInGroup="-1">
       <controlProperties>
         <state>selected</state>
         <text>Update%20Location</text>
       </controlProperties>
     </control>
-    <control controlID="104" controlTypeID="com.balsamiq.mockups::SubTitle" x="881" y="205" w="-1" h="-1" measuredW="416" measuredH="33" zOrder="25" locked="false" isInGroup="-1">
+    <control controlID="104" controlTypeID="com.balsamiq.mockups::SubTitle" x="881" y="205" w="-1" h="-1" measuredW="416" measuredH="33" zOrder="23" locked="false" isInGroup="-1">
       <controlProperties>
         <text>12%20events%20loaded%20at%20the%20following%20sites%3A</text>
       </controlProperties>
     </control>
-    <control controlID="105" controlTypeID="com.balsamiq.mockups::Button" x="1205" y="548" w="108" h="27" measuredW="117" measuredH="27" zOrder="26" locked="false" isInGroup="-1">
+    <control controlID="105" controlTypeID="com.balsamiq.mockups::Button" x="1205" y="548" w="108" h="27" measuredW="117" measuredH="27" zOrder="24" locked="false" isInGroup="-1">
       <controlProperties>
         <state>disabled</state>
         <text>Update%20Location</text>
       </controlProperties>
     </control>
-    <control controlID="106" controlTypeID="com.balsamiq.mockups::Button" x="1205" y="579" w="108" h="27" measuredW="117" measuredH="27" zOrder="27" locked="false" isInGroup="-1">
+    <control controlID="106" controlTypeID="com.balsamiq.mockups::Button" x="1205" y="579" w="108" h="27" measuredW="117" measuredH="27" zOrder="25" locked="false" isInGroup="-1">
       <controlProperties>
         <state>disabled</state>
         <text>Update%20Location</text>
       </controlProperties>
     </control>
-    <control controlID="107" controlTypeID="com.balsamiq.mockups::Button" x="1205" y="610" w="108" h="27" measuredW="117" measuredH="27" zOrder="28" locked="false" isInGroup="-1">
+    <control controlID="107" controlTypeID="com.balsamiq.mockups::Button" x="1205" y="610" w="108" h="27" measuredW="117" measuredH="27" zOrder="26" locked="false" isInGroup="-1">
       <controlProperties>
         <state>disabled</state>
         <text>Update%20Location</text>
       </controlProperties>
     </control>
-    <control controlID="108" controlTypeID="com.balsamiq.mockups::Label" x="873" y="476" w="-1" h="-1" measuredW="162" measuredH="21" zOrder="29" locked="false" isInGroup="-1">
+    <control controlID="108" controlTypeID="com.balsamiq.mockups::Label" x="873" y="476" w="-1" h="-1" measuredW="162" measuredH="21" zOrder="27" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Location%20not%20found%20for%201%20site</text>
+      </controlProperties>
+    </control>
+    <control controlID="109" controlTypeID="com.balsamiq.mockups::Button" x="707" y="681" w="109" h="36" measuredW="45" measuredH="27" zOrder="30" locked="false" isInGroup="-1">
+      <controlProperties>
+        <href>bulk-event-7c%26bm%3Bbulk-event-7c.bmml%26bm%3Bbulk-event-7c.bmml%26bm%3Bbulk-event-7c.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22376%2C666%2C485%2C702%22%20href%3D%22bulk-event-7c.bmml%22%20alt%3D%22bulk-event-7c%22%20id%3D%22109%22/%3E</map>
+        <text>Edit</text>
+      </controlProperties>
+    </control>
+    <control controlID="110" controlTypeID="com.balsamiq.mockups::Button" x="578" y="681" w="114" h="36" measuredW="105" measuredH="27" zOrder="31" locked="false" isInGroup="-1">
+      <controlProperties>
+        <href>data-location-data%26bm%3Bdata-location-data.bmml%26bm%3Bdata-location-data.bmml%26bm%3Bdata-location-data.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22247%2C666%2C361%2C702%22%20href%3D%22data-location-data.bmml%22%20alt%3D%22data-location-data%22%20id%3D%22110%22/%3E</map>
+        <text>Cancel%20Import</text>
       </controlProperties>
     </control>
   </controls>

@@ -162,5 +162,13 @@
         <text/>
       </controlProperties>
     </control>
+    <control controlID="64" controlTypeID="com.balsamiq.mockups::Button" x="620" y="704" w="-1" h="-1" measuredW="141" measuredH="38" zOrder="23" locked="false" isInGroup="-1">
+      <controlProperties>
+        <href>bulk-event-1%26bm%3Bbulk-event-1.bmml%26bm%3Bbulk-event-1.bmml%26bm%3Bbulk-event-1.bmml</href>
+        <icon>CircledPlusIcon%7Cmedium</icon>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22289%2C689%2C430%2C727%22%20href%3D%22bulk-event-1.bmml%22%20alt%3D%22bulk-event-1%22%20id%3D%2264%22/%3E</map>
+        <text>Import%20Events</text>
+      </controlProperties>
+    </control>
   </controls>
 </mockup>
