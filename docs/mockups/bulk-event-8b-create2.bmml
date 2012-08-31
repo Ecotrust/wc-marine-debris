@@ -190,7 +190,7 @@
     </control>
     <control controlID="102" controlTypeID="__group__" x="503" y="155" w="688" h="514" measuredW="688" measuredH="514" zOrder="31" locked="false" isInGroup="-1">
       <groupChildrenDescriptors>
-        <control controlID="0" controlTypeID="com.balsamiq.mockups::TitleWindow" x="0" y="0" w="688" h="514" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="102">
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::TitleWindow" x="0" y="0" w="688" h="514" measuredW="450" measuredH="400" zOrder="0" locked="true" isInGroup="102">
           <controlProperties>
             <text>Update%20Location%20-%2021st%20Ave%20County%20Park</text>
           </controlProperties>

@@ -89,11 +89,42 @@
         <text>Data%20Sheet%20%3A</text>
       </controlProperties>
     </control>
-    <control controlID="49" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="392" w="204" h="-1" measuredW="87" measuredH="78" zOrder="14" locked="false" isInGroup="-1">
+    <control controlID="49" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="392" w="219" h="-1" measuredW="87" measuredH="94" zOrder="14" locked="false" isInGroup="-1">
       <controlProperties>
+        <text>--%20Select%20--%0ACoast%20Savers%20Cleanup%20Data%0ASOS%202011-2012%20Cleanup%20Data%0ASOS%202011-2012%20Cleanup%20Data%20Card%0ADerelict%20Gear%20Data</text>
+      </controlProperties>
+    </control>
+    <control controlID="50" controlTypeID="com.balsamiq.mockups::RoundButton" x="526" y="415" w="212" h="45" measuredW="32" measuredH="32" zOrder="15" locked="false" isInGroup="-1">
+      <controlProperties>
+        <backgroundAlpha>0</backgroundAlpha>
+        <borderColor>16777215</borderColor>
         <href>create-event-6a%26bm%3Bcreate-event-6a.bmml%26bm%3Bcreate-event-6a.bmml%26bm%3Bcreate-event-6a.bmml</href>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22192%2C377%2C396%2C455%22%20href%3D%22create-event-6a.bmml%22%20alt%3D%22create-event-6a%22%20id%3D%2249%22/%3E</map>
-        <text>--%20Select%20--%0ACoast%20Savers%20Cleanup%20Data%0ASOS%202011-2012%20Cleanup%20Data%0ASOS%202011-2012%20Cleanup%20Data%20Card</text>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22195%2C400%2C407%2C445%22%20href%3D%22create-event-6a.bmml%22%20alt%3D%22create-event-6a%22%20id%3D%2250%22/%3E</map>
+        <shape>rectangle</shape>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="51" controlTypeID="com.balsamiq.mockups::RoundButton" x="525" y="460" w="214" h="26" measuredW="32" measuredH="32" zOrder="16" locked="false" isInGroup="-1">
+      <controlProperties>
+        <backgroundAlpha>0</backgroundAlpha>
+        <borderColor>16777215</borderColor>
+        <href>create-event-6a-gear%26bm%3Bcreate-event-6a-gear.bmml%26bm%3Bcreate-event-6a-gear.bmml%26bm%3Bcreate-event-6a-gear.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22194%2C445%2C408%2C471%22%20href%3D%22create-event-6a-gear.bmml%22%20alt%3D%22create-event-6a-gear%22%20id%3D%2251%22/%3E</map>
+        <shape>rectangle</shape>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="52" controlTypeID="com.balsamiq.mockups::Icon" x="751" y="697" w="-1" h="-1" measuredW="48" measuredH="48" zOrder="17" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>10066329</color>
+        <icon>RightArrowIcon%7Clarge</icon>
+      </controlProperties>
+    </control>
+    <control controlID="53" controlTypeID="com.balsamiq.mockups::Button" x="588" y="703" w="107" h="37" measuredW="64" measuredH="27" zOrder="18" locked="false" isInGroup="-1">
+      <controlProperties>
+        <href>data-location-data%26bm%3Bdata-location-data.bmml%26bm%3Bdata-location-data.bmml%26bm%3Bdata-location-data.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22257%2C688%2C364%2C725%22%20href%3D%22data-location-data.bmml%22%20alt%3D%22data-location-data%22%20id%3D%2253%22/%3E</map>
+        <text>Cancel</text>
       </controlProperties>
     </control>
   </controls>

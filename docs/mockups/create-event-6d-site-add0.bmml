@@ -117,51 +117,86 @@
         <text>State%20%3A</text>
       </controlProperties>
     </control>
-    <control controlID="56" controlTypeID="com.balsamiq.mockups::TextInput" x="523" y="542" w="204" h="-1" measuredW="92" measuredH="27" zOrder="24" locked="false" isInGroup="-1">
+    <control controlID="56" controlTypeID="com.balsamiq.mockups::TextInput" x="523" y="542" w="204" h="-1" measuredW="43" measuredH="27" zOrder="26" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>Cowell%20Beach</text>
+        <text>beac</text>
       </controlProperties>
     </control>
-    <control controlID="57" controlTypeID="com.balsamiq.mockups::TextInput" x="523" y="593" w="204" h="-1" measuredW="57" measuredH="27" zOrder="14" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>36.962</text>
-      </controlProperties>
-    </control>
-    <control controlID="58" controlTypeID="com.balsamiq.mockups::TextInput" x="523" y="644" w="204" h="-1" measuredW="69" measuredH="27" zOrder="15" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>-122.024</text>
-      </controlProperties>
-    </control>
-    <control controlID="60" controlTypeID="com.balsamiq.mockups::TextInput" x="523" y="489" w="204" h="-1" measuredW="77" measuredH="27" zOrder="16" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Santa%20Cruz</text>
-      </controlProperties>
-    </control>
+    <control controlID="57" controlTypeID="com.balsamiq.mockups::TextInput" x="523" y="593" w="204" h="-1" measuredW="79" measuredH="27" zOrder="14" locked="false" isInGroup="-1"/>
+    <control controlID="58" controlTypeID="com.balsamiq.mockups::TextInput" x="523" y="644" w="204" h="-1" measuredW="79" measuredH="27" zOrder="15" locked="false" isInGroup="-1"/>
+    <control controlID="60" controlTypeID="com.balsamiq.mockups::TextInput" x="523" y="489" w="204" h="-1" measuredW="79" measuredH="27" zOrder="16" locked="false" isInGroup="-1"/>
     <control controlID="62" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="437" w="204" h="-1" measuredW="84" measuredH="23" zOrder="23" locked="false" isInGroup="-1">
       <controlProperties>
         <text>California</text>
       </controlProperties>
     </control>
-    <control controlID="64" controlTypeID="com.balsamiq.mockups::Image" x="903" y="263" w="390" h="301" measuredW="480" measuredH="464" zOrder="25" locked="false" isInGroup="-1">
+    <control controlID="63" controlTypeID="com.balsamiq.mockups::TextArea" x="523" y="568" w="204" h="84" measuredW="200" measuredH="140" zOrder="24" locked="false" isInGroup="-1">
       <controlProperties>
-        <src>./assets/bing_cowell_mark_480x465.png</src>
+        <text>Twin%20Lakes%20State%20Beach%0ACowell%20Beach%0AHidden%20Beach%0ASeacliff%20State%20Beach</text>
+      </controlProperties>
+    </control>
+    <control controlID="64" controlTypeID="com.balsamiq.mockups::Image" x="903" y="263" w="390" h="301" measuredW="607" measuredH="457" zOrder="27" locked="false" isInGroup="-1">
+      <controlProperties>
+        <src>./assets/bing.png</src>
         <text/>
       </controlProperties>
     </control>
-    <control controlID="65" controlTypeID="com.balsamiq.mockups::Icon" x="751" y="672" w="-1" h="-1" measuredW="48" measuredH="48" zOrder="26" locked="false" isInGroup="-1">
-      <controlProperties>
-        <href>create-event-9%26bm%3Bcreate-event-9.bmml%26bm%3Bcreate-event-9.bmml%26bm%3Bcreate-event-9.bmml</href>
-        <icon>RightArrowIcon%7Clarge</icon>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22420%2C657%2C468%2C705%22%20href%3D%22create-event-9.bmml%22%20alt%3D%22create-event-9%22%20id%3D%2265%22/%3E</map>
-      </controlProperties>
-    </control>
-    <control controlID="66" controlTypeID="com.balsamiq.mockups::Icon" x="735" y="544" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="27" locked="false" isInGroup="-1">
+    <control controlID="65" controlTypeID="com.balsamiq.mockups::Icon" x="735" y="544" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="28" locked="false" isInGroup="-1">
       <controlProperties>
         <borderStyle>square</borderStyle>
-        <href>create-event-6d-site0%26bm%3Bcreate-event-6d-site0.bmml%26bm%3Bcreate-event-6d-site0.bmml%26bm%3Bcreate-event-6d-site0.bmml</href>
         <icon>SearchIcon%7Csmall</icon>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22404%2C529%2C428%2C553%22%20href%3D%22create-event-6d-site0.bmml%22%20alt%3D%22create-event-6d-site0%22%20id%3D%2266%22/%3E</map>
       </controlProperties>
+    </control>
+    <control controlID="66" controlTypeID="com.balsamiq.mockups::RoundButton" x="523" y="569" w="204" h="82" measuredW="32" measuredH="32" zOrder="25" locked="false" isInGroup="-1">
+      <controlProperties>
+        <backgroundAlpha>0</backgroundAlpha>
+        <borderColor>0</borderColor>
+        <shape>rectangle</shape>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="67" controlTypeID="__group__" x="503" y="155" w="688" h="514" measuredW="688" measuredH="514" zOrder="29" locked="false" isInGroup="-1">
+      <controlProperties/>
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::TitleWindow" x="0" y="0" w="688" h="514" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="67">
+          <controlProperties>
+            <text>Select%20Location</text>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::Image" x="204" y="25" w="480" h="464" measuredW="480" measuredH="464" zOrder="1" locked="false" isInGroup="67">
+          <controlProperties>
+            <href>create-event-6d-site-add1%26bm%3Bcreate-event-6d-site-add1.bmml%26bm%3Bcreate-event-6d-site-add1.bmml%26bm%3Bcreate-event-6d-site-add1.bmml</href>
+            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22376%2C165%2C856%2C629%22%20href%3D%22create-event-6d-site-add1.bmml%22%20alt%3D%22create-event-6d-site-add1%22%20id%3D%221%22/%3E</map>
+            <src>./assets/bing_cowell_clean_480x465.png</src>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="4" controlTypeID="com.balsamiq.mockups::Button" x="22" y="435" w="159" h="41" measuredW="53" measuredH="27" zOrder="2" locked="false" isInGroup="67">
+          <controlProperties>
+            <href>create-event-6d-site0%26bm%3Bcreate-event-6d-site0.bmml%26bm%3Bcreate-event-6d-site0.bmml%26bm%3Bcreate-event-6d-site0.bmml</href>
+            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22194%2C575%2C353%2C616%22%20href%3D%22create-event-6d-site0.bmml%22%20alt%3D%22create-event-6d-site0%22%20id%3D%224%22/%3E</map>
+            <text>Back</text>
+          </controlProperties>
+        </control>
+        <control controlID="8" controlTypeID="com.balsamiq.mockups::Icon" x="221" y="42" w="-1" h="-1" measuredW="32" measuredH="32" zOrder="3" locked="false" isInGroup="67">
+          <controlProperties>
+            <borderStyle>none</borderStyle>
+            <color>16777215</color>
+            <icon>SquaredPlusIcon%7Cmedium</icon>
+          </controlProperties>
+        </control>
+        <control controlID="9" controlTypeID="com.balsamiq.mockups::Icon" x="221" y="74" w="-1" h="-1" measuredW="32" measuredH="32" zOrder="4" locked="false" isInGroup="67">
+          <controlProperties>
+            <color>16777215</color>
+            <icon>SquaredMinusIcon%7Cmedium</icon>
+          </controlProperties>
+        </control>
+        <control controlID="10" controlTypeID="com.balsamiq.mockups::Paragraph" x="8" y="42" w="200" h="72" measuredW="200" measuredH="140" zOrder="5" locked="false" isInGroup="67">
+          <controlProperties>
+            <text>Click%20on%20the%20map%20to%20create%0Ayour%20new%20location.</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
     </control>
   </controls>
 </mockup>

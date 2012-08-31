@@ -227,5 +227,16 @@
         </control>
       </groupChildrenDescriptors>
     </control>
+    <control controlID="91" controlTypeID="com.balsamiq.mockups::Button" x="707" y="681" w="109" h="36" measuredW="61" measuredH="27" zOrder="19" locked="false" isInGroup="-1">
+      <controlProperties>
+        <state>disabled</state>
+        <text>Import</text>
+      </controlProperties>
+    </control>
+    <control controlID="92" controlTypeID="com.balsamiq.mockups::Button" x="578" y="681" w="114" h="36" measuredW="105" measuredH="27" zOrder="20" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Cancel%20Import</text>
+      </controlProperties>
+    </control>
   </controls>
 </mockup>
