@@ -117,8 +117,8 @@
         </control>
         <control controlID="10" controlTypeID="__group__" x="242" y="139" w="240" h="24" measuredW="240" measuredH="24" zOrder="1" locked="false" isInGroup="90">
           <controlProperties>
-            <href>bulk-event-7b%26bm%3Bbulk-event-7b.bmml%26bm%3Bbulk-event-7b.bmml%26bm%3Bbulk-event-7b.bmml</href>
-            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22427%2C277%2C667%2C301%22%20href%3D%22bulk-event-7b.bmml%22%20alt%3D%22bulk-event-7b%22%20id%3D%2210%22/%3E</map>
+            <href>bulk-error-2%26bm%3Bbulk-error-2.bmml%26bm%3Bbulk-error-2.bmml%26bm%3Bbulk-error-2.bmml</href>
+            <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22427%2C277%2C667%2C301%22%20href%3D%22bulk-error-2.bmml%22%20alt%3D%22bulk-error-2%22%20id%3D%2210%22/%3E</map>
           </controlProperties>
           <groupChildrenDescriptors>
             <control controlID="0" controlTypeID="com.balsamiq.mockups::Icon" x="0" y="0" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="0" locked="false" isInGroup="10">
