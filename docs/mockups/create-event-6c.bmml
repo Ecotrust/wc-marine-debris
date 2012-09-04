@@ -62,7 +62,7 @@
         <text>Organization%20%3A</text>
       </controlProperties>
     </control>
-    <control controlID="44" controlTypeID="com.balsamiq.mockups::Label" x="410" y="306" w="-1" h="-1" measuredW="56" measuredH="21" zOrder="17" locked="false" isInGroup="-1">
+    <control controlID="44" controlTypeID="com.balsamiq.mockups::Label" x="410" y="306" w="-1" h="-1" measuredW="56" measuredH="21" zOrder="12" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Project%20%3A</text>
       </controlProperties>
@@ -72,7 +72,7 @@
         <text>Beach%20Cleanup</text>
       </controlProperties>
     </control>
-    <control controlID="46" controlTypeID="com.balsamiq.mockups::Label" x="410" y="350" w="-1" h="-1" measuredW="42" measuredH="21" zOrder="18" locked="false" isInGroup="-1">
+    <control controlID="46" controlTypeID="com.balsamiq.mockups::Label" x="410" y="350" w="-1" h="-1" measuredW="42" measuredH="21" zOrder="13" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Date%20%3A</text>
       </controlProperties>
@@ -82,57 +82,41 @@
         <text>2012-08-27%2012%3A30%3A00.0</text>
       </controlProperties>
     </control>
-    <control controlID="48" controlTypeID="com.balsamiq.mockups::Label" x="410" y="392" w="-1" h="-1" measuredW="80" measuredH="21" zOrder="19" locked="false" isInGroup="-1">
+    <control controlID="48" controlTypeID="com.balsamiq.mockups::Label" x="410" y="392" w="-1" h="-1" measuredW="80" measuredH="21" zOrder="14" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Data%20Sheet%20%3A</text>
       </controlProperties>
     </control>
-    <control controlID="49" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="392" w="204" h="-1" measuredW="202" measuredH="23" zOrder="20" locked="false" isInGroup="-1">
+    <control controlID="49" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="392" w="204" h="-1" measuredW="202" measuredH="23" zOrder="15" locked="false" isInGroup="-1">
       <controlProperties>
         <text>SOS%202011-2012%20Cleanup%20Data</text>
       </controlProperties>
     </control>
-    <control controlID="50" controlTypeID="com.balsamiq.mockups::Label" x="410" y="542" w="-1" h="-1" measuredW="37" measuredH="21" zOrder="21" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Site%20%3A</text>
-      </controlProperties>
-    </control>
-    <control controlID="51" controlTypeID="com.balsamiq.mockups::Label" x="410" y="593" w="-1" h="-1" measuredW="60" measuredH="21" zOrder="22" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Latitude%20%3A</text>
-      </controlProperties>
-    </control>
-    <control controlID="52" controlTypeID="com.balsamiq.mockups::Label" x="410" y="644" w="-1" h="-1" measuredW="67" measuredH="21" zOrder="11" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Longitude%20%3A</text>
-      </controlProperties>
-    </control>
-    <control controlID="54" controlTypeID="com.balsamiq.mockups::Label" x="410" y="489" w="-1" h="-1" measuredW="53" measuredH="21" zOrder="12" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>County%20%3A</text>
-      </controlProperties>
-    </control>
-    <control controlID="55" controlTypeID="com.balsamiq.mockups::Label" x="410" y="438" w="-1" h="-1" measuredW="46" measuredH="21" zOrder="13" locked="false" isInGroup="-1">
+    <control controlID="55" controlTypeID="com.balsamiq.mockups::Label" x="410" y="438" w="-1" h="-1" measuredW="46" measuredH="21" zOrder="11" locked="false" isInGroup="-1">
       <controlProperties>
         <text>State%20%3A</text>
       </controlProperties>
     </control>
-    <control controlID="57" controlTypeID="com.balsamiq.mockups::TextInput" x="523" y="593" w="204" h="-1" measuredW="79" measuredH="27" zOrder="14" locked="false" isInGroup="-1"/>
-    <control controlID="58" controlTypeID="com.balsamiq.mockups::TextInput" x="523" y="644" w="204" h="-1" measuredW="79" measuredH="27" zOrder="15" locked="false" isInGroup="-1"/>
-    <control controlID="60" controlTypeID="com.balsamiq.mockups::TextInput" x="523" y="489" w="204" h="-1" measuredW="79" measuredH="27" zOrder="16" locked="false" isInGroup="-1"/>
-    <control controlID="62" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="437" w="204" h="-1" measuredW="84" measuredH="23" zOrder="23" locked="false" isInGroup="-1">
+    <control controlID="62" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="437" w="204" h="-1" measuredW="84" measuredH="23" zOrder="16" locked="false" isInGroup="-1">
       <controlProperties>
         <href>create-event-6b%26bm%3Bcreate-event-6b.bmml%26bm%3Bcreate-event-6b.bmml%26bm%3Bcreate-event-6b.bmml</href>
         <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22192%2C422%2C396%2C445%22%20href%3D%22create-event-6b.bmml%22%20alt%3D%22create-event-6b%22%20id%3D%2262%22/%3E</map>
         <text>California</text>
       </controlProperties>
     </control>
-    <control controlID="63" controlTypeID="com.balsamiq.mockups::RoundButton" x="523" y="542" w="204" h="27" measuredW="32" measuredH="32" zOrder="24" locked="false" isInGroup="-1">
+    <control controlID="64" controlTypeID="com.balsamiq.mockups::Icon" x="751" y="697" w="-1" h="-1" measuredW="48" measuredH="48" zOrder="17" locked="false" isInGroup="-1">
       <controlProperties>
+        <color>0</color>
         <href>create-event-6d%26bm%3Bcreate-event-6d.bmml%26bm%3Bcreate-event-6d.bmml%26bm%3Bcreate-event-6d.bmml</href>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22192%2C527%2C396%2C554%22%20href%3D%22create-event-6d.bmml%22%20alt%3D%22create-event-6d%22%20id%3D%2263%22/%3E</map>
-        <shape>rectangle</shape>
-        <text/>
+        <icon>RightArrowIcon%7Clarge</icon>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22420%2C682%2C468%2C730%22%20href%3D%22create-event-6d.bmml%22%20alt%3D%22create-event-6d%22%20id%3D%2264%22/%3E</map>
+      </controlProperties>
+    </control>
+    <control controlID="65" controlTypeID="com.balsamiq.mockups::Button" x="588" y="703" w="107" h="37" measuredW="64" measuredH="27" zOrder="18" locked="false" isInGroup="-1">
+      <controlProperties>
+        <href>data-location-data%26bm%3Bdata-location-data.bmml%26bm%3Bdata-location-data.bmml%26bm%3Bdata-location-data.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22257%2C688%2C364%2C725%22%20href%3D%22data-location-data.bmml%22%20alt%3D%22data-location-data%22%20id%3D%2265%22/%3E</map>
+        <text>Cancel</text>
       </controlProperties>
     </control>
   </controls>

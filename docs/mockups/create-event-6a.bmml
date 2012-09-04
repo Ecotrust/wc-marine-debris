@@ -106,5 +106,18 @@
         <text>--%20Select%20--</text>
       </controlProperties>
     </control>
+    <control controlID="63" controlTypeID="com.balsamiq.mockups::Icon" x="751" y="697" w="-1" h="-1" measuredW="48" measuredH="48" zOrder="17" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>10066329</color>
+        <icon>RightArrowIcon%7Clarge</icon>
+      </controlProperties>
+    </control>
+    <control controlID="64" controlTypeID="com.balsamiq.mockups::Button" x="588" y="703" w="107" h="37" measuredW="64" measuredH="27" zOrder="18" locked="false" isInGroup="-1">
+      <controlProperties>
+        <href>data-location-data%26bm%3Bdata-location-data.bmml%26bm%3Bdata-location-data.bmml%26bm%3Bdata-location-data.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22257%2C688%2C364%2C725%22%20href%3D%22data-location-data.bmml%22%20alt%3D%22data-location-data%22%20id%3D%2264%22/%3E</map>
+        <text>Cancel</text>
+      </controlProperties>
+    </control>
   </controls>
 </mockup>
