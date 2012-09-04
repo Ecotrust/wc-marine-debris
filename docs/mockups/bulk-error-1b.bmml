@@ -91,7 +91,6 @@
     </control>
     <control controlID="75" controlTypeID="com.balsamiq.mockups::Button" x="707" y="681" w="109" h="36" measuredW="61" measuredH="27" zOrder="14" locked="false" isInGroup="-1">
       <controlProperties>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22376%2C666%2C485%2C702%22%20href%3D%22bulk-event-8.bmml%22%20alt%3D%22bulk-event-8%22%20id%3D%2275%22/%3E</map>
         <state>disabled</state>
         <text>Import</text>
       </controlProperties>
@@ -132,39 +131,24 @@
         <text>Error%20Importing%20Data</text>
       </controlProperties>
     </control>
-    <control controlID="82" controlTypeID="com.balsamiq.mockups::Label" x="899" y="253" w="-1" h="-1" measuredW="254" measuredH="21" zOrder="21" locked="false" isInGroup="-1">
+    <control controlID="82" controlTypeID="com.balsamiq.mockups::Label" x="899" y="253" w="-1" h="-1" measuredW="217" measuredH="21" zOrder="21" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>Error%3A%20Data%20does%20not%20match%20datasheet%20%2865%29</text>
+        <text>Data%20does%20not%20match%20datasheet%20%2865%29</text>
       </controlProperties>
     </control>
-    <control controlID="83" controlTypeID="com.balsamiq.mockups::Label" x="935" y="274" w="-1" h="-1" measuredW="188" measuredH="21" zOrder="22" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Column%20missing%3A%20%23%20of%20Volunteers</text>
-      </controlProperties>
-    </control>
-    <control controlID="84" controlTypeID="com.balsamiq.mockups::Label" x="935" y="295" w="-1" h="-1" measuredW="173" measuredH="21" zOrder="23" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Column%20missing%3A%20Aluminum%20Foil</text>
-      </controlProperties>
-    </control>
-    <control controlID="85" controlTypeID="com.balsamiq.mockups::Label" x="935" y="316" w="-1" h="-1" measuredW="159" measuredH="21" zOrder="24" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Column%20missing%3A%20Appliances</text>
-      </controlProperties>
-    </control>
-    <control controlID="86" controlTypeID="com.balsamiq.mockups::Label" x="935" y="337" w="188" h="21" measuredW="196" measuredH="21" zOrder="25" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Column%20missing%3A%20Balloons%20or%20ribbon</text>
-      </controlProperties>
-    </control>
-    <control controlID="87" controlTypeID="com.balsamiq.mockups::Label" x="935" y="360" w="-1" h="-1" measuredW="48" measuredH="21" zOrder="26" locked="false" isInGroup="-1">
+    <control controlID="87" controlTypeID="com.balsamiq.mockups::Label" x="935" y="419" w="-1" h="-1" measuredW="48" measuredH="21" zOrder="22" locked="false" isInGroup="-1">
       <controlProperties>
         <text>More%20...</text>
       </controlProperties>
     </control>
-    <control controlID="88" controlTypeID="com.balsamiq.mockups::Icon" x="989" y="362" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="27" locked="false" isInGroup="-1">
+    <control controlID="88" controlTypeID="com.balsamiq.mockups::Icon" x="989" y="421" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="23" locked="false" isInGroup="-1">
       <controlProperties>
         <icon>DownFillTriangleIcon%7Cxsmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="89" controlTypeID="com.balsamiq.mockups::DataGrid" x="935" y="274" w="-1" h="-1" measuredW="226" measuredH="145" zOrder="24" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Error%2C%20Details%0AColumn%20missing%2C%20%23%20of%20Volunteers%0AColumn%20missing%2C%20Aluminum%20Foil%0AColumn%20missing%2C%20Appliances%0AColumn%20missing%2C%20Balloons%20or%20Ribbons</text>
       </controlProperties>
     </control>
   </controls>

@@ -77,7 +77,7 @@
         <text>Events%20File%20%3A</text>
       </controlProperties>
     </control>
-    <control controlID="73" controlTypeID="com.balsamiq.mockups::TextInput" x="523" y="438" w="202" h="-1" measuredW="159" measuredH="27" zOrder="12" locked="false" isInGroup="-1">
+    <control controlID="73" controlTypeID="com.balsamiq.mockups::TextInput" x="523" y="438" w="202" h="-1" measuredW="266" measuredH="27" zOrder="12" locked="false" isInGroup="-1">
       <controlProperties>
         <text>C%3A%5CDocs%5CSOS_Beach_Cleanup_Table_Raw</text>
       </controlProperties>
@@ -131,29 +131,9 @@
         <text>Error%20Importing%20Data</text>
       </controlProperties>
     </control>
-    <control controlID="82" controlTypeID="com.balsamiq.mockups::Label" x="899" y="253" w="-1" h="-1" measuredW="316" measuredH="21" zOrder="21" locked="false" isInGroup="-1">
+    <control controlID="92" controlTypeID="com.balsamiq.mockups::DataGrid" x="866" y="263" w="-1" h="-1" measuredW="465" measuredH="115" zOrder="21" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>Error%3A%20Number%20Field%20does%20not%20contain%20number%20value%20%282%29</text>
-      </controlProperties>
-    </control>
-    <control controlID="83" controlTypeID="com.balsamiq.mockups::Label" x="935" y="274" w="-1" h="-1" measuredW="245" measuredH="21" zOrder="22" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Row%204%3A%20Number%20expected%2C%20received%20%27five%27</text>
-      </controlProperties>
-    </control>
-    <control controlID="89" controlTypeID="com.balsamiq.mockups::Label" x="935" y="295" w="-1" h="-1" measuredW="274" measuredH="21" zOrder="23" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Row%209%3A%20Number%20expected%2C%20received%20%27forty-two%27</text>
-      </controlProperties>
-    </control>
-    <control controlID="90" controlTypeID="com.balsamiq.mockups::Label" x="899" y="316" w="-1" h="-1" measuredW="313" measuredH="21" zOrder="24" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Error%3A%20Boolean%20Field%20does%20not%20contain%20boolean%20value%20%281%29</text>
-      </controlProperties>
-    </control>
-    <control controlID="91" controlTypeID="com.balsamiq.mockups::Label" x="935" y="337" w="-1" h="-1" measuredW="261" measuredH="21" zOrder="25" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Row%207%3A%20Boolean%20expected%2C%20received%20%27maybe%27</text>
+        <text>Row%2C%20Column%2C%20Error%2C%20Details%0A4%2C%20%23%20of%20Volunteers%2C%20Number%20expected%20-%20got%20string%2C%20received%20%27five%27%0A7%2C%20%23%20of%20Volunteers%2C%20Value%20cannot%20be%20less%20than%201%2C%20received%20%270%27%0A9%2C%20Appliances%2C%20Number%20expected%20-%20got%20string%2C%20received%20%27forty-two%27</text>
       </controlProperties>
     </control>
   </controls>
