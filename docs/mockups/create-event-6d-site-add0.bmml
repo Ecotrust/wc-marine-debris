@@ -212,49 +212,55 @@
         <text>DD.dddd%2C%20-DDD.dddd</text>
       </controlProperties>
     </control>
-    <control controlID="82" controlTypeID="com.balsamiq.mockups::Icon" x="1229" y="684" w="-1" h="-1" measuredW="48" measuredH="48" zOrder="25" locked="false" isInGroup="-1">
-      <controlProperties>
-        <color>10066329</color>
-        <icon>RightArrowIcon%7Clarge</icon>
-      </controlProperties>
-    </control>
-    <control controlID="83" controlTypeID="com.balsamiq.mockups::Button" x="588" y="703" w="107" h="37" measuredW="64" measuredH="27" zOrder="26" locked="false" isInGroup="-1">
+    <control controlID="83" controlTypeID="com.balsamiq.mockups::Button" x="588" y="703" w="107" h="37" measuredW="64" measuredH="27" zOrder="25" locked="false" isInGroup="-1">
       <controlProperties>
         <href>data-location-data%26bm%3Bdata-location-data.bmml%26bm%3Bdata-location-data.bmml%26bm%3Bdata-location-data.bmml</href>
         <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22257%2C688%2C364%2C725%22%20href%3D%22data-location-data.bmml%22%20alt%3D%22data-location-data%22%20id%3D%2283%22/%3E</map>
         <text>Cancel</text>
       </controlProperties>
     </control>
-    <control controlID="84" controlTypeID="com.balsamiq.mockups::Icon" x="703" y="697" w="-1" h="-1" measuredW="48" measuredH="48" zOrder="27" locked="false" isInGroup="-1">
+    <control controlID="84" controlTypeID="com.balsamiq.mockups::Icon" x="703" y="697" w="-1" h="-1" measuredW="48" measuredH="48" zOrder="26" locked="false" isInGroup="-1">
       <controlProperties>
         <href>create-event-6c%26bm%3Bcreate-event-6c.bmml%26bm%3Bcreate-event-6c.bmml%26bm%3Bcreate-event-6c.bmml</href>
         <icon>LeftArrowIcon%7Clarge</icon>
         <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22372%2C682%2C420%2C730%22%20href%3D%22create-event-6c.bmml%22%20alt%3D%22create-event-6c%22%20id%3D%2284%22/%3E</map>
       </controlProperties>
     </control>
-    <control controlID="85" controlTypeID="com.balsamiq.mockups::Label" x="523" y="263" w="-1" h="-1" measuredW="105" measuredH="21" zOrder="28" locked="false" isInGroup="-1">
+    <control controlID="85" controlTypeID="com.balsamiq.mockups::Label" x="523" y="263" w="-1" h="-1" measuredW="105" measuredH="21" zOrder="27" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Save%20Our%20Shores</text>
       </controlProperties>
     </control>
-    <control controlID="86" controlTypeID="com.balsamiq.mockups::Label" x="523" y="350" w="-1" h="-1" measuredW="77" measuredH="21" zOrder="29" locked="false" isInGroup="-1">
+    <control controlID="86" controlTypeID="com.balsamiq.mockups::Label" x="523" y="350" w="-1" h="-1" measuredW="77" measuredH="21" zOrder="28" locked="false" isInGroup="-1">
       <controlProperties>
         <text>2012-08-27</text>
       </controlProperties>
     </control>
-    <control controlID="87" controlTypeID="com.balsamiq.mockups::Label" x="523" y="392" w="-1" h="-1" measuredW="176" measuredH="21" zOrder="30" locked="false" isInGroup="-1">
+    <control controlID="87" controlTypeID="com.balsamiq.mockups::Label" x="523" y="392" w="-1" h="-1" measuredW="176" measuredH="21" zOrder="29" locked="false" isInGroup="-1">
       <controlProperties>
         <text>SOS%202011-2012%20Cleanup%20Data</text>
       </controlProperties>
     </control>
-    <control controlID="88" controlTypeID="com.balsamiq.mockups::Label" x="523" y="438" w="-1" h="-1" measuredW="58" measuredH="21" zOrder="31" locked="false" isInGroup="-1">
+    <control controlID="88" controlTypeID="com.balsamiq.mockups::Label" x="523" y="438" w="-1" h="-1" measuredW="58" measuredH="21" zOrder="30" locked="false" isInGroup="-1">
       <controlProperties>
         <text>California</text>
       </controlProperties>
     </control>
-    <control controlID="89" controlTypeID="com.balsamiq.mockups::Label" x="523" y="306" w="67" h="21" measuredW="91" measuredH="21" zOrder="32" locked="false" isInGroup="-1">
+    <control controlID="89" controlTypeID="com.balsamiq.mockups::Label" x="523" y="306" w="67" h="21" measuredW="91" measuredH="21" zOrder="31" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Beach%20Cleanup</text>
+      </controlProperties>
+    </control>
+    <control controlID="90" controlTypeID="com.balsamiq.mockups::Icon" x="751" y="697" w="-1" h="-1" measuredW="48" measuredH="48" zOrder="32" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>10066329</color>
+        <icon>RightArrowIcon%7Clarge</icon>
+      </controlProperties>
+    </control>
+    <control controlID="91" controlTypeID="com.balsamiq.mockups::Button" x="1146" y="689" w="124" h="38" measuredW="124" measuredH="27" zOrder="33" locked="false" isInGroup="-1">
+      <controlProperties>
+        <state>disabled</state>
+        <text>Use%20This%20Location</text>
       </controlProperties>
     </control>
   </controls>

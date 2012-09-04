@@ -139,12 +139,12 @@
         <text>Location</text>
       </controlProperties>
     </control>
-    <control controlID="70" controlTypeID="com.balsamiq.mockups::Button" x="1149" y="689" w="144" h="38" measuredW="146" measuredH="27" zOrder="17" locked="false" isInGroup="-1">
+    <control controlID="70" controlTypeID="com.balsamiq.mockups::Button" x="1149" y="689" w="120" h="38" measuredW="117" measuredH="27" zOrder="17" locked="false" isInGroup="-1">
       <controlProperties>
         <href>create-event-6d-site-add0%26bm%3Bcreate-event-6d-site-add0.bmml%26bm%3Bcreate-event-6d-site-add0.bmml%26bm%3Bcreate-event-6d-site-add0.bmml</href>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22818%2C674%2C962%2C712%22%20href%3D%22create-event-6d-site-add0.bmml%22%20alt%3D%22create-event-6d-site-add0%22%20id%3D%2270%22/%3E</map>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22818%2C674%2C938%2C712%22%20href%3D%22create-event-6d-site-add0.bmml%22%20alt%3D%22create-event-6d-site-add0%22%20id%3D%2270%22/%3E</map>
         <state>up</state>
-        <text>Create%20New%20Location</text>
+        <text>Create%20Location</text>
       </controlProperties>
     </control>
     <control controlID="71" controlTypeID="com.balsamiq.mockups::Button" x="1034" y="689" w="107" h="38" measuredW="64" measuredH="27" zOrder="18" locked="false" isInGroup="-1">
@@ -238,6 +238,12 @@
         <href>create-event-6c%26bm%3Bcreate-event-6c.bmml%26bm%3Bcreate-event-6c.bmml%26bm%3Bcreate-event-6c.bmml</href>
         <icon>LeftArrowIcon%7Clarge</icon>
         <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22372%2C682%2C420%2C730%22%20href%3D%22create-event-6c.bmml%22%20alt%3D%22create-event-6c%22%20id%3D%2288%22/%3E</map>
+      </controlProperties>
+    </control>
+    <control controlID="89" controlTypeID="com.balsamiq.mockups::Icon" x="751" y="697" w="-1" h="-1" measuredW="48" measuredH="48" zOrder="35" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>10066329</color>
+        <icon>RightArrowIcon%7Clarge</icon>
       </controlProperties>
     </control>
   </controls>
