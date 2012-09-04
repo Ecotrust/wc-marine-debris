@@ -52,137 +52,122 @@
         <text/>
       </controlProperties>
     </control>
-    <control controlID="42" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="263" w="204" h="-1" measuredW="131" measuredH="23" zOrder="9" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Save%20Our%20Shores</text>
-      </controlProperties>
-    </control>
-    <control controlID="43" controlTypeID="com.balsamiq.mockups::Label" x="410" y="263" w="-1" h="-1" measuredW="83" measuredH="21" zOrder="10" locked="false" isInGroup="-1">
+    <control controlID="43" controlTypeID="com.balsamiq.mockups::Label" x="410" y="263" w="-1" h="-1" measuredW="83" measuredH="21" zOrder="7" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Organization%20%3A</text>
       </controlProperties>
     </control>
-    <control controlID="44" controlTypeID="com.balsamiq.mockups::Label" x="410" y="306" w="-1" h="-1" measuredW="56" measuredH="21" zOrder="12" locked="false" isInGroup="-1">
+    <control controlID="44" controlTypeID="com.balsamiq.mockups::Label" x="410" y="306" w="-1" h="-1" measuredW="56" measuredH="21" zOrder="8" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Project%20%3A</text>
       </controlProperties>
     </control>
-    <control controlID="45" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="306" w="204" h="-1" measuredW="117" measuredH="23" zOrder="8" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Beach%20Cleanup</text>
-      </controlProperties>
-    </control>
-    <control controlID="46" controlTypeID="com.balsamiq.mockups::Label" x="410" y="350" w="-1" h="-1" measuredW="42" measuredH="21" zOrder="13" locked="false" isInGroup="-1">
+    <control controlID="46" controlTypeID="com.balsamiq.mockups::Label" x="410" y="350" w="-1" h="-1" measuredW="42" measuredH="21" zOrder="9" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Date%20%3A</text>
       </controlProperties>
     </control>
-    <control controlID="47" controlTypeID="com.balsamiq.mockups::TextInput" x="523" y="350" w="204" h="-1" measuredW="152" measuredH="27" zOrder="7" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>2012-08-27%2012%3A30%3A00.0</text>
-      </controlProperties>
-    </control>
-    <control controlID="48" controlTypeID="com.balsamiq.mockups::Label" x="410" y="392" w="-1" h="-1" measuredW="80" measuredH="21" zOrder="14" locked="false" isInGroup="-1">
+    <control controlID="48" controlTypeID="com.balsamiq.mockups::Label" x="410" y="392" w="-1" h="-1" measuredW="80" measuredH="21" zOrder="10" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Data%20Sheet%20%3A</text>
       </controlProperties>
     </control>
-    <control controlID="49" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="392" w="204" h="-1" measuredW="141" measuredH="23" zOrder="15" locked="false" isInGroup="-1">
-      <controlProperties>
-        <href>create-event-6%26bm%3Bcreate-event-6.bmml%26bm%3Bcreate-event-6.bmml%26bm%3Bcreate-event-6.bmml</href>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22192%2C377%2C396%2C400%22%20href%3D%22create-event-6.bmml%22%20alt%3D%22create-event-6%22%20id%3D%2249%22/%3E</map>
-        <text>Derelict%20Gear%20Data</text>
-      </controlProperties>
-    </control>
-    <control controlID="55" controlTypeID="com.balsamiq.mockups::Label" x="410" y="442" w="-1" h="-1" measuredW="46" measuredH="21" zOrder="11" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>State%20%3A</text>
-      </controlProperties>
-    </control>
-    <control controlID="62" controlTypeID="com.balsamiq.mockups::ComboBox" x="523" y="441" w="204" h="-1" measuredW="84" measuredH="23" zOrder="16" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>California</text>
-      </controlProperties>
-    </control>
-    <control controlID="63" controlTypeID="com.balsamiq.mockups::Label" x="410" y="540" w="-1" h="-1" measuredW="67" measuredH="21" zOrder="17" locked="false" isInGroup="-1">
+    <control controlID="63" controlTypeID="com.balsamiq.mockups::Label" x="410" y="493" w="-1" h="-1" measuredW="67" measuredH="21" zOrder="11" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Longitude%20%3A</text>
       </controlProperties>
     </control>
-    <control controlID="64" controlTypeID="com.balsamiq.mockups::TextInput" x="523" y="489" w="204" h="-1" measuredW="66" measuredH="27" zOrder="18" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>36.8374</text>
-      </controlProperties>
-    </control>
-    <control controlID="65" controlTypeID="com.balsamiq.mockups::TextInput" x="523" y="540" w="204" h="-1" measuredW="73" measuredH="27" zOrder="19" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>-121.9850</text>
-      </controlProperties>
-    </control>
-    <control controlID="66" controlTypeID="com.balsamiq.mockups::Label" x="410" y="587" w="104" h="22" measuredW="102" measuredH="21" zOrder="20" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Site%20description%20%3A</text>
-      </controlProperties>
-    </control>
-    <control controlID="67" controlTypeID="com.balsamiq.mockups::Label" x="410" y="489" w="-1" h="-1" measuredW="60" measuredH="21" zOrder="21" locked="false" isInGroup="-1">
+    <control controlID="67" controlTypeID="com.balsamiq.mockups::Label" x="410" y="442" w="-1" h="-1" measuredW="60" measuredH="21" zOrder="12" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Latitude%20%3A</text>
       </controlProperties>
     </control>
-    <control controlID="69" controlTypeID="com.balsamiq.mockups::Image" x="899" y="217" w="399" h="509" measuredW="400" measuredH="510" zOrder="22" locked="false" isInGroup="-1">
-      <controlProperties>
-        <src>./assets/bathy_soquel_canyon_400x510.png</src>
-        <text/>
-      </controlProperties>
-    </control>
-    <control controlID="70" controlTypeID="com.balsamiq.mockups::Icon" x="735" y="489" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="23" locked="false" isInGroup="-1">
-      <controlProperties>
-        <borderStyle>square</borderStyle>
-        <href>create-event-6b-gear%26bm%3Bcreate-event-6b-gear.bmml%26bm%3Bcreate-event-6b-gear.bmml%26bm%3Bcreate-event-6b-gear.bmml</href>
-        <icon>SearchIcon%7Csmall</icon>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22404%2C474%2C428%2C498%22%20href%3D%22create-event-6b-gear.bmml%22%20alt%3D%22create-event-6b-gear%22%20id%3D%2270%22/%3E</map>
-      </controlProperties>
-    </control>
-    <control controlID="71" controlTypeID="com.balsamiq.mockups::Icon" x="735" y="587" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="24" locked="false" isInGroup="-1">
-      <controlProperties>
-        <borderStyle>square</borderStyle>
-        <href>create-event-6b-gear%26bm%3Bcreate-event-6b-gear.bmml%26bm%3Bcreate-event-6b-gear.bmml%26bm%3Bcreate-event-6b-gear.bmml</href>
-        <icon>SearchIcon%7Csmall</icon>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22404%2C572%2C428%2C596%22%20href%3D%22create-event-6b-gear.bmml%22%20alt%3D%22create-event-6b-gear%22%20id%3D%2271%22/%3E</map>
-      </controlProperties>
-    </control>
-    <control controlID="72" controlTypeID="com.balsamiq.mockups::Icon" x="735" y="541" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="25" locked="false" isInGroup="-1">
-      <controlProperties>
-        <borderStyle>square</borderStyle>
-        <href>create-event-6b-gear%26bm%3Bcreate-event-6b-gear.bmml%26bm%3Bcreate-event-6b-gear.bmml%26bm%3Bcreate-event-6b-gear.bmml</href>
-        <icon>SearchIcon%7Csmall</icon>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22404%2C526%2C428%2C550%22%20href%3D%22create-event-6b-gear.bmml%22%20alt%3D%22create-event-6b-gear%22%20id%3D%2272%22/%3E</map>
-      </controlProperties>
-    </control>
-    <control controlID="73" controlTypeID="com.balsamiq.mockups::TextArea" x="523" y="587" w="200" h="86" measuredW="200" measuredH="140" zOrder="26" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Just%20a%20little%20NW%20from%20being%20in%20the%20crook%20of%20Soquel%20Canyon</text>
-      </controlProperties>
-    </control>
-    <control controlID="74" controlTypeID="com.balsamiq.mockups::RoundButton" x="1100" y="510" w="22" h="22" measuredW="32" measuredH="32" zOrder="27" locked="false" isInGroup="-1">
-      <controlProperties>
-        <borderColor>10066329</borderColor>
-        <color>2848996</color>
-        <text/>
-      </controlProperties>
-    </control>
-    <control controlID="75" controlTypeID="com.balsamiq.mockups::Icon" x="751" y="697" w="-1" h="-1" measuredW="48" measuredH="48" zOrder="28" locked="false" isInGroup="-1">
+    <control controlID="75" controlTypeID="com.balsamiq.mockups::Icon" x="751" y="697" w="-1" h="-1" measuredW="48" measuredH="48" zOrder="13" locked="false" isInGroup="-1">
       <controlProperties>
         <href>create-event-7-gear%26bm%3Bcreate-event-7-gear.bmml%26bm%3Bcreate-event-7-gear.bmml%26bm%3Bcreate-event-7-gear.bmml</href>
         <icon>RightArrowIcon%7Clarge</icon>
         <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22420%2C682%2C468%2C730%22%20href%3D%22create-event-7-gear.bmml%22%20alt%3D%22create-event-7-gear%22%20id%3D%2275%22/%3E</map>
       </controlProperties>
     </control>
-    <control controlID="76" controlTypeID="com.balsamiq.mockups::Button" x="588" y="703" w="107" h="37" measuredW="64" measuredH="27" zOrder="29" locked="false" isInGroup="-1">
+    <control controlID="76" controlTypeID="com.balsamiq.mockups::Button" x="588" y="703" w="107" h="37" measuredW="64" measuredH="27" zOrder="14" locked="false" isInGroup="-1">
       <controlProperties>
         <href>data-location-data%26bm%3Bdata-location-data.bmml%26bm%3Bdata-location-data.bmml%26bm%3Bdata-location-data.bmml</href>
         <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22257%2C688%2C364%2C725%22%20href%3D%22data-location-data.bmml%22%20alt%3D%22data-location-data%22%20id%3D%2276%22/%3E</map>
         <text>Cancel</text>
+      </controlProperties>
+    </control>
+    <control controlID="77" controlTypeID="com.balsamiq.mockups::Label" x="523" y="263" w="-1" h="-1" measuredW="105" measuredH="21" zOrder="15" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Save%20Our%20Shores</text>
+      </controlProperties>
+    </control>
+    <control controlID="78" controlTypeID="com.balsamiq.mockups::Label" x="523" y="305" w="-1" h="-1" measuredW="84" measuredH="21" zOrder="16" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Derelict%20Gear</text>
+      </controlProperties>
+    </control>
+    <control controlID="79" controlTypeID="com.balsamiq.mockups::Label" x="523" y="350" w="-1" h="-1" measuredW="77" measuredH="21" zOrder="17" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>2012-08-27</text>
+      </controlProperties>
+    </control>
+    <control controlID="80" controlTypeID="com.balsamiq.mockups::Label" x="523" y="392" w="-1" h="-1" measuredW="115" measuredH="21" zOrder="18" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Derelict%20Gear%20Data</text>
+      </controlProperties>
+    </control>
+    <control controlID="81" controlTypeID="com.balsamiq.mockups::Label" x="523" y="442" w="-1" h="-1" measuredW="58" measuredH="21" zOrder="19" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>36.8374</text>
+      </controlProperties>
+    </control>
+    <control controlID="82" controlTypeID="com.balsamiq.mockups::Label" x="523" y="495" w="-1" h="-1" measuredW="65" measuredH="21" zOrder="20" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>-121.9850</text>
+      </controlProperties>
+    </control>
+    <control controlID="85" controlTypeID="__group__" x="928" y="263" w="341" h="259" measuredW="341" measuredH="259" zOrder="21" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::RoundButton" x="172" y="125" w="22" h="22" measuredW="32" measuredH="32" zOrder="0" locked="false" isInGroup="85">
+          <controlProperties>
+            <borderColor>10066329</borderColor>
+            <color>2848996</color>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::Image" x="0" y="0" w="341" h="259" measuredW="480" measuredH="364" zOrder="1" locked="false" isInGroup="85">
+          <controlProperties>
+            <crop>0%2C40%2C1000%2C784</crop>
+            <src>./assets/bathy_soquel_canyon_480x465.png</src>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="2" controlTypeID="com.balsamiq.mockups::RoundButton" x="135" y="157" w="16" h="16" measuredW="32" measuredH="32" zOrder="2" locked="false" isInGroup="85">
+          <controlProperties>
+            <borderColor>10066329</borderColor>
+            <color>2848996</color>
+            <text/>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="86" controlTypeID="com.balsamiq.mockups::Button" x="1162" y="536" w="107" h="34" measuredW="96" measuredH="27" zOrder="22" locked="false" isInGroup="-1">
+      <controlProperties>
+        <href>create-event-6d-gear%26bm%3Bcreate-event-6d-gear.bmml%26bm%3Bcreate-event-6d-gear.bmml%26bm%3Bcreate-event-6d-gear.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22831%2C521%2C938%2C555%22%20href%3D%22create-event-6d-gear.bmml%22%20alt%3D%22create-event-6d-gear%22%20id%3D%2286%22/%3E</map>
+        <text>Edit%20Location</text>
+      </controlProperties>
+    </control>
+    <control controlID="87" controlTypeID="com.balsamiq.mockups::Icon" x="703" y="697" w="-1" h="-1" measuredW="48" measuredH="48" zOrder="23" locked="false" isInGroup="-1">
+      <controlProperties>
+        <href>create-event-6d-gear%26bm%3Bcreate-event-6d-gear.bmml%26bm%3Bcreate-event-6d-gear.bmml%26bm%3Bcreate-event-6d-gear.bmml</href>
+        <icon>LeftArrowIcon%7Clarge</icon>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22372%2C682%2C420%2C730%22%20href%3D%22create-event-6d-gear.bmml%22%20alt%3D%22create-event-6d-gear%22%20id%3D%2287%22/%3E</map>
+      </controlProperties>
+    </control>
+    <control controlID="88" controlTypeID="com.balsamiq.mockups::SubTitle" x="879" y="205" w="-1" h="-1" measuredW="96" measuredH="33" zOrder="24" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Location</text>
       </controlProperties>
     </control>
   </controls>

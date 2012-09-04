@@ -52,42 +52,42 @@
         <text/>
       </controlProperties>
     </control>
-    <control controlID="43" controlTypeID="com.balsamiq.mockups::Label" x="410" y="263" w="-1" h="-1" measuredW="83" measuredH="21" zOrder="7" locked="true" isInGroup="-1">
+    <control controlID="43" controlTypeID="com.balsamiq.mockups::Label" x="410" y="263" w="-1" h="-1" measuredW="83" measuredH="21" zOrder="7" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Organization%20%3A</text>
       </controlProperties>
     </control>
-    <control controlID="44" controlTypeID="com.balsamiq.mockups::Label" x="410" y="306" w="-1" h="-1" measuredW="56" measuredH="21" zOrder="9" locked="true" isInGroup="-1">
+    <control controlID="44" controlTypeID="com.balsamiq.mockups::Label" x="410" y="290" w="-1" h="-1" measuredW="56" measuredH="21" zOrder="9" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Project%20%3A</text>
       </controlProperties>
     </control>
-    <control controlID="48" controlTypeID="com.balsamiq.mockups::Label" x="410" y="350" w="-1" h="-1" measuredW="80" measuredH="21" zOrder="10" locked="true" isInGroup="-1">
+    <control controlID="48" controlTypeID="com.balsamiq.mockups::Label" x="410" y="318" w="-1" h="-1" measuredW="80" measuredH="21" zOrder="10" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Data%20Sheet%20%3A</text>
       </controlProperties>
     </control>
-    <control controlID="55" controlTypeID="com.balsamiq.mockups::Label" x="410" y="396" w="-1" h="-1" measuredW="46" measuredH="21" zOrder="8" locked="true" isInGroup="-1">
+    <control controlID="55" controlTypeID="com.balsamiq.mockups::Label" x="410" y="345" w="-1" h="-1" measuredW="46" measuredH="21" zOrder="8" locked="false" isInGroup="-1">
       <controlProperties>
         <text>State%20%3A</text>
       </controlProperties>
     </control>
-    <control controlID="66" controlTypeID="com.balsamiq.mockups::Label" x="523" y="263" w="-1" h="-1" measuredW="105" measuredH="21" zOrder="11" locked="true" isInGroup="-1">
+    <control controlID="66" controlTypeID="com.balsamiq.mockups::Label" x="523" y="263" w="-1" h="-1" measuredW="105" measuredH="21" zOrder="11" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Save%20Our%20Shores</text>
       </controlProperties>
     </control>
-    <control controlID="67" controlTypeID="com.balsamiq.mockups::Label" x="523" y="306" w="-1" h="-1" measuredW="91" measuredH="21" zOrder="12" locked="true" isInGroup="-1">
+    <control controlID="67" controlTypeID="com.balsamiq.mockups::Label" x="523" y="290" w="-1" h="-1" measuredW="91" measuredH="21" zOrder="12" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Beach%20Cleanup</text>
       </controlProperties>
     </control>
-    <control controlID="68" controlTypeID="com.balsamiq.mockups::Label" x="523" y="350" w="-1" h="-1" measuredW="176" measuredH="21" zOrder="13" locked="true" isInGroup="-1">
+    <control controlID="68" controlTypeID="com.balsamiq.mockups::Label" x="523" y="318" w="-1" h="-1" measuredW="176" measuredH="21" zOrder="13" locked="false" isInGroup="-1">
       <controlProperties>
         <text>SOS%202011-2012%20Cleanup%20Data</text>
       </controlProperties>
     </control>
-    <control controlID="69" controlTypeID="com.balsamiq.mockups::Label" x="523" y="396" w="-1" h="-1" measuredW="58" measuredH="21" zOrder="14" locked="true" isInGroup="-1">
+    <control controlID="69" controlTypeID="com.balsamiq.mockups::Label" x="523" y="345" w="-1" h="-1" measuredW="58" measuredH="21" zOrder="14" locked="false" isInGroup="-1">
       <controlProperties>
         <text>California</text>
       </controlProperties>
@@ -99,7 +99,7 @@
         <text>Edit</text>
       </controlProperties>
     </control>
-    <control controlID="72" controlTypeID="com.balsamiq.mockups::Label" x="410" y="439" w="-1" h="-1" measuredW="76" measuredH="21" zOrder="16" locked="false" isInGroup="-1">
+    <control controlID="72" controlTypeID="com.balsamiq.mockups::Label" x="410" y="373" w="-1" h="-1" measuredW="76" measuredH="21" zOrder="16" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Events%20File%20%3A</text>
       </controlProperties>
@@ -140,7 +140,7 @@
         <text>Update%20Location</text>
       </controlProperties>
     </control>
-    <control controlID="87" controlTypeID="com.balsamiq.mockups::Label" x="523" y="439" w="-1" h="-1" measuredW="224" measuredH="21" zOrder="24" locked="false" isInGroup="-1">
+    <control controlID="87" controlTypeID="com.balsamiq.mockups::Label" x="523" y="373" w="-1" h="-1" measuredW="224" measuredH="21" zOrder="24" locked="false" isInGroup="-1">
       <controlProperties>
         <text>C%3A%5CDocs%5CSOS_Beach_Cleanup_Table</text>
       </controlProperties>
