@@ -57,7 +57,7 @@ class DataSheetFieldInline(admin.TabularInline):
     }
     
 class DataSheetAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'sheetname', 'created_by', 'year_started')
+    list_display = ('__unicode__', 'sheetname', 'type_id', 'created_by', 'year_started')
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -126,7 +126,7 @@ class EventTypeAdmin(admin.ModelAdmin):
     }
     
 class EventAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'proj_id', 'type_id', 'cleanupdate', 'datasheet_id', 'sitename', 'lat', 'lon', 'city', 'state', 'county')
+    list_display = ('__unicode__', 'proj_id', 'cleanupdate', 'datasheet_id', 'sitename', 'lat', 'lon', 'city', 'state', 'county')
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()

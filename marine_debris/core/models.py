@@ -24,45 +24,7 @@ class Organization (models.Model):
         
     class Meta:
         ordering = ['orgname']
-    
-class Project (models.Model):
-    projname = models.TextField()
-    organization = models.ManyToManyField(Organization, through='ProjectOrganization')
-    website = models.TextField(blank=True, null=True)
-    contact_name = models.TextField(blank=True, null=True)
-    contact_email = models.TextField(blank=True, null=True)
-    contact_phone = models.TextField(blank=True, null=True)
-    
-    def __unicode__(self):
-        return self.projname
-        
-    class Meta:
-        ordering = ['projname']
-    
-class ProjectOrganization (models.Model):
-    organization_id = models.ForeignKey(Organization)
-    project_id = models.ForeignKey(Project)
-    is_lead = models.BooleanField(default=False)
-    
-    def __unicode__(self):
-        readable_name = self.organization_id.orgname + '-' + self.project_id.projname
-        return readable_name
-        
-    class Meta:
-        ordering = ['organization_id__orgname', 'project_id__projname']
 
-class Media (models.Model):
-    type = models.TextField()
-    filename = models.TextField()
-    proj_id = models.ForeignKey(Project)
-    published = models.DateTimeField( blank=True, null=True, default=datetime.datetime.now)
-    
-    def __unicode__(self):
-        return self.proj_id.projname + '-' + self.filename
-        
-    class Meta:
-        ordering = ['proj_id__projname', 'filename']
-    
 class Category (models.Model):
     name = models.TextField()
     
@@ -100,12 +62,23 @@ class Field (models.Model):
     class Meta:
         ordering = ['internal_name']
     
+class EventType (models.Model):
+    type = models.TextField()
+    
+    def __unicode__(self):
+        return self.type
+        
+    class Meta:
+        ordering = ['type']
+        
+    
 class DataSheet (models.Model):
     sheetname = models.TextField()
     created_by = models.ForeignKey(Organization)
     year_started = models.IntegerField()
-    media_id = models.ForeignKey(Media, blank=True, null=True)
+    # media_id = models.ForeignKey(Media, blank=True, null=True)
     field = models.ManyToManyField(Field, through='DataSheetField')
+    type_id = models.ForeignKey(EventType, null=True, blank=True)
     
     def __unicode__(self):
         return self.sheetname
@@ -129,15 +102,56 @@ class DataSheetField (models.Model):
     class Meta:
         ordering = ['field_name', 'sheet_id__sheetname', 'field_id__internal_name']
     
-class EventType (models.Model):
-    type = models.TextField()
+class Project (models.Model):
+    projname = models.TextField()
+    organization = models.ManyToManyField(Organization, through='ProjectOrganization')
+    website = models.TextField(blank=True, null=True)
+    contact_name = models.TextField(blank=True, null=True)
+    contact_email = models.TextField(blank=True, null=True)
+    contact_phone = models.TextField(blank=True, null=True)
+    active_sheets = models.ManyToManyField(DataSheet, through='ProjectDataSheet')
     
     def __unicode__(self):
-        return self.type
+        return self.projname
         
     class Meta:
-        ordering = ['type']
+        ordering = ['projname']
     
+class ProjectOrganization (models.Model):
+    organization_id = models.ForeignKey(Organization)
+    project_id = models.ForeignKey(Project)
+    is_lead = models.BooleanField(default=False)
+    
+    def __unicode__(self):
+        readable_name = self.organization_id.orgname + '-' + self.project_id.projname
+        return readable_name
+        
+    class Meta:
+        ordering = ['organization_id__orgname', 'project_id__projname']
+
+class Media (models.Model):
+    type = models.TextField()
+    filename = models.TextField()
+    proj_id = models.ForeignKey(Project)
+    published = models.DateTimeField( blank=True, null=True, default=datetime.datetime.now)
+    
+    def __unicode__(self):
+        return self.proj_id.projname + '-' + self.filename
+        
+    class Meta:
+        ordering = ['proj_id__projname', 'filename']
+    
+class ProjectDataSheet (models.Model):
+    project_id = models.ForeignKey(Project)
+    sheet_id = models.ForeignKey(DataSheet)
+    
+    def __unicode__(self):
+        readable_name = self.project_id.projname + '-' + self.sheet_id.sheetname
+        return readable_name
+        
+    class Meta:
+        ordering = ['project_id__projname', 'sheet_id__sheetname']
+        
 class Event (models.Model):
     stateChoices = (
         ('WA', 'Washington'),
@@ -146,7 +160,6 @@ class Event (models.Model):
     )
     datasheet_id = models.ForeignKey(DataSheet)
     proj_id = models.ForeignKey(Project)
-    type_id = models.ForeignKey(EventType)
     cleanupdate = models.DateTimeField(default=datetime.date.today)
     sitename = models.TextField(blank=True, null=True)
     lat = models.FloatField(blank=True, null=True, validators=[MinValueValidator(32.5), MaxValueValidator(49.1)])
