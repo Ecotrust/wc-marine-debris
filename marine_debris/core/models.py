@@ -3,9 +3,30 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 import datetime
 
 # Create your models here.
+class DataType (models.Model):
+    name = models.TextField()
+    # dataTypeChoices = (
+        # ('area', 'Area'),
+        # ('boolean', 'True/False'),
+        # ('date', 'Date'),
+        # ('distance', 'Distance'),
+        # ('duration', 'Duration'),
+        # ('location', 'Location'),
+        # ('number', 'Number'),
+        # ('text', 'Text'),
+        # ('volume', 'Volume'),
+        # ('weight', 'Weight'),
+        # ('yes_no', 'Yes/No'),
+        # ('other', 'Other')
+    # )
+    
+    def __unicode__(self):
+        return self.name
+
 class Unit (models.Model):
     short_name = models.TextField()
     long_name = models.TextField()
+    data_type = models.ForeignKey(DataType, null=True, blank=True)
     
     def __unicode__(self):
         return self.long_name
@@ -25,7 +46,7 @@ class Organization (models.Model):
     class Meta:
         ordering = ['orgname']
 
-class Category (models.Model):
+class Grouping (models.Model):
     name = models.TextField()
     
     def __unicode__(self):
@@ -33,25 +54,26 @@ class Category (models.Model):
         
     class Meta:
         ordering = ['name']
-
+        
 class Field (models.Model):
-    dataTypeChoices = (
-        ('area', 'Area'),
-        ('boolean', 'True/False'),
-        ('date', 'Date'),
-        ('distance', 'Distance'),
-        ('duration', 'Duration'),
-        ('location', 'Location'),
-        ('number', 'Number'),
-        ('text', 'Text'),
-        ('volume', 'Volume'),
-        ('weight', 'Weight'),
-        ('yes_no', 'Yes/No'),
-        ('other', 'Other')
-    )
+    # dataTypeChoices = (
+        # ('area', 'Area'),
+        # ('boolean', 'True/False'),
+        # ('date', 'Date'),
+        # ('distance', 'Distance'),
+        # ('duration', 'Duration'),
+        # ('location', 'Location'),
+        # ('number', 'Number'),
+        # ('text', 'Text'),
+        # ('volume', 'Volume'),
+        # ('weight', 'Weight'),
+        # ('yes_no', 'Yes/No'),
+        # ('other', 'Other')
+    # )
     unit_id = models.ForeignKey(Unit, blank=True, null=True) 
     internal_name = models.TextField()
-    datatype = models.CharField(max_length=255, choices=dataTypeChoices)
+    datatype = models.ForeignKey(DataType, blank=True, null=True)
+    # datatype = models.CharField(blank=True, null=True, max_length=255, choices=dataTypeChoices)
     minvalue = models.IntegerField(blank=True, null=True)
     maxvalue = models.IntegerField(blank=True, null=True)
     default_value = models.TextField(blank=True, null=True)  #TODO: What type should this be? Should it be part of Unit? FieldValue?
@@ -64,6 +86,7 @@ class Field (models.Model):
     
 class EventType (models.Model):
     type = models.TextField()
+    display_sites = models.BooleanField(default=True)
     
     def __unicode__(self):
         return self.type
@@ -92,7 +115,7 @@ class DataSheetField (models.Model):
     field_name = models.TextField()
     print_name = models.TextField(blank=True, null=True)
     unit_id = models.ForeignKey(Unit, blank=True, null=True)
-    category = models.ForeignKey(Category, null=True, blank=True)
+    grouping = models.ForeignKey(Grouping, null=True, blank=True)   #TODO: Name 'category' already claimed. Maybe 'group' or 'subgroup'?
     required = models.BooleanField(default=False)
     
     def __unicode__(self):
@@ -167,6 +190,7 @@ class Event (models.Model):
     city = models.TextField(blank=True, null=True)
     state = models.CharField(blank=True, null=True, max_length=30, choices=stateChoices)
     county = models.TextField(blank=True, null=True)
+    # type_id = models.ForeignKey(EventType, null=True, blank=True)
     
     def __unicode__(self):
         return self.proj_id.projname + '-' + self.sitename + '-' + self.cleanupdate.date().isoformat()

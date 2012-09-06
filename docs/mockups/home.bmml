@@ -7,6 +7,8 @@
     </control>
     <control controlID="9" controlTypeID="com.balsamiq.mockups::ButtonBar" x="1079" y="101" w="259" h="36" measuredW="255" measuredH="36" zOrder="3" locked="false" isInGroup="-1">
       <controlProperties>
+        <hrefs>data-location-map%26bm%3Bdata-location-map.bmml%26bm%3Bdata-location-map.bmml%26bm%3Bdata-location-map.bmml%2C%2C</hrefs>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22748%2C86%2C821%2C122%22%20href%3D%22data-location-map.bmml%22%20alt%3D%22data-location-map%22%20id%3D%229_0%22/%3E%0A</map>
         <selectedIndex>-1</selectedIndex>
         <size>20</size>
         <text>Data%2C%20News%2C%20Partners</text>
