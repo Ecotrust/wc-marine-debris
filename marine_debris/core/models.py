@@ -77,6 +77,7 @@ class Field (models.Model):
     minvalue = models.IntegerField(blank=True, null=True)
     maxvalue = models.IntegerField(blank=True, null=True)
     default_value = models.TextField(blank=True, null=True)  #TODO: What type should this be? Should it be part of Unit? FieldValue?
+    required = models.BooleanField(default=False)
     
     def __unicode__(self):
         return self.internal_name
@@ -86,14 +87,13 @@ class Field (models.Model):
     
 class EventType (models.Model):
     type = models.TextField()
-    display_sites = models.BooleanField(default=True)
+    display_sites = models.BooleanField(default=True, help_text="Use \'Display Sites\' to determine if site-names will be used - primarily for beach cleanups, and not for derelict gear")
     
     def __unicode__(self):
         return self.type
         
     class Meta:
         ordering = ['type']
-        
     
 class DataSheet (models.Model):
     sheetname = models.TextField()

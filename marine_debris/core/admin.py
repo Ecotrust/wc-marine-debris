@@ -59,7 +59,7 @@ class DataSheetFieldInline(admin.TabularInline):
     }
     
 class DataSheetAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'sheetname', 'type_id', 'created_by', 'year_started')
+    list_display = ('__unicode__', 'sheetname', 'type_id', 'created_by', 'year_started', 'type_id')
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
