@@ -2,6 +2,9 @@
 
 {% block content %}
     <h1>Events</h1>
+{% endblock %}
+    
+{% block leftcontent %}
     <table class="table table-condensed" style="width:450px">
 {% for r in result %}
     <tr><td><a href="/event/view/{{r.event.id}}">{{r.event}}</a></td>

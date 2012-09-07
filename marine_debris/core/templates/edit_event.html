@@ -2,6 +2,8 @@
 
 {% block content %}
     <h1>{{event}}</h1>
+{% endblock %}
+{% block leftcontent %}
     <h2>ID: {{event.id}}</h2>
     <form class="event-form" method="post" action="{% if action %}{{ action }}{% else %}{{event.id}}{% endif %}">
     {% csrf_token %}

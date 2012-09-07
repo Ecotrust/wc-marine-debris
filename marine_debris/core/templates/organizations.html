@@ -2,6 +2,8 @@
 
 {% block content %}
     <h1>Organizations</h1>
+{% endblock %}    
+{% block leftcontent %}
 {% for r in result %}
     <p>{{r.organization}}</p>
 {% endfor %}    

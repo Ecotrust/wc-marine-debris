@@ -2,6 +2,8 @@
 
 {% block content %}
     <h1>Datasheets</h1>
+{% endblock %}    
+{% block leftcontent %}
 {% for r in result %}
     <p>{{r.datasheet}}</p>
 {% endfor %}    

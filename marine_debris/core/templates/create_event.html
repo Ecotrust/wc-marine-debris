@@ -7,6 +7,8 @@
 
 {% block content %}
     <h1>Create a New Event</h1>
+{% endblock %}    
+{% block leftcontent %}
     {% if error %}<p style="color:red">{{error}}</p>{% endif %}
     <form class="event-form" method="post" action="{% if action %}{{ action }}{% else %}create{% endif %}">
     {% csrf_token %}
