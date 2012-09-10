@@ -5,20 +5,6 @@ import datetime
 # Create your models here.
 class DataType (models.Model):
     name = models.TextField()
-    # dataTypeChoices = (
-        # ('area', 'Area'),
-        # ('boolean', 'True/False'),
-        # ('date', 'Date'),
-        # ('distance', 'Distance'),
-        # ('duration', 'Duration'),
-        # ('location', 'Location'),
-        # ('number', 'Number'),
-        # ('text', 'Text'),
-        # ('volume', 'Volume'),
-        # ('weight', 'Weight'),
-        # ('yes_no', 'Yes/No'),
-        # ('other', 'Other')
-    # )
     
     def __unicode__(self):
         return self.name
@@ -55,25 +41,20 @@ class Grouping (models.Model):
     class Meta:
         ordering = ['name']
         
+class AnswerOption(models.Model):
+    eng_text = models.TextField()
+    display_order = models.FloatField()
+    
+    class Meta:
+        ordering = ['display_order']
+        
+    def __unicode__(self):
+        return self.eng_text
+        
 class Field (models.Model):
-    # dataTypeChoices = (
-        # ('area', 'Area'),
-        # ('boolean', 'True/False'),
-        # ('date', 'Date'),
-        # ('distance', 'Distance'),
-        # ('duration', 'Duration'),
-        # ('location', 'Location'),
-        # ('number', 'Number'),
-        # ('text', 'Text'),
-        # ('volume', 'Volume'),
-        # ('weight', 'Weight'),
-        # ('yes_no', 'Yes/No'),
-        # ('other', 'Other')
-    # )
     unit_id = models.ForeignKey(Unit, blank=True, null=True) 
     internal_name = models.TextField()
     datatype = models.ForeignKey(DataType, default=8)
-    # datatype = models.CharField(blank=True, null=True, max_length=255, choices=dataTypeChoices)
     minvalue = models.IntegerField(blank=True, null=True)
     maxvalue = models.IntegerField(blank=True, null=True)
     default_value = models.TextField(blank=True, null=True)  #TODO: What type should this be? Should it be part of Unit? FieldValue?
@@ -116,6 +97,7 @@ class DataSheetField (models.Model):
     print_name = models.TextField(blank=True, null=True)
     unit_id = models.ForeignKey(Unit, blank=True, null=True)
     grouping = models.ForeignKey(Grouping, null=True, blank=True)   #TODO: Name 'category' already claimed. Maybe 'group' or 'subgroup'?
+    answer_options = models.ManyToManyField(AnswerOption, help_text='if a list question, multi-select valid responses', blank=True, null=True)
     required = models.BooleanField(default=False)
     
     def __unicode__(self):

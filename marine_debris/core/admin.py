@@ -14,6 +14,7 @@ databrowse.site.register(Unit)
 databrowse.site.register(Organization)
 databrowse.site.register(Media)
 databrowse.site.register(Grouping)
+databrowse.site.register(AnswerOption)
 databrowse.site.register(Project)
 databrowse.site.register(ProjectOrganization)
 databrowse.site.register(EventType)
@@ -50,8 +51,15 @@ class GroupingAdmin(admin.ModelAdmin):
         },
     }
     
+class AnswerOptionAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.TextField: {
+            'widget': TextInput()
+        },
+    }
+
 class DataSheetFieldInline(admin.TabularInline):
-    model = DataSheet.field.through
+    model = DataSheetField
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -156,6 +164,7 @@ admin.site.register(Unit,UnitAdmin)
 admin.site.register(Organization,OrganizationAdmin)
 admin.site.register(Media,MediaAdmin)
 admin.site.register(Grouping,GroupingAdmin)
+admin.site.register(AnswerOption,AnswerOptionAdmin)
 admin.site.register(Field,FieldAdmin)
 admin.site.register(FieldValue,FieldValueAdmin)
 admin.site.register(DataType,DataTypeAdmin)
