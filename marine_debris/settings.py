@@ -107,6 +107,16 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'set-in-local-settings',
+    },
+}
+
+HAYSTACK_SITECONF='set-in-local-settings'
+
+HAYSTACK_SEARCH_ENGINE='set-in-local-settings'
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -120,7 +130,8 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'core',
     'south',
-    'registration_custom'
+    'registration_custom',
+    'haystack'
 )
 
 # A sample logging configuration. The only tangible logging
