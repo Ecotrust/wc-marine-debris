@@ -1,9 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div id="wrapper">
+<h1>Log in</h1>
+{% endblock %}
+{% block leftcontent %}
+<!--<div id="wrapper">
 <div id="fronttopbox"></div>
-<div id="frontleftbox">
+<div id="frontleftbox">-->
     <h2 style="margin-top:10px;">Please sign in to edit this database</h2>
     {% if not user.is_authenticated %}
         <form method="post" action="?next={{ next|default:"/" }}">
@@ -29,16 +32,20 @@
                 </dt>
             </dl>
         </form>
+    {% else %}
+        <p>You are already signed in | <b>{{user.email|escape}}</b></p>
+    {% endif %}
 
+{% endblock %}
+{% block rightcontent %}
+    {% if not user.is_authenticated %}
         {% if user.SELF_REGISTRATION %}
             <p style='margin-left: 40px; margin-top: 30px'><b><a href='/accounts/register'>Create a new account</a></b></p>
         {% else %}
             <p>If you do not have an account created, but need to make changes to this data, please contact your project lead or organization contact and request to have an account created.</p>
         {% endif %}
-    {% else %}
-        <p>You are already signed in | <b>{{user.email|escape}}</b></p>
     {% endif %}
-</div>
+<!--</div>-->
 
 <br class="clearboth" />
 <div id="footer"> Browser requirements: Internet Explorer 7+, FireFox 1.5+, Safari 3+, Opera 9+, Google Chrome 2+. 
