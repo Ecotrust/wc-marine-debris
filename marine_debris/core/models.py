@@ -72,7 +72,7 @@ class Field (models.Model):
     # )
     unit_id = models.ForeignKey(Unit, blank=True, null=True) 
     internal_name = models.TextField()
-    datatype = models.ForeignKey(DataType, blank=True, null=True)
+    datatype = models.ForeignKey(DataType, default=8)
     # datatype = models.CharField(blank=True, null=True, max_length=255, choices=dataTypeChoices)
     minvalue = models.IntegerField(blank=True, null=True)
     maxvalue = models.IntegerField(blank=True, null=True)

@@ -33,7 +33,7 @@ class DataSheetForm(forms.Form):
             dynamic_args['required']=question.required
             answer = answers.filter(field_id = question.field_id.id)
             
-            if question.field_id.datatype == 'area' or question.field_id.datatype == 'distance' or question.field_id.datatype == 'duration' or question.field_id.datatype == 'number' or question.field_id.datatype == 'volume' or question.field_id.datatype == 'weight': # decimal
+            if question.field_id.datatype.name == 'Area' or question.field_id.datatype.name == 'Distance' or question.field_id.datatype.name == 'Duration' or question.field_id.datatype.name == 'Number' or question.field_id.datatype.name == 'Volume' or question.field_id.datatype.name == 'Weight': # decimal
                 if question.field_id.minvalue != None:
                     dynamic_args['min_value']=int(question.field_id.minvalue)
                 if question.field_id.maxvalue != None:
@@ -44,7 +44,7 @@ class DataSheetForm(forms.Form):
                     dynamic_args['initial']=int(question.field_id.default_value)
                 self.fields['question_' + str(question.id) + '_' + self.event_id] = forms.FloatField( **dynamic_args )
                 
-            elif question.field_id.datatype == 'boolean':
+            elif question.field_id.datatype.name == 'True/False':
                 if answer.count() == 1:
                     dynamic_args['initial']=answer[0].field_value
                 elif question.field_id.default_value != '':
@@ -52,7 +52,7 @@ class DataSheetForm(forms.Form):
                 dynamic_args['required'] = False
                 self.fields['question_' + str(question.id) + '_' + self.event_id] = forms.BooleanField( **dynamic_args )
                 
-            elif question.field_id.datatype == 'date':
+            elif question.field_id.datatype.name == 'Date':
                 if answer.count() == 1:
                     try:
                         dynamic_args['initial']=datetime.datetime.strptime(answer[0].field_value, "%Y-%m-%d %H:%M:%S.%f")
@@ -74,9 +74,9 @@ class DataSheetForm(forms.Form):
                 dynamic_args['widget']=forms.TextInput(attrs={'class':'date'})
                 self.fields['question_' + str(question.id) + '_' + self.event_id] = forms.CharField( **dynamic_args )
                 
-                # elif question.field_id.datatype == 'location':
+                # elif question.field_id.datatype.name == 'Location':
             
-            elif question.field_id.datatype == 'yes_no':
+            elif question.field_id.datatype.name == 'Yes/No':
                 options = (('yes', 'Yes'), ('no', 'No'))
                 dynamic_args['choices'] = options
                 if answer.count() == 1:
@@ -85,13 +85,14 @@ class DataSheetForm(forms.Form):
                     dynamic_args['initial']=question.field_id.default_value
                 self.fields['question_' + str(question.id) + '_' + self.event_id] = forms.ChoiceField( **dynamic_args )
             
-            elif question.field_id.datatype == 'text' or question.field_id.datatype == 'location' or question.field_id.datatype == 'other':
+            # elif question.field_id.datatype.name == 'Text' or question.field_id.datatype.name == 'Location' or question.field_id.datatype.name == 'Other':
+            else:
                 if answer.count() == 1:
                     dynamic_args['initial']=answer[0].field_value
                 elif question.field_id.default_value != '':
                     dynamic_args['initial']=question.field_id.default_value
                 self.fields['question_' + str(question.id) + '_' + self.event_id] = forms.CharField( **dynamic_args )
-            
+
             self.fields['question_' + str(question.id) + '_' + self.event_id].question = question
             self.fields['question_' + str(question.id) + '_' + self.event_id].answer = answer
             self.fields['question_' + str(question.id) + '_' + self.event_id].event = event

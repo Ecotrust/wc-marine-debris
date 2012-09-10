@@ -2,6 +2,8 @@
     
 {% block content %}
     <h1>Fill Out Data Sheet</h1>
+{% endblock %}
+{% block leftcontent %}
     {% if error %}<p style="color:red">{{error}}</p>{% endif %}
     <form class="datasheet-form" method="post" {% if action %}action="{{ action }}"{% endif %}>
     {% csrf_token %}

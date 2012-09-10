@@ -107,8 +107,6 @@ def datasheets(request):
 @login_required
 def fill_datasheet(request, datasheet_id, event_id):
     if request.method == 'GET':
-        # import pdb
-        # pdb.set_trace()
         form = DataSheetForm(datasheet_id, event_id)
         return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'active':'datasheets'}))
     else:
