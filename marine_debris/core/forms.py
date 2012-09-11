@@ -16,6 +16,30 @@ class EventForm(forms.ModelForm):
             'county': TextInput(),
         }
         
+class CreateEventForm(forms.Form):
+    org_choices = []
+    for org in Organization.objects.all():
+        org_choices.append((org, org.orgname))
+    proj_choices = []
+    for proj in Project.objects.all():
+        proj_choices.append((proj, proj.projname))
+    ds_choices = []
+    for ds in DataSheet.objects.all():
+        ds_choices.append((ds, ds.sheetname))
+    # for state in State.objects.all():
+        # state_choices.append((state.initials, state.name))
+    organization = forms.ChoiceField(org_choices)
+    project = forms.ChoiceField(proj_choices)
+    date = forms.DateField()
+    data_sheet = forms.ChoiceField(ds_choices)
+    # state = forms.ChoiceField(state_choices)
+    
+    def save(self):
+        #TODO: either store this temporarily or create the event if possible
+        return True
+        
+    
+        
 class DataSheetForm(forms.Form):
     def __init__(self, datasheet_id, event_id, *args, **kwargs):
         self.datasheet_id = datasheet_id

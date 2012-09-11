@@ -27,23 +27,42 @@ def events(request):
     qs = Event.objects.filter()
     result = []
     for event in qs.all(): 
-        result.append({'event':event})
+        event_details = {}
+        event_details['date'] = event.cleanupdate.strftime('%m/%d/%Y')
+        proj = event.proj_id
+        orgs = ProjectOrganization.objects.filter(project_id = proj.id)
+        lead_org = orgs.filter(is_lead=True)
+        if lead_org.count() == 1:
+            event_details['org'] = lead_org[0]
+        else:
+            event_details['org'] = orgs[0]
+        org = Organization.objects.filter()
+        event_details['event'] = event
+        result.append({'event_details':event_details})
             
     return render_to_response( 'events.html', RequestContext(request,{'result':result, 'active':'events'}))
     
 @login_required
 def create_event(request):
     if request.method == 'GET':
-        form = EventForm()
+        form = CreateEventForm()
+        #TODO: make dummy location objects here
         return render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'active':'events'}))
     else :
-        eventForm = EventForm
+        #TODO: move to get location
+        eventForm = CreateEventForm
         form = eventForm(request.POST)
         if form.is_valid():
-            new_event = form.save()
-            datasheet_id = form.data['datasheet_id']
-            return HttpResponseRedirect('/datasheet/fill/'+datasheet_id+'/'+str(new_event.id))
+            # import pdb
+            # pdb.set_trace()
+            organization = form.data['organization']
+            new_event = {'proj_id': form.data['project'], 'cleanupdate': form.data['date'], 'datasheet_id': form.data['data_sheet']}
+            #TODO: create location form, pass it in RequestContext
+            
+            return render_to_response('create_event.html', RequestContext(request,{'event':new_event, 'form':form.as_p(), 'active':'events'}))
+            # return HttpResponseRedirect('/datasheet/fill/'+datasheet_id+'/'+str(new_event.id))
         else:
+            
             return render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'error':'Form is not valid, please review.', 'active':'events'}))
         
 @login_required    

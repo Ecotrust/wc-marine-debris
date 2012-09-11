@@ -7,6 +7,7 @@ from django.db import models
 databrowse.site.register(Field)
 databrowse.site.register(FieldValue)
 
+databrowse.site.register(State)
 databrowse.site.register(DataType)
 databrowse.site.register(DataSheet)
 databrowse.site.register(DataSheetField)
@@ -20,6 +21,14 @@ databrowse.site.register(ProjectOrganization)
 databrowse.site.register(EventType)
 databrowse.site.register(Event)
 
+class StateAdmin(admin.ModelAdmin):
+    list_display = ('name', 'initials')
+    formfield_overrides = {
+        models.TextField: {
+            'widget': TextInput()
+        },
+    }
+   
 class UnitAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'short_name')
     formfield_overrides = {
@@ -160,6 +169,7 @@ class EventAdmin(admin.ModelAdmin):
         },
     }
     
+admin.site.register(State,StateAdmin)
 admin.site.register(Unit,UnitAdmin)
 admin.site.register(Organization,OrganizationAdmin)
 admin.site.register(Media,MediaAdmin)

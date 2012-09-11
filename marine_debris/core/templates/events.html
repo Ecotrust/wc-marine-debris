@@ -1,5 +1,17 @@
 {% extends "base.html" %}
 
+{% block includes %}
+    <script src="{{MEDIA_URL}}third-party/OpenLayers-2.11/OpenLayers.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+        // Hack to support IE. See http://trac.openlayers.org/wiki/FrequentlyAskedQuestions#WhywontmyvectorlayerworkinIEbeforemypageisdoneloading
+        document.namespaces;
+        Ext.onReady(gwst.app.init, gwst.app);
+    </script>
+    {% if map %}
+        <script src="{{MEDIA_URL}}js/gwst/widgets/Map.js" type="text/javascript" charset="utf-8"></script>
+    {% endif %}
+{% endblock %}
+
 {% block content %}
     <h1>Events</h1>
 {% endblock %}
@@ -12,12 +24,13 @@
     <tr><td><a href="#">Name</a><th>Description</th><th>Location</th><th>Date</th><th>Organization</th><th>Project</th></tr>
 {% for r in result %}
     <tr id="event-row">
-      <td><a href="/event/view/{{r.event.id}}">{{r.event.id}}</a></td>
-      <td>{{r.event.datasheet_id.type_id}}</td>
-      <td>{{r.event.sitename}}</a></td>
-      <td>{{r.event.cleanupdate}}</td>
-      <td>[org]</td>
-      <td>{{r.event.proj_id.projname}}</td>
+      <td><a href="/event/view/{{r.event_details.event.id}}">{{r.event_details.event.id}}</a></td>
+      <td>{{r.event_details.event.datasheet_id.type_id}}</td>
+      <td>{{r.event_details.event.sitename}}</a></td>
+      <!--<td>{{r.event.cleanupdate}}</td>-->
+      <td>{{r.event_details.date}}</td>
+      <td>{{r.event_details.org}}</td>
+      <td>{{r.event_details.event.proj_id.projname}}</td>
     <!--  <td><form method="get" action="/event/edit/{{r.event.id}}">
         <input id="edit" class='btn' name="edit" type="submit" value="Edit"  />
     </form></td>
@@ -31,17 +44,16 @@
 
 {% endblock %}    
 {% block rightcontent %}
-    {% if map %}
-        <p>map!</p>
+    {%if data %}
+        <p>data!</p>
     {% else %}
-        {%if data %}
-            <p>data!</p>
+        {% if report %}
+            <p>report!</p>
         {% else %}
-            {% if report %}
-                <p>report!</p>
-            {% else %}
-                <p>BLANK</p>
-            {% endif %}
+            <p>map!</p>
+            <div id="map" class="smallmap olMap">
+                
+            </div>
         {% endif %}
     {% endif %}
 

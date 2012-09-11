@@ -8,29 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'DataSheetFieldOption'
-        db.create_table('core_datasheetfieldoption', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('answer_option_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.AnswerOption'])),
-            ('data_sheet_field_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.DataSheetField'])),
-        ))
-        db.send_create_signal('core', ['DataSheetFieldOption'])
-
-        # Adding model 'AnswerOption'
-        db.create_table('core_answeroption', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('eng_text', self.gf('django.db.models.fields.TextField')()),
-            ('display_order', self.gf('django.db.models.fields.FloatField')()),
-        ))
-        db.send_create_signal('core', ['AnswerOption'])
+        # Deleting field 'Event.state'
+        db.delete_column('core_event', 'state')
 
 
     def backwards(self, orm):
-        # Deleting model 'DataSheetFieldOption'
-        db.delete_table('core_datasheetfieldoption')
-
-        # Deleting model 'AnswerOption'
-        db.delete_table('core_answeroption')
+        # Adding field 'Event.state'
+        db.add_column('core_event', 'state',
+                      self.gf('django.db.models.fields.CharField')(max_length=30, null=True, blank=True),
+                      keep_default=False)
 
 
     models = {
@@ -51,7 +37,7 @@ class Migration(SchemaMigration):
         },
         'core.datasheetfield': {
             'Meta': {'ordering': "['field_name', 'sheet_id__sheetname', 'field_id__internal_name']", 'object_name': 'DataSheetField'},
-            'answer_options': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['core.AnswerOption']", 'through': "orm['core.DataSheetFieldOption']", 'symmetrical': 'False'}),
+            'answer_options': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['core.AnswerOption']", 'null': 'True', 'blank': 'True'}),
             'field_id': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['core.Field']"}),
             'field_name': ('django.db.models.fields.TextField', [], {}),
             'grouping': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['core.Grouping']", 'null': 'True', 'blank': 'True'}),
@@ -60,12 +46,6 @@ class Migration(SchemaMigration):
             'required': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'sheet_id': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['core.DataSheet']"}),
             'unit_id': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['core.Unit']", 'null': 'True', 'blank': 'True'})
-        },
-        'core.datasheetfieldoption': {
-            'Meta': {'ordering': "['data_sheet_field_id', 'answer_option_id']", 'object_name': 'DataSheetFieldOption'},
-            'answer_option_id': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['core.AnswerOption']"}),
-            'data_sheet_field_id': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['core.DataSheetField']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
         },
         'core.datatype': {
             'Meta': {'object_name': 'DataType'},
@@ -82,8 +62,7 @@ class Migration(SchemaMigration):
             'lat': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
             'lon': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
             'proj_id': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['core.Project']"}),
-            'sitename': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'state': ('django.db.models.fields.CharField', [], {'max_length': '30', 'null': 'True', 'blank': 'True'})
+            'sitename': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'})
         },
         'core.eventtype': {
             'Meta': {'ordering': "['type']", 'object_name': 'EventType'},
@@ -153,6 +132,12 @@ class Migration(SchemaMigration):
             'is_lead': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'organization_id': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['core.Organization']"}),
             'project_id': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['core.Project']"})
+        },
+        'core.state': {
+            'Meta': {'object_name': 'State'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'initials': ('django.db.models.fields.TextField', [], {}),
+            'name': ('django.db.models.fields.TextField', [], {})
         },
         'core.unit': {
             'Meta': {'ordering': "['long_name']", 'object_name': 'Unit'},

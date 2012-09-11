@@ -8,29 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Deleting model 'DataSheetFieldOption'
-        db.delete_table('core_datasheetfieldoption')
-
-        # Adding M2M table for field answer_options on 'DataSheetField'
-        db.create_table('core_datasheetfield_answer_options', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('datasheetfield', models.ForeignKey(orm['core.datasheetfield'], null=False)),
-            ('answeroption', models.ForeignKey(orm['core.answeroption'], null=False))
-        ))
-        db.create_unique('core_datasheetfield_answer_options', ['datasheetfield_id', 'answeroption_id'])
+        # Adding field 'Event.state'
+        db.add_column('core_event', 'state',
+                      self.gf('django.db.models.fields.related.ForeignKey')(default=1, to=orm['core.State']),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # Adding model 'DataSheetFieldOption'
-        db.create_table('core_datasheetfieldoption', (
-            ('data_sheet_field_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.DataSheetField'])),
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('answer_option_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.AnswerOption'])),
-        ))
-        db.send_create_signal('core', ['DataSheetFieldOption'])
-
-        # Removing M2M table for field answer_options on 'DataSheetField'
-        db.delete_table('core_datasheetfield_answer_options')
+        # Deleting field 'Event.state'
+        db.delete_column('core_event', 'state_id')
 
 
     models = {
@@ -77,7 +63,7 @@ class Migration(SchemaMigration):
             'lon': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
             'proj_id': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['core.Project']"}),
             'sitename': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'state': ('django.db.models.fields.CharField', [], {'max_length': '30', 'null': 'True', 'blank': 'True'})
+            'state': ('django.db.models.fields.related.ForeignKey', [], {'default': '1', 'to': "orm['core.State']"})
         },
         'core.eventtype': {
             'Meta': {'ordering': "['type']", 'object_name': 'EventType'},
@@ -147,6 +133,12 @@ class Migration(SchemaMigration):
             'is_lead': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'organization_id': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['core.Organization']"}),
             'project_id': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['core.Project']"})
+        },
+        'core.state': {
+            'Meta': {'ordering': "['name', 'initials']", 'object_name': 'State'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'initials': ('django.db.models.fields.TextField', [], {}),
+            'name': ('django.db.models.fields.TextField', [], {})
         },
         'core.unit': {
             'Meta': {'ordering': "['long_name']", 'object_name': 'Unit'},

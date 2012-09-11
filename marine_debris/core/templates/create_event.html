@@ -6,17 +6,27 @@
 
 
 {% block content %}
-    <h1>Create a New Event</h1>
+    <h1>WCGA Marine Debris Database</h1>
 {% endblock %}    
 {% block leftcontent %}
-    {% if error %}<p style="color:red">{{error}}</p>{% endif %}
-    <form class="event-form" method="post" action="{% if action %}{{ action }}{% else %}create{% endif %}">
-    {% csrf_token %}
-    {{form}}
-    <p><input id="submit" type="submit" value="Continue" class='btn' style="margin:15px"/>
-    {% if action %}<button type="button" class="event_cancel" id="cancel" value="Cancel">Cancel</button>{% endif %}
-    </p>
-    </form>
+    <h2>Create a New Event</h2>
+    <!--<form class="org-event-form" method="post" action="{% if action %}{{ action }}{% else %}create{% endif %}">
+        <select onChange="new_org()">
+            {% for org in organizations %}
+                <option value="{{org}}">{{org}}</option>
+            {% endfor %}
+        </select>
+    </form>-->
+    
+        {% if error %}<p style="color:red">{{error}}</p>{% endif %}
+        <form class="event-form" method="post" action="{% if action %}{{ action }}{% else %}create{% endif %}">
+        {% csrf_token %}
+        {{form}}
+        <p><input id="submit" type="submit" value="Continue" class='btn' style="margin:15px"/>
+        {% if action %}<button type="button" class="event_cancel" id="cancel" value="Cancel">Cancel</button>{% endif %}
+        </p>
+        </form>
+    
 {% endblock %}    
 
 {% block js %}
