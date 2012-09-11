@@ -39,6 +39,12 @@ h1{
     margin: auto;
 }
 
+.Highlight
+    {
+      background-color: #dcfac9;
+      cursor: pointer;
+    }
+
 
 /* ripped from MARCO */
 

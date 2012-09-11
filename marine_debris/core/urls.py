@@ -3,7 +3,8 @@ from django.contrib.auth.views import *
 
 from views import *
 
-urlpatterns = patterns('',                      
+urlpatterns = patterns('',
+    url(r'^search/', include('haystack.urls')),
     (r'^accounts/login/$', login, {'template_name': 'login.html'}),
     (r'^accounts/logout/$', 'django.contrib.auth.views.logout_then_login', {'login_url': '/accounts/login/'}),
     (r'^$', index ),

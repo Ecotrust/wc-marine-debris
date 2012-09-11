@@ -5,19 +5,66 @@
 {% endblock %}
     
 {% block leftcontent %}
-    <table class="table table-condensed" style="width:450px">
+    <h2>Search Database</h2>
+    <div style="height:30px; background-color: green;"><p>search here</p></div>
+    <div style="height:30px; background-color: lime;"><p>filters here</p></div>
+    <table class="table table-condensed" style="width:450px" id="events-table">
+    <tr><td><a href="#">Name</a><th>Description</th><th>Location</th><th>Date</th><th>Organization</th><th>Project</th></tr>
 {% for r in result %}
-    <tr><td><a href="/event/view/{{r.event.id}}">{{r.event}}</a></td>
-    <td><form method="get" action="/event/edit/{{r.event.id}}">
+    <tr id="event-row">
+      <td><a href="/event/view/{{r.event.id}}">{{r.event.id}}</a></td>
+      <td>{{r.event.datasheet_id.type_id}}</td>
+      <td>{{r.event.sitename}}</a></td>
+      <td>{{r.event.cleanupdate}}</td>
+      <td>[org]</td>
+      <td>{{r.event.proj_id.projname}}</td>
+    <!--  <td><form method="get" action="/event/edit/{{r.event.id}}">
         <input id="edit" class='btn' name="edit" type="submit" value="Edit"  />
     </form></td>
     <td><form method="get" action="/event/delete/{{r.event.id}}">
         <input id="delete-view" class='btn' name="delete-view" type="submit" value="Delete" />
-    </form></td>
+    </form></td>-->
     </tr>
 {% endfor %}    
     </table>
 <a class='btn' href="/event/create">Create New Event</a>
 
 {% endblock %}    
+{% block rightcontent %}
+    {% if map %}
+        <p>map!</p>
+    {% else %}
+        {%if data %}
+            <p>data!</p>
+        {% else %}
+            {% if report %}
+                <p>report!</p>
+            {% else %}
+                <p>BLANK</p>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+
+{% endblock %}
+
+{% block js %}
+    $(function ()
+    {
+      // Hide the first cell for JavaScript enabled browsers.
+      $('#events-table td:first-child').hide();
+
+      // Apply a class on mouse over and remove it on mouse out.
+      $('#events-table tr').hover(function ()
+      {
+        $(this).toggleClass('Highlight');
+      });
+  
+      // Assign a click handler that grabs the URL 
+      // from the first cell and redirects the user.
+      $('#events-table tr').click(function ()
+      {
+        location.href = $(this).find('td a').attr('href');
+      });
+    });
+{% endblock %}
     
