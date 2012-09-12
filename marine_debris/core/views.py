@@ -56,14 +56,20 @@ def create_event(request):
             # import pdb
             # pdb.set_trace()
             organization = form.data['organization']
-            new_event = {'proj_id': form.data['project'], 'cleanupdate': form.data['date'], 'datasheet_id': form.data['data_sheet']}
+            new_event = {'proj_id': form.data['project'], 'cleanupdate': form.data['date'], 'datasheet_id': form.data['data_sheet'], 'state':form.data['state']}
             #TODO: create location form, pass it in RequestContext
             
-            return render_to_response('create_event.html', RequestContext(request,{'event':new_event, 'form':form.as_p(), 'active':'events'}))
+            # return render_to_response('create_event.html', RequestContext(request,{'event':new_event, 'form':form.as_p(), 'active':'events'}))
             # return HttpResponseRedirect('/datasheet/fill/'+datasheet_id+'/'+str(new_event.id))
+            # return HttpResponseRedirect('/event/location/')
+            loc_form = EventLocationForm()
+            return render_to_response('event_location.html', RequestContext(request, {'form': loc_form, 'organization': organization, 'event':new_event, 'active':'events'}))
+            # event_location(request, organization, new_event)
         else:
             
             return render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'error':'Form is not valid, please review.', 'active':'events'}))
+        
+# def event_location(request, organization, event):
         
 @login_required    
 def edit_event(request, event_id):

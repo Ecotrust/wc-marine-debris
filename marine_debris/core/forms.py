@@ -26,19 +26,35 @@ class CreateEventForm(forms.Form):
     ds_choices = []
     for ds in DataSheet.objects.all():
         ds_choices.append((ds, ds.sheetname))
-    # for state in State.objects.all():
-        # state_choices.append((state.initials, state.name))
+    state_choices = []
+    for state in State.objects.all():
+        state_choices.append((state.initials, state.name))
     organization = forms.ChoiceField(org_choices)
     project = forms.ChoiceField(proj_choices)
-    date = forms.DateField()
+    date = forms.DateField(
+        widget=forms.TextInput(attrs={'class':'date'}))
     data_sheet = forms.ChoiceField(ds_choices)
-    # state = forms.ChoiceField(state_choices)
+    state = forms.ChoiceField(state_choices)
     
     def save(self):
         #TODO: either store this temporarily or create the event if possible
         return True
         
-    
+class EventLocationForm(forms.Form):
+    site_choices = [
+        ('Twin Lakes State Beach', 'Twin Lakes State Beach'),
+        ('Cowell Beach', 'Cowell Beach'),
+        ('Hidden Beach', 'Hidden Beach'),
+        ('Seacliff State Beach', 'Seacliff State Beach')
+    ]
+    format_choices = [
+        ('Decimal Degrees', 'DD.dddd, -DDD.dddd'),
+        ('Degrees Minutes Seconds Compass', 'DD MM\'SS"C and DD MM\'SS"C')
+    ]
+    site_name = forms.ChoiceField(site_choices)
+    format = forms.ChoiceField(format_choices)
+    latitude = forms.CharField()
+    longitude = forms.CharField()
         
 class DataSheetForm(forms.Form):
     def __init__(self, datasheet_id, event_id, *args, **kwargs):
