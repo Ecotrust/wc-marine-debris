@@ -30,7 +30,9 @@
 
 {% endblock %}
 </HEAD>
+{% block bodytag %}
 <BODY>
+{% endblock %}
 <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
 
@@ -88,6 +90,8 @@
 <SCRIPT src="/site-media/third-party/jquery/js/jquery-ui-1.8.23.custom.min.js" ></SCRIPT>
 <SCRIPT src="/site-media/third-party/timepicker/js/jquery-ui-timepicker-addon.js" ></SCRIPT>
 <SCRIPT src="/site-media/third-party/filamentgroup/jQuery.equalHeights.js" ></SCRIPT>
+{% block scripts %}
+{% endblock %}
 <SCRIPT>
 $('.row-fluid').equalHeights();
 {% block js %}

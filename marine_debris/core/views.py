@@ -61,15 +61,41 @@ def create_event(request):
             
             # return render_to_response('create_event.html', RequestContext(request,{'event':new_event, 'form':form.as_p(), 'active':'events'}))
             # return HttpResponseRedirect('/datasheet/fill/'+datasheet_id+'/'+str(new_event.id))
-            # return HttpResponseRedirect('/event/location/')
-            loc_form = EventLocationForm()
-            return render_to_response('event_location.html', RequestContext(request, {'form': loc_form, 'organization': organization, 'event':new_event, 'active':'events'}))
-            # event_location(request, organization, new_event)
+            return HttpResponseRedirect('/event/location')
         else:
-            
             return render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'error':'Form is not valid, please review.', 'active':'events'}))
-        
-# def event_location(request, organization, event):
+            
+
+@login_required            
+def event_location(request):
+    # import pdb
+    # pdb.set_trace()
+    if request.method == 'GET':
+        loc_form = EventLocationForm()
+        #TODO: This is dummy data - learn to create and save data from create_event view (django session? cookies?) and bring it here.
+        # organization = form.data['organization']
+        organization = 'Coast Savers'
+        # new_event = {'proj_id': form.data['project'], 'cleanupdate': form.data['date'], 'datasheet_id': form.data['data_sheet'], 'state':form.data['state']}
+        new_event = {'proj_id': 'Beach Cleanups', 'cleanupdate': '2012-09-05', 'datasheet_id': DataSheet.objects.get(sheetname='2009 ODFW Derelict Fishing Gear'), 'state':'CA'}
+        return render_to_response('event_location.html', RequestContext(request, {'form': loc_form, 'organization': organization, 'event':new_event, 'active':'events'}))
+    else:
+        #TODO: Populate an Event ModelForm and save it - capture the id to pass in the response redirect.
+        # event_form = EventForm()
+        # event_form.fields['proj_id'].initial = 'Beach Cleanups'
+        # event_form.fields['cleanupdate'].initial = '2012-09-05'
+        # event_form.fields['datasheet_id'].initial = DataSheet.objects.get(sheetname='2009 ODFW Derelict Fishing Gear')
+        # event_form.fields['state'].initial = 'CA'
+        # event_form.fields['sitename'].initial = form.data['site_name']
+        # event_form.fields['city'].initial = 'city'
+        # event_form.fields['county'].initial = 'county'
+        # event_form.fields['lat'].initial = form.data['latitude']
+        # event_form.fields['lon'].initial = form.data['longitude']
+        # 'proj_id', 'cleanupdate', 'datasheet_id', 'sitename', 'city', 'state', 'county', 'lat', 'lon'
+        # event = event_form.save()
+        # datasheet = DataSheet.objects.get(id=event.datasheet_id)
+        event = Event.objects.all()[0]
+        datasheet = DataSheet.objects.all()[4]
+        return HttpResponseRedirect('/datasheet/fill/'+str(event.id))
         
 @login_required    
 def edit_event(request, event_id):
@@ -86,7 +112,7 @@ def edit_event(request, event_id):
             else:
                 FieldValue.objects.filter(event_id=event).delete()
                 form.save()
-                return HttpResponseRedirect('/datasheet/fill/'+form.data['datasheet_id']+'/'+event_id)
+                return HttpResponseRedirect('/datasheet/fill/'+event_id)
             return HttpResponseRedirect('/events')
         else:
             return render_to_response( 'edit_event.html', RequestContext(request,{'event':event, 'form':form.as_p(), 'error':'Form is not valid, please review.', 'active':'events'}))
@@ -130,13 +156,17 @@ def datasheets(request):
     return render_to_response('datasheets.html', RequestContext(request, {'result':result, 'active':'datasheets'}))
     
 @login_required
-def fill_datasheet(request, datasheet_id, event_id):
+def fill_datasheet(request, event_id):
+    #TODO: add organization to be displayed
+    event = Event.objects.get(id=event_id)
     if request.method == 'GET':
-        form = DataSheetForm(datasheet_id, event_id)
-        return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'active':'datasheets'}))
+        organization = 'Coast Savers'
+        date = event.cleanupdate.date()
+        form = DataSheetForm(event)
+        return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'organization': organization, 'event':event, 'date':date, 'active':'datasheets'}))
     else:
         datasheetForm = DataSheetForm
-        form = datasheetForm(datasheet_id, event_id, request.POST)
+        form = datasheetForm(event, request.POST)
         if form.is_valid():
             new_datasheet = form.save()
             return HttpResponseRedirect('/events')
@@ -160,3 +190,6 @@ def projects(request):
         result.append({'project':project})
             
     return render_to_response( 'projects.html', RequestContext(request,{'result':result, 'active':'projects'}))    
+    
+def map_test(request):
+    return render_to_response('map-test.html', RequestContext(request, {}))

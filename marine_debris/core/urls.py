@@ -10,14 +10,15 @@ urlpatterns = patterns('',
     (r'^$', index ),
     url(r'^events$', events),
     url(r'^event/create$', create_event),
-    # url(r'^event/location$', event_location),
+    url(r'^event/location$', event_location),
     url(r'^event/edit/([A-Za-z0-9_-]+)$', edit_event),
     url(r'^event/view/([A-Za-z0-9_-]+)$', view_event),
     url(r'^event/delete/([A-Za-z0-9_-]+)$', delete_event),
     url(r'^organizations$', organizations),
     url(r'^projects$', projects),
     url(r'^datasheets$', datasheets),
-    url(r'^datasheet/fill/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)$', fill_datasheet),
-    url(r'^site-media/(?P<path>.*)$','django.views.static.serve',{'document_root': settings.MEDIA_ROOT, 'show_indexes': True})
+    url(r'^datasheet/fill/([A-Za-z0-9_-]+)$', fill_datasheet),
+    url(r'^site-media/(?P<path>.*)$','django.views.static.serve',{'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
+    url(r'^map-test$', map_test)
         
 )

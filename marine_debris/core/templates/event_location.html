@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
 {% block styles %}
-
+<link rel="stylesheet" href="/site-media/third-party/OpenLayers-2.11/theme/default/style.css" type="text/css">
+<link rel="stylesheet" href="/site-media/css/map_style.css" type="text/css">
 {% endblock %}
-
 
 {% block content %}
     <h1>WCGA Marine Debris Database</h1>
@@ -22,21 +22,43 @@
         <h2>Location</h2>
         <p>If you know the latitude and longitude of the derelict gear, enter it in the fields below. If not, select the approximate location on the map, and identify that this is an approximation using the checkbox below.</p>
         {% if error %}<p style="color:red">{{error}}</p>{% endif %}
-        <form class="event-form" method="post" action="{% if action %}{{ action }}{% else %}create{% endif %}">
+        <form class="event-form" method="post" action="{% if action %}{{ action }}{% else %}location{% endif %}">
         {% csrf_token %}
         {{form}}
-        <p>[[  Put a MAP here!  ]]</p>
         <p><input id="submit" type="submit" value="Continue" class='btn' style="margin:15px"/>
         {% if action %}<button type="button" class="event_cancel" id="cancel" value="Cancel">Cancel</button>{% endif %}
         </p>
         </form>
+        <div id="map" class="smallmap"></div>
     
 {% endblock %}    
 
 {% block js %}
 
+    function onload(event) {
+        init();
+    }
+
 	$(function() {
 		$( ".date" ).datepicker({dateFormat: 'yy-mm-dd'});
-	});
-    
+        $( "#id_site_name" ).on('change', function(){
+            var locations={
+                'None': ['',''],
+                'Twin Lakes State Beach': [36.962546,-121.997555],
+                'Cowell Beach': [36.961174,-122.024682],
+                'Hidden Beach': [36.95766,-121.889032],
+                'Seacliff State Beach': [36.973063,-121.916851]
+            }, location = $(this).val();
+            
+            $( "#id_latitude" ).val(locations[location][0]);
+            $( "#id_longitude" ).val(locations[location][1]);
+        })
+    });
+{% endblock %}
+
+{% block scripts %}
+
+        <script src="/site-media/third-party/OpenLayers-2.11/OpenLayers.js"></script>
+        <script src="/site-media/js/widgets/map.js"></script>
+
 {% endblock %}

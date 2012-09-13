@@ -1,9 +1,25 @@
 {% extends "base.html" %}
     
 {% block content %}
-    <h1>Fill Out Data Sheet</h1>
+    <h1>WCGA Marine Debris Database</h1>
 {% endblock %}
 {% block leftcontent %}
+    <h2>Create a New Event</h2>
+    <table>
+    <tr><td>Organization: </td><td>{{organization}}</td></tr>
+    <tr><td>Project: </td><td>{{event.proj_id}}</td></tr>
+    <tr><td>Date: </td><td>{{date}}</td></tr>
+    <tr><td>Data Sheet: </td><td>{{event.datasheet_id}}</td></tr>
+    <tr><td>State: </td><td>{{event.state}}</td></tr>
+    <tr><td>County: </td><td>{{event.county}}</td></tr>
+    <tr><td>Site: </td><td>{{event.sitename}}</td></tr>
+    <tr><td>Latitude: </td><td>{{event.lat}}</td></tr>
+    <tr><td>Longitude: </td><td>{{event.lon}}</td></tr>
+    
+    </table>
+{% endblock %}
+{% block rightcontent %}
+    <h2>Data Sheet Fields</h2>
     {% if error %}<p style="color:red">{{error}}</p>{% endif %}
     <form class="datasheet-form" method="post" {% if action %}action="{{ action }}"{% endif %}>
     {% csrf_token %}

@@ -1,0 +1,145 @@
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, code, del, dfn, em, img, q, dl, dt, dd, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
+    border: 0 none;
+    font-family: inherit;
+    font-size: 100%;
+    font-style: inherit;
+    font-weight: inherit;
+    margin: 0;
+    padding: 0;
+    vertical-align: baseline;
+}
+body {
+    line-height: 1.5;
+}
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+caption, th, td {
+    font-weight: normal;
+    text-align: left;
+}
+table, td, th {
+    vertical-align: middle;
+}
+blockquote:before, blockquote:after, q:before, q:after {
+    content: "";
+}
+blockquote, q {
+    quotes: "" "";
+}
+a img {
+    border: medium none;
+}
+body {
+    background: none repeat scroll 0 0 #FFFFFF;
+    color: #222222;
+    font-family: "Lucida Grande",Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
+    font-size: 80%;
+    margin: 1em 1.5em;
+}
+pre, code {
+    margin: 1.5em 0;
+    white-space: pre;
+}
+pre, code {
+    font: 1em/1.5 'andale mono','lucida console',monospace;
+}
+a[href] {
+    background-color: transparent;
+    color: #436976;
+}
+h1, h2, h3, h4, h5, h6 {
+    background-color: transparent;
+    color: #003A6B;
+    font: 100% 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
+    margin: 0;
+    padding-top: 0.5em;
+}
+h1 {
+    border-bottom: 1px solid #FCB100;
+    font-size: 130%;
+    margin-bottom: 0.5em;
+}
+h2 {
+    border-bottom: 1px solid #AAAAAA;
+    font-size: 120%;
+    margin-bottom: 0.5em;
+}
+h3 {
+    font-size: 110%;
+    margin-bottom: 0.5em;
+    text-decoration: underline;
+}
+h4 {
+    font-size: 100%;
+    font-weight: bold;
+}
+h5 {
+    font-size: 100%;
+    font-weight: bold;
+}
+h6 {
+    font-size: 80%;
+    font-weight: bold;
+}
+.olControlAttribution {
+    bottom: 5px;
+}
+.smallmap {
+    border: 1px solid #CCCCCC;
+    height: 256px;
+    width: 512px;
+}
+#tags {
+    display: none;
+}
+#docs p {
+    margin-bottom: 0.5em;
+}
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+#map {
+    background: none repeat scroll 0 0 #7391AD;
+    width: 100%;
+}
+#map {
+    border: 0 none;
+    height: 250px;
+}
+#title {
+    font-size: 1.3em;
+    line-height: 2em;
+    margin: 0;
+    padding: 0;
+    text-indent: 1em;
+}
+#docs {
+    bottom: 0;
+    padding: 1em;
+}
+#shortdesc {
+    color: #AAAAAA;
+    font-size: 0.8em;
+    padding: 1em;
+    text-align: right;
+}
+#tags {
+    display: none;
+}
+#shortdesc {
+    float: right;
+    width: 25%;
+}
+#map {
+    width: 70%;
+}
+#docs {
+    font-size: 12px;
+}
+body {
+}
