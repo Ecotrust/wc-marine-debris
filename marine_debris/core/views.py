@@ -61,7 +61,7 @@ def create_event(request):
             
             # return render_to_response('create_event.html', RequestContext(request,{'event':new_event, 'form':form.as_p(), 'active':'events'}))
             # return HttpResponseRedirect('/datasheet/fill/'+datasheet_id+'/'+str(new_event.id))
-            return HttpResponseRedirect('/event/location')
+            return HttpResponseRedirect('/event/create/location')
         else:
             return render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'error':'Form is not valid, please review.', 'active':'events'}))
             
@@ -95,7 +95,7 @@ def event_location(request):
         # datasheet = DataSheet.objects.get(id=event.datasheet_id)
         event = Event.objects.all()[0]
         datasheet = DataSheet.objects.all()[4]
-        return HttpResponseRedirect('/datasheet/fill/'+str(event.id))
+        return HttpResponseRedirect('/event/create/data/'+str(event.id))
         
 @login_required    
 def edit_event(request, event_id):
@@ -112,7 +112,7 @@ def edit_event(request, event_id):
             else:
                 FieldValue.objects.filter(event_id=event).delete()
                 form.save()
-                return HttpResponseRedirect('/datasheet/fill/'+event_id)
+                return HttpResponseRedirect('/event/create/data/'+event_id)
             return HttpResponseRedirect('/events')
         else:
             return render_to_response( 'edit_event.html', RequestContext(request,{'event':event, 'form':form.as_p(), 'error':'Form is not valid, please review.', 'active':'events'}))
@@ -156,7 +156,7 @@ def datasheets(request):
     return render_to_response('datasheets.html', RequestContext(request, {'result':result, 'active':'datasheets'}))
     
 @login_required
-def fill_datasheet(request, event_id):
+def event_data(request, event_id):
     #TODO: add organization to be displayed
     event = Event.objects.get(id=event_id)
     if request.method == 'GET':
