@@ -6,23 +6,24 @@
 {% block leftcontent %}
     <h2>Create a New Event</h2>
     <table>
-    <tr><td>Organization: </td><td>{{organization}}</td></tr>
-    <tr><td>Project: </td><td>{{event.proj_id}}</td></tr>
-    <tr><td>Date: </td><td>{{date}}</td></tr>
-    <tr><td>Data Sheet: </td><td>{{event.datasheet_id}}</td></tr>
+    <tr><td>Organization: </td><td>{{event.organization}}</td></tr>
+    <tr><td>Project: </td><td>{{event.project}}</td></tr>
+    <tr><td>Date: </td><td>{{event.date}}</td></tr>
+    <tr><td>Data Sheet: </td><td>{{event.data_sheet}}</td></tr>
     <tr><td>State: </td><td>{{event.state}}</td></tr>
     <tr><td>County: </td><td>{{event.county}}</td></tr>
-    <tr><td>Site: </td><td>{{event.sitename}}</td></tr>
-    <tr><td>Latitude: </td><td>{{event.lat}}</td></tr>
-    <tr><td>Longitude: </td><td>{{event.lon}}</td></tr>
+    <tr><td>Site: </td><td>{{event.site_name}}</td></tr>
+    <tr><td>Latitude: </td><td>{{event.latitude}}</td></tr>
+    <tr><td>Longitude: </td><td>{{event.longitude}}</td></tr>
     
     </table>
 {% endblock %}
 {% block rightcontent %}
     <h2>Data Sheet Fields</h2>
     {% if error %}<p style="color:red">{{error}}</p>{% endif %}
-    <form class="datasheet-form" method="post" {% if action %}action="{{ action }}"{% endif %}>
+    <form class="datasheet-form" method="post" action="{% if action %}{{ action }}{% else %}save{% endif %}">
     {% csrf_token %}
+    {{eventForm}}
     {{form}}
     <p><input id="submit" type="submit" value="Continue" style="margin:15px"/>
     {% if action %}<button type="button" class="datasheet_cancel" id="cancel" value="Cancel">Cancel</button>{% endif %}

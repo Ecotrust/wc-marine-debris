@@ -11,18 +11,17 @@
 {% block leftcontent %}
     <h2>Create a New Event</h2>
     <table>
-    <tr><td>Organization: </td><td>{{organization}}</td></tr>
-    <tr><td>Project: </td><td>{{event.proj_id}}</td></tr>
-    <tr><td>Date: </td><td>{{event.cleanupdate}}</td></tr>
-    <tr><td>Data Sheet: </td><td>{{event.datasheet_id}}</td></tr>
-    <tr><td>State: </td><td>{{event.state}}</td></tr>
+    <tr><td>Organization: </td><td>{{event.organization}}</td></tr>
+    <tr><td>Project: </td><td>{{event.project}}</td></tr>
+    <tr><td>Date: </td><td>{{event.date}}</td></tr>
+    <tr><td>Data Sheet: </td><td>{{event.data_sheet}}</td></tr>
     </table>
 {% endblock %}    
 {% block rightcontent %}
         <h2>Location</h2>
         <p>If you know the latitude and longitude of the derelict gear, enter it in the fields below. If not, select the approximate location on the map, and identify that this is an approximation using the checkbox below.</p>
         {% if error %}<p style="color:red">{{error}}</p>{% endif %}
-        <form class="event-form" method="post" action="{% if action %}{{ action }}{% else %}location{% endif %}">
+        <form class="event-form" method="post" action="{% if action %}{{ action }}{% else %}create/location{% endif %}">
         {% csrf_token %}
         {{form}}
         <p><input id="submit" type="submit" value="Continue" class='btn' style="margin:15px"/>

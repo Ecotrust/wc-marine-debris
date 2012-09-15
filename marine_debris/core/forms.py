@@ -8,12 +8,9 @@ from django.forms import TextInput, Textarea
 class EventForm(forms.ModelForm):
     class Meta:
         model = Event
-        fields = ('id', 'proj_id', 'cleanupdate', 'datasheet_id', 'sitename', 'city', 'state', 'county', 'lat', 'lon')
+        fields = ('id', 'proj_id', 'cleanupdate', 'datasheet_id', 'site')
         widgets = {
-            'cleanupdate': TextInput(),
-            'sitename': TextInput(),
-            'city': TextInput(),
-            'county': TextInput(),
+            'cleanupdate': TextInput()
         }
         
 class CreateEventForm(forms.Form):
@@ -26,41 +23,16 @@ class CreateEventForm(forms.Form):
     ds_choices = []
     for ds in DataSheet.objects.all():
         ds_choices.append((ds, ds.sheetname))
-    state_choices = []
-    for state in State.objects.all():
-        state_choices.append((state.initials, state.name))
+        
     organization = forms.ChoiceField(org_choices)
     project = forms.ChoiceField(proj_choices)
     date = forms.DateField(
         widget=forms.TextInput(attrs={'class':'date'}))
     data_sheet = forms.ChoiceField(ds_choices)
-    state = forms.ChoiceField(state_choices)
     
-    def save(self):
-        #TODO: either store this temporarily or create the event if possible
-        return True
-        
-class EventLocationForm(forms.Form):
-
-    # org_choices = []
-    # for org in Organization.objects.all():
-        # org_choices.append((org, org.orgname))
-    # proj_choices = []
-    # for proj in Project.objects.all():
-        # proj_choices.append((proj, proj.projname))
-    # ds_choices = []
-    # for ds in DataSheet.objects.all():
-        # ds_choices.append((ds, ds.sheetname))
-    # state_choices = []
-    # for state in State.objects.all():
-        # state_choices.append((state.initials, state.name))
-    # organization = forms.ChoiceField(org_choices)
-    # project = forms.ChoiceField(proj_choices)
-    # date = forms.DateField(
-        # widget=forms.TextInput(attrs={'class':'date'}))
-    # data_sheet = forms.ChoiceField(ds_choices)
-    # state = forms.ChoiceField(state_choices)
-
+    state_choices = []
+    for state in State.objects.all():
+        state_choices.append((state.initials, state.name))
     site_choices = [
         (None, 'Select a site'),
         ('Twin Lakes State Beach', 'Twin Lakes State Beach'),
@@ -72,19 +44,25 @@ class EventLocationForm(forms.Form):
         ('Decimal Degrees', 'DD.dddd, -DDD.dddd'),
         ('Degrees Minutes Seconds Compass', 'DD MM\'SS"C and DD MM\'SS"C')
     ]
-    site_name = forms.ChoiceField(site_choices)
-    format = forms.ChoiceField(format_choices)
-    latitude = forms.CharField()
-    longitude = forms.CharField()
-        
+    
+    state = forms.ChoiceField(state_choices, required=False)
+    county = forms.CharField(required=False)
+    site_name = forms.ChoiceField(site_choices, required=False)
+    format = forms.ChoiceField(format_choices, required=False)
+    latitude = forms.CharField(required=False)
+    longitude = forms.CharField(required=False)
+    
 class DataSheetForm(forms.Form):
-    def __init__(self, event, *args, **kwargs):
-        self.datasheet_id = event.datasheet_id
-        questions = DataSheetField.objects.filter(sheet_id=event.datasheet_id)
-        self.event_id = event.id
-        answers = FieldValue.objects.filter(event_id=event.id)
+    def __init__(self, datasheet, event=None, *args, **kwargs):
+        self.datasheet_id = datasheet.id
+        questions = DataSheetField.objects.filter(sheet_id=datasheet.id)
+        if event:
+            answers = FieldValue.objects.filter(event_id=event.id)
+        else:
+            answers = FieldValue.objects.none()
         self.answers = answers
         forms.Form.__init__(self, *args, **kwargs)
+            
         for i, question in enumerate(questions):
             dynamic_args = {}
             other_dynamic_args = {}
@@ -102,7 +80,7 @@ class DataSheetForm(forms.Form):
                     dynamic_args['initial']=answer[0].field_value
                 elif question.field_id.default_value != '':
                     dynamic_args['initial']=int(question.field_id.default_value)
-                self.fields['question_' + str(question.id) + '_' + str(self.event_id)] = forms.FloatField( **dynamic_args )
+                self.fields['question_' + str(question.id)] = forms.FloatField( **dynamic_args )
                 
             elif question.field_id.datatype.name == 'True/False':
                 if answer.count() == 1:
@@ -110,7 +88,7 @@ class DataSheetForm(forms.Form):
                 elif question.field_id.default_value != '':
                     dynamic_args['initial']=bool(question.field_id.default_value)
                 dynamic_args['required'] = False
-                self.fields['question_' + str(question.id) + '_' + str(self.event_id)] = forms.BooleanField( **dynamic_args )
+                self.fields['question_' + str(question.id)] = forms.BooleanField( **dynamic_args )
                 
             elif question.field_id.datatype.name == 'Date':
                 if answer.count() == 1:
@@ -132,7 +110,7 @@ class DataSheetForm(forms.Form):
                 else:
                     dynamic_args['initial']=datetime.datetime.now()
                 dynamic_args['widget']=forms.TextInput(attrs={'class':'date'})
-                self.fields['question_' + str(question.id) + '_' + str(self.event_id)] = forms.CharField( **dynamic_args )
+                self.fields['question_' + str(question.id)] = forms.CharField( **dynamic_args )
                 
                 # elif question.field_id.datatype.name == 'Location':
             
@@ -143,7 +121,7 @@ class DataSheetForm(forms.Form):
                     dynamic_args['initial']=answer[0].field_value
                 elif question.field_id.default_value != '':
                     dynamic_args['initial']=question.field_id.default_value
-                self.fields['question_' + str(question.id) + '_' + str(self.event_id)] = forms.ChoiceField( **dynamic_args )
+                self.fields['question_' + str(question.id)] = forms.ChoiceField( **dynamic_args )
             
             # elif question.field_id.datatype.name == 'Text' or question.field_id.datatype.name == 'Location' or question.field_id.datatype.name == 'Other':
             else:
@@ -151,11 +129,11 @@ class DataSheetForm(forms.Form):
                     dynamic_args['initial']=answer[0].field_value
                 elif question.field_id.default_value != '':
                     dynamic_args['initial']=question.field_id.default_value
-                self.fields['question_' + str(question.id) + '_' + str(self.event_id)] = forms.CharField( **dynamic_args )
+                self.fields['question_' + str(question.id)] = forms.CharField( **dynamic_args )
 
-            self.fields['question_' + str(question.id) + '_' + str(self.event_id)].question = question
-            self.fields['question_' + str(question.id) + '_' + str(self.event_id)].answer = answer
-            self.fields['question_' + str(question.id) + '_' + str(self.event_id)].event = event
+            self.fields['question_' + str(question.id)].question = question
+            self.fields['question_' + str(question.id)].answer = answer
+            self.fields['question_' + str(question.id)].event = event
             
     def save(self):
         for field_name in self.fields:

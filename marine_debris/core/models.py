@@ -167,26 +167,30 @@ class State (models.Model):
     class Meta:
         ordering = ['name', 'initials']
         
+class Site (models.Model):
+    sitename = models.TextField(blank=True, null=True)
+    lat = models.FloatField(blank=True, null=True, validators=[MinValueValidator(32.5), MaxValueValidator(49.1)])
+    lon = models.FloatField(blank=True, null=True, validators=[MinValueValidator(-124.8), MaxValueValidator(-117)])
+    state = models.ForeignKey(State, default=1)
+    county = models.TextField(blank=True, null=True)
+    
+    def __unicode__(self):
+        return self.sitename
+        
 class Event (models.Model):
     datasheet_id = models.ForeignKey(DataSheet)
     proj_id = models.ForeignKey(Project)
     cleanupdate = models.DateTimeField(default=datetime.date.today)
-    sitename = models.TextField(blank=True, null=True)
-    lat = models.FloatField(blank=True, null=True, validators=[MinValueValidator(32.5), MaxValueValidator(49.1)])
-    lon = models.FloatField(blank=True, null=True, validators=[MinValueValidator(-124.8), MaxValueValidator(-117)])
-    city = models.TextField(blank=True, null=True)
-    state = models.ForeignKey(State, default=1)
-    county = models.TextField(blank=True, null=True)
-    # type_id = models.ForeignKey(EventType, null=True, blank=True)
+    site = models.ForeignKey(Site, null=True, blank=True, default= None)
     
     def __unicode__(self):
-        return self.proj_id.projname + '-' + self.sitename + '-' + self.cleanupdate.date().isoformat()
+        return self.proj_id.projname + '-' + self.site.sitename + '-' + self.cleanupdate.date().isoformat()
         
     def get_fields(self):
         return[(field.name, field.value_to_string(self)) for field in Event._meta.fields]
         
     class Meta:
-        ordering = ['proj_id__projname', 'sitename', 'cleanupdate']
+        ordering = ['proj_id__projname', 'site', 'cleanupdate']
     
 class FieldValue (models.Model):
     field_id = models.ForeignKey(Field)

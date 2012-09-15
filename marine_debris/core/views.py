@@ -20,10 +20,10 @@ from django.forms.models import modelformset_factory
 
 # @login_required
 def index(request): 
-    return render_to_response( 'index.html', RequestContext(request,{'active':'home'}))
+    return render_to_response( 'index.html', RequestContext(request,{'thankyou': False, 'active':'home'}))
 
 # @login_required
-def events(request): 
+def events(request, submit=False): 
     qs = Event.objects.filter()
     result = []
     for event in qs.all(): 
@@ -40,63 +40,92 @@ def events(request):
         event_details['event'] = event
         result.append({'event_details':event_details})
             
-    return render_to_response( 'events.html', RequestContext(request,{'result':result, 'active':'events'}))
-    
+    return render_to_response( 'events.html', RequestContext(request,{'result':result, 'submit':submit, 'active':'events'}))
+
 @login_required
 def create_event(request):
     if request.method == 'GET':
         form = CreateEventForm()
-        #TODO: make dummy location objects here
+        form.fields['state'].widget = form.fields['state'].hidden_widget()
+        form.fields['county'].widget = form.fields['county'].hidden_widget()
+        form.fields['site_name'].widget = form.fields['site_name'].hidden_widget()
+        form.fields['format'].widget = form.fields['format'].hidden_widget()
+        form.fields['latitude'].widget = form.fields['latitude'].hidden_widget()
+        form.fields['longitude'].widget = form.fields['longitude'].hidden_widget()
         return render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'active':'events'}))
     else :
-        #TODO: move to get location
         eventForm = CreateEventForm
         form = eventForm(request.POST)
         if form.is_valid():
-            # import pdb
-            # pdb.set_trace()
-            organization = form.data['organization']
-            new_event = {'proj_id': form.data['project'], 'cleanupdate': form.data['date'], 'datasheet_id': form.data['data_sheet'], 'state':form.data['state']}
-            #TODO: create location form, pass it in RequestContext
+            form.fields['organization'].widget = form.fields['organization'].hidden_widget()
+            form.fields['project'].widget = form.fields['project'].hidden_widget()
+            form.fields['date'].widget = form.fields['date'].hidden_widget()
+            form.fields['data_sheet'].widget = form.fields['data_sheet'].hidden_widget()
+            event = {}
             
-            # return render_to_response('create_event.html', RequestContext(request,{'event':new_event, 'form':form.as_p(), 'active':'events'}))
-            # return HttpResponseRedirect('/datasheet/fill/'+datasheet_id+'/'+str(new_event.id))
-            return HttpResponseRedirect('/event/create/location')
+            event['organization'] = form.data['organization']
+            event['project'] = form.data['project']
+            event['date'] = form.data['date']
+            event['data_sheet'] = form.data['data_sheet']
+            return render_to_response('event_location.html', RequestContext(request, {'form':form.as_p(), 'event': event, 'active':'events'}))
         else:
             return render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'error':'Form is not valid, please review.', 'active':'events'}))
-            
 
 @login_required            
 def event_location(request):
-    # import pdb
-    # pdb.set_trace()
-    if request.method == 'GET':
-        loc_form = EventLocationForm()
-        #TODO: This is dummy data - learn to create and save data from create_event view (django session? cookies?) and bring it here.
-        # organization = form.data['organization']
-        organization = 'Coast Savers'
-        # new_event = {'proj_id': form.data['project'], 'cleanupdate': form.data['date'], 'datasheet_id': form.data['data_sheet'], 'state':form.data['state']}
-        new_event = {'proj_id': 'Beach Cleanups', 'cleanupdate': '2012-09-05', 'datasheet_id': DataSheet.objects.get(sheetname='2009 ODFW Derelict Fishing Gear'), 'state':'CA'}
-        return render_to_response('event_location.html', RequestContext(request, {'form': loc_form, 'organization': organization, 'event':new_event, 'active':'events'}))
+    createEventForm = CreateEventForm
+    eventForm = createEventForm(request.POST)
+    for key in eventForm.fields.viewkeys():
+        eventForm.fields[key].widget = eventForm.fields[key].hidden_widget()
+    datasheet_name = eventForm.data['data_sheet']
+    datasheet = DataSheet.objects.get(sheetname=datasheet_name)
+    form = DataSheetForm(datasheet, None)
+    event = {}
+    event['organization'] = eventForm.data['organization']
+    event['project'] = eventForm.data['project']
+    event['date'] = eventForm.data['date']
+    event['data_sheet'] = eventForm.data['data_sheet']
+    event['state'] = eventForm.data['state']
+    event['county'] = eventForm.data['county']
+    event['site_name'] = eventForm.data['site_name']
+    event['latitude'] = eventForm.data['latitude']
+    event['longitude'] = eventForm.data['longitude']
+    return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'eventForm': eventForm.as_p(), 'event':event, 'active':'events'}))
+
+@login_required
+def event_save(request):
+    createEventForm = CreateEventForm(request.POST)
+    if createEventForm.is_valid():
+        project = Project.objects.get(projname=createEventForm.data['project'])
+        datasheet = DataSheet.objects.get(sheetname=createEventForm.data['data_sheet'])
+        state = State.objects.get(initials=createEventForm.data['state'])
+        site = Site.objects.get_or_create(state = state, county = createEventForm.data['county'], lat = createEventForm.data['latitude'], lon = createEventForm.data['longitude'], sitename = createEventForm.data['site_name'])
+        date = datetime.datetime.strptime(createEventForm.data['date'], '%Y-%m-%d')
+        event = Event(proj_id = project, datasheet_id = datasheet, cleanupdate = date, site = site[0])
+        event.save()
+        if event.id:
+            datasheetForm = DataSheetForm(event.datasheet_id, event, request.POST)
+        if event.id and datasheetForm.is_valid():
+            datasheetForm.save()
+            return HttpResponseRedirect('/events/True')
+        else:
+            Event.delete(event)
+            if site[1]:
+                Site.delete(site[0])
+            event = {}
+            event['organization'] = createEventForm.data['organization']
+            event['project'] = createEventForm.data['project']
+            event['date'] = createEventForm.data['date']
+            event['data_sheet'] = createEventForm.data['data_sheet']
+            event['state'] = createEventForm.data['state']
+            event['county'] = createEventForm.data['county']
+            event['site_name'] = createEventForm.data['site_name']
+            event['latitude'] = createEventForm.data['latitude']
+            event['longitude'] = createEventForm.data['longitude']
+            return render_to_response('fill_datasheet.html', RequestContext(request, {'form':datasheetForm.as_p(), 'eventForm': createEventForm.as_p(), 'error':'Form is not valid, please review.', 'event': event}))
     else:
-        #TODO: Populate an Event ModelForm and save it - capture the id to pass in the response redirect.
-        # event_form = EventForm()
-        # event_form.fields['proj_id'].initial = 'Beach Cleanups'
-        # event_form.fields['cleanupdate'].initial = '2012-09-05'
-        # event_form.fields['datasheet_id'].initial = DataSheet.objects.get(sheetname='2009 ODFW Derelict Fishing Gear')
-        # event_form.fields['state'].initial = 'CA'
-        # event_form.fields['sitename'].initial = form.data['site_name']
-        # event_form.fields['city'].initial = 'city'
-        # event_form.fields['county'].initial = 'county'
-        # event_form.fields['lat'].initial = form.data['latitude']
-        # event_form.fields['lon'].initial = form.data['longitude']
-        # 'proj_id', 'cleanupdate', 'datasheet_id', 'sitename', 'city', 'state', 'county', 'lat', 'lon'
-        # event = event_form.save()
-        # datasheet = DataSheet.objects.get(id=event.datasheet_id)
-        event = Event.objects.all()[0]
-        datasheet = DataSheet.objects.all()[4]
-        return HttpResponseRedirect('/event/create/data/'+str(event.id))
-        
+        return render_to_response('create_event.html', RequestContext(request, {'form':createEventForm.as_p(), 'active':'events'}))
+
 @login_required    
 def edit_event(request, event_id):
     event = Event.objects.get(id=event_id)
@@ -112,7 +141,8 @@ def edit_event(request, event_id):
             else:
                 FieldValue.objects.filter(event_id=event).delete()
                 form.save()
-                return HttpResponseRedirect('/event/create/data/'+event_id)
+                #TODO: make this land somewhere useful - used to go to create/data
+                return HttpResponseRedirect('/event/create/')
             return HttpResponseRedirect('/events')
         else:
             return render_to_response( 'edit_event.html', RequestContext(request,{'event':event, 'form':form.as_p(), 'error':'Form is not valid, please review.', 'active':'events'}))
@@ -121,13 +151,14 @@ def edit_event(request, event_id):
 # @login_required
 def view_event(request, event_id):
     event = Event.objects.get(id=event_id)
+    site = Site.objects.get(id=event.site.id)
     values = FieldValue.objects.filter(event_id=event_id)
     fields = []
     for value in values:
         field_name = Field.objects.get(id=value.field_id.id).internal_name
         field = (field_name, value.field_value)
         fields.append(field)
-    return render_to_response('view_event.html', RequestContext(request,{'event':event, 'fields':fields, 'active':'events'}))
+    return render_to_response('view_event.html', RequestContext(request,{'event':event, 'site':site, 'fields':fields, 'active':'events'}))
     
 @login_required
 def delete_event(request, event_id):
@@ -144,8 +175,7 @@ def delete_event(request, event_id):
         field = (field_name, value.field_value)
         fields.append(field)
     return render_to_response('delete_event.html', RequestContext(request,{'event':event, 'fields':fields, 'active':'events'}))
-    
-        
+
 # @login_required
 def datasheets(request):
     qs = DataSheet.objects.filter()
@@ -154,24 +184,6 @@ def datasheets(request):
         result.append({'datasheet': datasheet})
         
     return render_to_response('datasheets.html', RequestContext(request, {'result':result, 'active':'datasheets'}))
-    
-@login_required
-def event_data(request, event_id):
-    #TODO: add organization to be displayed
-    event = Event.objects.get(id=event_id)
-    if request.method == 'GET':
-        organization = 'Coast Savers'
-        date = event.cleanupdate.date()
-        form = DataSheetForm(event)
-        return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'organization': organization, 'event':event, 'date':date, 'active':'datasheets'}))
-    else:
-        datasheetForm = DataSheetForm
-        form = datasheetForm(event, request.POST)
-        if form.is_valid():
-            new_datasheet = form.save()
-            return HttpResponseRedirect('/events')
-        else:
-            return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'error': 'Form is not valid, please review.', 'active':'datasheets'}))
     
 # @login_required
 def organizations(request): 
@@ -190,6 +202,7 @@ def projects(request):
         result.append({'project':project})
             
     return render_to_response( 'projects.html', RequestContext(request,{'result':result, 'active':'projects'}))    
-    
+
 def map_test(request):
     return render_to_response('map-test.html', RequestContext(request, {}))
+    
