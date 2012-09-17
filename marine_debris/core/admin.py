@@ -54,7 +54,7 @@ class AnswerOptionAdmin(admin.ModelAdmin):
     }
     
 class DataSheetAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'sheetname', 'type_id', 'created_by', 'year_started', 'type_id')
+    list_display = ('__unicode__', 'type_id', 'created_by', 'year_started')
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()

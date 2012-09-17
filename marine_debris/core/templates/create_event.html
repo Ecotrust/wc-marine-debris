@@ -19,7 +19,7 @@
     </form>-->
     
         {% if error %}<p style="color:red">{{error}}</p>{% endif %}
-        <form class="event-form" method="post" action="{% if action %}{{ action }}{% else %}create{% endif %}">
+        <form class="event-form" method="post" action="{% if action %}{{ action }}{% else %}/event/create{% endif %}">
         {% csrf_token %}
         {{form}}
         <p><input id="submit" type="submit" value="Continue" class='btn' style="margin:15px"/>

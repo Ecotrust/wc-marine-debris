@@ -1,4 +1,4 @@
-var layerExtent = new OpenLayers.Bounds( -14050000, 3800000, -13400000 , 6220000);
+var layerExtent = new OpenLayers.Bounds( -14050000, 3800000, -13000000 , 6280000);
 var map = new OpenLayers.Map("map", {'restrictedExtent': layerExtent});
 
 var map_extent = new OpenLayers.Bounds(-20037508, -20037508, 20037508, 20037508.34);	

@@ -33,13 +33,9 @@ class CreateEventForm(forms.Form):
     state_choices = []
     for state in State.objects.all():
         state_choices.append((state.initials, state.name))
-    site_choices = [
-        (None, 'Select a site'),
-        ('Twin Lakes State Beach', 'Twin Lakes State Beach'),
-        ('Cowell Beach', 'Cowell Beach'),
-        ('Hidden Beach', 'Hidden Beach'),
-        ('Seacliff State Beach', 'Seacliff State Beach')
-    ]
+    site_choices = [(None, 'Select a site')]
+    for site in Site.objects.all().exclude(sitename=''):
+        site_choices.append((site.sitename, site.sitename))
     format_choices = [
         ('Decimal Degrees', 'DD.dddd, -DDD.dddd'),
         ('Degrees Minutes Seconds Compass', 'DD MM\'SS"C and DD MM\'SS"C')
@@ -51,6 +47,41 @@ class CreateEventForm(forms.Form):
     format = forms.ChoiceField(format_choices, required=False)
     latitude = forms.CharField(required=False)
     longitude = forms.CharField(required=False)
+    
+    #Check the event details fields of the form for validity
+    def validate_event(self, *args, **kwargs):
+        if self.data['organization'].__len__() > 0 and self.data['project'].__len__() > 0 and self.data['date'].__len__() > 0 and self.data['data_sheet'].__len__() > 0:
+            return True
+        else:
+            return False
+    
+    #Check the site fields of the form for validity
+    def validate_site(self, *args, **kwargs):
+        valid = False
+        exists = False
+        matches = []
+        error = None
+        if self.data['latitude'].__len__() > 0 and self.data['latitude'].__len__() > 0:
+            valid = True
+        if valid:
+            try:
+                datasheet = DataSheet.objects.get(sheetname = self.data['data_sheet'])
+                if datasheet.type_id.display_sites: 
+                    if self.data['site_name'].__len__() > 0:    #site will have name, and name is given
+                        records = Site.objects.filter(sitename=self.data['site_name'])
+                        for record in records:
+                            if str(record.lat) == self.data['latitude'] and str(record.lon) == self.data['longitude'] and record.county == self.data['county'] and record.state.initials == self.data['state']:
+                                matches = [record]
+                                exists = True
+                                break
+                            else:
+                                matches.append(record)
+                    else:
+                        valid = False           #site must have name since this is not a derelict fishing gear event
+                        error = 'Site must have a name'
+            except:
+                valid = False                   #datasheet not found. Not valid.
+        return {'valid':valid, 'exists':exists, 'matches':matches, 'error':error}
     
 class DataSheetForm(forms.Form):
     def __init__(self, datasheet, event=None, *args, **kwargs):

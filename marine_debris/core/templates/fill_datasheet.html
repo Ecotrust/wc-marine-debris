@@ -11,8 +11,12 @@
     <tr><td>Date: </td><td>{{event.date}}</td></tr>
     <tr><td>Data Sheet: </td><td>{{event.data_sheet}}</td></tr>
     <tr><td>State: </td><td>{{event.state}}</td></tr>
+    {% if event.county %}
     <tr><td>County: </td><td>{{event.county}}</td></tr>
+    {% endif %}
+    {% if event.site_name %}
     <tr><td>Site: </td><td>{{event.site_name}}</td></tr>
+    {% endif %}
     <tr><td>Latitude: </td><td>{{event.latitude}}</td></tr>
     <tr><td>Longitude: </td><td>{{event.longitude}}</td></tr>
     
@@ -21,7 +25,7 @@
 {% block rightcontent %}
     <h2>Data Sheet Fields</h2>
     {% if error %}<p style="color:red">{{error}}</p>{% endif %}
-    <form class="datasheet-form" method="post" action="{% if action %}{{ action }}{% else %}save{% endif %}">
+    <form class="datasheet-form" method="post" action="{% if action %}{{ action }}{% else %}/event/create/save{% endif %}">
     {% csrf_token %}
     {{eventForm}}
     {{form}}

@@ -18,11 +18,9 @@ from forms import *
 
 from django.forms.models import modelformset_factory
 
-# @login_required
 def index(request): 
     return render_to_response( 'index.html', RequestContext(request,{'thankyou': False, 'active':'home'}))
 
-# @login_required
 def events(request, submit=False): 
     qs = Event.objects.filter()
     result = []
@@ -56,6 +54,7 @@ def create_event(request):
     else :
         eventForm = CreateEventForm
         form = eventForm(request.POST)
+        form.validate_event()
         if form.is_valid():
             form.fields['organization'].widget = form.fields['organization'].hidden_widget()
             form.fields['project'].widget = form.fields['project'].hidden_widget()
@@ -67,7 +66,17 @@ def create_event(request):
             event['project'] = form.data['project']
             event['date'] = form.data['date']
             event['data_sheet'] = form.data['data_sheet']
-            return render_to_response('event_location.html', RequestContext(request, {'form':form.as_p(), 'event': event, 'active':'events'}))
+            
+            datasheet = DataSheet.objects.get(sheetname=event['data_sheet'])
+            sites = []
+            if datasheet.type_id and not datasheet.type_id.display_sites:
+                form.fields['site_name'].widget = form.fields['site_name'].hidden_widget()
+                form.fields['county'].widget = form.fields['county'].hidden_widget()
+            else:
+                for site in Site.objects.all().exclude(sitename=''):
+                    sites.append({'name':site.sitename, 'lat':site.lat, 'lon':site.lon})
+            
+            return render_to_response('event_location.html', RequestContext(request, {'form':form.as_p(), 'event': event, 'sites':sites, 'active':'events'}))
         else:
             return render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'error':'Form is not valid, please review.', 'active':'events'}))
 
@@ -75,22 +84,32 @@ def create_event(request):
 def event_location(request):
     createEventForm = CreateEventForm
     eventForm = createEventForm(request.POST)
-    for item in eventForm.fields.items():
-        eventForm.fields[item[0]].widget = eventForm.fields[item[0]].hidden_widget()
-    datasheet_name = eventForm.data['data_sheet']
-    datasheet = DataSheet.objects.get(sheetname=datasheet_name)
-    form = DataSheetForm(datasheet, None)
     event = {}
     event['organization'] = eventForm.data['organization']
     event['project'] = eventForm.data['project']
     event['date'] = eventForm.data['date']
     event['data_sheet'] = eventForm.data['data_sheet']
-    event['state'] = eventForm.data['state']
-    event['county'] = eventForm.data['county']
-    event['site_name'] = eventForm.data['site_name']
-    event['latitude'] = eventForm.data['latitude']
-    event['longitude'] = eventForm.data['longitude']
-    return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'eventForm': eventForm.as_p(), 'event':event, 'active':'events'}))
+    site_check = eventForm.validate_site()
+    if site_check['valid']:        #TODO: Manage new sites here!
+        for item in eventForm.fields.items():
+            eventForm.fields[item[0]].widget = eventForm.fields[item[0]].hidden_widget()
+        datasheet_name = eventForm.data['data_sheet']
+        datasheet = DataSheet.objects.get(sheetname=datasheet_name)
+        if datasheet.type_id and datasheet.type_id.display_sites:
+            event['site_name'] = eventForm.data['site_name']
+            event['county'] = eventForm.data['county']
+        event['state'] = eventForm.data['state']
+        event['latitude'] = eventForm.data['latitude']
+        event['longitude'] = eventForm.data['longitude']
+        form = DataSheetForm(datasheet, None)
+
+        return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'eventForm': eventForm.as_p(), 'event':event, 'active':'events'}))
+    else :
+        eventForm.fields['organization'].widget = eventForm.fields['organization'].hidden_widget()
+        eventForm.fields['project'].widget = eventForm.fields['project'].hidden_widget()
+        eventForm.fields['date'].widget = eventForm.fields['date'].hidden_widget()
+        eventForm.fields['data_sheet'].widget = eventForm.fields['data_sheet'].hidden_widget()
+        return render_to_response('event_location.html', RequestContext(request, {'form': eventForm.as_p(), 'event':event, 'active': 'events', 'error': 'There is an error in your location data. Please be sure to fill out all required fields.'}))
 
 @login_required
 def event_save(request):
@@ -148,7 +167,6 @@ def edit_event(request, event_id):
             return render_to_response( 'edit_event.html', RequestContext(request,{'event':event, 'form':form.as_p(), 'error':'Form is not valid, please review.', 'active':'events'}))
     return render_to_response( 'edit_event.html', RequestContext(request,{'event':event, 'form':form.as_p(), 'active':'events'}))
     
-# @login_required
 def view_event(request, event_id):
     event = Event.objects.get(id=event_id)
     site = Site.objects.get(id=event.site.id)
