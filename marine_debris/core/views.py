@@ -75,8 +75,8 @@ def create_event(request):
 def event_location(request):
     createEventForm = CreateEventForm
     eventForm = createEventForm(request.POST)
-    for key in eventForm.fields.viewkeys():
-        eventForm.fields[key].widget = eventForm.fields[key].hidden_widget()
+    for item in eventForm.fields.items():
+        eventForm.fields[item[0]].widget = eventForm.fields[item[0]].hidden_widget()
     datasheet_name = eventForm.data['data_sheet']
     datasheet = DataSheet.objects.get(sheetname=datasheet_name)
     form = DataSheetForm(datasheet, None)
