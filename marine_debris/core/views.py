@@ -203,6 +203,46 @@ def datasheets(request):
         
     return render_to_response('datasheets.html', RequestContext(request, {'result':result, 'active':'datasheets'}))
     
+@login_required
+def edit_datasheet(request, event_id):
+    event = Event.objects.get(id=event_id)
+    if request.method == 'GET':
+        form = DataSheetForm(event.datasheet_id, event)
+        event_details = {
+            'organization': event.proj_id.projectorganization_set.get(is_lead=True).organization_id.orgname,
+            'project': event.proj_id.projname,
+            'date': event.cleanupdate,
+            'data_sheet': event.datasheet_id.sheetname,
+            'state': event.site.state.name,
+            'latitude': event.site.lat,
+            'longitude': event.site.lon
+        }
+        if event.datasheet_id.type_id.display_sites:
+            event_details['county'] = event.site.county
+            event_details['site_name'] = event.site.sitename
+        return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'eventForm': None, 'event': event_details, 'action': '/datasheet/edit/'+str(event_id), 'active': 'events'}))
+    else:
+        datasheetForm = DataSheetForm
+        form = datasheetForm(event.datasheet_id, event, request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/events/True')
+        else:
+            event_details = {
+            'organization': event.proj_id.projectorganization_set.get(is_lead=True).organization_id.orgname,
+            'project': event.proj_id.projname,
+            'date': event.cleanupdate,
+            'data_sheet': event.datasheet_id.sheetname,
+            'state': event.site.state.name,
+            'latitude': event.site.lat,
+            'longitude': event.site.lon
+        }
+        if event.datasheet_id.type_id.display_sites:
+            event_details['county'] = event.site.county
+            event_details['site_name'] = event.site.sitename
+        return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'eventForm': None, 'event': event_details, 'action': '/datasheet/edit/'+str(event.event_id), 'active': 'events', 'error':'Some answers were invalid. Please review them.'}))
+    
+    
 # @login_required
 def organizations(request): 
     qs = Organization.objects.filter()
