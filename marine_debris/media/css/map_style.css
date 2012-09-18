@@ -50,3 +50,8 @@
 #docs {
     font-size: 12px;
 }
+img.olTileImage {   /* Bootstrap messes with OL styles, this returns them(?)*/
+    max-width: 257% !important;
+    width: 257% !important;
+    height: 257% !important;
+}
