@@ -32,8 +32,18 @@
     
 {% endblock %}    
 
-{% block js %}
+{% block scripts %}
+        <script>
+            function updateCoordVals(lon, lat) {
+                $( "#id_latitude" ).val(lat);
+                $( "#id_longitude" ).val(lon);
+            }
+        </script>
+        <script src="/site-media/third-party/OpenLayers-2.11/OpenLayers.js"></script>
+        <script src="/site-media/js/widgets/map.js"></script>
+{% endblock %}
 
+{% block js %}
     function onload(event) {
         init();
     }
@@ -50,13 +60,6 @@
             
             $( "#id_latitude" ).val(locations[location][0]);
             $( "#id_longitude" ).val(locations[location][1]);
-        })
+        });
     });
-{% endblock %}
-
-{% block scripts %}
-
-        <script src="/site-media/third-party/OpenLayers-2.11/OpenLayers.js"></script>
-        <script src="/site-media/js/widgets/map.js"></script>
-
 {% endblock %}
