@@ -47,7 +47,6 @@ def create_event(request):
         form.fields['state'].widget = form.fields['state'].hidden_widget()
         form.fields['county'].widget = form.fields['county'].hidden_widget()
         form.fields['site_name'].widget = form.fields['site_name'].hidden_widget()
-        form.fields['format'].widget = form.fields['format'].hidden_widget()
         form.fields['latitude'].widget = form.fields['latitude'].hidden_widget()
         form.fields['longitude'].widget = form.fields['longitude'].hidden_widget()
         return render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'active':'events'}))

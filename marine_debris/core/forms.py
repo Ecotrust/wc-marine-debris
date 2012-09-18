@@ -36,15 +36,10 @@ class CreateEventForm(forms.Form):
     site_choices = [(None, 'Select a site')]
     for site in Site.objects.all().exclude(sitename=''):
         site_choices.append((site.sitename, site.sitename))
-    format_choices = [
-        ('Decimal Degrees', 'DD.dddd, -DDD.dddd'),
-        ('Degrees Minutes Seconds Compass', 'DD MM\'SS"C and DD MM\'SS"C')
-    ]
     
     state = forms.ChoiceField(state_choices, required=False)
     county = forms.CharField(required=False)
     site_name = forms.ChoiceField(site_choices, required=False)
-    format = forms.ChoiceField(format_choices, required=False)
     latitude = forms.CharField(required=False)
     longitude = forms.CharField(required=False)
     
