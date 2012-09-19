@@ -47,6 +47,14 @@
     function onload(event) {
         init();
     }
+    
+    function latLonEdit() {
+        var lat = $( "#id_latitude" ).val();
+        var lon = $( "#id_longitude" ).val();
+        if (lat != '' && lon != '') {
+            pointSelected(lat, lon);
+        }
+    }
 
 	$(function() {
 		$( ".date" ).datepicker({dateFormat: 'yy-mm-dd'});
@@ -62,5 +70,13 @@
             $( "#id_longitude" ).val(locations[location][1]);
             pointSelected(locations[location][0], locations[location][1]);
         });
+      
+        $( "#id_latitude" ).on('change', function(){
+            latLonEdit();
+        });
+        $( "#id_longitude" ).on('change', function(){
+            latLonEdit();
+        });
+        
     });
 {% endblock %}
