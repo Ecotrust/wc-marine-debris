@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth.models import User
 import datetime
 
 # Create your models here.
@@ -178,10 +179,18 @@ class Site (models.Model):
         return self.sitename
         
 class Event (models.Model):
+    
+    StatusChoices = (
+        ('New', 'New'),
+        ('Accepted', 'Accepted'),
+        ('Rejected', 'Rejected')
+    )
     datasheet_id = models.ForeignKey(DataSheet)
     proj_id = models.ForeignKey(Project)
     cleanupdate = models.DateTimeField(default=datetime.date.today)
     site = models.ForeignKey(Site, null=True, blank=True, default= None)
+    submitted_by = models.ForeignKey(User, null=True, blank=True, default=None)
+    status = models.CharField(max_length=30, choices=StatusChoices, default='New', blank=True)
     
     def __unicode__(self):
         return self.proj_id.projname + '-' + self.site.sitename + '-' + self.cleanupdate.date().isoformat()
