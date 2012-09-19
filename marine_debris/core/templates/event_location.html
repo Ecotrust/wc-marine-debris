@@ -60,6 +60,7 @@
             
             $( "#id_latitude" ).val(locations[location][0]);
             $( "#id_longitude" ).val(locations[location][1]);
+            pointSelected(locations[location][0], locations[location][1]);
         });
     });
 {% endblock %}

@@ -53,6 +53,16 @@ function clearOldPoints(point){
     }
 }
 
+function pointSelected(lat, lon){
+    point = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(lon, lat));
+    point.geometry.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
+    pointLayer.addFeatures(point);
+    pointLayer.drawFeature(point);
+    clearOldPoints(point);
+    map.setCenter([pointLayer.features[0].geometry.x, pointLayer.features[0].geometry.y], 11, true);
+    pointLayer.redraw()
+}
+
 map.addLayers([esriOcean, pointLayer]);
 map.zoomToExtent(map.restrictedExtent);
 
