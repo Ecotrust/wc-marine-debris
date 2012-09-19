@@ -40,8 +40,8 @@ class CreateEventForm(forms.Form):
     state = forms.ChoiceField(state_choices, required=False)
     county = forms.CharField(required=False)
     site_name = forms.ChoiceField(site_choices, required=False)
-    latitude = forms.CharField(required=False)
     longitude = forms.CharField(required=False)
+    latitude = forms.CharField(required=False)
     
     #Check the event details fields of the form for validity
     def validate_event(self, *args, **kwargs):
