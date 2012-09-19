@@ -40,6 +40,8 @@ function pointDrawn(point) {
     var lonlat = point.geometry.transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326"));
     clearOldPoints(point);
     updateCoordVals(lonlat.x, lonlat.y);
+    // re-project point to 900913
+    point.geometry.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
 }
 
 // Only display the newest selected point
