@@ -35,8 +35,8 @@
 {% block scripts %}
         <script>
             function updateCoordVals(lon, lat) {
-                $( "#id_latitude" ).val(lat);
-                $( "#id_longitude" ).val(lon);
+                $( "#id_latitude" ).val(lat.toFixed(6));
+                $( "#id_longitude" ).val(lon.toFixed(6));
             }
         </script>
         <script src="/site-media/third-party/OpenLayers-2.12/OpenLayers.js"></script>
