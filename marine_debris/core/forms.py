@@ -24,11 +24,20 @@ class CreateEventForm(forms.Form):
     for ds in DataSheet.objects.all():
         ds_choices.append((ds, ds.sheetname))
         
-    organization = forms.ChoiceField(org_choices)
-    project = forms.ChoiceField(proj_choices)
+    organization = forms.ChoiceField(
+        choices = org_choices, 
+        widget = forms.Select(attrs={'data-bind':'options: data.orgs, optionsText: "name", value: selectedOrganization, optionsCaption: "Choose..."'})
+    )
+    project = forms.ChoiceField(
+        choices = proj_choices,
+        widget = forms.Select(attrs={'data-bind':'options: selectedOrganization() ? selectedOrganization().projects : [], optionsText: "name", value: selectedProject, optionsCaption: "Select...", enable: selectedOrganization'})
+    )
     date = forms.DateField(
-        widget=forms.TextInput(attrs={'class':'date'}))
-    data_sheet = forms.ChoiceField(ds_choices)
+        widget=forms.TextInput(attrs={'class':'date', 'data-bind':'datepicker: selectedDate, enable: selectedProject'}))
+    data_sheet = forms.ChoiceField(
+        choices = ds_choices,
+        widget = forms.Select(attrs={'data-bind':'options: availableDatasheets() ? availableDatasheets() : [], optionsText: "name", value: selectedDatasheet, optionsCaption: "Select...", enable: availableDatasheets'})
+    )
     
     state_choices = []
     for state in State.objects.all():

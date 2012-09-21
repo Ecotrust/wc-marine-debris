@@ -10,29 +10,91 @@
 {% endblock %}    
 {% block leftcontent %}
     <h2>Create a New Event</h2>
-    <!--<form class="org-event-form" method="post" action="{% if action %}{{ action }}{% else %}create{% endif %}">
-        <select onChange="new_org()">
-            {% for org in organizations %}
-                <option value="{{org}}">{{org}}</option>
-            {% endfor %}
-        </select>
-    </form>-->
     
-        {% if error %}<p style="color:red">{{error}}</p>{% endif %}
-        <form class="event-form" method="post" action="{% if action %}{{ action }}{% else %}/event/create{% endif %}">
-        {% csrf_token %}
-        {{form}}
-        <p><input id="submit" type="submit" value="Continue" class='btn' style="margin:15px"/>
-        {% if action %}<button type="button" class="event_cancel" id="cancel" value="Cancel">Cancel</button>{% endif %}
-        </p>
-        </form>
+    {% if error %}<p style="color:red">{{error}}</p>{% endif %}
+    <form class="event-form" method="post" action="{% if action %}{{ action }}{% else %}/event/create{% endif %}">
+    {% csrf_token %}
+    {{form}}
+    <p><input id="submit" type="submit" value="Continue" class='btn' style="margin:15px"/>
+    {% if action %}<button type="button" class="event_cancel" id="cancel" value="Cancel">Cancel</button>{% endif %}
+    </p>
+    </form>
     
 {% endblock %}    
 
 {% block js %}
 
-	$(function() {
-		$( ".date" ).datepicker({dateFormat: 'yy-mm-dd'});
-	});
+    var app = {}, 
+        json = {
+            "orgs": [{
+                "name": "Coast Savers",
+                "projects": [{
+                    "name": "Beach Cleanup SOS",
+                    "datasheets":[{
+                        "name": "SOS Cleanup 2012",
+                        "start_date": 2012
+                    }, {
+                        "name": "SOS Cleanup 2011",
+                        "start_date": 2011
+                    }]
+                }, {
+                    "name": "Derelict Gear SOS",
+                    "datasheets":[{
+                        "name": "ODFW Derelict Gear 2012",
+                        "start_date": 2012
+                    }, {
+                        "name": "ODFW Derelict Gear 2010",
+                        "start_date": 2010
+                    }]
+                }]
+            }, {
+                "name": "Heal The Bay",
+                "projects": [{
+                    "name": "Beach Cleanup",
+                    "datasheets":[{
+                        "name": "HTB 2012 Cleanup Data",
+                        "start_date": 2012
+                    }, {
+                        "name": "HTB Cleanup Data Card",
+                        "start_date": 2011
+                    }]
+                }, {
+                    "name": "Derelict Gear",
+                    "datasheets":[{
+                        "name": "Derelict Gear 2012",
+                        "start_date": 2012
+                    }, {
+                        "name": "Derelict Gear 2010",
+                        "start_date": 2010
+                    }]
+                }]
+            }]
+        };
+        
+    function EventViewModel() {
+        var self = this;
+        
+        self.data = json;
+        self.selectedOrganization = ko.observable();
+        self.selectedProject = ko.observable();
+        self.selectedDate = ko.observable();
+        self.availableDatasheets = ko.observable();
+        self.selectedDatasheet = ko.observable();
+        self.availableDatasheets = ko.computed(function() {
+            var year =  self.selectedDate() ? self.selectedDate().toString('yyyy') : null;
+            if (year && self.selectedProject()) {
+                return $.map(self.selectedProject().datasheets, function(datasheet) {
+                    if (datasheet.start_date <= year) {
+                        return datasheet;
+                    }
+                });
+            } else {
+                return false;
+            }
+        });
+    }
+    
+    app.viewModel = new EventViewModel();
+    ko.applyBindings(app.viewModel);
     
 {% endblock %}
