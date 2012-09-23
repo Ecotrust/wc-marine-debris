@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+	
+	<head>
+		<meta charset="utf-8" />
+		<title>Data Location Reports</title>
+		<link rel="stylesheet" href="css/bootstrap.css">
+		<link rel="stylesheet" href="css/wcga-marine-debris.css">
+		<link rel="stylesheet" href="css/font-awesome.css">
+		<script src="js/jquery-1.8.1.js"></script>
+		<script src="js/bootstrap.js"></script>
+		<script src="js/wcga-marine-debris.js"></script>
+	</head>
+
+	<body>
+
+		<div class="container container-masthead">	
+			<div class="masthead">
+				<div class="masthead-logo">
+					<p class="masthead-logo-line1">WEST COAST GOVERNORS</p>
+					<p class="masthead-logo-line2">ALLIANCE on OCEAN HEALTH</p>
+					<p class="masthead-logo-line3">CALIFORNIA OREGON WASHINGTON</p>
+				</div>
+				<p class="masthead-title">Marine Debris Database</p>
+				<div class="btn-group masthead-btn-group">
+					<a href="#" class="btn">Data</a>
+					<a href="#" class="btn">Updates</a>
+					<a href="#" class="btn">Partners</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="container container-content">
+			<div class="row">
+				
+				<div class="span6">
+					<div class="wcga-database wcga-database-left">
+						
+						<h2>Search Database</h2>
+						
+						<form>
+						 	<div class="input-append">
+						    	<input type="text" class="span4">
+						    	<button type="submit" class="btn">
+						    		<i class="icon-search"></i> Search
+						    	</button>
+						  	</div>
+						</form>
+
+						<div class="tabbable wcga">
+						 	<ul class="nav nav-tabs">
+						    	<li class="active">
+						    		<a href="#search-database-tab-content-location" data-toggle="tab">Location</a>
+						    	</li>
+						    	<li>
+						    		<a href="#search-database-tab-content-type-of-debris" data-toggle="tab">Type of debris</a>
+						    	</li>
+						    	<li>
+						    		<a href="#search-database-tab-content-organization" data-toggle="tab">Organization</a>
+						    	</li>
+						    	<li>
+						    		<a href="#search-database-tab-content-date" data-toggle="tab">Date</a>
+						    	</li>
+						 	</ul>
+						  	
+						  	<div class="tab-content">
+						    	<div class="tab-pane active" id="search-database-tab-content-location">
+				      				<select id="search-database-select-california">
+									 	<option>California</option>
+										<option>North Coast</option>
+										<option>Central Coast</option>
+										<option>South Coast</option>
+									</select>
+									<select id="search-database-select-oregon">
+									 	<option>Oregon</option>
+									</select>
+									<select id="search-database-select-washington">
+									 	<option>Washington</option>
+									</select>
+									<label class="checkbox">
+    									<input type="checkbox"> Only show reports within extent of map
+  									</label>
+						    	</div>
+						    	<div class="tab-pane" id="search-database-tab-content-type-of-debris">
+						    		Type of Debris
+						    	</div>
+						    	<div class="tab-pane" id="search-database-tab-content-organization">
+						    		Organization
+						    	</div>
+						    	<div class="tab-pane" id="search-database-tab-content-date">
+						    		Date
+						    	</div>
+						  	</div>
+						</div>
+
+						<table class="table wcga table-striped table-hover">
+							<tr>
+								<th>Description</th>
+								<th>Location</th>
+								<th>Date</th>
+								<th>Organization</th>
+								<th>Project</th>
+							</tr>
+							<tr>
+								<td>Beach Cleanup</td>
+								<td>Twin Lakes State Beach</td>
+								<td>04/08/2011</td>
+								<td>Save Our Shores</td>
+								<td>ICC Cleanup</td>
+							</tr>
+							<tr>
+								<td>Beach Cleanup</td>
+								<td>Cowell Beach</td>
+								<td>04/08/2011</td>
+								<td>Save Our Shores</td>
+								<td>ICC Cleanup</td>
+							</tr>
+							<tr>
+								<td>Beach Cleanup</td>
+								<td>Hidden Beach</td>
+								<td>04/08/2011</td>
+								<td>Save Our Shores</td>
+								<td>ICC Cleanup</td>
+							</tr>
+							<tr>
+								<td>Beach Cleanup</td>
+								<td>Seacliff State Beach</td>
+								<td>04/08/2011</td>
+								<td>Save Our Shores</td>
+								<td>ICC Cleanup</td>
+							</tr>
+						</table>
+
+						<p class="align-right">
+						 	<a href="import-events.html" class="btn">
+						 		<i class="icon-share-alt"></i> Import Events
+						 	</a>
+						 	<a href="create-event.html" class="btn">
+						 		<i class="icon-plus"></i> Create Event 
+						 	</a>
+						</p>
+
+					</div>
+				
+				</div>
+				
+				<div class="span6">
+					<div class="wcga-database wcga-database-right">
+						
+						<h2>Event</h2>
+
+						<div class="btn-group wcga-database-btn-group">
+						 	<a href="#" class="btn">Maps</a>
+						 	<a href="#" class="btn">Data</a>
+						 	<a href="#" class="btn">Reports</a>
+						</div>
+
+						<table class="table wcga table-striped table-hover">
+							<tr>
+								<td>Group Name</td>
+								<td>Branciforte Middle School Surf Club</td>
+							</tr>
+							<tr>
+								<td>Number of Volunteers</td>
+								<td>14</td>
+							</tr>
+							<tr>
+								<td>Cleanup Date</td>
+								<td>04/08/2011</td>
+							</tr>
+							<tr>
+								<td>Cleanup Area</td>
+								<td>Cowell Beach</td>
+							</tr>
+							<tr>
+								<td>City/County</td>
+								<td>Santa Cruz</td>
+							</tr>
+						</table>
+
+						<div class="wcga-database-right-chart"></div>
+
+						<p class="align-right">
+						 	<button class="btn" type="button">
+						 		<i class="icon-download-alt"></i> Download Data
+						 	</button>
+						 	<button class="btn" type="button">
+						 		<i class="icon-edit"></i> Edit Event 
+						 	</button>
+						</p>
+
+					</div>
+				
+				</div>
+			
+			</div>
+
+		</div>
+
+		<div class="container container-footer">	
+			
+		</div>
+
+	</body>
+
+</html>

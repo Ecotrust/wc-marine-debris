@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+	
+	<head>
+		<meta charset="utf-8" />
+		<title>Create Event</title>
+		<link rel="stylesheet" href="css/bootstrap.css">
+		<link rel="stylesheet" href="css/wcga-marine-debris.css">
+		<link rel="stylesheet" href="css/font-awesome.css">
+		<script src="js/jquery-1.8.1.js"></script>
+		<script src="js/bootstrap.js"></script>
+		<script src="js/wcga-marine-debris-create-event.js"></script>
+	</head>
+
+	<body>
+
+		<div id="modal-thank-you" class="modal hide fade">
+			<div class="modal-header">
+		    	<h4>Thank You</h4>
+		  	</div>
+			<div class="modal-body">
+				<p>
+		    		Thank you for adding your event.
+		    		<br />
+		    		It has now been submitted to the administrator for review.
+		    		<br />
+		    		You will receive an email when your event has been approved.
+ 				</p>
+ 				<p>
+ 					If you have any questions, please contact <a href="mailto:administrator@marinedebris.com">administrator@marinedebris.com</a>
+		    	</p>
+		    	<p>
+		    		<a href="data-location-reports.html" class="btn">OK</a>
+		    	</p>
+		  	</div>
+		</div>
+
+		<div class="container container-masthead">	
+			<div class="masthead">
+				<div class="masthead-logo">
+					<p class="masthead-logo-line1">WEST COAST GOVERNORS</p>
+					<p class="masthead-logo-line2">ALLIANCE on OCEAN HEALTH</p>
+					<p class="masthead-logo-line3">CALIFORNIA OREGON WASHINGTON</p>
+				</div>
+				<p class="masthead-title">Marine Debris Database</p>
+				<div class="btn-group masthead-btn-group">
+					<a href="#" class="btn">Data</a>
+					<a href="#" class="btn">Updates</a>
+					<a href="#" class="btn">Partners</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="container container-content">
+			
+			<div class="row">
+				
+				<div class="span6">
+					
+					<div class="wcga-database wcga-database-left">
+						
+						<h3>Create Event <span class="create-event-summary">Summary</span></h3>
+						
+						<form id="form-create-event-selection"> 	
+						 	<div class="row create-row create-row-organization">
+						 		<div class="span2 span-label">Organization:</div>
+						 		<div class="span3">
+						 			<select name="create-select-organization">
+						 				<option>select an organization</option>
+									 	<option>Coast Savers</option>
+										<option id="organization-save-our-shores">Save Our Shores</option>
+										<option>SOL V</option>
+									</select>
+						 		</div>
+						  	</div>
+
+						  	<div class="row create-row create-row-project">
+						 		<div class="span2 span-label">Project:</div>
+						 		<div class="span3">
+						 			<select name="create-select-project">
+									 	<option>select a project</option>
+									 	<option>Beach Cleanup</option>
+										<option>Coast Monitoring</option>
+										<option id="project-derelict-gear">Derelict Gear</option>
+									</select>
+						 		</div>
+						  	</div>
+
+						  	<div class="row create-row create-row-date">
+						 		<div class="span2 span-label">Date:</div>
+						 		<div class="span3 input-append">
+						 			<input id="input-selected-date" type="text" class="span2"><span id="select-date" class="add-on" rel="popover" data-content="" data-original-title="Pick a date."><i class="icon-calendar"></i></span>
+						 		</div>
+						  	</div>
+
+						  	<div class="row create-row create-row-data-sheet">
+						 		<div class="span2 span-label">Data Sheet:</div>
+						 		<div class="span3">
+						 			<select name="create-select-data-sheet">
+						 				<option>select a data sheet</option>
+										<option id="data-sheet-derelict-gear-data">Derelict Gear Data</option>
+									</select>
+						 		</div>
+						  	</div>
+						</form>
+
+						<div id="create-event-summary">
+							<div class="row create-row">
+						 		<div class="span2 span-label">Organization:</div>
+						 		<div class="span3">Save Our Shores</div>
+						  	</div>
+
+						  	<div class="row create-row">
+						 		<div class="span2 span-label">Project:</div>
+						 		<div class="span3">Derelict Gear</div>
+						  	</div>
+
+						  	<div class="row create-row">
+						 		<div class="span2 span-label">Data Sheet:</div>
+						 		<div class="span3">Derelict Gear Data</div>
+						  	</div>
+
+						  	<div class="row create-row">
+						 		<div class="span2 span-label">Date:</div>
+						 		<div class="span3">08/28/12</div>
+						  	</div>
+
+						  	<div class="row create-row state-row">
+						 		<div class="span2 span-label">State:</div>
+						 		<div class="span3">California</div>
+						  	</div>
+
+						  	<div class="row create-row latitude-row">
+						 		<div class="span2 span-label">Latitude:</div>
+						 		<div class="span3">36.8374</div>
+						  	</div>
+
+						  	<div class="row create-row longitude-row">
+						 		<div class="span2 span-label">Longitude:</div>
+						 		<div class="span3">-121.985</div>
+						  	</div>
+						</div>
+
+						<p class="align-right">
+						 	<a id="btn-cancel-create-event" href="data-location-reports.html" class="btn btn-danger">
+						 		Cancel
+						 	</a>
+						 	<a id="btn-select-event-location-disabled" href="#" class="btn">
+						 		<i class="icon-map-marker"></i> Select Location
+						 	</a>
+						 	<a id="btn-select-event-location" href="#" class="btn btn-success">
+						 		<i class="icon-map-marker"></i> Select Location
+						 	</a>
+						 	<a id="btn-create-event-disabled" href="#" class="btn"><i class="icon-calendar"></i> Create Event</a>
+						 	<a id="btn-create-event" href="#" class="btn btn-success"><i class="icon-calendar"></i> Create Event</a>
+						</p>
+				
+					</div>
+
+				</div>
+				
+				<div class="span6">
+					<div id="create-event-select-location" class="wcga-database wcga-database-right">
+						
+						<div id="create-event-location-setup">
+							<h3>Select Event Location</h3>
+
+							<p>
+							If you know the latitude and longitude of the derelict gear, enter it in the fields below. If not, select the approximate location on the map, and identify that this is an approximation using the checkbox below.
+							</p>
+
+							<div class="map-format">
+								<div class="row">
+									<span class="span1">Format:</span>
+									<span class="span2">
+										<select class="span2" name="select-location-format">
+										 	<option>select a format</option>
+										 	<option>Decimal Degrees</option>
+										</select>
+									</span>
+									<span class="span2">i.e.: DD.dddd, -DDD.dddd</span>
+								</div>
+							</div>
+
+							<div class="map-lat-lon">
+								<div class="row">
+									<span class="span1">Latitude:</span>
+									<span class="span1">
+										<input id="input-location-latitude" class="span1" type="text">
+									</span>
+									<span class="span1"></span>
+									<span class="span1">Longitude:</span>
+									<span class="span1">
+										<input id="input-location-longitude" class="span1" type="text">
+									</span>
+								</div>
+							</div>
+							<div class="created-event-map"></div>
+							<div class="created-event-map-location"></div>
+							<p class="align-right">
+							 	<a id="btn-cancel-set-location" class="btn btn-danger" type="button">Cancel</a>
+							 	<a href="#" id="btn-set-location-disabled" class="btn" type="button"><i class="icon-map-marker"></i> Set Location</a>
+							 	<a href="#" id="btn-set-location" class="btn btn-success" type="button"><i class="icon-map-marker"></i> Set Location</a>
+							</p>
+						</div>
+
+						<div id="create-event-location-selected">
+							<h3>Location</h3>
+							<div class="created-event-map-location-selected"></div>
+							<p class="align-right">
+							 	<a href="#" id="btn-edit-location" class="btn" type="button"><i class="icon-map-marker"></i> Edit Location</a>
+							</p>
+						</div>
+
+						<div id="event-details">
+							<h3>Derelict Gear Data</h3>
+
+							<div class="row">
+								<div class="span2">
+									Reported Exposure:
+								</div>
+								<div class="span3">
+									<select class="span3" name="select-reported-exposure">
+									 	<option>select exposure</option>
+									</select>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="span2">
+									Reported Lethality:
+								</div>
+								<div class="span3">
+									<select class="span3" name="select-reported-lethality">
+									 	<option>select lethality</option>
+									 	<option>Low</option>
+									 	<option>Medium</option>
+									 	<option>High</option>
+									</select>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="span2">
+									Investigated Desc:
+								</div>
+								<div class="span3">
+									<textarea class="span3" rows="3"></textarea>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="span2">
+									Photo File Names:
+								</div>
+								<div class="span3">
+									<textarea class="span3" rows="3"></textarea>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="span2">
+									Fishable:
+								</div>
+								<div class="span3">
+									<label class="radio inline">
+										<input type="radio" name="fishable" id="fishable-yes" value="yes" checked> Yes
+									</label>
+									<label class="radio inline">
+										<input type="radio" name="fishable" id="fishable-no" value="no" checked> No
+									</label>
+									<label class="radio inline">
+										<input type="radio" name="fishable" id="fishable-na" value="NA" checked> NA
+									</label>									
+								</div>
+							</div>
+
+							<div class="row">
+								<span class="span2">Other:</span>
+								<span class="span3">
+									<input id="input-location-latitude" class="span3" type="text">
+								</span>
+							</div>
+
+							<div class="row">
+								<div class="span2">
+									Escape Cord Used:
+								</div>
+								<div class="span3">
+									<label class="radio inline">
+										<input type="radio" name="escape-cord-used" id="escape-cord-used-yes" value="yes" checked> Yes
+									</label>
+									<label class="radio inline">
+										<input type="radio" name="escape-cord-used" id="escape-cord-used-no" value="no" checked> No
+									</label>
+									<label class="radio inline">
+										<input type="radio" name="escape-cord-used" id="escape-cord-used-na" value="NA" checked> NA
+									</label>									
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="span2">
+									Escape Cord Intact:
+								</div>
+								<div class="span3">
+									<label class="radio inline">
+										<input type="radio" name="escape-cord-intact" id="escape-cord-intact-yes" value="yes" checked> Yes
+									</label>
+									<label class="radio inline">
+										<input type="radio" name="escape-cord-intact" id="escape-cord-intact-no" value="no" checked> No
+									</label>
+									<label class="radio inline">
+										<input type="radio" name="escape-cord-intact" id="escape-cord-intact-na" value="NA" checked> NA
+									</label>									
+								</div>
+							</div>
+
+							<p class="align-right">
+							 	<a href="#" id="btn-edit-event" class="btn" type="button"><i class="icon-edit"></i>Edit Event Details</a>
+							 	<a href="#modal-thank-you" data-toggle="modal" id="btn-submit-event" class="btn btn-success" type="button"><i class="icon-calendar"></i> Submit Event</a>
+							</p>
+						</div>
+
+					</div>
+				
+				</div>
+			
+			</div>
+
+		</div>
+
+		<div class="container container-footer">	
+			
+		</div>
+
+	</body>
+
+</html>
