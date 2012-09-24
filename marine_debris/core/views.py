@@ -12,7 +12,7 @@ from django.contrib.auth import authenticate, REDIRECT_FIELD_NAME, login as auth
 from django.contrib.auth.views import login as default_login, logout as default_logout
 import datetime
 import string
-import simplejson
+from django.utils import simplejson
 import datetime
 from forms import *
 
@@ -49,7 +49,12 @@ def create_event(request):
         form.fields['site_name'].widget = form.fields['site_name'].hidden_widget()
         form.fields['latitude'].widget = form.fields['latitude'].hidden_widget()
         form.fields['longitude'].widget = form.fields['longitude'].hidden_widget()
-        return render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'active':'events'}))
+
+        #TODO: Filter Organizations by only those which the user has access to.
+        org_dict = [org.toDict for org in Organization.objects.all()]
+        org_json = simplejson.dumps(org_dict)
+        
+        return render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'json':org_json, 'active':'events'}))
     else :
         eventForm = CreateEventForm
         form = eventForm(request.POST)
