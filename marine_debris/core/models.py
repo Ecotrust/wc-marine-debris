@@ -32,6 +32,15 @@ class Organization (models.Model):
         
     class Meta:
         ordering = ['orgname']
+        
+    @property
+    def toDict(self):
+        projects = [project.toDict for project in Project.objects.filter(organization = self)]
+        org_dict = {
+            'name': self.orgname,
+            'projects': projects,
+        }
+        return org_dict
 
 class Grouping (models.Model):
     name = models.TextField()
@@ -90,6 +99,14 @@ class DataSheet (models.Model):
         
     class Meta:
         ordering = ['sheetname']
+        
+    @property
+    def toDict(self):
+        ds_dict = {
+            'name': self.sheetname,
+            'start_date': self.year_started,
+        }
+        return ds_dict
     
 class DataSheetField (models.Model):
     field_id = models.ForeignKey(Field)
@@ -122,6 +139,15 @@ class Project (models.Model):
         
     class Meta:
         ordering = ['projname']
+        
+    @property
+    def toDict(self):
+        datasheets = [datasheet.toDict for datasheet in self.active_sheets.all()]
+        proj_dict = {
+            'name': self.projname,
+            'datasheets': datasheets,
+        }
+        return proj_dict
     
 class ProjectOrganization (models.Model):
     organization_id = models.ForeignKey(Organization)

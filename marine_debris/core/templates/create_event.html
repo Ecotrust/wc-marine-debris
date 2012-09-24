@@ -25,51 +25,7 @@
 {% block js %}
 
     var app = {}, 
-        json = {
-            "orgs": [{
-                "name": "Coast Savers",
-                "projects": [{
-                    "name": "Beach Cleanup SOS",
-                    "datasheets":[{
-                        "name": "SOS Cleanup 2012",
-                        "start_date": 2012
-                    }, {
-                        "name": "SOS Cleanup 2011",
-                        "start_date": 2011
-                    }]
-                }, {
-                    "name": "Derelict Gear SOS",
-                    "datasheets":[{
-                        "name": "ODFW Derelict Gear 2012",
-                        "start_date": 2012
-                    }, {
-                        "name": "ODFW Derelict Gear 2010",
-                        "start_date": 2010
-                    }]
-                }]
-            }, {
-                "name": "Heal The Bay",
-                "projects": [{
-                    "name": "Beach Cleanup",
-                    "datasheets":[{
-                        "name": "HTB 2012 Cleanup Data",
-                        "start_date": 2012
-                    }, {
-                        "name": "HTB Cleanup Data Card",
-                        "start_date": 2011
-                    }]
-                }, {
-                    "name": "Derelict Gear",
-                    "datasheets":[{
-                        "name": "Derelict Gear 2012",
-                        "start_date": 2012
-                    }, {
-                        "name": "Derelict Gear 2010",
-                        "start_date": 2010
-                    }]
-                }]
-            }]
-        };
+        json = {"orgs": {{json|safe}}};
         
     function EventViewModel() {
         var self = this;
