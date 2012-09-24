@@ -22,5 +22,18 @@ DATABASES = {
     }
 }
 
+
+ 
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+    },
+}
+ 
+HAYSTACK_SITECONF='core'
+ 
+HAYSTACK_SEARCH_ENGINE='simple'
+ 
+
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = ''
