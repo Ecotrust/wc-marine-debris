@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+	
+	<head>
+		<meta charset="utf-8" />
+		<title>Import Events</title>
+		<link rel="stylesheet" href="css/bootstrap.css">
+		<link rel="stylesheet" href="css/wcga-marine-debris.css">
+		<link rel="stylesheet" href="css/font-awesome.css">
+		<script src="js/jquery-1.8.1.js"></script>
+		<script src="js/bootstrap.js"></script>
+		<script src="js/wcga-marine-debris-import-events.js"></script>
+	</head>
+
+	<body>
+
+		<div id="modal-thank-you" class="modal hide fade">
+			<div class="modal-header">
+		    	<h4>Thank You</h4>
+		  	</div>
+			<div class="modal-body">
+				<p>
+		    		Thank you for adding your event(s).
+		    		<br />
+		    		They have now been submitted to the administrator for review.
+		    		<br />
+		    		You will receive an email when your event(s) have been approved.
+ 				</p>
+ 				<p>
+ 					If you have any questions, please contact <a href="mailto:administrator@marinedebris.com">administrator@marinedebris.com</a>
+		    	</p>
+		    	<p>
+		    		<a href="data-location-reports.html" class="btn">OK</a>
+		    	</p>
+		  	</div>
+		</div>
+
+		<div id="modal-file-upload" class="modal hide fade">
+			<div class="modal-header">
+		    	<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+		    	<h4>File Upload</h4>
+		  	</div>
+			<div class="modal-body">
+		    	<div class="row">
+		    		<div class="span2">Computer</div>
+		    		<div class="span3">
+		    			<i class="icon-table"></i> <span class="import-data-file">Derelict_Gear_Data_Table</span>
+		    		</div>
+		    	</div>
+		  	</div>
+		  	<div class="modal-footer">
+		  		File Name: <input id="import-file-upload" class="span3 import-file-upload"></input>
+		  		<a href="#" id="btn-file-upload-cancel" class="btn btn-danger" data-dismiss="modal">Cancel</a>
+		    	<a href="#" id="btn-file-upload-open-disabled" class="btn">Open</a>
+		    	<a href="#" id="btn-file-upload-open" class="btn btn-success">Open</a>
+		  	</div>
+		</div>
+
+		<div class="container container-masthead">	
+			<div class="masthead">
+				<div class="masthead-logo">
+					<p class="masthead-logo-line1">WEST COAST GOVERNORS</p>
+					<p class="masthead-logo-line2">ALLIANCE on OCEAN HEALTH</p>
+					<p class="masthead-logo-line3">CALIFORNIA OREGON WASHINGTON</p>
+				</div>
+				<p class="masthead-title">Marine Debris Database</p>
+				<div class="btn-group masthead-btn-group">
+					<a href="#" class="btn">Data</a>
+					<a href="#" class="btn">Updates</a>
+					<a href="#" class="btn">Partners</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="container container-content">
+			
+			<div class="row">
+				
+				<div class="span6">
+					
+					<div class="wcga-database wcga-database-left">
+						
+						<h3>Import Events</h3>
+						
+						<form id="form-import-events-selection">
+						 	
+						 	<div class="row import-row import-row-organization">
+
+						 		<div class="span2 span-label">Organization:</div>
+
+						 		<div class="span3">
+						 			<select name="import-select-organization">
+						 				<option>select an organization</option>
+									 	<option>Coast Savers</option>
+										<option id="organization-save-our-shores">Save Our Shores</option>
+										<option>SOL V</option>
+									</select>
+						 		</div>
+
+						  	</div>
+
+						  	<div class="row import-row import-row-project">
+
+						 		<div class="span2 span-label">Project:</div>
+
+						 		<div class="span3">
+						 			<select name="import-select-project">
+									 	<option>select a project</option>
+									 	<option>Beach Cleanup</option>
+										<option>Coast Monitoring</option>
+										<option id="project-derelict-gear">Derelict Gear</option>
+									</select>
+						 		</div>
+
+						  	</div>
+
+						  	<div class="row import-row import-row-data-sheet">
+
+						 		<div class="span2 span-label">Data Sheet:</div>
+
+						 		<div class="span3">
+						 			<select name="import-select-data-sheet">
+						 				<option>select a data sheet</option>
+										<option id="data-sheet-derelict-gear-data">Derelict Gear Data</option>
+									</select>
+						 		</div>
+
+						  	</div>
+
+						  	<div class="row import-row import-row-state">
+
+						 		<div class="span2 span-label">State:</div>
+
+						 		<div class="span3">
+						 			<select name="import-select-state">
+						 				<option>select a state</option>
+										<option>Washington</option>
+										<option>Oregon</option>
+										<option id="state-california">California</option>
+										<option>Multiple</option>
+									</select>
+						 		</div>
+
+						  	</div>
+
+						  	<div class="row import-row import-row-events-file">
+
+						 		<div class="span2 span-label">Events File:</div>
+
+						 		<div class="span3">
+						 			<form>
+									 	<div class="input-append">
+									    	<input type="text" id="input-events-file" class="span2">
+									    	<a href="#modal-file-upload" id="browse-events-file" class="btn" role="button" data-toggle="modal">
+									    		Browse
+									    	</a>
+									  	</div>
+									</form>
+						 		</div>
+
+						  	</div>
+						
+						</form>
+
+						<div id="imported-events-summary">
+							<div class="row import-row">
+						 		<div class="span2 span-label">Organization:</div>
+						 		<div class="span3">Save Our Shores</div>
+						  	</div>
+
+						  	<div class="row import-row">
+						 		<div class="span2 span-label">Project:</div>
+						 		<div class="span3">Derelict Gear</div>
+						  	</div>
+
+						  	<div class="row import-row">
+						 		<div class="span2 span-label">Data Sheet:</div>
+						 		<div class="span3">Derelict Gear Data</div>
+						  	</div>
+
+						  	<div class="row import-row">
+						 		<div class="span2 span-label">State:</div>
+						 		<div class="span3">California</div>
+						  	</div>
+
+						  	<div class="row import-row">
+						 		<div class="span2 span-label">Events File:</div>
+						 		<div class="span3">C:\Docs\Derelict_Gear_Data_Table</div>
+						  	</div>
+						</div>
+
+						<p class="align-right">
+						 	<a href="data-location-reports.html" class="btn btn-danger">
+						 		Cancel Import
+						 	</a>
+						 	<a id="btn-import-events-disabled" href="#" class="btn">
+						 		Import Events
+						 	</a>
+						 	<a id="btn-import-events" href="#" class="btn btn-success">
+						 		Import Events
+						 	</a>
+						 	<a id="btn-edit-events" href="#" class="btn btn-success">
+						 		<i class="icon-edit"></i> Edit
+						 	</a>
+						</p>
+				
+					</div>
+
+				</div>
+				
+				<div class="span6">
+					<div id="imported-events-map-data-reports" class="wcga-database wcga-database-right">
+						
+						<h3>6 events loaded at the following locations</h3>
+
+						<div class="imported-events-map"></div>
+
+						<table class="table wcga table-striped table-hover">
+							<tr>
+								<th>Row</th>
+								<th>Lat</th>
+								<th>Lon</th>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>36.965</td>
+								<td>-121.940</td>
+							</tr>
+							<tr>
+								<td>2</td>
+								<td>36.950</td>
+								<td>-121.963</td>
+							</tr>
+							<tr>
+								<td>3</td>
+								<td>36.949</td>
+								<td>-121.922</td>
+							</tr>
+							<tr>
+								<td>4</td>
+								<td>36.945</td>
+								<td>-121.907</td>
+							</tr>
+							<tr>
+								<td>5</td>
+								<td>36.941</td>
+								<td>-121.907</td>
+							</tr>
+						</table>
+
+						<p class="align-right">
+						 	<a id="btn-cancel-edit" class="btn btn-danger" type="button">Cancel</a>
+						 	<a href="#modal-thank-you" data-toggle="modal" id="btn-finish-edit" class="btn btn-success" type="button">Finish</a>
+						</p>
+
+					</div>
+				
+				</div>
+			
+			</div>
+
+		</div>
+
+		<div class="container container-footer">	
+			
+		</div>
+
+	</body>
+
+</html>
