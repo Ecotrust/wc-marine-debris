@@ -12,7 +12,7 @@
     <h2>Create a New Event</h2>
     
     {% if error %}<p style="color:red">{{error}}</p>{% endif %}
-    <form class="event-form" method="post" action="{% if action %}{{ action }}{% else %}/event/create{% endif %}">
+    <form class="event-form form-horizontal" method="post" action="{% if action %}{{ action }}{% else %}/event/create{% endif %}">
     {% csrf_token %}
     {{form}}
     <p><input id="submit" type="submit" value="Continue" class='btn' style="margin:15px"/>
