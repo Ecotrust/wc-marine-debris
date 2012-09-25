@@ -31,8 +31,28 @@
         var self = this;
         
         self.data = json;
-        self.selectedOrganization = ko.observable();
-        self.selectedProject = ko.observable();
+        self.selectedOrganizationName = ko.observable();
+        self.selectedOrganization = ko.computed(function() {
+            var org = false;
+            $.each(json.orgs, function(index, value) {
+                if (value.name === self.selectedOrganizationName()){
+                    org = value;
+                }
+            });
+            return org;
+        });
+        self.selectedProjectName = ko.observable();
+        self.selectedProject = ko.computed(function () {
+            var proj = false;
+            if (self.selectedOrganization() && self.selectedProjectName()){
+                $.each(self.selectedOrganization().projects, function(index, value) {
+                    if (value.name === self.selectedProjectName()){
+                        proj = value;
+                    }
+                });
+            }
+            return proj;
+        });
         self.selectedDate = ko.observable();
         self.availableDatasheets = ko.observable();
         self.selectedDatasheet = ko.observable();
@@ -48,6 +68,7 @@
                 return false;
             }
         });
+        
     }
     
     app.viewModel = new EventViewModel();

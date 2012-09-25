@@ -26,17 +26,17 @@ class CreateEventForm(forms.Form):
         
     organization = forms.ChoiceField(
         choices = org_choices, 
-        widget = forms.Select(attrs={'data-bind':'options: data.orgs, optionsText: "name", value: selectedOrganization, optionsCaption: "Choose..."'})
+        widget = forms.Select(attrs={'data-bind':'options: data.orgs, optionsText: "name", value: selectedOrganizationName, optionsValue: "name", optionsCaption: "Choose..."'})
     )
     project = forms.ChoiceField(
         choices = proj_choices,
-        widget = forms.Select(attrs={'data-bind':'options: selectedOrganization() ? selectedOrganization().projects : [], optionsText: "name", value: selectedProject, optionsCaption: "Select...", enable: selectedOrganization'})
+        widget = forms.Select(attrs={'data-bind':'options: selectedOrganization() ? selectedOrganization().projects : [], optionsText: "name", optionsValue: "name", value: selectedProjectName, optionsCaption: "Select...", enable: selectedOrganizationName'})
     )
     date = forms.DateField(
-        widget=forms.TextInput(attrs={'class':'date', 'data-bind':'datepicker: selectedDate, enable: selectedProject'}))
+        widget=forms.TextInput(attrs={'class':'date', 'data-bind':'datepicker: selectedDate, enable: selectedProjectName'}))
     data_sheet = forms.ChoiceField(
         choices = ds_choices,
-        widget = forms.Select(attrs={'data-bind':'options: availableDatasheets() ? availableDatasheets() : [], optionsText: "name", value: selectedDatasheet, optionsCaption: "Select...", enable: availableDatasheets'})
+        widget = forms.Select(attrs={'data-bind':'options: availableDatasheets() ? availableDatasheets() : [], optionsText: "name", value: selectedDatasheet, optionsCaption: "Select...", optionsValue: "name", enable: availableDatasheets'})
     )
     
     state_choices = []
