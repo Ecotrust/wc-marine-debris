@@ -26,7 +26,7 @@ class CreateEventForm(forms.Form):
         
     organization = forms.ChoiceField(
         choices = org_choices, 
-        widget = forms.Select(attrs={'data-bind':'options: data.orgs, optionsText: "name", value: selectedOrganization, optionsCaption: "Choose..."'})
+        widget = forms.Select(attrs={'class': 'span6', 'data-bind':'options: data.orgs, optionsText: "name", value: selectedOrganization, optionsCaption: "Choose..."'})
     )
     project = forms.ChoiceField(
         choices = proj_choices,
