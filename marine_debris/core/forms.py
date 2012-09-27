@@ -71,7 +71,8 @@ class CreateEventForm(forms.Form):
         required=False,
         widget = forms.TextInput(
             attrs={
-                'class':'typeahead'
+                'class':'typeahead',
+                'autocomplete':'off'
             }
         )
     )
