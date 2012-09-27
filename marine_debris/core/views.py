@@ -73,14 +73,16 @@ def create_event(request):
             
             datasheet = DataSheet.objects.get(sheetname=event['data_sheet'])
             sites = []
+            sitenames = []
             if datasheet.type_id and not datasheet.type_id.display_sites:
                 form.fields['site_name'].widget = form.fields['site_name'].hidden_widget()
                 form.fields['county'].widget = form.fields['county'].hidden_widget()
             else:
                 for site in Site.objects.all().exclude(sitename=''):
                     sites.append({'name':site.sitename, 'lat':site.lat, 'lon':site.lon})
+                    sitenames.append(str(site.sitename))
             
-            return render_to_response('event_location.html', RequestContext(request, {'form':form.as_p(), 'event': event, 'sites':sites, 'active':'events'}))
+            return render_to_response('event_location.html', RequestContext(request, {'form':form.as_p(), 'event': event, 'sites':sites, 'sitenames': sitenames, 'active':'events'}))
         else:
             return render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'error':'Form is not valid, please review.', 'active':'events'}))
 
@@ -106,7 +108,7 @@ def event_location(request):
         event['latitude'] = eventForm.data['latitude']
         event['longitude'] = eventForm.data['longitude']
         form = DataSheetForm(datasheet, None)
-
+    
         return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'eventForm': eventForm.as_p(), 'event':event, 'active':'events'}))
     else :
         eventForm.fields['organization'].widget = eventForm.fields['organization'].hidden_widget()

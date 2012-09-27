@@ -4,6 +4,7 @@ from django.forms.util import ValidationError
 from django.forms.util import ErrorList
 import re, datetime
 from django.forms import TextInput, Textarea
+from cgi import escape
 
 class EventForm(forms.ModelForm):
     class Meta:
@@ -26,29 +27,54 @@ class CreateEventForm(forms.Form):
         
     organization = forms.ChoiceField(
         choices = org_choices, 
-        widget = forms.Select(attrs={'class': 'span6', 'data-bind':'options: data.orgs, optionsText: "name", value: selectedOrganizationName, optionsValue: "name", optionsCaption: "Choose..."'})
+        widget = forms.Select(
+            attrs={
+                'class': 'span6', 
+                'data-bind':'options: data.orgs, optionsText: "name", value: selectedOrganizationName, optionsValue: "name", optionsCaption: "Choose..."'
+            }
+        )
     )
     project = forms.ChoiceField(
         choices = proj_choices,
-        widget = forms.Select(attrs={'data-bind':'options: selectedOrganization() ? selectedOrganization().projects : [], optionsText: "name", optionsValue: "name", value: selectedProjectName, optionsCaption: "Select...", enable: selectedOrganizationName'})
+        widget = forms.Select(
+            attrs={
+                'data-bind':'options: selectedOrganization() ? selectedOrganization().projects : [], optionsText: "name", optionsValue: "name", value: selectedProjectName, optionsCaption: "Select...", enable: selectedOrganizationName'
+            }
+        )
     )
     date = forms.DateField(
-        widget=forms.TextInput(attrs={'class':'date', 'data-bind':'datepicker: selectedDate, enable: selectedProjectName'}))
+        widget=forms.TextInput(
+            attrs={
+                'class':'date', 
+                'data-bind':'datepicker: selectedDate, enable: selectedProjectName'
+            }
+        )
+    )
     data_sheet = forms.ChoiceField(
         choices = ds_choices,
-        widget = forms.Select(attrs={'data-bind':'options: availableDatasheets() ? availableDatasheets() : [], optionsText: "name", value: selectedDatasheet, optionsCaption: "Select...", optionsValue: "name", enable: availableDatasheets'})
+        widget = forms.Select(
+            attrs={
+                'data-bind':'options: availableDatasheets() ? availableDatasheets() : [], optionsText: "name", value: selectedDatasheet, optionsCaption: "Select...", optionsValue: "name", enable: availableDatasheets'
+            }
+        )
     )
-    
     state_choices = []
     for state in State.objects.all():
         state_choices.append((state.initials, state.name))
-    site_choices = [(None, 'Select a site')]
+    site_choices = []
     for site in Site.objects.all().exclude(sitename=''):
-        site_choices.append((site.sitename, site.sitename))
+        site_choices.append(escape('"' + str(site.sitename) + '"'))
     
     state = forms.ChoiceField(state_choices, required=False)
     county = forms.CharField(required=False)
-    site_name = forms.ChoiceField(site_choices, required=False)
+    site_name = forms.CharField(
+        required=False,
+        widget = forms.TextInput(
+            attrs={
+                'class':'typeahead'
+            }
+        )
+    )
     longitude = forms.CharField(required=False)
     latitude = forms.CharField(required=False)
     

@@ -15,8 +15,9 @@
     <form class="event-form form-horizontal" method="post" action="{% if action %}{{ action }}{% else %}/event/create{% endif %}">
     {% csrf_token %}
     {{form}}
-    <p><input id="submit" type="submit" value="Continue" class='btn' style="margin:15px"/>
-    {% if action %}<button type="button" class="event_cancel" id="cancel" value="Cancel">Cancel</button>{% endif %}
+    <p>
+    <button type="button" class="btn" id="back" value="Back" onClick="history.go(-1);return true;">Back</button>
+    <input id="submit" type="submit" value="Continue" class='btn'/>
     </p>
     </form>
     
