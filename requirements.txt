@@ -1,0 +1,6 @@
+django
+haystack
+django-haystack
+south
+psycopg2
+django-registration
