@@ -24,11 +24,11 @@
         <form class="event-form" method="post" action="{% if action %}{{ action }}{% else %}/event/create/location{% endif %}">
         {% csrf_token %}
         {{form}}
-        <p><input id="submit" type="submit" value="Continue" class='btn' style="margin:15px"/>
-        {% if action %}<button type="button" class="event_cancel" id="cancel" value="Cancel">Cancel</button>{% endif %}
+        <div id="map" class="smallmap"></div>
+        <p><button type="button" class="btn" id="back" value="Back" onClick="history.go(-1);return true;">Back</button>
+        <input id="submit" type="submit" value="Continue" class='btn' style="margin:15px"/>
         </p>
         </form>
-        <div id="map" class="smallmap"></div>
     
 {% endblock %}    
 
@@ -44,6 +44,13 @@
 {% endblock %}
 
 {% block js %}
+    
+    $(document).ready(function () {
+        $(".typeahead").typeahead({
+            source: {{sitenames|safe}}
+        });            
+    });
+    
     function onload(event) {
         init();
     }
@@ -58,7 +65,7 @@
 
 	$(function() {
 		$( ".date" ).datepicker({dateFormat: 'yy-mm-dd'});
-        $( "#id_site_name" ).on('change', function(){
+        $( "#id_site_name" ).on('blur', function(){
             var locations = {
             {% for site in sites %}
                 '{{site.name}}': [{{site.lat}},{{site.lon}}],
