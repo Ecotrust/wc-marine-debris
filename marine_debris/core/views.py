@@ -79,7 +79,7 @@ def create_event(request):
                 form.fields['county'].widget = form.fields['county'].hidden_widget()
             else:
                 for site in Site.objects.all().exclude(sitename=''):
-                    sites.append({'name':site.sitename, 'lat':site.lat, 'lon':site.lon})
+                    sites.append({'name':site.sitename, 'lat':site.lat, 'lon':site.lon, 'state':site.state, 'county':site.county})
                     sitenames.append(str(site.sitename))
             
             return render_to_response('event_location.html', RequestContext(request, {'form':form.as_p(), 'event': event, 'sites':sites, 'sitenames': sitenames, 'active':'events'}))
@@ -108,6 +108,8 @@ def event_location(request):
         event['latitude'] = eventForm.data['latitude']
         event['longitude'] = eventForm.data['longitude']
         form = DataSheetForm(datasheet, None)
+        
+        
     
         return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'eventForm': eventForm.as_p(), 'event':event, 'active':'events'}))
     else :

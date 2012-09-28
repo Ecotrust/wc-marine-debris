@@ -46,10 +46,141 @@
 {% block js %}
     
     $(document).ready(function () {
-        $(".typeahead").typeahead({
-            source: {{sitenames|safe}}
+        $(".county-typeahead").typeahead({
+            //source: {{sitenames|safe}}
+            source: function () {
+                return $.map(app.viewModel.selectedState().counties, function (county) {
+                   return county.name;
+                })
+            }
+        });
+        $(".site-typeahead").typeahead({
+            //source: {{sitenames|safe}}
+            source: function () {
+                return $.map(app.viewModel.selectedCounty().sites, function (site) {
+                   return site.name;
+                })
+            }
         });            
     });
+    
+
+    var app = {}, 
+        json = {
+        "states" : [
+            {
+                "name" : "Washington",
+                "initials": "WA",
+                "counties": [
+                    {
+                        "name": "wa-1",
+                        "sites": [
+                            {
+                                "name":"wa-1-1"
+                            },{
+                                "name":"wa-1-2"
+                            }
+                        ]
+                    },{
+                        "name": "wa-2",
+                        "sites": [
+                            {
+                                "name":"wa-2-1"
+                            },{
+                                "name":"wa-2-2"
+                            }
+                        ]
+                    }
+                ]
+            },{
+                "name" : "Oregon",
+                "initials": "OR",
+                "counties": [
+                    {
+                        "name": "or-1",
+                        "sites": [
+                            {
+                                "name":"or-1-1"
+                            },{
+                                "name":"or-1-2"
+                            }
+                        ]
+                    },{
+                        "name": "or-2",
+                        "sites": [
+                            {
+                                "name":"or-2-1"
+                            },{
+                                "name":"or-2-2"
+                            }
+                        ]
+                    }
+                ]
+            },{
+                "name": "California",
+                "initials": "CA",
+                "counties": [
+                    {
+                        "name": "Santa Cruz",
+                        "sites": [
+                            {
+                                "name": "Hidden Beach"
+                            },{
+                                "name": "Cowell Beach"
+                            }
+                        ]
+                    },{
+                        "name": "San Diego",
+                        "sites": [
+                            {
+                                "name": "Coronado Beach"
+                            },{
+                                "name": "Pacific Beach"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    };
+
+    function LocationViewModel() {
+        var self = this;
+        
+        self.data = json;
+        
+        
+        
+        self.selectedStateName = ko.observable();
+        self.selectedState = ko.computed(function() {
+            var state = false;
+            if (self.selectedStateName()){
+                $.each(json.states, function(index, value) {
+                    if (value.initials === self.selectedStateName()){
+                        state = value;
+                    }
+                });
+            }
+            return state;
+        });
+        self.selectedCountyName = ko.observable();
+        self.selectedCounty = ko.computed(function() {
+            var county = false;
+            if (self.selectedStateName() && self.selectedCountyName()) {
+                $.each(self.selectedState().counties, function(index, value) {
+                    if (value.name === self.selectedCountyName()){
+                        county = value;
+                    }
+                });
+            }
+            return county;
+        });
+        self.selectedSiteName = ko.observable();
+    }
+    
+    app.viewModel = new LocationViewModel();
+    ko.applyBindings(app.viewModel);
+    
     
     function onload(event) {
         init();

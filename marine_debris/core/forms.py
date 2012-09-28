@@ -30,7 +30,7 @@ class CreateEventForm(forms.Form):
         widget = forms.Select(
             attrs={
                 'class': 'span6', 
-                'data-bind':'options: data.orgs, optionsText: "name", value: selectedOrganizationName, optionsValue: "name", optionsCaption: "Choose..."'
+                'data-bind':'options: data.orgs ? data.orgs : [], optionsText: "name", value: selectedOrganizationName, optionsValue: "name", optionsCaption: "Choose..."'
             }
         )
     )
@@ -65,14 +65,33 @@ class CreateEventForm(forms.Form):
     for site in Site.objects.all().exclude(sitename=''):
         site_choices.append(escape('"' + str(site.sitename) + '"'))
     
-    state = forms.ChoiceField(state_choices, required=False)
-    county = forms.CharField(required=False)
+    state = forms.ChoiceField(
+        choices = state_choices, 
+        required=False,
+        widget = forms.Select(
+            attrs={
+            'class':'span6',
+            'data-bind':'options: data.states ? data.states : [], optionsText: "name", value: selectedStateName, optionsValue: "initials", optionsCaption: "Choose..."'
+            }
+        )
+    )
+    county = forms.CharField(
+        required=False,
+        widget = forms.TextInput(
+            attrs={
+                'class':'county-typeahead',
+                'autocomplete':'off',
+                'data-bind':'value: selectedCountyName'
+            }
+        )
+    )
     site_name = forms.CharField(
         required=False,
         widget = forms.TextInput(
             attrs={
-                'class':'typeahead',
-                'autocomplete':'off'
+                'class':'site-typeahead',
+                'autocomplete':'off',
+                'data-bind':'value: selectedSiteName'
             }
         )
     )
@@ -101,7 +120,7 @@ class CreateEventForm(forms.Form):
                     if self.data['site_name'].__len__() > 0:    #site will have name, and name is given
                         records = Site.objects.filter(sitename=self.data['site_name'])
                         for record in records:
-                            if str(record.lat) == self.data['latitude'] and str(record.lon) == self.data['longitude'] and record.county == self.data['county'] and record.state.initials == self.data['state']:
+                            if str(record.lat) == self.data['latitude'] and str(record.lon) == self.data['longitude'] and record.county == self.data['county'] and record.state.name == self.data['state']:
                                 matches = [record]
                                 exists = True
                                 break
