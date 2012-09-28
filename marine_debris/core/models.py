@@ -194,6 +194,16 @@ class State (models.Model):
     class Meta:
         ordering = ['name', 'initials']
         
+    @property
+    def toDict(self):
+        counties = [ site.countyDict for site in Site.objects.filter(state=self)]
+        state_dict = {
+            'name': self.name,
+            'initials': self.initials,
+            'counties': counties
+        }
+        return state_dict
+        
 class Site (models.Model):
     sitename = models.TextField(blank=True, null=True)
     lat = models.FloatField(blank=True, null=True, validators=[MinValueValidator(32.5), MaxValueValidator(49.1)])
@@ -203,6 +213,26 @@ class Site (models.Model):
     
     def __unicode__(self):
         return self.sitename
+        
+    @property
+    def countyDict(self):
+        sites = [ site.toDict for site in Site.objects.filter(county = self.county)]
+        county_dict = {
+            'name': self.county,
+            'sites': sites
+        }
+        return county_dict
+        
+    @property
+    def toDict(self):
+        site_dict = {
+            'name': self.sitename,
+            'lat': self.lat,
+            'lon': self.lon,
+            'state': self.state.name,
+            'county': self.county
+        }
+        return site_dict
         
 class Event (models.Model):
     
