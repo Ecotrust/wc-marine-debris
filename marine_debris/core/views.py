@@ -58,6 +58,7 @@ def create_event(request):
     else :
         eventForm = CreateEventForm
         form = eventForm(request.POST)
+
         form.validate_event()
         if form.is_valid():
             form.fields['organization'].widget = form.fields['organization'].hidden_widget()
@@ -69,7 +70,8 @@ def create_event(request):
             event['organization'] = form.data['organization']
             event['project'] = form.data['project']
             event['date'] = form.data['date']
-            event['data_sheet'] = form.data['data_sheet']
+            datasheetName = DataSheet.objects.get(id=form.data['data_sheet']).sheetname
+            event['data_sheet'] = datasheetName
             
             datasheet = DataSheet.objects.get(sheetname=event['data_sheet'])
             if datasheet.type_id and not datasheet.type_id.display_sites:

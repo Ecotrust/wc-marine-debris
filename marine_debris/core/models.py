@@ -106,6 +106,7 @@ class DataSheet (models.Model):
         ds_dict = {
             'name': self.sheetname,
             'start_date': self.year_started,
+            'id': self.id,
         }
         return ds_dict
     

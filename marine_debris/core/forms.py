@@ -23,7 +23,7 @@ class CreateEventForm(forms.Form):
         proj_choices.append((proj, proj.projname))
     ds_choices = []
     for ds in DataSheet.objects.all():
-        ds_choices.append((ds, ds.sheetname))
+        ds_choices.append((ds.id, ds.sheetname))
         
     organization = forms.ChoiceField(
         choices = org_choices, 
@@ -54,7 +54,7 @@ class CreateEventForm(forms.Form):
         choices = ds_choices,
         widget = forms.Select(
             attrs={
-                'data-bind':'options: availableDatasheets() ? availableDatasheets() : [], optionsText: "name", value: selectedDatasheet, optionsCaption: "Select...", optionsValue: "name", enable: availableDatasheets'
+                'data-bind':'options: availableDatasheets() ? availableDatasheets() : [], optionsText: "name", value: selectedDatasheet, optionsCaption: "Select...", optionsValue: "id", enable: availableDatasheets'
             }
         )
     )
