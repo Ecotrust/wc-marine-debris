@@ -81,7 +81,7 @@ class CreateEventForm(forms.Form):
             attrs={
                 'class':'county-typeahead',
                 'autocomplete':'off',
-                'data-bind':'value: selectedCountyName'
+                'data-bind':'value: selectedCountyName, enable: selectedState'
             }
         )
     )
@@ -91,7 +91,7 @@ class CreateEventForm(forms.Form):
             attrs={
                 'class':'site-typeahead',
                 'autocomplete':'off',
-                'data-bind':'value: selectedSiteName'
+                'data-bind':'value: selectedSiteName, enable: selectedCounty'
             }
         )
     )
