@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 import datetime
+from datetime import date
 
 # Create your models here.
 class DataType (models.Model):
@@ -243,13 +244,13 @@ class Event (models.Model):
     )
     datasheet_id = models.ForeignKey(DataSheet)
     proj_id = models.ForeignKey(Project)
-    cleanupdate = models.DateTimeField(default=datetime.date.today)
+    cleanupdate = models.DateField(default=datetime.date.today())
     site = models.ForeignKey(Site, null=True, blank=True, default= None)
     submitted_by = models.ForeignKey(User, null=True, blank=True, default=None)
     status = models.CharField(max_length=30, choices=StatusChoices, default='New', blank=True)
     
     def __unicode__(self):
-        return self.proj_id.projname + '-' + self.site.sitename + '-' + self.cleanupdate.date().isoformat()
+        return self.proj_id.projname + '-' + self.site.sitename + '-' + self.cleanupdate.isoformat()
         
     def get_fields(self):
         return[(field.name, field.value_to_string(self)) for field in Event._meta.fields]
