@@ -81,8 +81,11 @@ def create_event(request):
                 for site in Site.objects.all().exclude(sitename=''):
                     sites.append({'name':site.sitename, 'lat':site.lat, 'lon':site.lon, 'state':site.state, 'county':site.county})
                     sitenames.append(str(site.sitename))
+                    
+            state_dict = [state.toDict for state in State.objects.all()]
+            state_json = simplejson.dumps(state_dict)
             
-            return render_to_response('event_location.html', RequestContext(request, {'form':form.as_p(), 'event': event, 'sites':sites, 'sitenames': sitenames, 'active':'events'}))
+            return render_to_response('event_location.html', RequestContext(request, {'form':form.as_p(), 'states': state_json, 'event': event, 'sites':sites, 'sitenames': sitenames, 'active':'events'}))
         else:
             return render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'error':'Form is not valid, please review.', 'active':'events'}))
 
