@@ -6,7 +6,7 @@ from django.template import RequestContext, loader
 from django.template.loader import render_to_string
 from django.template.defaultfilters import slugify
 from django.conf import settings
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadRequest, HttpResponseNotFound, QueryDict
 from models import *
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, REDIRECT_FIELD_NAME, login as auth_login
@@ -16,6 +16,7 @@ import string
 from django.utils import simplejson
 import datetime
 from forms import *
+import csv
 
 from django.forms.models import modelformset_factory
 
@@ -82,6 +83,8 @@ def create_event(request):
                 for site in Site.objects.all().exclude(sitename=''):
                     sites.append({'name':site.sitename, 'lat':site.lat, 'lon':site.lon})
                     sitenames.append(str(site.sitename))
+
+            print sitenames
             
             return render_to_response('event_location.html', RequestContext(request, {'form':form.as_p(), 'event': event, 'sites':sites, 'sitenames': sitenames, 'active':'events'}))
         else:
@@ -275,34 +278,87 @@ def map_test(request):
 
 def bulk_csv_header(request, datasheet_id):
     ds = DataSheet.objects.get(id=datasheet_id)
-    filename = slugify(ds.sheetname) + ".csv"
-    field_names = [f.field_name for f in ds.datasheetfield_set.all()]
+    field_names = ds.fieldnames
     header = ','.join(["\"%s\"" % f for f in field_names])
-    test_row = ''
+    test_row = '' #TODO put valid default values?
+    filename = slugify(ds.sheetname) + ".csv"
     response = HttpResponse('\n'.join([header, test_row]) , mimetype="text/csv")
     response['Content-Disposition'] = 'attachment; filename=%s' % filename
     return response
 
+def bulk_bad_request(form, request, errors=None):
+    if not errors:
+        errors = []
+    res = render_to_response('bulk_import.html', 
+            RequestContext(request,{'form':form.as_p(), 
+                'errors':errors, 'active':'events'}))
+    res.status_code = 400
+    return res
+
 @login_required    
 def bulk_import(request):
-    #ds = DataSheet.objects.get(id=datasheet_id)
     if request.method == 'GET':
         form = BulkImportForm() # instance=ds)
     else:
         form = BulkImportForm(request.POST, request.FILES)
         if form.is_valid():
-            # parse file
-            # validate fields
+            rows = csv.DictReader(request.FILES['csvfile'])
+            rows = list(rows) # eval now so we can do multiple loops
+            
+            # Get the datasheet. Must post a datasheet_id variable
+            try:
+                datasheet_id = request.POST['datasheet_id']
+            except KeyError:
+                return bulk_bad_request(form, ['Form is not valid, please review.', ])
+
+            ds = get_object_or_404(DataSheet, pk=datasheet_id)
+
+            errors = []
+
+            # confirm required columns
+            for i, row in enumerate(rows):
+                keys = row.keys()
+                for rf in ds.required_fieldnames:
+                    if rf not in keys:
+                        errors.append("Row %d does not contain required column '%s'" % (i, rf))
+                for key in keys:
+                    if key not in ds.fieldnames:
+                        errors.append("Row %d contains column '%s' which is not recognized by this datasheet" % (i, key))
+
+            if len(errors) > 0:
+                return bulk_bad_request(form, request, errors)
+
             # loop through rows and submit forms
+            for i, row in enumerate(rows):
+                row_qnum = {} # keys must refer to the question number (ie 'question_768') 
+                for k,v in row.items():
+                    dsf = ds.datasheetfield_set.get(field_name=k) 
+                    row_qnum['question_%d' % dsf.id] = v
+
+                qd = QueryDict('')
+                qd = qd.copy() # to make it mutable
+                qd.update(row_qnum)
+
+                ds_form = DataSheetForm(ds, None, qd) #row_qnum)
+                if not ds_form.is_valid():
+                    for question, message in ds_form.errors.items():
+                        fieldnum = int(question.replace("question_",''))
+                        fieldname = ds.datasheetfield_set.get(pk=fieldnum).field_name
+                        errors.append("Row %d, '%s' is invalid: %s" % (i, fieldname, message.as_text()))
+            
+            if len(errors) > 0:
+                return bulk_bad_request(form, request, errors)
+
             # return: parse errors, fieldname errors, event errors
+            # do i need to create an event first? 
             # OR if it's good with unknown sites, store in temp and provide a way to correct site errors  
             # OR if it's good - store in temp and provide a summary with a 'Proceed button'
             return HttpResponse("valid form")
         else:
-            res = render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(), 'error':'Form is not valid, please review.', 'active':'events'}))
+            res = render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(), 
+                'errors':['Form is not valid, please review.',], 'active':'events'}))
             res.status_code = 400
             return res
-
 
     #TODO: Filter Organizations by only those which the user has access to.
     org_dict = [org.toDict for org in Organization.objects.all()]

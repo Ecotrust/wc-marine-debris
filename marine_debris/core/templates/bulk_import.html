@@ -15,6 +15,16 @@
     <!-- <a href="/event/create">Create New Event</a> -->
 {% endblock %}
 
+{% block rightcontent %}
+  <ul>
+    {% for error in errors %}
+        <li>{{ error }}</li>
+    {% empty %}
+        <li>Yey no errors</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
+
 {% block js %}
 
 	$(function() {

@@ -102,13 +102,32 @@ class DataSheet (models.Model):
         ordering = ['sheetname']
         
     @property
+    def fieldnames(self):
+        return [f.field_name for f in self.datasheetfield_set.all()]
+
+    @property
     def required_fieldnames(self):
-        # if derelict gear....
+        """
+        Collects the fieldnames for required fields of two types:
+         - globally required in settings
+         - required per datasheet
+        """
+        # TODO derelict gear....
+         
+        # global
         req_fields = settings.REQUIRED_FIELDS['cleanup']
         required_fieldnames = []
         for item, internal_name in req_fields.items():
             dsf = DataSheetField.objects.get(field_id__internal_name=internal_name)
             required_fieldnames.append(dsf.field_name)
+
+        # per datasheet
+        ds_req_fields = self.datasheetfield_set.filter(required=True)
+        for rf in ds_req_fields:
+            fieldname = rf.field_name
+            if fieldname not in required_fieldnames:
+                required_fieldnames.append(fieldname)
+
         return required_fieldnames
 
     @property

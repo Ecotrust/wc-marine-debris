@@ -159,7 +159,8 @@ class DataSheetForm(forms.Form):
             dynamic_args['required']=question.required
             answer = answers.filter(field_id = question.field_id.id)
             
-            if question.field_id.datatype.name == 'Area' or question.field_id.datatype.name == 'Distance' or question.field_id.datatype.name == 'Duration' or question.field_id.datatype.name == 'Number' or question.field_id.datatype.name == 'Volume' or question.field_id.datatype.name == 'Weight': # decimal
+            if question.field_id.datatype.name in ['Area', 'Distance', 'Duration', 'Number', 'Volume', 'Weight']: 
+                # decimal
                 if question.field_id.minvalue != None:
                     dynamic_args['min_value']=int(question.field_id.minvalue)
                 if question.field_id.maxvalue != None:
@@ -195,8 +196,8 @@ class DataSheetForm(forms.Form):
                             dynamic_args['initial']=datetime.datetime.strptime(question.field_id.default_value, "%Y-%m-%d %H:%M:%S")
                         except:
                             dynamic_args['initial']=datetime.datetime.strptime(question.field_id.default_value, "%Y-%m-%d")
-                else:
-                    dynamic_args['initial']=datetime.datetime.now()
+                #else:
+                #    dynamic_args['initial']=datetime.datetime.now()
                 dynamic_args['widget']=forms.TextInput(attrs={'class':'date'})
                 self.fields['question_' + str(question.id)] = forms.CharField( **dynamic_args )
                 
