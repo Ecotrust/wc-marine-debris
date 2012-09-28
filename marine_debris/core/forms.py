@@ -13,6 +13,33 @@ class EventForm(forms.ModelForm):
         widgets = {
             'cleanupdate': TextInput()
         }
+
+
+class BulkImportForm(forms.Form):
+    org_choices = []
+    for org in Organization.objects.all():
+        org_choices.append((org, org.orgname))
+    proj_choices = []
+    for proj in Project.objects.all():
+        proj_choices.append((proj, proj.projname))
+    ds_choices = []
+    for ds in DataSheet.objects.all():
+        ds_choices.append((ds, ds.sheetname))
+        
+    organization = forms.ChoiceField(
+        choices = org_choices, 
+        widget = forms.Select()
+    )
+    project = forms.ChoiceField(
+        choices = proj_choices,
+        widget = forms.Select()
+    )
+    data_sheet = forms.ChoiceField(
+        choices = ds_choices,
+        widget = forms.Select()
+    )
+    
+    csvfile = forms.FileField()
         
 class CreateEventForm(forms.Form):
     org_choices = []

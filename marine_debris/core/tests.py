@@ -6,11 +6,45 @@ Replace this with more appropriate tests for your application.
 """
 
 from django.test import TestCase
+from django.test.client import Client
+from django.contrib.auth.models import User
+from core.models import DataSheet
+import os
 
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+class TestBulkUpload(TestCase):
+    fixtures = ['test_data',]
+
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            'featuretest', 'featuretest@madrona.org', password='pword')
+        self.ds = DataSheet.objects.get(pk=18) 
+        d = os.path.dirname(__file__)
+        self.fpath = os.path.abspath(os.path.join(d, 'fixtures', 'testdata', 'test_bulk.csv'))
+     
+    def test_bulk_csv_header(self):
+        response = self.client.get('/datasheet/csv_header/%d' % self.ds.pk)
+        self.assertEqual(response.status_code, 200)
+
+    def test_bulk_import_unauth(self):
+        response = self.client.post('/datasheet/bulk_import/')
+        self.assertEqual(response.status_code, 302) #login required
+
+    def test_bulk_import_get(self):
+        self.client.login(username='featuretest', password='pword')
+        response = self.client.get('/datasheet/bulk_import/')
+        self.assertEqual(response.status_code, 200) #login required
+
+    def test_bulk_import_post(self):
+        self.client.login(username='featuretest', password='pword')
+        url = '/datasheet/bulk_import/'
+        with open(self.fpath) as f:
+            response = self.client.post(url, {
+                'organization': 'Coast Savers', 
+                'project': 'Beach Cleanups', 
+                'data_sheet': 'Coast Savers Cleanup Data', 
+                'csvfile': f
+                }
+            )
+        self.assertEqual(response.status_code, 200) #login required

@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
+from django.conf import settings
 import datetime
 
 # Create your models here.
@@ -100,6 +101,16 @@ class DataSheet (models.Model):
     class Meta:
         ordering = ['sheetname']
         
+    @property
+    def required_fieldnames(self):
+        # if derelict gear....
+        req_fields = settings.REQUIRED_FIELDS['cleanup']
+        required_fieldnames = []
+        for item, internal_name in req_fields.items():
+            dsf = DataSheetField.objects.get(field_id__internal_name=internal_name)
+            required_fieldnames.append(dsf.field_name)
+        return required_fieldnames
+
     @property
     def toDict(self):
         ds_dict = {

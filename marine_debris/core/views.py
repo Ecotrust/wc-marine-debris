@@ -4,6 +4,7 @@ from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext, loader
 from django.template.loader import render_to_string
+from django.template.defaultfilters import slugify
 from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 from models import *
@@ -84,7 +85,9 @@ def create_event(request):
             
             return render_to_response('event_location.html', RequestContext(request, {'form':form.as_p(), 'event': event, 'sites':sites, 'sitenames': sitenames, 'active':'events'}))
         else:
-            return render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'error':'Form is not valid, please review.', 'active':'events'}))
+            res = render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'error':'Form is not valid, please review.', 'active':'events'}))
+            res.status_code = 400
+            return res
 
 @login_required            
 def event_location(request):
@@ -269,4 +272,39 @@ def projects(request):
 
 def map_test(request):
     return render_to_response('map-test.html', RequestContext(request, {}))
-    
+
+def bulk_csv_header(request, datasheet_id):
+    ds = DataSheet.objects.get(id=datasheet_id)
+    filename = slugify(ds.sheetname) + ".csv"
+    field_names = [f.field_name for f in ds.datasheetfield_set.all()]
+    header = ','.join(["\"%s\"" % f for f in field_names])
+    test_row = ''
+    response = HttpResponse('\n'.join([header, test_row]) , mimetype="text/csv")
+    response['Content-Disposition'] = 'attachment; filename=%s' % filename
+    return response
+
+@login_required    
+def bulk_import(request):
+    #ds = DataSheet.objects.get(id=datasheet_id)
+    if request.method == 'GET':
+        form = BulkImportForm() # instance=ds)
+    else:
+        form = BulkImportForm(request.POST, request.FILES)
+        if form.is_valid():
+            # parse file
+            # validate fields
+            # loop through rows and submit forms
+            # return: parse errors, fieldname errors, event errors
+            # OR if it's good with unknown sites, store in temp and provide a way to correct site errors  
+            # OR if it's good - store in temp and provide a summary with a 'Proceed button'
+            return HttpResponse("valid form")
+        else:
+            res = render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(), 'error':'Form is not valid, please review.', 'active':'events'}))
+            res.status_code = 400
+            return res
+
+
+    #TODO: Filter Organizations by only those which the user has access to.
+    org_dict = [org.toDict for org in Organization.objects.all()]
+    org_json = simplejson.dumps(org_dict)
+    return render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(), 'json':org_json, 'active':'events'}))

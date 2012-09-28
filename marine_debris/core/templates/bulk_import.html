@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{{event}}</h1>
+{% endblock %}
+{% block leftcontent %}
+<h2> Bulk import from .csv file</i></h2>
+    <form class="event-form" method="post" enctype="multipart/form-data" action="{% if action %}{{ action }}{% else %}{{event.id}}{% endif %}">
+    {% csrf_token %}
+    {{form}}
+    <p><input id="submit" type="submit" value="Continue" style="margin:15px"/>
+    {% if action %}<button type="button" class="event_cancel btn" id="cancel" value="Cancel">Cancel</button>{% endif %}
+    </p>
+    </form>
+    <!-- <a href="/event/create">Create New Event</a> -->
+{% endblock %}
+
+{% block js %}
+
+	$(function() {
+		$( "#id_cleanupdate" ).datepicker({dateFormat: 'yy-mm-dd'});
+	});
+    
+{% endblock %}

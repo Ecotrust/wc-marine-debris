@@ -157,7 +157,17 @@ LOGGING = {
     }
 }
 
+REQUIRED_FIELDS = {
+    'cleanup': {
+        'sitename': 'Cleanup_site_name',
+        'date': 'Cleanup_date_start',
+        #'state': 'State',
+        #'county': 'County',
+    }
+}
+
 try:
     from settings_local import *
 except ImportError, exp:
     pass
+
