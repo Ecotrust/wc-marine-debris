@@ -304,12 +304,14 @@ def bulk_import(request):
         if form.is_valid():
             rows = csv.DictReader(request.FILES['csvfile'])
             rows = list(rows) # eval now so we can do multiple loops
+            if len(rows) == 0:
+                return bulk_bad_request(form, request, ['Uploaded file does not contain any rows.', ])
             
             # Get the datasheet. Must post a datasheet_id variable
             try:
                 datasheet_id = request.POST['datasheet_id']
             except KeyError:
-                return bulk_bad_request(form, ['Form is not valid, please review.', ])
+                return bulk_bad_request(form, request, ['Form is not valid, please review.', ])
 
             ds = get_object_or_404(DataSheet, pk=datasheet_id)
 
@@ -319,16 +321,18 @@ def bulk_import(request):
             for i, row in enumerate(rows):
                 keys = row.keys()
                 for rf in ds.required_fieldnames:
-                    if rf not in keys:
-                        errors.append("Row %d does not contain required column '%s'" % (i, rf))
+                    if rf not in keys or row[rf] is None:
+                        errors.append("Uploaded file does not contain required column '%s'" % (rf,))
                 for key in keys:
                     if key not in ds.fieldnames:
-                        errors.append("Row %d contains column '%s' which is not recognized by this datasheet" % (i, key))
+                        errors.append("Uploaded file contains column '%s' which is not recognized by this datasheet" % (key,))
+                if len(errors) > 0:
+                    # return at the datasheet level
+                    return bulk_bad_request(form, request, errors)
 
-            if len(errors) > 0:
-                return bulk_bad_request(form, request, errors)
-
-            # loop through rows and submit forms
+            # loop through rows and validate against forms
+            # also collect sites
+            unique_site_keys = []
             for i, row in enumerate(rows):
                 row_qnum = {} # keys must refer to the question number (ie 'question_768') 
                 for k,v in row.items():
@@ -340,20 +344,37 @@ def bulk_import(request):
                 qd.update(row_qnum)
 
                 ds_form = DataSheetForm(ds, None, qd) #row_qnum)
+                
                 if not ds_form.is_valid():
                     for question, message in ds_form.errors.items():
                         fieldnum = int(question.replace("question_",''))
                         fieldname = ds.datasheetfield_set.get(pk=fieldnum).field_name
-                        errors.append("Row %d, '%s' is invalid: %s" % (i, fieldname, message.as_text()))
+                        errors.append("Row %d, '%s' is invalid: %s" % (i+1, fieldname, message.as_text()))
+              
+                # TODO derelict gear....TODO instead of cleanup, look at event type
+                sitename = settings.REQUIRED_FIELDS['cleanup']['sitename']
+                dsf = DataSheetField.objects.get(field_id__internal_name=sitename)
+                if row[dsf.field_name] not in unique_site_keys:
+                    unique_site_keys.append(row[dsf.field_name])
             
             if len(errors) > 0:
                 return bulk_bad_request(form, request, errors)
 
-            # return: parse errors, fieldname errors, event errors
+            sites = []
+            for site_key in unique_site_keys:
+                # TODO site unique site key should include state and county
+                try:
+                    site = Site.objects.get(sitename=site_key)
+                    sites.append({'name':site_key, 'site':site})
+                except:
+                    sites.append({'name':site_key, 'site':None})
+
             # do i need to create an event first? 
             # OR if it's good with unknown sites, store in temp and provide a way to correct site errors  
             # OR if it's good - store in temp and provide a summary with a 'Proceed button'
-            return HttpResponse("valid form")
+            #return HttpResponse("valid response")
+            return render_to_response('bulk_import_valid.html', RequestContext(request,{'form':form.as_p(), 
+                'sites': sites, 'active':'events'}))
         else:
             res = render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(), 
                 'errors':['Form is not valid, please review.',], 'active':'events'}))

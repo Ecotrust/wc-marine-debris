@@ -24,7 +24,7 @@ class BulkImportForm(forms.Form):
         proj_choices.append((proj, proj.projname))
     ds_choices = []
     for ds in DataSheet.objects.all():
-        ds_choices.append((ds, ds.sheetname))
+        ds_choices.append((ds.id, ds.sheetname))
         
     organization = forms.ChoiceField(
         choices = org_choices, 
@@ -34,7 +34,7 @@ class BulkImportForm(forms.Form):
         choices = proj_choices,
         widget = forms.Select()
     )
-    data_sheet = forms.ChoiceField(
+    datasheet_id = forms.ChoiceField(
         choices = ds_choices,
         widget = forms.Select()
     )
@@ -199,7 +199,7 @@ class DataSheetForm(forms.Form):
                 #else:
                 #    dynamic_args['initial']=datetime.datetime.now()
                 dynamic_args['widget']=forms.TextInput(attrs={'class':'date'})
-                self.fields['question_' + str(question.id)] = forms.CharField( **dynamic_args )
+                self.fields['question_' + str(question.id)] = forms.DateTimeField( **dynamic_args )
                 
                 # elif question.field_id.datatype.name == 'Location':
             

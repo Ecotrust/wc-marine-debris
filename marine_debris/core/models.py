@@ -112,10 +112,10 @@ class DataSheet (models.Model):
          - globally required in settings
          - required per datasheet
         """
-        # TODO derelict gear....
+        # TODO derelict gear....TODO instead of cleanup, look at event type
          
         # global
-        req_fields = settings.REQUIRED_FIELDS['cleanup']
+        req_fields = settings.REQUIRED_FIELDS['cleanup'] 
         required_fieldnames = []
         for item, internal_name in req_fields.items():
             dsf = DataSheetField.objects.get(field_id__internal_name=internal_name)
