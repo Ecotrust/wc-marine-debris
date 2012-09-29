@@ -1,0 +1,12 @@
+A nice graphical representation of the marine debris data model
+
+## First, install graphiz
+```
+sudo apt-get install graphiz
+```
+
+## Then regenenerate the model diagram
+```
+python modelviz.py core > core.dot
+dot core.dot -Tpng -o core.png
+```
