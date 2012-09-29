@@ -158,9 +158,18 @@ LOGGING = {
 }
 
 REQUIRED_FIELDS = {
-    'cleanup': {
+    # 1st key is the event type 
+    # 2nd key is the Site attr
+    # value is the field internal name
+    'site-based': {
         'sitename': 'Cleanup_site_name',
         'date': 'Cleanup_date_start',
+        'state': 'State',
+        'county': 'County',
+    },
+    'coord-based': {
+        'lat': 'Latitude',
+        'lon': 'Longitude',
         #'state': 'State',
         #'county': 'County',
     }

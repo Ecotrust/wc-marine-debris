@@ -366,24 +366,55 @@ def bulk_import(request):
                         fieldname = ds.datasheetfield_set.get(pk=fieldnum).field_name
                         errors.append("Row %d, '%s' is invalid: %s" % (i+1, fieldname, message.as_text()))
               
-                # TODO derelict gear....TODO instead of cleanup, look at event type
-                sitename = settings.REQUIRED_FIELDS['cleanup']['sitename']
-                dsf = DataSheetField.objects.get(field_id__internal_name=sitename)
-                if row[dsf.field_name] not in unique_site_keys:
-                    unique_site_keys.append(row[dsf.field_name])
+                if ds.type_id:
+                    use_sites = ds.type_id.display_sites
+                else:
+                    use_sites = True #default
+
+                def get_required_val(site_type, key, row):
+                    """
+                    For a site_type and required field key, find the row's current value
+                    ex: for site-based event types, find the current row's `sitename`
+                    """
+                    internal_name = settings.REQUIRED_FIELDS[site_type][key]
+                    dsf = ds.datasheetfield_set.get(field_id__internal_name=internal_name)
+                    return row[dsf.field_name] # the header as it appears in the datasheet 
+
+                def get_state(statename):
+                    try:
+                        state = State.objects.get(name=statename)
+                    except State.DoesNotExist:
+                        state = State.objects.get(initials=statename)
+                    return state
+
+                if use_sites:
+                    site_key = {
+                        'sitename': get_required_val('site-based', 'sitename', row),
+                        'state': get_state(get_required_val('site-based','state', row)),
+                        'county': get_required_val('site-based','county', row),
+                    }
+                else:
+                    site_key = {
+                        'lat': get_required('coord-based','lat', row),
+                        'lon': get_required('coord-based','lon', row),
+                    }
+
+
+                if site_key not in unique_site_keys:
+                    unique_site_keys.append(site_key)
             
             sites = []
             for site_key in unique_site_keys:
-                # TODO site unique site key should include state and county
+                site_text = ', '.join([str(x) for x in site_key.values()])
                 try:
-                    site = Site.objects.filter(sitename=site_key)[0] # silent fail if not unique
-                    sites.append({'name':site_key, 'site':site})
-                except:
-                    errors.append("""Site '%s' is not in the database. <br/>
+                    site = Site.objects.filter(**site_key)[0] # silent fail and grab first if not unique
+                    sites.append({'name':site_text, 'site':site})
+                except IndexError:
+                    errors.append("""Site <em>'%s'</em> is not in the database. <br/>
                     <a href="/site/create" class="btn btn-mini"> Create new site record </a>
                     <a href="/site/create" class="btn btn-mini"> Match to existing site record </a>
-                    """ % site_key)
-                    sites.append({'name':site_key, 'site':None})
+                    """ % site_text)
+                    sites.append({'name':site_text, 'site':None})
 
             if len(errors) > 0:
                 return bulk_bad_request(form, request, errors)
