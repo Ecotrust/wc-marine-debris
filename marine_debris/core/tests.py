@@ -28,13 +28,6 @@ class TestTransactionBulkUpload(TransactionTestCase):
         testdir = os.path.abspath(os.path.join(d, 'fixtures', 'testdata'))
 
         self.fpath = os.path.join(testdir, 'test_bulk.csv')
-        self.fpath_bad_date = os.path.join(testdir, 'test_bulk_bad_date.csv')
-        self.fpath_bad_minmax = os.path.join(testdir, 'test_bulk_bad_minmax.csv')
-        self.fpath_bad_missing_cols = os.path.join(testdir, 'test_bulk_bad_missing_cols.csv')
-        self.fpath_bad_extra_cols = os.path.join(testdir, 'test_bulk_bad_extra_cols.csv')
-        self.fpath_bad_type = os.path.join(testdir, 'test_bulk_bad_type.csv')
-        self.fpath_bad_csv = os.path.join(testdir, 'test_bulk_bad_csv.csv')
-        self.fpath_bad_site = os.path.join(testdir, 'test_bulk_bad_site.csv')
 
     def test_post(self):
         self.client.login(username='featuretest', password='pword')
@@ -84,6 +77,7 @@ class TestBulkUpload(TestCase):
         self.fpath_bad_type = os.path.join(testdir, 'test_bulk_bad_type.csv')
         self.fpath_bad_csv = os.path.join(testdir, 'test_bulk_bad_csv.csv')
         self.fpath_bad_site = os.path.join(testdir, 'test_bulk_bad_site.csv')
+        self.fpath_bad_state = os.path.join(testdir, 'test_bulk_bad_state.csv')
      
     def test_bulk_csv_header(self):
         response = self.client.get('/datasheet/csv_header/%d' % self.ds.pk)
@@ -242,4 +236,22 @@ class TestBulkUpload(TestCase):
         el = d("ul.errorlist li")
         self.assertEqual(response.status_code, 200, response.content)
         self.assertEqual(len(el), 0)
+
+    def test_post_bad_state(self):
+        self.client.login(username='featuretest', password='pword')
+        url = '/datasheet/bulk_import/'
+        with open(self.fpath_bad_state) as f:
+            response = self.client.post(url, {
+                'datasheet_id': self.ds.pk,
+                'organization': 'Coast Savers', 
+                'project_id': 1, 
+                'csvfile': f
+                }
+            )
+        d = pq(response.content)
+        el = d("ul.errorlist li")
+        self.assertEqual(response.status_code, 400, response.content)
+        self.assertEqual(len(el), 4)
+        self.assertTrue('state' in el[0].text_content())
+        self.assertTrue('State' in el[1].text_content())
 

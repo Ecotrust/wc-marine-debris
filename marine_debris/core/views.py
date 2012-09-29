@@ -416,9 +416,13 @@ def bulk_import(request):
                         fieldname = ds.datasheetfield_set.get(pk=fieldnum).field_name
                         errors.append("Row %d, column <em>'%s'</em><br/>%s" % (i+1, fieldname, message.as_text().replace("* ","")))
 
-                site_key = get_site_key(ds, row)
-                if site_key not in unique_site_keys:
-                    unique_site_keys.append(site_key)
+                try:
+                    site_key = get_site_key(ds, row)
+                    if site_key not in unique_site_keys:
+                        unique_site_keys.append(site_key)
+                except State.DoesNotExist:
+                    errors.append("Row %d, Invalid state name" % (i+1, ))
+
             
             sites = []
             for site_key in unique_site_keys:
