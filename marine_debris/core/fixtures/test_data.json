@@ -6071,6 +6071,34 @@
     }
   },
   {
+    "pk": 1096,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "County",
+      "required": true,
+      "field_id": 39,
+      "unit_id": null,
+      "answer_options": [],
+      "sheet_id": 18,
+      "field_name": "County",
+      "grouping": null
+    }
+  },
+  {
+    "pk": 1095,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "State",
+      "required": true,
+      "field_id": 41,
+      "unit_id": null,
+      "answer_options": [],
+      "sheet_id": 18,
+      "field_name": "State",
+      "grouping": null
+    }
+  },
+  {
     "pk": 814,
     "model": "core.datasheetfield",
     "fields": {
@@ -7516,7 +7544,7 @@
     "model": "core.site",
     "fields": {
       "sitename": "TestSite",
-      "lat": 36.961174,
+      "lat": 36.962174,
       "state": 3,
       "lon": -122.024682,
       "county": "Santa Cruz"
@@ -7527,7 +7555,7 @@
     "model": "core.site",
     "fields": {
       "sitename": "TestSite2",
-      "lat": 36.961174,
+      "lat": 36.963174,
       "state": 3,
       "lon": -122.024682,
       "county": "Santa Cruz"

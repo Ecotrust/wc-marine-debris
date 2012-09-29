@@ -119,7 +119,10 @@ class DataSheet (models.Model):
         req_fields = settings.REQUIRED_FIELDS['site-based'] 
         required_fieldnames = []
         for item, internal_name in req_fields.items():
-            dsf = DataSheetField.objects.get(field_id__internal_name=internal_name)
+            try:
+                dsf = self.datasheetfield_set.get(field_id__internal_name=internal_name)
+            except DataSheetField.DoesNotExist:
+                raise Exception("DataSheet (id=%d) should have a field with internal_name of '%s'" % (self.pk, internal_name,))
             required_fieldnames.append(dsf.field_name)
 
         # per datasheet
