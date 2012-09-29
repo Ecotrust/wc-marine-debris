@@ -33,7 +33,11 @@
   <h4> {{ events|length }} events were loaded </h4>
     <ul>
     {% for event in events %}
-        <li>{{event}}</li>
+    <li>
+    On {{event.cleanupdate}} 
+    at {{event.site}}
+    for {{event.proj_id}} 
+    </li>
     {% endfor %}
     </ul>
   <h4> At {{ sites|length }} sites </h4>
@@ -44,6 +48,9 @@
         {% endif %}
     {% endfor %}
     </ul>
+    <div class="well" style="width:240px; height: 200px;">
+        MAP
+    </div>
   {% endif %}
 
 {% endblock %}

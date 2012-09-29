@@ -159,7 +159,7 @@ LOGGING = {
 
 REQUIRED_FIELDS = {
     # 1st key is the event type 
-    # 2nd key is the Site attr
+    # 2nd key is the attr name (i.e. the django model field name)
     # value is the field internal name
     'site-based': {
         'sitename': 'Cleanup_site_name',
@@ -170,6 +170,7 @@ REQUIRED_FIELDS = {
     'coord-based': {
         'lat': 'Latitude',
         'lon': 'Longitude',
+        'date': 'Cleanup_date_start',
         #'state': 'State',
         #'county': 'County',
     }

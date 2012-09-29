@@ -21,7 +21,7 @@ class BulkImportForm(forms.Form):
         org_choices.append((org, org.orgname))
     proj_choices = []
     for proj in Project.objects.all():
-        proj_choices.append((proj, proj.projname))
+        proj_choices.append((proj.id, proj.projname))
     ds_choices = []
     for ds in DataSheet.objects.all():
         ds_choices.append((ds.id, ds.sheetname))
@@ -30,7 +30,7 @@ class BulkImportForm(forms.Form):
         choices = org_choices, 
         widget = forms.Select()
     )
-    project = forms.ChoiceField(
+    project_id = forms.ChoiceField(
         choices = proj_choices,
         widget = forms.Select()
     )
@@ -243,7 +243,7 @@ class DataSheetForm(forms.Form):
             self.fields['question_' + str(question.id)].question = question
             self.fields['question_' + str(question.id)].answer = answer
             self.fields['question_' + str(question.id)].event = event
-            
+
     def save(self):
         for field_name in self.fields:
             field = self.fields[field_name]

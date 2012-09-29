@@ -7,6 +7,7 @@ from django.template.loader import render_to_string
 from django.template.defaultfilters import slugify
 from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadRequest, HttpResponseNotFound, QueryDict
+from django.db import transaction
 from models import *
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, REDIRECT_FIELD_NAME, login as auth_login
@@ -310,6 +311,63 @@ def bulk_bad_request(form, request, errors=None):
     res.status_code = 400
     return res
 
+
+################# Utilities
+def get_required_val(ds, key, row):
+    """
+    For a site_type and required field key, find the row's current value
+    ex: for site-based event types, find the current row's `sitename`
+    """
+    if ds.type_id:
+        use_sites = ds.type_id.display_sites
+        if uses_sites:
+            site_type = 'site-based'
+        else:
+            site_type = 'coord-based'
+    else:
+        site_type = 'site-based'
+
+    internal_name = settings.REQUIRED_FIELDS[site_type][key]
+    dsf = ds.datasheetfield_set.get(field_id__internal_name=internal_name)
+    return row[dsf.field_name] # the header as it appears in the datasheet 
+
+def get_state(statename):
+    try:
+        state = State.objects.get(name=statename)
+    except State.DoesNotExist:
+        state = State.objects.get(initials=statename)
+    return state
+
+def get_site_key(ds, row):
+    if ds.type_id:
+        use_sites = ds.type_id.display_sites
+    else:
+        use_sites = True #default
+
+    if use_sites:
+        site_key = {
+            'sitename': get_required_val(ds, 'sitename', row),
+            'state': get_state(get_required_val(ds,'state', row)),
+            'county': get_required_val(ds,'county', row),
+        }
+    else:
+        site_key = {
+            'lat': get_required_val(ds,'lat', row),
+            'lon': get_required_val(ds,'lon', row),
+        }
+    return site_key
+
+def get_querydict(ds, row):
+    row_qnum = {} # keys must refer to the question number (ie 'question_768') 
+    for k,v in row.items():
+        dsf = ds.datasheetfield_set.filter(field_name=k)[0] 
+        row_qnum['question_%d' % dsf.id] = v
+
+    qd = QueryDict('')
+    qd = qd.copy() # to make it mutable
+    qd.update(row_qnum)
+    return qd
+                    
 @login_required    
 def bulk_import(request):
     if request.method == 'GET':
@@ -349,15 +407,7 @@ def bulk_import(request):
             # also collect sites
             unique_site_keys = []
             for i, row in enumerate(rows):
-                row_qnum = {} # keys must refer to the question number (ie 'question_768') 
-                for k,v in row.items():
-                    dsf = ds.datasheetfield_set.filter(field_name=k)[0] 
-                    row_qnum['question_%d' % dsf.id] = v
-
-                qd = QueryDict('')
-                qd = qd.copy() # to make it mutable
-                qd.update(row_qnum)
-
+                qd = get_querydict(ds, row)
                 ds_form = DataSheetForm(ds, None, qd)
                 
                 if not ds_form.is_valid():
@@ -365,41 +415,8 @@ def bulk_import(request):
                         fieldnum = int(question.replace("question_",''))
                         fieldname = ds.datasheetfield_set.get(pk=fieldnum).field_name
                         errors.append("Row %d, '%s' is invalid: %s" % (i+1, fieldname, message.as_text()))
-              
-                if ds.type_id:
-                    use_sites = ds.type_id.display_sites
-                else:
-                    use_sites = True #default
 
-                def get_required_val(site_type, key, row):
-                    """
-                    For a site_type and required field key, find the row's current value
-                    ex: for site-based event types, find the current row's `sitename`
-                    """
-                    internal_name = settings.REQUIRED_FIELDS[site_type][key]
-                    dsf = ds.datasheetfield_set.get(field_id__internal_name=internal_name)
-                    return row[dsf.field_name] # the header as it appears in the datasheet 
-
-                def get_state(statename):
-                    try:
-                        state = State.objects.get(name=statename)
-                    except State.DoesNotExist:
-                        state = State.objects.get(initials=statename)
-                    return state
-
-                if use_sites:
-                    site_key = {
-                        'sitename': get_required_val('site-based', 'sitename', row),
-                        'state': get_state(get_required_val('site-based','state', row)),
-                        'county': get_required_val('site-based','county', row),
-                    }
-                else:
-                    site_key = {
-                        'lat': get_required('coord-based','lat', row),
-                        'lon': get_required('coord-based','lon', row),
-                    }
-
-
+                site_key = get_site_key(ds, row)
                 if site_key not in unique_site_keys:
                     unique_site_keys.append(site_key)
             
@@ -420,37 +437,35 @@ def bulk_import(request):
                 return bulk_bad_request(form, request, errors)
 
             # valid!
-            # loop through rows
-            #   create events and submit datasheet forms
+            # loop through rows to create events and submit datasheet forms
             events = []
-            for i, row in enumerate(rows):
-                row_qnum = {} # keys must refer to the question number (ie 'question_768') 
-                for k,v in row.items():
-                    dsf = ds.datasheetfield_set.filter(field_name=k)[0] 
-                    row_qnum['question_%d' % dsf.id] = v
+            with transaction.commit_on_success():
+                for i, row in enumerate(rows):
+                    site_key = get_site_key(ds, row)
+                    site = Site.objects.get(**site_key)
+                    date = get_required_val(ds,'date', row)
 
-                qd = QueryDict('')
-                qd = qd.copy() # to make it mutable
-                qd.update(row_qnum)
-                
-                # TODO
-                """
-                #get from form.cleaned_data?
-                event = Event(
-                    datasheet_id = ds,
-                    proj_id = ??,
-                    cleanupdate = ??, 
-                    site = ??,
-                    submitted_by = request.user,
-                    status = 'New' 
-                )
-                ds_final_form = DataSheetForm(ds, event, qd)
-                ds_final_form.save()
-                # if all is well
-                events.append(event)
-                """
-                events.append("Event %d" % i) # temporary
-                # TODO, if error occurs, rollback
+                    project = get_object_or_404(Project, id=int(form.cleaned_data['project_id']))
+                    event = Event(
+                        datasheet_id = ds,
+                        proj_id = project, # get this at the row level? or the bulk import level?
+                        cleanupdate = date,
+                        site = site,
+                        submitted_by = request.user,
+                        status = 'New' 
+                    )
+                    event.save()
+
+                    qd = get_querydict(ds, row)
+                    ds_final_form = DataSheetForm(ds, event, qd)
+                    if ds_final_form.is_valid():
+                        ds_final_form.save()
+                    else:
+                        raise Exception("""Somehow the datasheetform is now invalid 
+                          (despite just validating it previously without event)... errors are '%s'""" % str(ds_final_form.errors))
+
+                    # TODO sanity check if all is well. If not raise an exception to rollback
+                    events.append(event)
 
             return render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(), 
                 'sites': sites, 'events': events, 'success': True, 'active':'events'}))
