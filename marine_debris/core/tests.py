@@ -8,7 +8,7 @@ Replace this with more appropriate tests for your application.
 from django.test import TestCase
 from django.test.client import Client
 from django.contrib.auth.models import User
-from core.models import DataSheet
+from core.models import DataSheet, Site, State
 from pyquery import PyQuery as pq
 import os
 
@@ -31,6 +31,7 @@ class TestBulkUpload(TestCase):
         self.fpath_bad_extra_cols = os.path.join(testdir, 'test_bulk_bad_extra_cols.csv')
         self.fpath_bad_type = os.path.join(testdir, 'test_bulk_bad_type.csv')
         self.fpath_bad_csv = os.path.join(testdir, 'test_bulk_bad_csv.csv')
+        self.fpath_bad_site = os.path.join(testdir, 'test_bulk_bad_site.csv')
      
     def test_bulk_csv_header(self):
         response = self.client.get('/datasheet/csv_header/%d' % self.ds.pk)
@@ -81,7 +82,7 @@ class TestBulkUpload(TestCase):
         d = pq(response.content)
         el = d("ul.errorlist li")
         self.assertEqual(response.status_code, 400, response.content)
-        self.assertEqual(len(el), 1, el.html())
+        self.assertEqual(len(el), 1)
         self.assertTrue("Enter a valid date/time" in el.html(), el.html())
 
     def test_post_bad_minmax(self):
@@ -99,7 +100,7 @@ class TestBulkUpload(TestCase):
         d = pq(response.content)
         el = d("ul.errorlist li")
         self.assertEqual(response.status_code, 400, response.content)
-        self.assertEqual(len(el), 3, el.html())
+        self.assertEqual(len(el), 3)
         self.assertTrue("Ensure this value is greater than or equal to 0" in el[1].text)
 
     def test_post_bad_missing_cols(self):
@@ -117,7 +118,7 @@ class TestBulkUpload(TestCase):
         d = pq(response.content)
         el = d("ul.errorlist li")
         self.assertEqual(response.status_code, 400, response.content)
-        self.assertEqual(len(el), 1, el.html())
+        self.assertEqual(len(el), 1)
         self.assertTrue("does not contain required column 'Created Date'" in el[0].text)
 
     def test_post_bad_extra_cols(self):
@@ -174,3 +175,39 @@ class TestBulkUpload(TestCase):
         self.assertEqual(response.status_code, 400, response.content)
         self.assertEqual(len(el), 1)
         self.assertTrue('Uploaded file does not contain any rows.' in el[0].text)
+
+    def test_post_bad_site(self):
+        self.client.login(username='featuretest', password='pword')
+        url = '/datasheet/bulk_import/'
+        with open(self.fpath_bad_site) as f:
+            response = self.client.post(url, {
+                'datasheet_id': self.ds.pk,
+                'organization': 'Coast Savers', 
+                'project': 'Beach Cleanups', 
+                'data_sheet': 'Coast Savers Cleanup Data', 
+                'csvfile': f
+                }
+            )
+        d = pq(response.content)
+        el = d("ul.errorlist li")
+        self.assertEqual(response.status_code, 400, response.content)
+        self.assertEqual(len(el), 1)
+        self.assertTrue("Site 'TestSite3' is not in the database" in el[0].text, el[0].text)
+        # Now add the site
+        ca = State.objects.get(name="California")
+        testsite3 = Site(sitename="TestSite3", state=ca, county="Santa Cruz")
+        testsite3.save()
+        with open(self.fpath_bad_site) as f:
+            response = self.client.post(url, {
+                'datasheet_id': self.ds.pk,
+                'organization': 'Coast Savers', 
+                'project': 'Beach Cleanups', 
+                'data_sheet': 'Coast Savers Cleanup Data', 
+                'csvfile': f
+                }
+            )
+        d = pq(response.content)
+        el = d("ul.errorlist li")
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(len(el), 0)
+

@@ -358,7 +358,7 @@ def bulk_import(request):
                 qd = qd.copy() # to make it mutable
                 qd.update(row_qnum)
 
-                ds_form = DataSheetForm(ds, None, qd) #row_qnum)
+                ds_form = DataSheetForm(ds, None, qd)
                 
                 if not ds_form.is_valid():
                     for question, message in ds_form.errors.items():
@@ -372,9 +372,6 @@ def bulk_import(request):
                 if row[dsf.field_name] not in unique_site_keys:
                     unique_site_keys.append(row[dsf.field_name])
             
-            if len(errors) > 0:
-                return bulk_bad_request(form, request, errors)
-
             sites = []
             for site_key in unique_site_keys:
                 # TODO site unique site key should include state and county
@@ -382,7 +379,15 @@ def bulk_import(request):
                     site = Site.objects.get(sitename=site_key)
                     sites.append({'name':site_key, 'site':site})
                 except:
+                    errors.append("""Site '%s' is not in the database. 
+                    If the site is new, please create a site record. 
+                    If the site should match a current record, please update your csv file.
+                    <a href="#" class="btn btn-mini"> Create new site record </a>
+                    """ % site_key)
                     sites.append({'name':site_key, 'site':None})
+
+            if len(errors) > 0:
+                return bulk_bad_request(form, request, errors)
 
             # do i need to create an event first? 
             # OR if it's good with unknown sites, store in temp and provide a way to correct site errors  
