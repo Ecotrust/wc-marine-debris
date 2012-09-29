@@ -16,3 +16,6 @@ marine_debris_1/
 run.bat
 tmp/
 *.swp
+.coverage
+htmlcov
+stat*.out
