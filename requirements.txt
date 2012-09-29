@@ -1,11 +1,11 @@
-django
 haystack
 django-haystack
 south
 psycopg2
 django-registration
+django
+simplejson
 
 # pyquery is required for unit testing
 # sudo apt-get install libxml2-dev libxslt1-dev
 # pip install pyquery
-

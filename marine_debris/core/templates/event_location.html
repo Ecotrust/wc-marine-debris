@@ -46,11 +46,71 @@
 {% block js %}
     
     $(document).ready(function () {
-        $(".typeahead").typeahead({
-            source: {{sitenames|safe}}
+        $(".county-typeahead").typeahead({
+            //source: {{sitenames|safe}}
+            source: function () {
+                return $.map(app.viewModel.selectedState().counties, function (county) {
+                   return county.name;
+                })
+            }
+        });
+        $(".site-typeahead").typeahead({
+            //source: {{sitenames|safe}}
+            source: function () {
+                return $.map(app.viewModel.selectedCounty().sites, function (site) {
+                   return site.name;
+                })
+            }
         });            
     });
-    
+
+    var app = {}, 
+        json = { "states": {{states|safe}} };
+
+    function LocationViewModel() {
+        var self = this;
+        self.data = json;
+
+        self.selectedStateName = ko.observable();
+        self.selectedState = ko.computed(function() {
+            var state = false;
+            if (self.selectedStateName()){
+                $.each(json.states, function(index, value) {
+                    if (value.initials === self.selectedStateName()){
+                        state = value;
+                    }
+                });
+            }
+            return state;
+        });
+        self.selectedCountyName = ko.observable();
+        self.selectedCounty = ko.computed(function() {
+            var county = false;
+            if (self.selectedStateName() && self.selectedCountyName()) {
+                $.each(self.selectedState().counties, function(index, value) {
+                    if (value.name === self.selectedCountyName()){
+                        county = value;
+                    }
+                });
+            }
+            return county;
+        });
+        self.selectedSiteName = ko.observable();
+        self.selectedSite = ko.computed(function() {
+            var site = false;
+            if (self.selectedStateName() && self.selectedCountyName() && self.selectedSiteName()) {
+                $.each(self.selectedCounty().sites, function(index, value) {
+                    if (value.name === self.selectedSiteName()){
+                        site = value;
+                    }
+                });
+            }
+            return site;
+        });
+    }
+    app.viewModel = new LocationViewModel();
+    ko.applyBindings(app.viewModel);
+
     function onload(event) {
         init();
     }
@@ -66,16 +126,9 @@
 	$(function() {
 		$( ".date" ).datepicker({dateFormat: 'yy-mm-dd'});
         $( "#id_site_name" ).on('blur', function(){
-            var locations = {
-            {% for site in sites %}
-                '{{site.name}}': [{{site.lat}},{{site.lon}}],
-            {% endfor %}
-                'None': ['','']
-            }, location = $(this).val();    // TODO: need to check state & county, too: this will get filtered!
-            
-            $( "#id_latitude" ).val(locations[location][0]);
-            $( "#id_longitude" ).val(locations[location][1]);
-            pointSelected(locations[location][0], locations[location][1]);
+            $( "#id_latitude" ).val(app.viewModel.selectedSite().lat);
+            $( "#id_longitude" ).val(app.viewModel.selectedSite().lon);
+            pointSelected(app.viewModel.selectedSite().lat, app.viewModel.selectedSite().lon);
         });
       
         $( "#id_latitude" ).on('change', function(){
