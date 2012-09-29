@@ -351,7 +351,7 @@ def bulk_import(request):
             for i, row in enumerate(rows):
                 row_qnum = {} # keys must refer to the question number (ie 'question_768') 
                 for k,v in row.items():
-                    dsf = ds.datasheetfield_set.get(field_name=k) 
+                    dsf = ds.datasheetfield_set.filter(field_name=k)[0] 
                     row_qnum['question_%d' % dsf.id] = v
 
                 qd = QueryDict('')
@@ -376,25 +376,53 @@ def bulk_import(request):
             for site_key in unique_site_keys:
                 # TODO site unique site key should include state and county
                 try:
-                    site = Site.objects.get(sitename=site_key)
+                    site = Site.objects.filter(sitename=site_key)[0] # silent fail if not unique
                     sites.append({'name':site_key, 'site':site})
                 except:
-                    errors.append("""Site '%s' is not in the database. 
-                    If the site is new, please create a site record. 
-                    If the site should match a current record, please update your csv file.
-                    <a href="#" class="btn btn-mini"> Create new site record </a>
+                    errors.append("""Site '%s' is not in the database. <br/>
+                    <a href="/site/create" class="btn btn-mini"> Create new site record </a>
+                    <a href="/site/create" class="btn btn-mini"> Match to existing site record </a>
                     """ % site_key)
                     sites.append({'name':site_key, 'site':None})
 
             if len(errors) > 0:
                 return bulk_bad_request(form, request, errors)
 
-            # do i need to create an event first? 
-            # OR if it's good with unknown sites, store in temp and provide a way to correct site errors  
-            # OR if it's good - store in temp and provide a summary with a 'Proceed button'
-            #return HttpResponse("valid response")
-            return render_to_response('bulk_import_valid.html', RequestContext(request,{'form':form.as_p(), 
-                'sites': sites, 'active':'events'}))
+            # valid!
+            # loop through rows
+            #   create events and submit datasheet forms
+            events = []
+            for i, row in enumerate(rows):
+                row_qnum = {} # keys must refer to the question number (ie 'question_768') 
+                for k,v in row.items():
+                    dsf = ds.datasheetfield_set.filter(field_name=k)[0] 
+                    row_qnum['question_%d' % dsf.id] = v
+
+                qd = QueryDict('')
+                qd = qd.copy() # to make it mutable
+                qd.update(row_qnum)
+                
+                # TODO
+                """
+                #get from form.cleaned_data?
+                event = Event(
+                    datasheet_id = ds,
+                    proj_id = ??,
+                    cleanupdate = ??, 
+                    site = ??,
+                    submitted_by = request.user,
+                    status = 'New' 
+                )
+                ds_final_form = DataSheetForm(ds, event, qd)
+                ds_final_form.save()
+                # if all is well
+                events.append(event)
+                """
+                events.append("Event %d" % i) # temporary
+                # TODO, if error occurs, rollback
+
+            return render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(), 
+                'sites': sites, 'events': events, 'success': True, 'active':'events'}))
         else:
             res = render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(), 
                 'errors':['Form is not valid, please review.',], 'active':'events'}))
@@ -405,3 +433,21 @@ def bulk_import(request):
     org_dict = [org.toDict for org in Organization.objects.all()]
     org_json = simplejson.dumps(org_dict)
     return render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(), 'json':org_json, 'active':'events'}))
+
+@login_required
+def create_site(request):
+    if request.method == 'GET':
+        form = CreateSiteForm()
+        #TODO accept some get parameters to prepopulate the form
+        return render_to_response('create_site.html', RequestContext(request,{'form':form.as_p(), 'active':'events'}))
+    else :
+        form = CreateSiteForm(request.POST)
+        if form.is_valid():
+            form.save()
+            blank_form = CreateSiteForm()
+            return render_to_response('create_site.html', RequestContext(request,{'form':blank_form.as_p(), 'success': True, 'active':'events'}))
+        else:
+            res = render_to_response('create_site.html', RequestContext(request,{'form':form.as_p(), 
+                'error':'Form is not valid, please review.', 'active':'events'}))
+            res.status_code = 400
+            return res

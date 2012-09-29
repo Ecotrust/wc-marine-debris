@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block leftcontent %}
+    <h2>Create a New Site</h2>
+    
+    {% if error %}<p style="color:red">{{error}}</p>{% endif %}
+    <form class="event-form form-horizontal" method="post" action="{% if action %}{{ action }}{% else %}/site/create{% endif %}">
+    {% csrf_token %}
+    {{form}}
+    <p>
+    <button type="button" class="btn" id="back" value="Back" onClick="history.go(-1);return true;">Back</button>
+    <input id="submit" type="submit" value="Continue" class='btn'/>
+    </p>
+    </form>
+    
+{% endblock %}    
+
+{% block rightcontent %}
+{% if success %}
+ <div class="alert alert-success"> Success. Site added. </div>
+ {% endif %}
+{% endblock %}    

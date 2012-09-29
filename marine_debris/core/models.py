@@ -266,6 +266,9 @@ class Site (models.Model):
         }
         return site_dict
         
+    class Meta:
+        unique_together = (("sitename", "state", "county"), ("lat", "lon"))
+
 class Event (models.Model):
     
     StatusChoices = (

@@ -22,6 +22,7 @@ urlpatterns = patterns('',
     url(r'^organizations$', organizations),
     url(r'^projects$', projects),
     url(r'^search/', include('haystack.urls')),
+    url(r'^site/create$', create_site),  
     url(r'^site-media/(?P<path>.*)$','django.views.static.serve',{'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
     url(r'^$', index )
 )

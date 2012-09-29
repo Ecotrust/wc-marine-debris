@@ -16,13 +16,36 @@
 {% endblock %}
 
 {% block rightcontent %}
-  <ul class="errorlist">
+  {% if errors %}
+  <h4>The following errors were encountered</h4>
+  <ul class="errorlist unstyled">
     {% for error in errors %}
-        <li>{{ error }}</li>
+        <li class="alert alert-error">{{ error|safe}}</li>
     {% empty %}
-        <li>Yey no errors</li>
     {% endfor %}
   </ul>
+  {% endif %}
+  
+  {% if not errors and success and sites %}
+
+  <div class="alert alert-success"> Bulk Upload Complete </div>
+
+  <h4> {{ events|length }} events were loaded </h4>
+    <ul>
+    {% for event in events %}
+        <li>{{event}}</li>
+    {% endfor %}
+    </ul>
+  <h4> At {{ sites|length }} sites </h4>
+    <ul>
+    {% for site in sites %}
+        {% if site.site %}
+        <li>{{site.name}}</li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+  {% endif %}
+
 {% endblock %}
 
 {% block js %}

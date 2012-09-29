@@ -254,3 +254,7 @@ class DataSheetForm(forms.Form):
             value.save()
         return True
            
+
+class CreateSiteForm(forms.ModelForm):
+    class Meta:
+        model = Site
