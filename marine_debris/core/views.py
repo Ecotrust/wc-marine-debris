@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 from django.template.defaultfilters import slugify
 from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadRequest, HttpResponseNotFound, QueryDict
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from models import *
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, REDIRECT_FIELD_NAME, login as auth_login
@@ -414,7 +414,7 @@ def bulk_import(request):
                     for question, message in ds_form.errors.items():
                         fieldnum = int(question.replace("question_",''))
                         fieldname = ds.datasheetfield_set.get(pk=fieldnum).field_name
-                        errors.append("Row %d, '%s' is invalid: %s" % (i+1, fieldname, message.as_text()))
+                        errors.append("Row %d, column <em>'%s'</em><br/>%s" % (i+1, fieldname, message.as_text().replace("* ","")))
 
                 site_key = get_site_key(ds, row)
                 if site_key not in unique_site_keys:
@@ -454,7 +454,16 @@ def bulk_import(request):
                         submitted_by = request.user,
                         status = 'New' 
                     )
-                    event.save()
+                    try:
+                        event.save()
+                    except IntegrityError as e:
+                        if e.message.startswith('duplicate key value violates unique constraint "core_event'):
+                            errors.append('Event already exists <br> (%s, %s, %s, %s)' % (project.projname,
+                                ds.sheetname, site.sitename, date))
+                            transaction.rollback()
+                            continue
+                        else:
+                            raise e # something unexepected
 
                     qd = get_querydict(ds, row)
                     ds_final_form = DataSheetForm(ds, event, qd)
@@ -466,6 +475,10 @@ def bulk_import(request):
 
                     # TODO sanity check if all is well. If not raise an exception to rollback
                     events.append(event)
+
+                if len(errors) > 0:
+                    transaction.rollback()
+                    return bulk_bad_request(form, request, errors)
 
             return render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(), 
                 'sites': sites, 'events': events, 'success': True, 'active':'events'}))

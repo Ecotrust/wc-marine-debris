@@ -5,10 +5,10 @@
 {% endblock %}
 {% block leftcontent %}
 <h2> Bulk import from .csv file</i></h2>
-    <form class="event-form" method="post" enctype="multipart/form-data" action="{% if action %}{{ action }}{% else %}{{event.id}}{% endif %}">
+    <form class="bulk-form" method="post" enctype="multipart/form-data" action="{% if action %}{{ action }}{% else %}{{event.id}}{% endif %}">
     {% csrf_token %}
     {{form}}
-    <p><input id="submit" type="submit" value="Continue" style="margin:15px"/>
+    <p><input id="bulk_submit" type="submit" value="Upload File" style="margin:15px"/>
     {% if action %}<button type="button" class="event_cancel btn" id="cancel" value="Cancel">Cancel</button>{% endif %}
     </p>
     </form>
@@ -36,7 +36,7 @@
     <li>
     On {{event.cleanupdate}} 
     at {{event.site}}
-    for {{event.proj_id}} 
+    for the {{event.proj_id}} Project
     </li>
     {% endfor %}
     </ul>
@@ -58,7 +58,9 @@
 {% block js %}
 
 	$(function() {
-		$( "#id_cleanupdate" ).datepicker({dateFormat: 'yy-mm-dd'});
+        $( "#bulk_submit" ).click( function(e) {
+            $(".wcga-database-right").html('<div class="alert alert-info">Loading...</div>');
+        });
 	});
     
 {% endblock %}
