@@ -115,7 +115,7 @@ class CreateEventForm(forms.Form):
             valid = True
         if valid:
             try:
-                datasheet = DataSheet.objects.get(sheetname = self.data['data_sheet'])
+                datasheet = DataSheet.objects.get(id = self.data['data_sheet'])
                 if datasheet.type_id.display_sites: 
                     if self.data['site_name'].__len__() > 0:    #site will have name, and name is given
                         records = Site.objects.filter(sitename=self.data['site_name'])

@@ -104,13 +104,15 @@ def event_location(request):
     event['organization'] = eventForm.data['organization']
     event['project'] = eventForm.data['project']
     event['date'] = eventForm.data['date']
-    event['data_sheet'] = eventForm.data['data_sheet']
+    datasheetName = DataSheet.objects.get(id=eventForm.data['data_sheet']).sheetname
+    event['data_sheet'] = datasheetName
     site_check = eventForm.validate_site()
+    
     if site_check['valid']:        #TODO: Manage new sites here!
         for item in eventForm.fields.items():
             eventForm.fields[item[0]].widget = eventForm.fields[item[0]].hidden_widget()
-        datasheet_name = eventForm.data['data_sheet']
-        datasheet = DataSheet.objects.get(sheetname=datasheet_name)
+        datasheet_id = eventForm.data['data_sheet']
+        datasheet = DataSheet.objects.get(id=datasheet_id)
         if datasheet.type_id and datasheet.type_id.display_sites:
             event['site_name'] = eventForm.data['site_name']
             event['county'] = eventForm.data['county']
