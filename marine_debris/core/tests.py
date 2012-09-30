@@ -251,7 +251,7 @@ class TestBulkUpload(TestCase):
         d = pq(response.content)
         el = d("ul.errorlist li")
         self.assertEqual(response.status_code, 400, response.content)
-        self.assertEqual(len(el), 4)
+        self.assertEqual(len(el), 3)
         self.assertTrue('state' in el[0].text_content())
         self.assertTrue('State' in el[1].text_content())
 

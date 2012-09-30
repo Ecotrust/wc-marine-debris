@@ -332,10 +332,11 @@ def get_required_val(ds, key, row):
     return row[dsf.field_name] # the header as it appears in the datasheet 
 
 def get_state(statename):
+    statename = statename.strip()
     try:
-        state = State.objects.get(name=statename)
+        state = State.objects.get(name__iexact=statename)
     except State.DoesNotExist:
-        state = State.objects.get(initials=statename)
+        state = State.objects.get(initials__iexact=statename)
     return state
 
 def get_site_key(ds, row):
