@@ -386,13 +386,15 @@ def bulk_import(request):
             errors = []
 
             # confirm required columns
+            required_fieldnames = ds.required_fieldnames
+            all_fieldnames = ds.fieldnames
             for i, row in enumerate(rows):
                 keys = row.keys()
-                for rf in ds.required_fieldnames:
+                for rf in required_fieldnames:
                     if rf not in keys or row[rf] is None:
                         errors.append("Uploaded file does not contain required column '%s'" % (rf,))
                 for key in keys:
-                    if key not in ds.fieldnames:
+                    if key not in all_fieldnames:
                         errors.append("Uploaded file contains column '%s' which is not recognized by this datasheet" % (key,))
                 if len(errors) > 0:
                     # return at the datasheet level
