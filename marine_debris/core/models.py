@@ -88,6 +88,10 @@ class EventType (models.Model):
     class Meta:
         ordering = ['type']
     
+
+class DataSheetError(Exception):
+    pass
+
 class DataSheet (models.Model):
     sheetname = models.TextField()
     created_by = models.ForeignKey(Organization)
@@ -122,7 +126,7 @@ class DataSheet (models.Model):
             try:
                 dsf = self.datasheetfield_set.get(field_id__internal_name=internal_name)
             except DataSheetField.DoesNotExist:
-                raise Exception("DataSheet (id=%d) should have a field with internal_name of '%s'" % (self.pk, internal_name,))
+                raise DataSheetError("DataSheet (id=%d) should have a field with internal_name of '%s'" % (self.pk, internal_name,))
             required_fieldnames.append(dsf.field_name)
 
         # per datasheet
@@ -133,6 +137,29 @@ class DataSheet (models.Model):
                 required_fieldnames.append(fieldname)
 
         return required_fieldnames
+
+    @property
+    def site_type(self):
+        if self.site_based:
+            return "site-based"
+        else:
+            return "coord-based"
+
+    @property
+    def site_based(self):
+        if self.type_id:
+            use_sites = self.type_id.display_sites
+        else:
+            use_sites = True #default
+        return use_sites
+
+    def is_valid(self):
+        try: 
+            self.required_fieldnames
+        except DataSheetError as e:
+            return (False, e.message)
+        # test for type_id?
+        return (True, "Valid")
 
     @property
     def toDict(self):

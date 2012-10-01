@@ -8,18 +8,19 @@ from django.template.defaultfilters import slugify
 from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadRequest, HttpResponseNotFound, QueryDict
 from django.db import transaction, IntegrityError
-from models import *
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, REDIRECT_FIELD_NAME, login as auth_login
 from django.contrib.auth.views import login as default_login, logout as default_logout
+from django.utils import simplejson
+from django.forms.models import modelformset_factory
 import datetime
 import string
-from django.utils import simplejson
 import datetime
-from forms import *
+import logging
 import csv
+from forms import *
+from models import *
 
-from django.forms.models import modelformset_factory
 
 def index(request): 
     return render_to_response( 'index.html', RequestContext(request,{'thankyou': False, 'active':'home'}))
@@ -318,16 +319,7 @@ def get_required_val(ds, key, row):
     For a site_type and required field key, find the row's current value
     ex: for site-based event types, find the current row's `sitename`
     """
-    if ds.type_id:
-        use_sites = ds.type_id.display_sites
-        if uses_sites:
-            site_type = 'site-based'
-        else:
-            site_type = 'coord-based'
-    else:
-        site_type = 'site-based'
-
-    internal_name = settings.REQUIRED_FIELDS[site_type][key]
+    internal_name = settings.REQUIRED_FIELDS[ds.site_type][key]
     dsf = ds.datasheetfield_set.get(field_id__internal_name=internal_name)
     return row[dsf.field_name] # the header as it appears in the datasheet 
 
@@ -340,12 +332,7 @@ def get_state(statename):
     return state
 
 def get_site_key(ds, row):
-    if ds.type_id:
-        use_sites = ds.type_id.display_sites
-    else:
-        use_sites = True #default
-
-    if use_sites:
+    if ds.site_based:
         site_key = {
             'sitename': get_required_val(ds, 'sitename', row),
             'state': get_state(get_required_val(ds,'state', row)),
@@ -388,6 +375,13 @@ def bulk_import(request):
                 return bulk_bad_request(form, request, ['Form is not valid, please review.', ])
 
             ds = get_object_or_404(DataSheet, pk=datasheet_id)
+            valid, message = ds.is_valid() 
+            if not valid:
+                errors = ["""Sorry. This datasheet is not configured handle bulk imports. 
+                        The database administrator has been notified and will fix the problem ASAP.""", ]
+                logger = logging.getLogger('datasheet_errors')
+                logger.error(message) 
+                return bulk_bad_request(form, request, errors)
 
             errors = []
 

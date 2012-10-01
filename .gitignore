@@ -19,3 +19,4 @@ tmp/
 .coverage
 htmlcov
 stat*.out
+errors.log
