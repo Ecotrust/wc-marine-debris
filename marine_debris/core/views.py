@@ -477,7 +477,8 @@ def bulk_import(request):
 
                 if len(errors) > 0:
                     transaction.rollback()
-                    errors.insert(0, "%d new events were found but not loaded due to errors below." % len(events))
+                    if len(events) > 0:
+                        errors.insert(0, "%d new events were found but not loaded due to errors below." % len(events))
                     return bulk_bad_request(form, request, errors)
 
             return render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(), 
