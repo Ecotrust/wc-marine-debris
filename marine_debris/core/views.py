@@ -145,7 +145,7 @@ def event_save(request):
     createEventForm = CreateEventForm(request.POST)
     if createEventForm.is_valid():
         project = Project.objects.get(projname=createEventForm.data['project'])
-        datasheet = DataSheet.objects.get(sheetname=createEventForm.data['data_sheet'])
+        datasheet = DataSheet.objects.get(id=createEventForm.data['data_sheet'])
         state = State.objects.get(initials=createEventForm.data['state'])
         site = Site.objects.get_or_create(state = state, county = createEventForm.data['county'], lat = createEventForm.data['latitude'], lon = createEventForm.data['longitude'], sitename = createEventForm.data['site_name'])
         date = datetime.datetime.strptime(createEventForm.data['date'], '%m/%d/%Y')
