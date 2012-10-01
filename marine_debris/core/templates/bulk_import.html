@@ -12,7 +12,8 @@
     {% if action %}<button type="button" class="event_cancel btn" id="cancel" value="Cancel">Cancel</button>{% endif %}
     </p>
     </form>
-    <!-- <a href="/event/create">Create New Event</a> -->
+
+    <p><a id="download-csv-template" href="#">Download template with header row</a></p>
 {% endblock %}
 
 {% block rightcontent %}
@@ -60,6 +61,11 @@
 	$(function() {
         $( "#bulk_submit" ).click( function(e) {
             $(".wcga-database-right").html('<div class="alert alert-info">Loading...</div>');
+        });
+        $( "#download-csv-template" ).click( function(e) {
+            e.preventDefault();
+            selected = $("#id_datasheet_id").val();
+            window.open("/datasheet/csv_header/" + selected);
         });
 	});
     
