@@ -70,7 +70,6 @@ class Field (models.Model):
     minvalue = models.IntegerField(blank=True, null=True)
     maxvalue = models.IntegerField(blank=True, null=True)
     default_value = models.TextField(blank=True, null=True)  #TODO: What type should this be? Should it be part of Unit? FieldValue?
-    required = models.BooleanField(default=False)
     
     def __unicode__(self):
         return self.internal_name
