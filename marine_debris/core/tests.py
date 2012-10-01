@@ -28,6 +28,8 @@ class TestTransactionBulkUpload(TransactionTestCase):
         testdir = os.path.abspath(os.path.join(d, 'fixtures', 'testdata'))
 
         self.fpath = os.path.join(testdir, 'test_bulk.csv')
+        self.fpath_events12 = os.path.join(testdir, 'test_bulk_events12.csv')
+        self.fpath_events23 = os.path.join(testdir, 'test_bulk_events23.csv')
 
     def test_post(self):
         self.client.login(username='featuretest', password='pword')
@@ -57,6 +59,44 @@ class TestTransactionBulkUpload(TransactionTestCase):
         self.assertEqual(response.status_code, 400, response.content)
         self.assertEqual(len(el), 3) # 3 events that already exist
         self.assertEqual(Event.objects.all().count(), num_events+3)
+
+    def test_post_atomic(self):
+        """
+        Ensure that when bulk file with any existing events gets uploaded, NO events get committed (even the new ones)
+        """
+        self.client.login(username='featuretest', password='pword')
+        url = '/datasheet/bulk_import/'
+        num_events = Event.objects.all().count()
+        # post events 1 and 2
+        with open(self.fpath_events12) as f:
+            response = self.client.post(url, {
+                'organization': 'Coast Savers', 
+                'project_id': 1, 
+                'datasheet_id': self.ds.pk,
+                'csvfile': f
+                }
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Event.objects.all().count(), num_events+2)
+        # post again with events 2 and 3
+        # should fail due to duplicate event 2 
+        # nothing should be committed even though event 3 is new
+        with open(self.fpath_events23) as f:
+            response = self.client.post(url, {
+                'organization': 'Coast Savers', 
+                'project_id': 1, 
+                'datasheet_id': self.ds.pk,
+                'csvfile': f
+                }
+            )
+        d = pq(response.content)
+        el = d("ul.errorlist li")
+        self.assertEqual(response.status_code, 400, response.content)
+        # Expect 2 errors: "event 2 exists" AND "event 3 is new but not uploaded"
+        self.assertEqual(len(el), 2) 
+        self.assertIn("new events were found but not loaded", el[0].text_content())
+        self.assertIn("Event already exists", el[1].text_content())
+        self.assertEqual(Event.objects.all().count(), num_events+2)
 
 class TestBulkUpload(TestCase):
     fixtures = ['test_data',]
