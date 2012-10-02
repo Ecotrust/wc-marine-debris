@@ -364,7 +364,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "55_gallon_drums",
@@ -377,7 +377,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Addresses_participants_in_group",
@@ -390,7 +390,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Ages_participants_in_group",
@@ -403,7 +403,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Ammunition",
@@ -416,7 +416,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Area_invasive_plants_removed",
@@ -429,7 +429,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Bandages",
@@ -442,7 +442,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Beach_chairs_umbrellas_toys",
@@ -455,7 +455,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Bikes_bike_parts",
@@ -468,7 +468,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Biohazard",
@@ -481,7 +481,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Bricks",
@@ -494,7 +494,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Car_batteries",
@@ -507,7 +507,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Cars_car_parts",
@@ -520,7 +520,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Ceramic_pieces",
@@ -533,7 +533,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Chemical_cleaner_containers",
@@ -546,7 +546,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Chemical_containers",
@@ -559,7 +559,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Chemical_poison_containers",
@@ -572,7 +572,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Cigarette_butts",
@@ -585,7 +585,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Cigarette_lighters",
@@ -598,7 +598,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Cigarette_packages",
@@ -611,7 +611,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Cigar_tips",
@@ -624,7 +624,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "City",
@@ -637,7 +637,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "City_county",
@@ -650,7 +650,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "City_participants_in_group",
@@ -663,7 +663,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Cleanup_address",
@@ -676,7 +676,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 1,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Cleanup_area",
@@ -689,7 +689,7 @@
     "fields": {
       "default_value": "",
       "datatype": 3,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Cleanup_date_end",
@@ -702,7 +702,7 @@
     "fields": {
       "default_value": "",
       "datatype": 3,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Cleanup_date_start",
@@ -715,7 +715,7 @@
     "fields": {
       "default_value": "",
       "datatype": 4,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Cleanup_day",
@@ -728,7 +728,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 4,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Cleanup_distance_beach",
@@ -741,7 +741,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": 1,
       "internal_name": "Cleanup_distance_kilometers",
@@ -754,7 +754,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 4,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": 4,
       "internal_name": "Cleanup_distance_miles",
@@ -767,7 +767,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 4,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Cleanup_distance_underwater",
@@ -780,7 +780,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 4,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Cleanup_distance_watercraft",
@@ -793,7 +793,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Cleanup_group_name",
@@ -806,7 +806,7 @@
     "fields": {
       "default_value": "",
       "datatype": 3,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Cleanup_Month",
@@ -819,7 +819,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Cleanup_site_name",
@@ -832,7 +832,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Cleanup_team_name",
@@ -845,7 +845,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Cleanup_time",
@@ -858,7 +858,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Cleanup_type_beach",
@@ -871,7 +871,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Cleanup_type_underwater",
@@ -884,7 +884,7 @@
     "fields": {
       "default_value": "",
       "datatype": 3,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Cleanup_Year",
@@ -897,7 +897,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Closest_city",
@@ -910,7 +910,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Clothing_towels_shoes",
@@ -923,7 +923,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Comments",
@@ -936,7 +936,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Computers",
@@ -949,7 +949,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Concrete_debris",
@@ -962,7 +962,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Condoms",
@@ -975,7 +975,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Construction_debris",
@@ -988,7 +988,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Coordinator_email",
@@ -1001,7 +1001,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Coordinator_name",
@@ -1014,7 +1014,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Coordinator_phone",
@@ -1027,7 +1027,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Coordinator_phone_type",
@@ -1040,7 +1040,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Country",
@@ -1053,7 +1053,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "County",
@@ -1066,7 +1066,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Crab_pots_traps",
@@ -1079,7 +1079,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Cuttings_performed",
@@ -1092,7 +1092,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Data_entered_by_name",
@@ -1105,7 +1105,7 @@
     "fields": {
       "default_value": "",
       "datatype": 3,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Data_entered_date",
@@ -1118,7 +1118,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Dead_animals",
@@ -1131,7 +1131,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Description_accomplishments_highliights",
@@ -1144,7 +1144,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Age",
@@ -1157,7 +1157,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": 7,
       "internal_name": "DG_Debris_Area",
@@ -1170,7 +1170,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Commercial_Recreational",
@@ -1183,7 +1183,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Condition",
@@ -1196,7 +1196,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Date_Found",
@@ -1209,7 +1209,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": 9,
       "internal_name": "DG_Debris_Depth",
@@ -1222,7 +1222,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Description",
@@ -1235,7 +1235,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Distance_Shore",
@@ -1248,7 +1248,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Estimated_Depth",
@@ -1261,7 +1261,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Fishable",
@@ -1274,7 +1274,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_How_Found",
@@ -1287,7 +1287,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Investigated_Description",
@@ -1300,7 +1300,7 @@
     "fields": {
       "default_value": "",
       "datatype": 6,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Lat_DecDeg",
@@ -1313,7 +1313,7 @@
     "fields": {
       "default_value": "",
       "datatype": 6,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Lat_DegDecMin",
@@ -1326,7 +1326,7 @@
     "fields": {
       "default_value": "",
       "datatype": 6,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Latitude_Degree",
@@ -1339,7 +1339,7 @@
     "fields": {
       "default_value": "",
       "datatype": 6,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Latitude_Minute",
@@ -1352,7 +1352,7 @@
     "fields": {
       "default_value": "",
       "datatype": 6,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Latitude_Minute.000",
@@ -1365,7 +1365,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": 9,
       "internal_name": "DG_Debris_Length",
@@ -1378,7 +1378,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Length_Text",
@@ -1391,7 +1391,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Lethality",
@@ -1404,7 +1404,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Location",
@@ -1417,7 +1417,7 @@
     "fields": {
       "default_value": "",
       "datatype": 6,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Long_DecDeg",
@@ -1430,7 +1430,7 @@
     "fields": {
       "default_value": "",
       "datatype": 6,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Long_DegDecMin",
@@ -1443,7 +1443,7 @@
     "fields": {
       "default_value": "",
       "datatype": 6,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Longitude_ Degree",
@@ -1456,7 +1456,7 @@
     "fields": {
       "default_value": "",
       "datatype": 6,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Longitude_ Minute",
@@ -1469,7 +1469,7 @@
     "fields": {
       "default_value": "",
       "datatype": 6,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Longitude_Minute.000",
@@ -1482,7 +1482,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": 9,
       "internal_name": "DG_Debris_Max_Depth",
@@ -1495,7 +1495,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": 9,
       "internal_name": "DG_Debris_Min_Depth",
@@ -1508,7 +1508,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Offload_Location",
@@ -1521,7 +1521,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Owner",
@@ -1534,7 +1534,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Photo_Names",
@@ -1547,7 +1547,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Pot_Condition",
@@ -1560,7 +1560,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Removed",
@@ -1573,7 +1573,7 @@
     "fields": {
       "default_value": "",
       "datatype": 3,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Removed_Date",
@@ -1586,7 +1586,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Removed_Technique",
@@ -1599,7 +1599,7 @@
     "fields": {
       "default_value": "",
       "datatype": 3,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Reported_Date",
@@ -1612,7 +1612,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Reported_Exposure",
@@ -1625,7 +1625,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Reported_Lethality",
@@ -1638,7 +1638,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Reported_Location",
@@ -1651,7 +1651,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Reported_Name",
@@ -1664,7 +1664,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Reported_Phone",
@@ -1677,7 +1677,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Sub_Location",
@@ -1690,7 +1690,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": 9,
       "internal_name": "DG_Debris_Suspended_Height",
@@ -1703,7 +1703,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Type",
@@ -1716,7 +1716,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": 9,
       "internal_name": "DG_Debris_Width",
@@ -1729,7 +1729,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Width_Text",
@@ -1742,7 +1742,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Escape_Cord_Intact",
@@ -1755,7 +1755,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Escape_Cord_Used",
@@ -1768,7 +1768,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Fish_In_Debris",
@@ -1781,7 +1781,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Gear_Code",
@@ -1794,7 +1794,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Habitat_Type",
@@ -1807,7 +1807,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_How_Trapped",
@@ -1820,7 +1820,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Lat_Long_Reliablility",
@@ -1833,7 +1833,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Notes",
@@ -1846,7 +1846,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Anemones",
@@ -1859,7 +1859,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Birds",
@@ -1872,7 +1872,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Crabs",
@@ -1885,7 +1885,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Dead_Crabs",
@@ -1898,7 +1898,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Female_Crabs",
@@ -1911,7 +1911,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Finfish",
@@ -1924,7 +1924,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Legal_Crabs",
@@ -1937,7 +1937,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Lingcod",
@@ -1950,7 +1950,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Mammals",
@@ -1963,7 +1963,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Octopus",
@@ -1976,7 +1976,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Other_Crabs",
@@ -1989,7 +1989,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Other_Fish",
@@ -2002,7 +2002,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Other_Invertabrates",
@@ -2015,7 +2015,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Pots_Recovered",
@@ -2028,7 +2028,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Rockfish",
@@ -2041,7 +2041,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Salmon",
@@ -2054,7 +2054,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Sand_Dollars",
@@ -2067,7 +2067,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Seastars",
@@ -2080,7 +2080,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Sublegal_Crabs",
@@ -2093,7 +2093,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Organisms_In_Debris",
@@ -2106,7 +2106,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Other_Details",
@@ -2119,7 +2119,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Other_Habitat_Type",
@@ -2132,7 +2132,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Project_Gear_ID",
@@ -2145,7 +2145,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Project_Gear_ID_Text",
@@ -2158,7 +2158,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Project_Name",
@@ -2171,7 +2171,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Project_Record",
@@ -2184,7 +2184,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Project_Target_ID",
@@ -2197,7 +2197,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Secondary_Gear_Type",
@@ -2210,7 +2210,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Vessel_Name",
@@ -2223,7 +2223,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_WDFW_Fishery_Zone",
@@ -2236,7 +2236,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Diapers",
@@ -2249,7 +2249,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Directions_to_cleanup",
@@ -2262,7 +2262,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Email_participants_in_group",
@@ -2275,7 +2275,7 @@
     "fields": {
       "default_value": "",
       "datatype": 3,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "End_time",
@@ -2288,7 +2288,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Entangled_animals_dead_or_alive",
@@ -2301,7 +2301,7 @@
     "fields": {
       "default_value": "",
       "datatype": 2,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Estimated_by_Previous_Years",
@@ -2314,7 +2314,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Event_name",
@@ -2327,7 +2327,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Feminine_products",
@@ -2340,7 +2340,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Fireworks",
@@ -2353,7 +2353,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Foam_rubber",
@@ -2366,7 +2366,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Food_waste",
@@ -2379,7 +2379,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Furniture",
@@ -2392,7 +2392,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Garbage_bags_of_trash",
@@ -2405,7 +2405,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "General_bags",
@@ -2418,7 +2418,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "General_bouys_floats",
@@ -2431,7 +2431,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "General_caps_lids",
@@ -2444,7 +2444,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "General_fishing_bait_containers",
@@ -2457,7 +2457,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "General_fishing_line",
@@ -2470,7 +2470,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "General_fishing_net_or_rope",
@@ -2483,7 +2483,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "General_fishing_nets",
@@ -2496,7 +2496,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "General_food_containers ",
@@ -2509,7 +2509,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "General_food_containers_dishes",
@@ -2522,7 +2522,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "General_food_dishes",
@@ -2535,7 +2535,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "General_hose_pieces",
@@ -2548,7 +2548,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "General_rope",
@@ -2561,7 +2561,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "General_strapping_bands",
@@ -2574,7 +2574,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Glass_bottles",
@@ -2587,7 +2587,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Glass_pieces",
@@ -2600,7 +2600,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Golf_balls",
@@ -2613,7 +2613,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Grade",
@@ -2626,7 +2626,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Home_appliances",
@@ -2639,7 +2639,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Hours_at_Cleanup",
@@ -2652,7 +2652,7 @@
     "fields": {
       "default_value": "",
       "datatype": 2,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Invasives",
@@ -2665,7 +2665,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Large_trash_items",
@@ -2678,7 +2678,7 @@
     "fields": {
       "default_value": "",
       "datatype": 13,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Latitude",
@@ -2691,7 +2691,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Leaf_litter",
@@ -2704,7 +2704,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Light_bulbs_tubes",
@@ -2717,7 +2717,7 @@
     "fields": {
       "default_value": "",
       "datatype": 2,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Litter",
@@ -2730,7 +2730,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Location_ID",
@@ -2743,7 +2743,7 @@
     "fields": {
       "default_value": "",
       "datatype": 13,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Longitude",
@@ -2756,7 +2756,7 @@
     "fields": {
       "default_value": "",
       "datatype": 2,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Maintenance",
@@ -2769,7 +2769,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Maximum_volunteers",
@@ -2782,7 +2782,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Meeting_location",
@@ -2795,7 +2795,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Metal_aluminum_foil",
@@ -2808,7 +2808,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Metal_beverage_cans",
@@ -2821,7 +2821,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Metal_caps_lids",
@@ -2834,7 +2834,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Metal_caps_lids_pull_tabs",
@@ -2847,7 +2847,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Metal_fishing_hooks_lures",
@@ -2860,7 +2860,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Metal_pieces",
@@ -2873,7 +2873,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Metal_pipe",
@@ -2886,7 +2886,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Metal_pull_tabs",
@@ -2899,7 +2899,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Metal_wire",
@@ -2912,7 +2912,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Minimum_volunteers",
@@ -2925,7 +2925,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Monitoring_group",
@@ -2938,7 +2938,7 @@
     "fields": {
       "default_value": "",
       "datatype": 13,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "More_info_on_OAN",
@@ -2951,7 +2951,7 @@
     "fields": {
       "default_value": "",
       "datatype": 13,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "More_info_on_Ocean_Conservancy",
@@ -2964,7 +2964,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Most_peculiar_item",
@@ -2977,7 +2977,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Mulch_spread",
@@ -2990,7 +2990,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Nails",
@@ -3003,7 +3003,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Names_groups_participated_in_cleanup",
@@ -3016,7 +3016,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Names_invasive_plants_removed",
@@ -3029,7 +3029,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Names_participants_in_group",
@@ -3042,7 +3042,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Narrative_of_results",
@@ -3055,7 +3055,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Native_plants_planted",
@@ -3068,7 +3068,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Native_trees_planted",
@@ -3081,7 +3081,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Natural_fabric",
@@ -3094,7 +3094,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Number_adult_trainees",
@@ -3107,7 +3107,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Number_adult_volunteers",
@@ -3120,7 +3120,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Number_garbage_bags",
@@ -3133,7 +3133,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Number_garbage_bags_beach",
@@ -3146,7 +3146,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Number_garbage_bags_underwater",
@@ -3159,7 +3159,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Number_garbage_bags_watercraft",
@@ -3172,7 +3172,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Number_of_sites",
@@ -3185,7 +3185,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Number_school_staff",
@@ -3198,7 +3198,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Number_school_staff_trainees",
@@ -3211,7 +3211,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Number_students",
@@ -3224,7 +3224,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Number_student_trainees",
@@ -3237,7 +3237,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Number_Tires",
@@ -3250,7 +3250,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Number_volunteers_beach",
@@ -3263,7 +3263,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Number_volunteers_underwater",
@@ -3276,7 +3276,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Number_volunteers_watercraft",
@@ -3289,7 +3289,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Number_volunteers_working_data_card",
@@ -3302,7 +3302,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Number_youth_trainees",
@@ -3315,7 +3315,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Number_youth_volunteers",
@@ -3328,7 +3328,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Oil_surfactant_on_water",
@@ -3341,7 +3341,7 @@
     "fields": {
       "default_value": "",
       "datatype": 2,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Open_or_Closed_Site",
@@ -3354,7 +3354,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_1_text",
@@ -3367,7 +3367,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_Coast_Savers_1",
@@ -3380,7 +3380,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_Coast_Savers_2",
@@ -3393,7 +3393,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_Coast_Savers_3",
@@ -3406,7 +3406,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_Coast_Savers_items_1",
@@ -3419,7 +3419,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_Coast_Savers_items_2",
@@ -3432,7 +3432,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_Coast_Savers_items_3",
@@ -3445,7 +3445,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_ICC_datacard_1",
@@ -3458,7 +3458,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_ICC_datacard_2",
@@ -3471,7 +3471,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_ICC_datacard_3",
@@ -3484,7 +3484,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SBCK_1",
@@ -3497,7 +3497,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SBCK_datacard_1",
@@ -3510,7 +3510,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SBCK_datacard_10",
@@ -3523,7 +3523,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SBCK_datacard_2",
@@ -3536,7 +3536,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SBCK_datacard_3",
@@ -3549,7 +3549,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SBCK_datacard_4",
@@ -3562,7 +3562,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SBCK_datacard_5",
@@ -3575,7 +3575,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SBCK_datacard_6",
@@ -3588,7 +3588,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SBCK_datacard_7",
@@ -3601,7 +3601,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SBCK_datacard_8",
@@ -3614,7 +3614,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SBCK_datacard_9",
@@ -3627,7 +3627,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOLV_datacard_1",
@@ -3640,7 +3640,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2007_1",
@@ -3653,7 +3653,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2007_total",
@@ -3666,7 +3666,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2008_1",
@@ -3679,7 +3679,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2009_1",
@@ -3692,7 +3692,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2009_2",
@@ -3705,7 +3705,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2009_3",
@@ -3718,7 +3718,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2009_4",
@@ -3731,7 +3731,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2009_5",
@@ -3744,7 +3744,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_1",
@@ -3757,7 +3757,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_10",
@@ -3770,7 +3770,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_11",
@@ -3783,7 +3783,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_12",
@@ -3796,7 +3796,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_13",
@@ -3809,7 +3809,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_14",
@@ -3822,7 +3822,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_15",
@@ -3835,7 +3835,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_16",
@@ -3848,7 +3848,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_17",
@@ -3861,7 +3861,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_18",
@@ -3874,7 +3874,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_19",
@@ -3887,7 +3887,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_2",
@@ -3900,7 +3900,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_20",
@@ -3913,7 +3913,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_21",
@@ -3926,7 +3926,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_22",
@@ -3939,7 +3939,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_23",
@@ -3952,7 +3952,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_24",
@@ -3965,7 +3965,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_25",
@@ -3978,7 +3978,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_26",
@@ -3991,7 +3991,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_27",
@@ -4004,7 +4004,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_28",
@@ -4017,7 +4017,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_29",
@@ -4030,7 +4030,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_3",
@@ -4043,7 +4043,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_4",
@@ -4056,7 +4056,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_5",
@@ -4069,7 +4069,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_6",
@@ -4082,7 +4082,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_7",
@@ -4095,7 +4095,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_8",
@@ -4108,7 +4108,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2010_9",
@@ -4121,7 +4121,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2011_1",
@@ -4134,7 +4134,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2011_10",
@@ -4147,7 +4147,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2011_11",
@@ -4160,7 +4160,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2011_12",
@@ -4173,7 +4173,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2011_13",
@@ -4186,7 +4186,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2011_14",
@@ -4199,7 +4199,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2011_15",
@@ -4212,7 +4212,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2011_16",
@@ -4225,7 +4225,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2011_17",
@@ -4238,7 +4238,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2011_18",
@@ -4251,7 +4251,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2011_2",
@@ -4264,7 +4264,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2011_3",
@@ -4277,7 +4277,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2011_4",
@@ -4290,7 +4290,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2011_5",
@@ -4303,7 +4303,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2011_6",
@@ -4316,7 +4316,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2011_7",
@@ -4329,7 +4329,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2011_8",
@@ -4342,7 +4342,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2011_9",
@@ -4355,7 +4355,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_1",
@@ -4368,7 +4368,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_10",
@@ -4381,7 +4381,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_11",
@@ -4394,7 +4394,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_12",
@@ -4407,7 +4407,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_13",
@@ -4420,7 +4420,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_14",
@@ -4433,7 +4433,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_15",
@@ -4446,7 +4446,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_16",
@@ -4459,7 +4459,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_17",
@@ -4472,7 +4472,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_18",
@@ -4485,7 +4485,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_19",
@@ -4498,7 +4498,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_2",
@@ -4511,7 +4511,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_20",
@@ -4524,7 +4524,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_21",
@@ -4537,7 +4537,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_22",
@@ -4550,7 +4550,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_23",
@@ -4563,7 +4563,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_24",
@@ -4576,7 +4576,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_25",
@@ -4589,7 +4589,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_3",
@@ -4602,7 +4602,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_4",
@@ -4615,7 +4615,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_5",
@@ -4628,7 +4628,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_6",
@@ -4641,7 +4641,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_7",
@@ -4654,7 +4654,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_8",
@@ -4667,7 +4667,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_2012_9",
@@ -4680,7 +4680,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_datacard_1",
@@ -4693,7 +4693,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_datacard_2",
@@ -4706,7 +4706,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Other_SOS_datacard_3",
@@ -4719,7 +4719,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Paid_cleanup_crew",
@@ -4732,7 +4732,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Pallets",
@@ -4745,7 +4745,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Paper",
@@ -4758,7 +4758,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Paper_bags",
@@ -4771,7 +4771,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Paper_cardboard_newspaper_magazine",
@@ -4784,7 +4784,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Paper_dishes_containers",
@@ -4797,7 +4797,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Paper_pieces",
@@ -4810,7 +4810,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Pet_waste",
@@ -4823,7 +4823,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Phone_participants_in_group",
@@ -4836,7 +4836,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Planned_activities",
@@ -4849,7 +4849,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plant_tree_cages_installed",
@@ -4862,7 +4862,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_6_pack_rings",
@@ -4875,7 +4875,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_bags",
@@ -4888,7 +4888,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_bags_grocery_shopping",
@@ -4901,7 +4901,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_bags_grocery_shopping_trash",
@@ -4914,7 +4914,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_bags_trash",
@@ -4927,7 +4927,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_bags_ziplock_snack",
@@ -4940,7 +4940,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_balloons_ribbons",
@@ -4953,7 +4953,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_bottle_caps_rings",
@@ -4966,7 +4966,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_bottles",
@@ -4979,7 +4979,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_caps_lids",
@@ -4992,7 +4992,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_cups_utensils",
@@ -5005,7 +5005,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_eating_items",
@@ -5018,7 +5018,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_fishing_line",
@@ -5031,7 +5031,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_fishing_line_nets_lures_floats",
@@ -5044,7 +5044,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_fishing_lures_light_sticks",
@@ -5057,7 +5057,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_food_wrappers",
@@ -5070,7 +5070,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_hard_pieces",
@@ -5083,7 +5083,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_lids_straws",
@@ -5096,7 +5096,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_oil_bottles",
@@ -5109,7 +5109,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_pieces",
@@ -5122,7 +5122,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_pipe",
@@ -5135,7 +5135,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastics",
@@ -5148,7 +5148,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_soft_pieces",
@@ -5161,7 +5161,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_strapping_bands",
@@ -5174,7 +5174,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_straws_stirrers",
@@ -5187,7 +5187,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Plastic_tarps_sheeting",
@@ -5200,7 +5200,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 10,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": 2,
       "internal_name": "Pounds_green",
@@ -5213,7 +5213,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 10,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": 2,
       "internal_name": "Pounds_recyclables",
@@ -5226,7 +5226,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": 2,
       "internal_name": "Pounds_Tires",
@@ -5239,7 +5239,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 10,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": 2,
       "internal_name": "Pounds_trash",
@@ -5252,7 +5252,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 10,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": 2,
       "internal_name": "Pounds_trash_beach",
@@ -5265,7 +5265,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 10,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": 2,
       "internal_name": "Pounds_trash_underwater",
@@ -5278,7 +5278,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 10,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": 2,
       "internal_name": "Pounds_trash_watercraft",
@@ -5291,7 +5291,7 @@
     "fields": {
       "default_value": "",
       "datatype": 2,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Priority_site",
@@ -5304,7 +5304,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Program_name",
@@ -5317,7 +5317,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Rebar",
@@ -5330,7 +5330,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Sanitary_items",
@@ -5343,7 +5343,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "School_service_learning_project",
@@ -5356,7 +5356,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Shipping_crates",
@@ -5369,7 +5369,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Shoes",
@@ -5382,7 +5382,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Shopping_carts",
@@ -5395,7 +5395,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Site_description",
@@ -5408,7 +5408,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Site_path_country_state_county",
@@ -5421,7 +5421,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Site_type",
@@ -5434,7 +5434,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Small_batteries",
@@ -5447,7 +5447,7 @@
     "fields": {
       "default_value": "",
       "datatype": 2,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Spanish_Translation_Available",
@@ -5460,7 +5460,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Spray_paint_cans",
@@ -5473,7 +5473,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Staking_performed",
@@ -5486,7 +5486,7 @@
     "fields": {
       "default_value": "",
       "datatype": 3,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Start_time",
@@ -5499,7 +5499,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "State",
@@ -5512,7 +5512,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "State_participants_in_group",
@@ -5525,7 +5525,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Status",
@@ -5538,7 +5538,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Status_notes",
@@ -5551,7 +5551,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Storm_drain_marking",
@@ -5564,7 +5564,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Stream_bio_engineering",
@@ -5577,7 +5577,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Styrofoam_buoys_floats",
@@ -5590,7 +5590,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Styrofoam_dishes",
@@ -5603,7 +5603,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Styrofoam_food_containers",
@@ -5616,7 +5616,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Styrofoam_food_containers_dishes",
@@ -5629,7 +5629,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Styrofoam_packaging",
@@ -5642,7 +5642,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Styrofoam_pieces",
@@ -5655,7 +5655,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "SubProgram_name",
@@ -5668,7 +5668,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Synthetic_fabric",
@@ -5681,7 +5681,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Synthetic_rubber",
@@ -5694,7 +5694,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Syringes",
@@ -5707,7 +5707,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Tennis_balls",
@@ -5720,7 +5720,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": 10,
       "internal_name": "Total_kilograms_collected",
@@ -5733,7 +5733,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Total_pounds_collected",
@@ -5746,7 +5746,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": 6,
       "internal_name": "Total_Score_Percentage",
@@ -5759,7 +5759,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Total_Score_Value",
@@ -5772,7 +5772,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Total_trash_items",
@@ -5785,7 +5785,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Total_Volunteers",
@@ -5798,7 +5798,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Toxic",
@@ -5811,7 +5811,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Toys",
@@ -5824,7 +5824,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Trash_items_scores_aquatic_life_threat",
@@ -5837,7 +5837,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Trash_items_scores_human_health_threat",
@@ -5850,7 +5850,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Trash_items_scores_illegal_dumping",
@@ -5863,7 +5863,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Trash_items_scores_level_trash",
@@ -5876,7 +5876,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Trash_items_scores_number_trash_items",
@@ -5889,7 +5889,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Trash_items_scores_trash_accumulation",
@@ -5902,7 +5902,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Volunteer_hours",
@@ -5915,7 +5915,7 @@
     "fields": {
       "default_value": "",
       "datatype": 3,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Waiver_recieved",
@@ -5928,7 +5928,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Watershed_ID",
@@ -5941,7 +5941,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Weeding_around_plants_trees",
@@ -5954,7 +5954,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Wood_debris",
@@ -5967,7 +5967,7 @@
     "fields": {
       "default_value": "0",
       "datatype": 7,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Yard_waste",
@@ -5980,7 +5980,7 @@
     "fields": {
       "default_value": "",
       "datatype": 3,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Year",
@@ -5993,7 +5993,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Zipcode",
@@ -6006,7 +6006,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Zipcode_participants_in_group",
@@ -6019,7 +6019,7 @@
     "fields": {
       "default_value": "",
       "datatype": 8,
-      "required": false,
+      
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Zone_cleaned",
@@ -6031,7 +6031,7 @@
     "model": "core.eventtype",
     "fields": {
       "type": "Derelict Gear Report",
-      "display_sites": true
+      "display_sites": false
     }
   },
   {
@@ -6067,7 +6067,7 @@
       "sheetname": "Northwest Straights Derelict Gear Data",
       "year_started": 9999,
       "created_by": 8,
-      "type_id": null
+      "type_id": 2
     }
   },
   {
@@ -8102,6 +8102,58 @@
       "event_id": 2,
       "field_value": "0.0",
       "field_id": 192
+    }
+  },
+  {
+    "pk": 449, 
+    "model": "core.field", 
+    "fields": {
+      "default_value": "", 
+      "datatype": 7, 
+      "maxvalue": 180, 
+      "unit_id": 5, 
+      "internal_name": "Longitude", 
+      "minvalue": -180
+    }
+  }, 
+  {
+    "pk": 448, 
+    "model": "core.field", 
+    "fields": {
+      "default_value": "", 
+      "datatype": 7, 
+      "maxvalue": 90, 
+      "unit_id": 5, 
+      "internal_name": "Latitude", 
+      "minvalue": -90
+    }
+  }, 
+  {
+    "pk": 1098, 
+    "model": "core.datasheetfield", 
+    "fields": {
+      "print_name": "", 
+      "required": false, 
+      "field_id": 448, 
+      "unit_id": null, 
+      "answer_options": [], 
+      "sheet_id": 19, 
+      "field_name": "Latitude (dd)", 
+      "grouping": null
+    }
+  }, 
+  {
+    "pk": 1099, 
+    "model": "core.datasheetfield", 
+    "fields": {
+      "print_name": "", 
+      "required": false, 
+      "field_id": 449, 
+      "unit_id": null, 
+      "answer_options": [], 
+      "sheet_id": 19, 
+      "field_name": "Longitude (dd)", 
+      "grouping": null
     }
   }
 ]
