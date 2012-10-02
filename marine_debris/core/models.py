@@ -6,6 +6,7 @@ from django.conf import settings
 import datetime
 from datetime import date
 from django.contrib.gis.admin import OSMGeoAdmin
+from django.contrib.gis.geos import Point
 from south.modelsinspector import add_introspection_rules
 add_introspection_rules([], ["^django\.contrib\.gis\.db\.models\.fields\.PointField"])
 
