@@ -155,7 +155,7 @@ class ProjectOrganizationAdmin(admin.ModelAdmin):
     }
  
 class SiteAdmin(admin.ModelAdmin):
-    list_display = ('sitename', 'state', 'county', 'lat', 'lon')
+    list_display = ('sitename', 'state', 'county', 'geometry')
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()

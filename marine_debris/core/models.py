@@ -6,7 +6,6 @@ from django.conf import settings
 import datetime
 from datetime import date
 from django.contrib.gis.admin import OSMGeoAdmin
-from django.contrib.gis.geos import Point
 from south.modelsinspector import add_introspection_rules
 add_introspection_rules([], ["^django\.contrib\.gis\.db\.models\.fields\.PointField"])
 
@@ -272,8 +271,6 @@ class State (models.Model):
         
 class Site (models.Model):
     sitename = models.TextField(blank=True, null=True)
-    lat = models.FloatField(blank=True, null=True, validators=[MinValueValidator(32.5), MaxValueValidator(49.1)])
-    lon = models.FloatField(blank=True, null=True, validators=[MinValueValidator(-124.8), MaxValueValidator(-117)])
     state = models.ForeignKey(State, blank=True, null=True)
     county = models.TextField(blank=True, null=True)
     geometry = models.PointField(srid=settings.SERVER_SRID, null=True, blank=True)
@@ -293,21 +290,27 @@ class Site (models.Model):
         
     @property
     def toDict(self):
+        if self.geometry:
+            lat = self.geometry.get_coords()[1]
+            lon = self.geometry.get_coords()[0]
+        else:
+            lat = '' 
+            lon = ''
         site_dict = {
             'name': self.sitename,
-            'lat': self.lat,
-            'lon': self.lon,
+            'lat': lat,
+            'lon': lon,
             'state': self.state.name,
             'county': self.county
         }
         return site_dict
         
     class Meta:
-        unique_together = (("sitename", "state", "county"), ("lat", "lon"))
+        unique_together = (("sitename", "state", "county"))
         
     def save(self, *args, **kwargs):
         if not self.sitename or self.sitename.strip() == '':
-            self.sitename = str(self.lon) + ', ' + str(self.lat)
+            self.sitename = str(self.geometry.get_coords()[0]) + ', ' + str(self.geometry.get_coords()[1])
         #TODO if not state or county, determine based on coords?
         super(Site, self).save(*args, **kwargs)
 
