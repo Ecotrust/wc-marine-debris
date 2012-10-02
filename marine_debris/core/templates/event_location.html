@@ -47,7 +47,6 @@
     
     $(document).ready(function () {
         $(".county-typeahead").typeahead({
-            //source: {{sitenames|safe}}
             source: function () {
                 return $.map(app.viewModel.selectedState().counties, function (county) {
                    return county.name;
@@ -55,7 +54,6 @@
             }
         });
         $(".site-typeahead").typeahead({
-            //source: {{sitenames|safe}}
             source: function () {
                 return $.map(app.viewModel.selectedCounty().sites, function (site) {
                    return site.name;
@@ -92,6 +90,9 @@
                         county = value;
                     }
                 });
+                if (!county) {
+                    county = self.selectedCountyName();
+                }
             }
             return county;
         });
