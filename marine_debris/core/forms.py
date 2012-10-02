@@ -163,94 +163,88 @@ class CreateEventForm(forms.Form):
 class DataSheetForm(forms.Form):
     def __init__(self, datasheet, event=None, *args, **kwargs):
         self.datasheet_id = datasheet.id
-        questions = DataSheetField.objects.filter(sheet_id=datasheet.id)
+        questions = DataSheetField.objects.select_related().filter(sheet_id=datasheet.id)
         if event:
             answers = FieldValue.objects.filter(event_id=event.id)
         else:
             answers = FieldValue.objects.none()
-        self.answers = answers
         forms.Form.__init__(self, *args, **kwargs)
-            
+
+        answer_lookup = dict([(a.field_id, a.field_value) for a in answers.all()])
+        field_lookup = dict([(f.id, f) for f in Field.objects.select_related().all()])
+
         for i, question in enumerate(questions):
             dynamic_args = {}
             other_dynamic_args = {}
-            field = Field.objects.get(id = question.field_id.id)
+            field = question.field_id
+
+            datatype = field.datatype.name
+            try:
+                answer = answer_lookup[field.id]
+            except KeyError:
+                answer = None
+
             dynamic_args['label'] = question.print_name
-            dynamic_args['required']=question.required
-            answer = answers.filter(field_id = question.field_id.id)
+            dynamic_args['required'] = question.required
             
-            if question.field_id.datatype.name in ['Area', 'Distance', 'Duration', 'Number', 'Volume', 'Weight']: 
+            if datatype in ['Area', 'Distance', 'Duration', 'Number', 'Volume', 'Weight']: 
                 # decimal
-                if question.field_id.minvalue != None:
-                    dynamic_args['min_value']=int(question.field_id.minvalue)
-                if question.field_id.maxvalue != None:
-                    dynamic_args['max_value']=int(question.field_id.maxvalue)
-                if answer.count() == 1:
-                    dynamic_args['initial']=answer[0].field_value
-                elif question.field_id.default_value != '':
-                    dynamic_args['initial']=int(question.field_id.default_value)
+                if field.minvalue != None:
+                    dynamic_args['min_value'] = int(field.minvalue)
+                if field.maxvalue != None:
+                    dynamic_args['max_value'] = int(field.maxvalue)
+                if answer:
+                    dynamic_args['initial'] = answer
+                elif field.default_value != '':
+                    dynamic_args['initial'] = int(field.default_value)
                 self.fields['question_' + str(question.id)] = forms.FloatField( **dynamic_args )
                 
-            elif question.field_id.datatype.name == 'True/False':
-                if answer.count() == 1:
-                    dynamic_args['initial']=answer[0].field_value
-                elif question.field_id.default_value != '':
-                    dynamic_args['initial']=bool(question.field_id.default_value)
+            elif datatype == 'True/False':
+                if answer:
+                    dynamic_args['initial'] = answer
+                elif field.default_value != '':
+                    dynamic_args['initial'] = bool(field.default_value)
                 dynamic_args['required'] = False
                 self.fields['question_' + str(question.id)] = forms.BooleanField( **dynamic_args )
                 
-            elif question.field_id.datatype.name == 'Date':
-                if answer.count() == 1:
-                    try:
-                        dynamic_args['initial']=datetime.datetime.strptime(answer[0].field_value, "%Y-%m-%d %H:%M:%S.%f")
-                    except: 
-                        try:
-                            dynamic_args['initial']=datetime.datetime.strptime(answer[0].field_value, "%Y-%m-%d %H:%M:%S")
-                        except:
-                            dynamic_args['initial']=datetime.datetime.strptime(answer[0].field_value, "%Y-%m-%d")
-                elif question.field_id.default_value  != '':
-                    try:
-                        dynamic_args['initial']=datetime.datetime.strptime(question.field_id.default_value, "%Y-%m-%d %H:%M:%S.%f")
-                    except:
-                        try:
-                            dynamic_args['initial']=datetime.datetime.strptime(question.field_id.default_value, "%Y-%m-%d %H:%M:%S")
-                        except:
-                            dynamic_args['initial']=datetime.datetime.strptime(question.field_id.default_value, "%Y-%m-%d")
-                #else:
-                #    dynamic_args['initial']=datetime.datetime.now()
-                dynamic_args['widget']=forms.TextInput(attrs={'class':'date'})
+            elif datatype == 'Date':
+                if answer:
+                    dynamic_args['initial'] = datetime.datetime.strptime(answer, "%Y-%m-%d")
+                elif field.default_value  != '':
+                    dynamic_args['initial'] = datetime.datetime.strptime(field.default_value, "%Y-%m-%d")
+                dynamic_args['widget'] = forms.TextInput(attrs={'class':'date'})
                 self.fields['question_' + str(question.id)] = forms.DateTimeField( **dynamic_args )
-                
-                # elif question.field_id.datatype.name == 'Location':
             
-            elif question.field_id.datatype.name == 'Yes/No':
+            elif datatype == 'Yes/No':
                 options = (('yes', 'Yes'), ('no', 'No'))
                 dynamic_args['choices'] = options
-                if answer.count() == 1:
-                    dynamic_args['initial']=answer[0].field_value
-                elif question.field_id.default_value != '':
-                    dynamic_args['initial']=question.field_id.default_value
+                if answer:
+                    dynamic_args['initial'] = answer
+                elif field.default_value != '':
+                    dynamic_args['initial'] = field.default_value
                 self.fields['question_' + str(question.id)] = forms.ChoiceField( **dynamic_args )
             
-            # elif question.field_id.datatype.name == 'Text' or question.field_id.datatype.name == 'Location' or question.field_id.datatype.name == 'Other':
             else:
-                if answer.count() == 1:
-                    dynamic_args['initial']=answer[0].field_value
-                elif question.field_id.default_value != '':
-                    dynamic_args['initial']=question.field_id.default_value
+                if answer:
+                    dynamic_args['initial'] = answer
+                elif field.default_value != '':
+                    dynamic_args['initial'] = field.default_value
                 self.fields['question_' + str(question.id)] = forms.CharField( **dynamic_args )
 
             self.fields['question_' + str(question.id)].question = question
+            self.fields['question_' + str(question.id)].field = field 
             self.fields['question_' + str(question.id)].answer = answer
             self.fields['question_' + str(question.id)].event = event
+            self.event = event
 
     def save(self):
+        now = datetime.datetime.today()
         for field_name in self.fields:
-            field = self.fields[field_name]
+            fld = self.fields[field_name]
             answer = self.cleaned_data[field_name]
-            value = FieldValue.objects.get_or_create(event_id=field.event, field_id=field.question.field_id)[0]
-            value.field_value=str(answer)
-            value.last_modified = datetime.datetime.today()
+            value = FieldValue.objects.get_or_create(event_id=fld.event, field_id=fld.field)[0]
+            value.field_value = str(answer)
+            value.last_modified = now
             value.save()
         return True
            

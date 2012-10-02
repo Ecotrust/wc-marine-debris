@@ -347,9 +347,11 @@ def get_site_key(ds, row):
 
 def get_querydict(ds, row):
     row_qnum = {} # keys must refer to the question number (ie 'question_768') 
+    field_id_lookup = dict([(f.field_name, f.id) for f in ds.datasheetfield_set.all()])
+
     for k,v in row.items():
-        dsf = ds.datasheetfield_set.filter(field_name=k)[0] 
-        row_qnum['question_%d' % dsf.id] = v
+        dsfid = field_id_lookup[k]
+        row_qnum['question_%d' % dsfid] = v
 
     qd = QueryDict('')
     qd = qd.copy() # to make it mutable
