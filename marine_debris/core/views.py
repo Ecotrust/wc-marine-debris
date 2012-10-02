@@ -356,6 +356,25 @@ def get_querydict(ds, row):
     qd.update(row_qnum)
     return qd
                     
+def parse_date(date_string):
+    accepted_formats = [
+        "%m/%d/%Y",
+        "%Y-%m-%d",
+    ]
+    d = None
+    for f in accepted_formats:
+        try:
+            d = datetime.datetime.strptime(date_string,f)
+            break
+        except ValueError:
+            continue
+
+    if not d:
+        raise ValueError("Cannot parse date string '%s'" % date_string)
+
+    return d
+
+
 @login_required    
 def bulk_import(request):
     if request.method == 'GET':
@@ -428,11 +447,16 @@ def bulk_import(request):
                     site = Site.objects.filter(**site_key)[0] # silent fail and grab first if not unique
                     sites.append({'name':site_text, 'site':site})
                 except IndexError:
-                    errors.append("""Site <em>'%s'</em> is not in the database. <br/>
-                    <a href="/site/create" class="btn btn-mini"> Create new site record </a>
-                    <a href="/site/create" class="btn btn-mini"> Match to existing site record </a>
-                    """ % site_text)
-                    sites.append({'name':site_text, 'site':None})
+                    if ds.site_type == 'coord-based':
+                        # just insert it 
+                        site, created = Site.objects.get_or_create(**site_key)
+                        sites.append({'name':site_text, 'site':site})
+                    else:
+                        errors.append("""Site <em>'%s'</em> is not in the database. <br/>
+                        <a href="/site/create" class="btn btn-mini"> Create new site record </a>
+                        <a href="/site/create" class="btn btn-mini"> Match to existing site record </a>
+                        """ % site_text)
+                        sites.append({'name':site_text, 'site':None})
 
             if len(errors) > 0:
                 return bulk_bad_request(form, request, errors)
@@ -444,7 +468,8 @@ def bulk_import(request):
                 for i, row in enumerate(rows):
                     site_key = get_site_key(ds, row)
                     site = Site.objects.get(**site_key)
-                    date = get_required_val(ds,'date', row)
+                    date_string = get_required_val(ds,'date', row)
+                    date = parse_date(date_string)
 
                     project = get_object_or_404(Project, id=int(form.cleaned_data['project_id']))
                     event = Event(

@@ -295,3 +295,33 @@ class TestBulkUpload(TestCase):
         self.assertTrue('state' in el[0].text_content())
         self.assertTrue('State' in el[1].text_content())
 
+
+class TestBulkCoordBased(TestCase):
+    fixtures = ['test_data',]
+
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            'featuretest', 'featuretest@madrona.org', password='pword')
+        self.ds = DataSheet.objects.get(pk=19) # northwest straights
+        d = os.path.dirname(__file__)
+        testdir = os.path.abspath(os.path.join(d, 'fixtures', 'testdata'))
+
+        self.fpath = os.path.join(testdir, 'test_bulk_derelict.csv')
+     
+    def test_post(self):
+        self.client.login(username='featuretest', password='pword')
+        url = '/datasheet/bulk_import/'
+        with open(self.fpath) as f:
+            response = self.client.post(url, {
+                'organization': 'Northwest Straights', 
+                'project_id': 1, 
+                'datasheet_id': self.ds.pk,
+                'csvfile': f
+                }
+            )
+        d = pq(response.content)
+        el = d("ul.errorlist li")
+        self.assertEqual(response.status_code, 400, response.content)
+        self.assertEqual(len(el), 1)
+        self.assertTrue("Enter a valid date/time" in el.html(), el.html())

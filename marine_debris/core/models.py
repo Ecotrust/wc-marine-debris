@@ -120,10 +120,8 @@ class DataSheet (models.Model):
          - globally required in settings
          - required per datasheet
         """
-        # TODO derelict gear....
-         
         # global
-        req_fields = settings.REQUIRED_FIELDS['site-based'] 
+        req_fields = settings.REQUIRED_FIELDS[self.site_type] 
         required_fieldnames = []
         for item, internal_name in req_fields.items():
             try:
@@ -184,8 +182,7 @@ class DataSheetField (models.Model):
     required = models.BooleanField(default=False)
     
     def __unicode__(self):
-        readable_name = self.field_name + '-' + self.sheet_id.sheetname + '-' + self.field_id.internal_name
-        return readable_name
+        return "%s-%s-%s" % (self.field_name, self.sheet_id.sheetname, self.field_id.internal_name)
         
     class Meta:
         ordering = ['field_name', 'sheet_id__sheetname', 'field_id__internal_name']
@@ -276,13 +273,13 @@ class Site (models.Model):
     sitename = models.TextField(blank=True, null=True)
     lat = models.FloatField(blank=True, null=True, validators=[MinValueValidator(32.5), MaxValueValidator(49.1)])
     lon = models.FloatField(blank=True, null=True, validators=[MinValueValidator(-124.8), MaxValueValidator(-117)])
-    state = models.ForeignKey(State, default=1)
+    state = models.ForeignKey(State, blank=True, null=True)
     county = models.TextField(blank=True, null=True)
     geometry = models.PointField(srid=settings.SERVER_SRID, null=True, blank=True)
     objects = models.GeoManager()
     
     def __unicode__(self):
-        return self.sitename
+        return unicode(self.sitename)
         
     @property
     def countyDict(self):
@@ -310,6 +307,7 @@ class Site (models.Model):
     def save(self, *args, **kwargs):
         if not self.sitename or self.sitename.strip() == '':
             self.sitename = str(self.lon) + ', ' + str(self.lat)
+        #TODO if not state or county, determine based on coords?
         super(Site, self).save(*args, **kwargs)
 
 class Event (models.Model):
@@ -327,7 +325,7 @@ class Event (models.Model):
     status = models.CharField(max_length=30, choices=StatusChoices, default='New', blank=True)
     
     def __unicode__(self):
-        return self.proj_id.projname + '-' + self.site.sitename + '-' + self.cleanupdate.isoformat()
+        return "%s-%s-%s" % (self.proj_id.projname, self.site.sitename, self.cleanupdate.isoformat())
         
     def get_fields(self):
         return[(field.name, field.value_to_string(self)) for field in Event._meta.fields]
