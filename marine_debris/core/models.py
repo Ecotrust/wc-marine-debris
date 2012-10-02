@@ -178,9 +178,7 @@ class DataSheetField (models.Model):
     required = models.BooleanField(default=False)
     
     def __unicode__(self):
-    #    #readable_name = "%s-%s-%s" % (self.field_name, self.sheet_id.sheetname, self.field_id.internal_name)
-    #    return readable_name
-        return "test" #self.field_name
+        return "%s-%s-%s" % (self.field_name, self.sheet_id.sheetname, self.field_id.internal_name)
         
     class Meta:
         ordering = ['field_name', 'sheet_id__sheetname', 'field_id__internal_name']
@@ -271,7 +269,7 @@ class Site (models.Model):
     sitename = models.TextField(blank=True, null=True)
     lat = models.FloatField(blank=True, null=True, validators=[MinValueValidator(32.5), MaxValueValidator(49.1)])
     lon = models.FloatField(blank=True, null=True, validators=[MinValueValidator(-124.8), MaxValueValidator(-117)])
-    state = models.ForeignKey(State, default=1)
+    state = models.ForeignKey(State, blank=True, null=True)
     county = models.TextField(blank=True, null=True)
     
     def __unicode__(self):
@@ -303,6 +301,7 @@ class Site (models.Model):
     def save(self, *args, **kwargs):
         if not self.sitename or self.sitename.strip() == '':
             self.sitename = str(self.lon) + ', ' + str(self.lat)
+        #TODO if not state or county, determine based on coords?
         super(Site, self).save(*args, **kwargs)
 
 class Event (models.Model):
@@ -320,9 +319,7 @@ class Event (models.Model):
     status = models.CharField(max_length=30, choices=StatusChoices, default='New', blank=True)
     
     def __unicode__(self):
-    #    #print "%s-%s-%s" % (self.proj_id.projname, self.site.sitename, self.cleanupdate.isoformat())
-    #    #return self.proj_id.projname
-        return "Test" #self.proj_id
+        return "%s-%s-%s" % (self.proj_id.projname, self.site.sitename, self.cleanupdate.isoformat())
         
     def get_fields(self):
         return[(field.name, field.value_to_string(self)) for field in Event._meta.fields]
