@@ -301,6 +301,11 @@ class Site (models.Model):
         
     class Meta:
         unique_together = (("sitename", "state", "county"), ("lat", "lon"))
+        
+    def save(self, *args, **kwargs):
+        if not self.sitename or self.sitename.strip() == '':
+            self.sitename = str(self.lon) + ', ' + str(self.lat)
+        super(Site, self).save(*args, **kwargs)
 
 class Event (models.Model):
     
