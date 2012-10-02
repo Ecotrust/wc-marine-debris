@@ -13,7 +13,6 @@ from django.contrib.auth import authenticate, REDIRECT_FIELD_NAME, login as auth
 from django.contrib.auth.views import login as default_login, logout as default_logout
 from django.utils import simplejson
 from django.forms.models import modelformset_factory
-from django.contrib.gis.geos import Point
 import datetime
 import string
 import datetime
@@ -148,8 +147,7 @@ def event_save(request):
         project = Project.objects.get(projname=createEventForm.data['project'])
         datasheet = DataSheet.objects.get(id=createEventForm.data['data_sheet'])
         state = State.objects.get(initials=createEventForm.data['state'])
-        point = Point(float(createEventForm.data['longitude']), float(createEventForm.data['latitude']))
-        site = Site.objects.get_or_create(state = state, county = createEventForm.data['county'], geometry = point, sitename = createEventForm.data['site_name'])
+        site = Site.objects.get_or_create(state = state, county = createEventForm.data['county'], lat = createEventForm.data['latitude'], lon = createEventForm.data['longitude'], sitename = createEventForm.data['site_name'])
         date = datetime.datetime.strptime(createEventForm.data['date'], '%m/%d/%Y')
         event = Event(proj_id = project, datasheet_id = datasheet, cleanupdate = date, site = site[0])
         event.save()
@@ -342,8 +340,7 @@ def get_site_key(ds, row):
         }
     else:
         site_key = {
-            'lat': get_required_val(ds,'lat', row),
-            'lon': get_required_val(ds,'lon', row),
+            'geometry': 'POINT(%f %f)' % (float(get_required_val(ds,'lon', row)), float(get_required_val(ds,'lat', row))),
         }
     return site_key
 

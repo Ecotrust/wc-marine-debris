@@ -309,9 +309,11 @@ class TestBulkCoordBased(TestCase):
 
         self.fpath = os.path.join(testdir, 'test_bulk_derelict.csv')
      
-    def test_post(self):
+    def test_derelict_post(self):
         self.client.login(username='featuretest', password='pword')
         url = '/datasheet/bulk_import/'
+        num_events = Event.objects.all().count()
+        num_sites = Site.objects.all().count()
         with open(self.fpath) as f:
             response = self.client.post(url, {
                 'organization': 'Northwest Straights', 
@@ -322,6 +324,8 @@ class TestBulkCoordBased(TestCase):
             )
         d = pq(response.content)
         el = d("ul.errorlist li")
-        self.assertEqual(response.status_code, 400, response.content)
-        self.assertEqual(len(el), 1)
-        self.assertTrue("Enter a valid date/time" in el.html(), el.html())
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(len(el), 0)
+        # should have 3 new events at 2 new sites
+        self.assertEqual(Event.objects.all().count(), num_events+3)
+        self.assertEqual(Site.objects.all().count(), num_sites+2)
