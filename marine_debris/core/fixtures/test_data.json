@@ -7533,9 +7533,8 @@
     "model": "core.site",
     "fields": {
       "sitename": "Cowell Beach",
-      "lat": 36.961174,
       "state": 3,
-      "lon": -122.024682,
+      "geometry": "POINT (-122.0246819999999985 36.9611739999999998)", 
       "county": "Santa Cruz"
     }
   },
@@ -7544,9 +7543,8 @@
     "model": "core.site",
     "fields": {
       "sitename": "TestSite",
-      "lat": 36.962174,
       "state": 3,
-      "lon": -122.024682,
+      "geometry": "POINT (-117.0999999999999943 33.0000000000000000)", 
       "county": "Santa Cruz"
     }
   },
@@ -7555,9 +7553,8 @@
     "model": "core.site",
     "fields": {
       "sitename": "TestSite2",
-      "lat": 36.963174,
       "state": 3,
-      "lon": -122.024682,
+      "geometry": "POINT (-117.2000000000000028 33.1000000000000014)", 
       "county": "Santa Cruz"
     }
   },
