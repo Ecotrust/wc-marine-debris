@@ -184,7 +184,7 @@ REQUIRED_FIELDS = {
     'coord-based': {
         'lat': 'Latitude',
         'lon': 'Longitude',
-        'date': 'Cleanup_date_start',
+        'date': 'DG_Debris_Removed_Date',
         #'state': 'State',
         #'county': 'County',
     }

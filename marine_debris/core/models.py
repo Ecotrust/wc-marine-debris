@@ -116,10 +116,8 @@ class DataSheet (models.Model):
          - globally required in settings
          - required per datasheet
         """
-        # TODO derelict gear....
-         
         # global
-        req_fields = settings.REQUIRED_FIELDS['site-based'] 
+        req_fields = settings.REQUIRED_FIELDS[self.site_type] 
         required_fieldnames = []
         for item, internal_name in req_fields.items():
             try:
@@ -180,8 +178,9 @@ class DataSheetField (models.Model):
     required = models.BooleanField(default=False)
     
     def __unicode__(self):
-        readable_name = self.field_name + '-' + self.sheet_id.sheetname + '-' + self.field_id.internal_name
-        return readable_name
+    #    #readable_name = "%s-%s-%s" % (self.field_name, self.sheet_id.sheetname, self.field_id.internal_name)
+    #    return readable_name
+        return "test" #self.field_name
         
     class Meta:
         ordering = ['field_name', 'sheet_id__sheetname', 'field_id__internal_name']
@@ -276,7 +275,7 @@ class Site (models.Model):
     county = models.TextField(blank=True, null=True)
     
     def __unicode__(self):
-        return self.sitename
+        return unicode(self.sitename)
         
     @property
     def countyDict(self):
@@ -321,7 +320,9 @@ class Event (models.Model):
     status = models.CharField(max_length=30, choices=StatusChoices, default='New', blank=True)
     
     def __unicode__(self):
-        return self.proj_id.projname + '-' + self.site.sitename + '-' + self.cleanupdate.isoformat()
+    #    #print "%s-%s-%s" % (self.proj_id.projname, self.site.sitename, self.cleanupdate.isoformat())
+    #    #return self.proj_id.projname
+        return "Test" #self.proj_id
         
     def get_fields(self):
         return[(field.name, field.value_to_string(self)) for field in Event._meta.fields]
