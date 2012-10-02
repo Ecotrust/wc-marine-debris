@@ -10,16 +10,18 @@ class Migration(DataMigration):
         from django.contrib.gis.geos import Point
         # Note: Remember to use orm['appname.ModelName'] rather than "from appname.models..."
         for site in orm.Site.objects.all():
-            site.geometry = Point(site.lon, site.lat)
-            site.save()
+            if site.lon and site.lat:
+                site.geometry = Point(site.lon, site.lat)
+                site.save()
 
     def backwards(self, orm):
         from django.contrib.gis.geos import Point
         # Note: Remember to use orm['appname.ModelName'] rather than "from appname.models..."
         for site in orm.Site.objects.all():
-            site.lon = site.geometry.get_coords()[0]
-            site.lat = site.geometry.get_coords()[1]
-            site.save()
+            if site.geometry:
+                site.lon = site.geometry.get_coords()[0]
+                site.lat = site.geometry.get_coords()[1]
+                site.save()
 
     models = {
         'auth.group': {
