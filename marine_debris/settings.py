@@ -196,4 +196,6 @@ try:
     from settings_local import *
 except ImportError, exp:
     pass
+    
+SERVER_SRID = 4326
 

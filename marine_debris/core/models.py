@@ -1,9 +1,13 @@
-from django.db import models
+#from django.db import models
+from django.contrib.gis.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 from django.conf import settings
 import datetime
 from datetime import date
+from django.contrib.gis.admin import OSMGeoAdmin
+from south.modelsinspector import add_introspection_rules
+add_introspection_rules([], ["^django\.contrib\.gis\.db\.models\.fields\.PointField"])
 
 # Create your models here.
 class DataType (models.Model):
@@ -274,6 +278,8 @@ class Site (models.Model):
     lon = models.FloatField(blank=True, null=True, validators=[MinValueValidator(-124.8), MaxValueValidator(-117)])
     state = models.ForeignKey(State, default=1)
     county = models.TextField(blank=True, null=True)
+    geometry = models.PointField(srid=settings.SERVER_SRID, null=True, blank=True)
+    objects = models.GeoManager()
     
     def __unicode__(self):
         return self.sitename
