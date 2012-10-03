@@ -184,7 +184,11 @@ class DataSheetForm(forms.Form):
             except KeyError:
                 answer = None
 
-            dynamic_args['label'] = question.print_name
+            if question.print_name and not question.print_name == '':
+                dynamic_args['label'] = question.print_name
+            else:
+                dynamic_args['label'] = question.field_name
+                
             dynamic_args['required'] = question.required
             
             if datatype in ['Area', 'Distance', 'Duration', 'Number', 'Volume', 'Weight']: 
