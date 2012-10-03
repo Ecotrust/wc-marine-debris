@@ -250,5 +250,10 @@ class DataSheetForm(forms.Form):
            
 
 class CreateSiteForm(forms.ModelForm):
+    county = forms.CharField(required=True,)
+    sitename = forms.CharField(required=True,)
+    longitude = forms.CharField(required=False)
+    latitude = forms.CharField(required=False)
+    geometry = forms.CharField(widget=forms.HiddenInput())
     class Meta:
         model = Site
