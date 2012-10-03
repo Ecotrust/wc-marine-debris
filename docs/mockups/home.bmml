@@ -40,7 +40,7 @@
       </groupChildrenDescriptors>
     </control>
     <control controlID="30" controlTypeID="com.balsamiq.mockups::Image" x="239" y="236" w="1098" h="280" measuredW="77" measuredH="79" zOrder="5" locked="false" isInGroup="-1"/>
-    <control controlID="31" controlTypeID="com.balsamiq.mockups::StickyNote" x="426" y="290" w="-1" h="-1" measuredW="109" measuredH="123" zOrder="6" locked="false" isInGroup="-1">
+    <control controlID="31" controlTypeID="com.balsamiq.mockups::StickyNote" x="451" y="295" w="191" h="128" measuredW="109" measuredH="123" zOrder="6" locked="false" isInGroup="-1">
       <controlProperties>
         <text>image/carousel</text>
       </controlProperties>
@@ -69,7 +69,7 @@
         <text>Impacts%20of%20Marine%20Debris</text>
       </controlProperties>
     </control>
-    <control controlID="37" controlTypeID="com.balsamiq.mockups::BarChart" x="265" y="686" w="432" h="170" measuredW="187" measuredH="175" zOrder="11" locked="false" isInGroup="-1"/>
+    <control controlID="37" controlTypeID="com.balsamiq.mockups::BarChart" x="265" y="680" w="432" h="170" measuredW="187" measuredH="175" zOrder="11" locked="false" isInGroup="-1"/>
     <control controlID="38" controlTypeID="com.balsamiq.mockups::SubTitle" x="254" y="642" w="360" h="-1" measuredW="166" measuredH="33" zOrder="12" locked="false" isInGroup="-1">
       <controlProperties>
         <bold>true</bold>
