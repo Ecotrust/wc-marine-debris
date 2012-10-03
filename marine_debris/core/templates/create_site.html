@@ -7,10 +7,16 @@
     <form class="event-form form-horizontal" method="post" action="{% if action %}{{ action }}{% else %}/site/create{% endif %}">
     {% csrf_token %}
     {{form}}
+
     <p>
-    <button type="button" class="btn" id="back" value="Back" onClick="history.go(-1);return true;">Back</button>
-    <input id="submit" type="submit" value="Continue" class='btn'/>
+        <div id="map" class="smallmap"></div>
     </p>
+
+    <p>
+        <button type="button" class="btn" id="back" value="Back" onClick="history.go(-1);return true;">Back</button>
+        <input id="submit" type="submit" value="Continue" class='btn'/>
+    </p>
+
     </form>
     
 {% endblock %}    
@@ -20,3 +26,32 @@
  <div class="alert alert-success"> Success. Site added. </div>
  {% endif %}
 {% endblock %}    
+
+{% block scripts %}
+        <script>
+            function updateCoordVals(lon, lat) {
+                $( "#id_latitude" ).val(lat.toFixed(6));
+                $( "#id_longitude" ).val(lon.toFixed(6));
+                $("#id_geometry").val("POINT(" + lon + " " + lat + ")");
+                pointSelected(lat, lon)
+            }
+        </script>
+        <script src="/site-media/third-party/OpenLayers-2.12/OpenLayers.js"></script>
+        <script src="/site-media/js/widgets/map.js"></script>
+{% endblock %}
+
+{% block js %}
+
+	$(function() {
+        $( "#id_latitude" ).on('change', function(){
+            lat = parseFloat($( "#id_latitude" ).val());
+            lon = parseFloat($( "#id_longitude" ).val());
+            updateCoordVals(lon, lat);
+        });
+        $( "#id_longitude" ).on('change', function(){
+            lat = parseFloat($( "#id_latitude" ).val());
+            lon = parseFloat($( "#id_longitude" ).val());
+            updateCoordVals(lon, lat);
+        });
+    });
+{% endblock js %}

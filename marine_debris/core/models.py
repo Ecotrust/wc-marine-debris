@@ -283,22 +283,16 @@ class Site (models.Model):
     @property
     def countyDict(self):
         sites = [ site.toDict for site in Site.objects.filter(county = self.county)]
+        if self.county:
+            county = self.county
+        else:
+            county = ''
         county_dict = {
-            'name': self.county,
+            'name': county,
             'sites': sites
         }
         return county_dict
         
-    @property
-    def toDict(self):
-        return {
-            "sitename": self.sitename,
-            "lat": self.geometry.get_coords()[1],
-            "lon": self.geometry.get_coords()[0],
-            "state": self.state.name,
-            "state_initials": self.state.initials,
-            "country": self.county
-       }
     @property
     def toDict(self):
         if self.geometry:
@@ -307,12 +301,24 @@ class Site (models.Model):
         else:
             lat = '' 
             lon = ''
+        if self.sitename:
+            sitename = self.sitename
+        else:
+            sitename = ''
+        if self.state:
+            state = self.state.name
+        else:
+            state = ''
+        if self.county:
+            county = self.county
+        else:
+            county = ''
         site_dict = {
-            'name': self.sitename,
+            'name': sitename,
             'lat': lat,
             'lon': lon,
-            'state': self.state.name,
-            'county': self.county
+            'state': state,
+            'county': county
         }
         return site_dict
         

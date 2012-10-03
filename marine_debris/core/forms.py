@@ -184,7 +184,11 @@ class DataSheetForm(forms.Form):
             except KeyError:
                 answer = None
 
-            dynamic_args['label'] = question.print_name
+            if question.print_name and not question.print_name == '':
+                dynamic_args['label'] = question.print_name
+            else:
+                dynamic_args['label'] = question.field_name
+                
             dynamic_args['required'] = question.required
             
             if datatype in ['Area', 'Distance', 'Duration', 'Number', 'Volume', 'Weight']: 
@@ -250,5 +254,10 @@ class DataSheetForm(forms.Form):
            
 
 class CreateSiteForm(forms.ModelForm):
+    county = forms.CharField(required=True,)
+    sitename = forms.CharField(required=True,)
+    longitude = forms.CharField(required=False)
+    latitude = forms.CharField(required=False)
+    geometry = forms.CharField(widget=forms.HiddenInput())
     class Meta:
         model = Site
