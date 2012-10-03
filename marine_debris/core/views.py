@@ -14,6 +14,7 @@ from django.contrib.auth.views import login as default_login, logout as default_
 from django.utils import simplejson
 from django.forms.models import modelformset_factory
 from django.contrib.gis.geos import Point
+from django.utils.http import urlencode
 import datetime
 import string
 import datetime
@@ -461,10 +462,14 @@ def bulk_import(request):
                         site, created = Site.objects.get_or_create(**site_key)
                         sites.append({'name':site_text, 'site':site})
                     else:
+                        urlargs = urlencode(site_key) 
+                        if urlargs:
+                            urlargs = "?" + urlargs
+
                         errors.append("""Site <em>'%s'</em> is not in the database. <br/>
-                        <a href="/site/create" class="btn btn-mini"> Create new site record </a>
-                        <a href="/site/create" class="btn btn-mini"> Match to existing site record </a>
-                        """ % site_text)
+                        <a href="/site/create%s" class="btn btn-mini"> Create new site record </a>
+                        <a href="/site/list" class="btn btn-mini"> Match to existing site record </a>
+                        """ % (site_text, urlargs ))
                         sites.append({'name':site_text, 'site':None})
 
             if len(errors) > 0:
@@ -534,7 +539,27 @@ def bulk_import(request):
 def create_site(request):
     if request.method == 'GET':
         form = CreateSiteForm()
-        #TODO accept some get parameters to prepopulate the form
+        sitename = request.GET.get('sitename')
+        state = request.GET.get('state')
+        county = request.GET.get('county')
+        if sitename:
+            ff = form.fields['sitename']
+            ff.initial = sitename
+            ff.widget.attrs['readonly'] = True
+        if county:
+            ff = form.fields['county']
+            ff.initial = county 
+            ff.widget.attrs['readonly'] = True
+        if state:
+            ff = form.fields['state']
+            state_id = None
+            for sid, sname in ff.choices:
+                if sname == state:
+                    state_id = sid
+                    break
+            if state_id:
+                ff.initial = state_id
+                ff.widget.attrs['readonly'] = True
         return render_to_response('create_site.html', RequestContext(request,{'form':form.as_p(), 'active':'events'}))
     else :
         form = CreateSiteForm(request.POST)
