@@ -1,4 +1,9 @@
-{% extends "base.html" %}
+{% extends "data_base.html" %}
+
+{% block styles %}
+    <link href="/site-media/third-party/chosen/chosen.css" rel="stylesheet" />
+
+{% endblock %}
 
 {% block includes %}
     <script src="{{MEDIA_URL}}third-party/OpenLayers-2.12/OpenLayers.js" type="text/javascript" charset="utf-8"></script>
@@ -11,25 +16,84 @@
     {% endif %}
 {% endblock %}
 
-{% block content %}
-    <h1>Events</h1>
-{% endblock %}
     
 {% block leftcontent %}
-    <h2>Search Database</h2>
-    <div style="height:30px; background-color: #2d8998;"><p>search here</p></div>
-    <div style="height:30px; background-color: #aaa;"><p>filters here</p></div>
-    <table class="table table-condensed" style="width:450px" id="events-table">
-    <tr><td><a href="#">Name</a><th>Description</th><th>Location</th><th>Date</th><th>Organization</th><th>Project</th></tr>
-{% for r in result %}
-    <tr id="event-row">
-      <td><a href="/event/view/{{r.event_details.event.id}}">{{r.event_details.event.id}}</a></td>
-      <td>{{r.event_details.event.datasheet_id.type_id}}</td>
-      <td>{{r.event_details.event.sitename}}</a></td>
-      <!--<td>{{r.event.cleanupdate}}</td>-->
-      <td>{{r.event_details.date}}</td>
-      <td>{{r.event_details.org}}</td>
-      <td>{{r.event_details.event.proj_id.projname}}</td>
+<h2>Search Database</h2>
+    <form>
+      <div class="input-append">
+          <input type="text" class="span4">
+          <button type="submit" class="btn">
+            <i class="icon-search"></i> Search
+          </button>
+        </div>
+    </form>
+                <div class="tabbable wcga">
+              <ul class="nav nav-tabs">
+                  <li class="active">
+                    <a href="#search-database-tab-content-location" data-toggle="tab">Location</a>
+                  </li>
+                  <li>
+                    <a href="#search-database-tab-content-type-of-debris" data-toggle="tab">Type of debris</a>
+                  </li>
+                  <li>
+                    <a href="#search-database-tab-content-organization" data-toggle="tab">Organization</a>
+                  </li>
+                  <li>
+                    <a href="#search-database-tab-content-date" data-toggle="tab">Date</a>
+                  </li>
+              </ul>
+                
+                <div class="tab-content">
+                  <div class="tab-pane active" id="search-database-tab-content-location">
+                    <div class="row-fluid">
+                      <div class="span12"> <!-- data-bind="options: locations, selectedOptions: locationFilter, chosen: true"  -->
+                        <p>Filter by State and County</p>
+                        <select class="location" data-placeholder="Filter by location(s)..." data-bind="foreach: states, selectedOptions: locationFilter" multiple style="width: 350px">
+                            <optgroup data-bind="attr: {label: $data.name}">
+                              <option data-bind="text: $data.name, value: $data.name" disabled></option>
+                            <!-- ko foreach: $root.locations[$data.name].counties -->
+                              <option data-bind="text: $data.name + ' County', value: $data"></option>
+                            <!-- /ko -->
+                            </optgroup>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tab-pane" id="search-database-tab-content-type-of-debris">
+                    Type of Debris
+                  </div>
+                  <div class="tab-pane" id="search-database-tab-content-organization">
+                    Organization
+                  </div>
+                  <div class="tab-pane" id="search-database-tab-content-date">
+                    Date
+                  </div>
+                </div>
+            </div>
+            <p class="pull-right">
+            <label class="checkbox">
+                <input type="checkbox"> Only show reports within extent of map
+              </label>
+            </p>
+    <table class="table wcga table-striped table-hover table-condensed">
+      <tr>
+        <th>Description</th>
+        <th>Site</th>
+        <th>Location</th>
+        <th>Organization</th>
+        <th>Project</th>
+        <th>Date</th>
+      </tr>
+    <tbody data-bind="foreach: filteredEvents">
+    <tr id="event-row" data-bind="with: $data">
+      <!--<td><a href="/event/view/{{r.event_details.event.id}}">{{r.event_details.event.id}}</a></td>-->
+      <td>description</td>
+      <td><span data-bind="text: event.site.name"></span></td>
+      <td><span data-bind="text: event.site.state"></span>, <span data-bind="text: event.site.county"></span></td>
+      <td><span data-bind="text: organization.name"></span></td>
+      <td><span data-bind="text: project.name"></span></td>
+      <td><span data-bind="text: date"></td>
+
     <!--  <td><form method="get" action="/event/edit/{{r.event.id}}">
         <input id="edit" class='btn' name="edit" type="submit" value="Edit"  />
     </form></td>
@@ -37,11 +101,15 @@
         <input id="delete-view" class='btn' name="delete-view" type="submit" value="Delete" />
     </form></td>-->
     </tr>
-{% endfor %}    
     </table>
-    <a class='btn' href="/event/create">Create New Event</a>
-    <a class='btn' href="/datasheet/bulk_import">Bulk Upload Events</a>
-
+<p class="align-right">
+  <a href="import-events.html" class="btn">
+    <i class="icon-share-alt"></i> Import Events
+  </a>
+  <a href="/event/create" class="btn">
+    <i class="icon-plus"></i> Create Event 
+  </a>
+</p>
 {% endblock %}    
 {% block rightcontent %}
     {%if data %}
@@ -51,8 +119,7 @@
             <p>report!</p>
         {% else %}
             <p>map!</p>
-            <div id="map" class="smallmap olMap">
-                
+            <div id="map" class="smallmap olMap">               
             </div>
         {% endif %}
     {% endif %}
@@ -60,23 +127,143 @@
 {% endblock %}
 
 {% block js %}
-    $(function ()
-    {
-      // Hide the first cell for JavaScript enabled browsers.
-      $('#events-table td:first-child').hide();
+<script src="/site-media/third-party/chosen/chosen.jquery.js"></script>
+<script>
+  function viewModel() {
+    var self = this;
+    
+    self.events = {{event_json|safe}};
+    
+    self.locationFilter = ko.observableArray();
 
-      // Apply a class on mouse over and remove it on mouse out.
-      $('#events-table tr').hover(function ()
-      {
-        $(this).toggleClass('Highlight');
-      });
-  
-      // Assign a click handler that grabs the URL 
-      // from the first cell and redirects the user.
-      $('#events-table tr').click(function ()
-      {
-        location.href = $(this).find('td a').attr('href');
-      });
+    self.locations = {};
+    
+    // populate location list for filtering
+    $.each(self.events, function (i, event) {
+      if (self.locations[event.event.site.state]) {
+        self.locations[event.event.site.state].counties.push({name: event.event.site.county, type: 'county', state: event.event.site.state});
+      } else {
+        self.locations[event.event.site.state] = {
+          counties: [{name: event.event.site.county, type: 'county'}],
+          state: event.event.site.state
+        } 
+      }
     });
+    
+
+    self.states = $.map(self.locations, function (location) {
+      return {
+        name: location.state,
+        type: 'state'
+      }
+    }).sort();
+
+    self.filteredEvents = ko.computed(function () {
+      var filteredEvents = [];
+      $.each(self.events, function (i, event) {
+        if (self.locationFilter() && self.locationFilter().length !== 0) {
+          $.each(self.locationFilter(), function (i, filter) {
+            if ((filter.type === 'state' && filter.name === event.event.site.state) || (filter.type === 'county' && filter.name === event.event.site.county)) {
+                filteredEvents.push(event);
+            }
+          });
+        } else {
+          // no filtering
+          filteredEvents.push(event);
+        }
+      });
+      return filteredEvents;
+    });
+  
+    // self.locationFilter.subscribe(function (newFilter) {
+    //   var $location = $('.location'),
+    //       enabledFilters = $.map(self.locationFilter(), function (filter) { return filter.name });
+    //   $location.find('[data-type="state"]').each(function (i, option) {
+    //     if ($.inArray($(option).text(), enabledFilters) === -1) {
+    //       $(option).attr('disabled', 'disabled');          
+    //     }
+    //   });
+    //   $location.trigger("liszt:updated");
+    // });
+
+  };
+  var app = new viewModel()
+
+  ko.applyBindings(app);
+
+  $(".location").chosen();
+  
+  $(document).ready(function () {
+
+    $(".location").chosen().change(function (event, option) {
+      var $select = $(event.target);
+      if (option.deselected) {
+        $select.find('[value="' + option.deselected + '"]').attr('disabled', 'disabled');
+        app.locationFilter.remove(function (filter) {
+          return filter.name === option.deselected;
+        })
+        $select.trigger("liszt:updated");
+
+      }
+    });
+
+    $('.chzn-results').on('click', '.group-result', function (event) {
+      var $optgroup = $(event.target),
+          name = $optgroup.text(), 
+          $select = $('.location'),
+          $option = $select.find('[value="' + name + '"]'),
+          index = -1,
+          selected = $select.val() || [];
+
+        $.each(app.locationFilter(), function (i, filter) {
+          if (filter.name === name) {
+            index = i;
+          }
+        });
+        console.log(index);
+      if (index === -1) {
+        $option.removeAttr('disabled');
+        selected.push(name)
+        app.locationFilter.push({name: name, type: 'state'});
+      } else {
+        $option.attr('disabled', true);
+        selected.splice($.inArray(name, selected), 1);
+        app.locationFilter.splice(index,1);
+
+      }
+      $select.val(selected);
+      $select.trigger("liszt:updated");
+
+    });
+    // $('.chzn-results').on('click', 'li', function (event) {
+    //   // clicking on an optgroup for state in chosen
+    //   // should renabled the hidden State, select it and then rerender chosen
+    //   var $select = $(".location"), 
+    //       $target = $(event.target);
+
+    //   // states are optgroups and counties are options
+    //   // these are presented by chosen as lis with other captions
+    //   //debugger;
+    //   if ($target.hasClass('group-result')) {
+    //     name = $target.text();
+    //     type = 'state';
+    //     // hide the dummy state opion
+    //     $select.find('[value="' + name + '"]').removeAttr('disabled');
+
+    //   } else {
+    //     name = $target.text().replace(' County', '');
+    //     type = 'county';
+    //   }
+
+    //   console.log(name);
+    //   console.log(type);
+
+    //   //debugger;
+    //   //$select.trigger("liszt:updated");
+
+    // });
+
+  })
+</script>
 {% endblock %}
     
