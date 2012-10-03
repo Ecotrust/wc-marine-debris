@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="navbar">
+    <div class="navbar-inner">
+      <ul class="nav">
+        {% ifequal active 'events' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/events">Events</a></li>
+        {% ifequal active 'organizations' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/organizations">Organizations</a></li>
+        {% ifequal active 'projects' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/projects">Projects</a></li>
+        {% ifequal active 'datasheets' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/datasheets">Datasheets</a></li>
+        {% ifequal active 'admin' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/admin">Admin</a></li>
+      </ul>
+      <div class="navbar-text pull-right">
+      {% if user.is_authenticated %}
+          <div class="btn-group">
+              <a class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-user"></i> {{ user.username }} <span class="icon-caret-down"></span></a>
+              <ul class="dropdown-menu">
+                  <li><a href="/accounts/logout">Logout</a></li>
+              </ul>
+          </div>
+      {% else %}
+          <a href="/accounts/login">Log in</a>
+      {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
