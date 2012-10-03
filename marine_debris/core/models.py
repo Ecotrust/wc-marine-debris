@@ -290,6 +290,16 @@ class Site (models.Model):
         
     @property
     def toDict(self):
+        return {
+            "sitename": self.sitename,
+            "lat": self.geometry.get_coords()[1],
+            "lon": self.geometry.get_coords()[0],
+            "state": self.state.name,
+            "state_initials": self.state.initials,
+            "country": self.county
+       }
+    @property
+    def toDict(self):
         if self.geometry:
             lat = self.geometry.get_coords()[1]
             lon = self.geometry.get_coords()[0]
@@ -334,6 +344,14 @@ class Event (models.Model):
     def get_fields(self):
         return[(field.name, field.value_to_string(self)) for field in Event._meta.fields]
         
+
+    @property
+    def toDict(self):
+        return {
+            "site": self.site.toDict,
+            "project": self.proj_id.toDict
+        } 
+    
     class Meta:
         ordering = ['proj_id__projname', 'site', 'cleanupdate']
         unique_together = (("datasheet_id", "proj_id", "cleanupdate", "site"),)

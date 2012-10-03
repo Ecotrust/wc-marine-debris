@@ -22,13 +22,20 @@ i { margin-right: 5px; }
 
 .row { margin-bottom: 10px; }
 
+.navbar {
+	margin-bottom: 0px;
+}
+.navbar .navbar-inner {
+	padding: 0px 10px 0px 0px;
+}
+
 /* tabs
 --------------------------------------------------------------------------------------------------------------------
    updated defaults for Bootstrap tabs, .wcga on .tabbable
 */
 
 .wcga.tabbable { margin-bottom: 20px; }
-
+	.wcga.tabbable .tab-content { overflow: visible; }
 .wcga .nav-tabs {
 	margin-bottom: 0;
 	border: 0;

@@ -29,6 +29,7 @@ def index(request):
 def events(request, submit=False): 
     qs = Event.objects.filter()
     result = []
+    event_dicts = []
     for event in qs.all(): 
         event_details = {}
         event_details['date'] = event.cleanupdate.strftime('%m/%d/%Y')
@@ -42,8 +43,13 @@ def events(request, submit=False):
         org = Organization.objects.filter()
         event_details['event'] = event
         result.append({'event_details':event_details})
-            
-    return render_to_response( 'events.html', RequestContext(request,{'result':result, 'submit':submit, 'active':'events'}))
+        event_dicts.append({
+                "event": event.toDict,
+                "organization": event_details['org'].organization_id.toDict,
+                "date": event_details['date'],
+                "project": proj.toDict
+            })
+    return render_to_response( 'events.html', RequestContext(request,{'result':result, 'submit':submit, 'active':'events', 'event_json': simplejson.dumps(event_dicts)}))
 
 @login_required
 def create_event(request):
