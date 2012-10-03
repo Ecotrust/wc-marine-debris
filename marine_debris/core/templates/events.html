@@ -124,9 +124,12 @@
 
 {% endblock %}
 
-{% block js %}
+{% block scripts %}
 <script src="/site-media/third-party/chosen/chosen.jquery.js"></script>
-<script>
+
+{% endblock %}
+
+{% block js %}
   function viewModel() {
     var self = this;
     
@@ -250,6 +253,5 @@
     });
 
   })
-</script>
 {% endblock %}
     

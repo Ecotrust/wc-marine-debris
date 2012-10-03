@@ -258,6 +258,7 @@ class State (models.Model):
         
     class Meta:
         ordering = ['name', 'initials']
+        unique_together = (("name", "initials"))
         
     @property
     def toDict(self):
