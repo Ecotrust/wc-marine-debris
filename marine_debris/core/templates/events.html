@@ -140,16 +140,25 @@
     
     // populate location list for filtering
     $.each(self.events, function (i, event) {
-      if (self.locations[event.event.site.state]) {
-        self.locations[event.event.site.state].counties.push({name: event.event.site.county, type: 'county', state: event.event.site.state});
+      var state = event.event.site.state,
+          county = event.event.site.county,
+          countiesl
+      if (self.locations[state]) {
+        counties = $.map(self.locations[state].counties, function (county) {
+          return county.name;
+        });
+        if ($.inArray(county, counties) === -1) {
+          self.locations[state].counties.push({name: county, type: 'county', state: state});          
+        }
       } else {
-        self.locations[event.event.site.state] = {
+        self.locations[state] = {
           counties: [{name: event.event.site.county, type: 'county'}],
           state: event.event.site.state
         } 
       }
     });
     
+
 
     self.states = $.map(self.locations, function (location) {
       return {
@@ -175,16 +184,7 @@
       return filteredEvents;
     });
   
-    // self.locationFilter.subscribe(function (newFilter) {
-    //   var $location = $('.location'),
-    //       enabledFilters = $.map(self.locationFilter(), function (filter) { return filter.name });
-    //   $location.find('[data-type="state"]').each(function (i, option) {
-    //     if ($.inArray($(option).text(), enabledFilters) === -1) {
-    //       $(option).attr('disabled', 'disabled');          
-    //     }
-    //   });
-    //   $location.trigger("liszt:updated");
-    // });
+
 
   };
   var app = new viewModel()
@@ -235,33 +235,6 @@
       $select.trigger("liszt:updated");
 
     });
-    // $('.chzn-results').on('click', 'li', function (event) {
-    //   // clicking on an optgroup for state in chosen
-    //   // should renabled the hidden State, select it and then rerender chosen
-    //   var $select = $(".location"), 
-    //       $target = $(event.target);
-
-    //   // states are optgroups and counties are options
-    //   // these are presented by chosen as lis with other captions
-    //   //debugger;
-    //   if ($target.hasClass('group-result')) {
-    //     name = $target.text();
-    //     type = 'state';
-    //     // hide the dummy state opion
-    //     $select.find('[value="' + name + '"]').removeAttr('disabled');
-
-    //   } else {
-    //     name = $target.text().replace(' County', '');
-    //     type = 'county';
-    //   }
-
-    //   console.log(name);
-    //   console.log(type);
-
-    //   //debugger;
-    //   //$select.trigger("liszt:updated");
-
-    // });
 
   })
 </script>
