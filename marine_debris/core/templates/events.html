@@ -78,7 +78,7 @@
             </div>
             <p class="pull-right">
             <label class="checkbox">
-                <input type="checkbox"> Only show reports within extent of map
+                <input type="checkbox" data-bind="checked: filterByExtent"> Only show reports within extent of map
               </label>
             </p>
     <table class="table wcga table-striped table-hover table-condensed">
@@ -165,7 +165,9 @@
       }
     });
     
-
+    // store mapextent here
+    self.mapExtent = ko.observable();
+    self.filterByExtent = ko.observable(false);
 
     self.states = $.map(self.locations, function (location) {
       return {
@@ -180,12 +182,24 @@
         if (self.locationFilter() && self.locationFilter().length !== 0) {
           $.each(self.locationFilter(), function (i, filter) {
             if ((filter.type === 'state' && filter.name === event.event.site.state) || (filter.type === 'county' && filter.name === event.event.site.county)) {
-                filteredEvents.push(event);
+              if (self.filterByExtent()) {
+                        if (self.mapExtent().containsLonLat(event.pos)) {
+                          filteredEvents.push(event);                
+                        }
+                      } else {
+                        filteredEvents.push(event);
+                      }
             }
           });
         } else {
           // no filtering
-          filteredEvents.push(event);
+          if (self.filterByExtent()) {
+            if (self.mapExtent().containsLonLat(event.pos)) {
+              filteredEvents.push(event);                
+            }
+          } else {
+            filteredEvents.push(event);
+          }
         }
       });
       return filteredEvents;
@@ -203,6 +217,7 @@
     app.markers.clearMarkers();
     $.each(events, function (i, event) {
       var pos = new OpenLayers.LonLat(event.event.site.lon, event.event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
+      event.pos = pos;
       app.markers.addMarker(new OpenLayers.Marker(pos));
     });
   };
@@ -228,6 +243,13 @@
 
   app.markers.id = "Markers";
   map.addLayer(app.markers);
+
+  app.mapExtent(map.getExtent());
+  map.events.register("moveend", map, function () {
+        app.mapExtent(map.getExtent());
+    });
+    
+
 
   $(document).ready(function () {
     $(".location").chosen().change(function (event, option) {
