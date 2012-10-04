@@ -32,6 +32,7 @@ class Organization (models.Model):
     contact = models.TextField()
     phone = models.TextField()
     address = models.TextField()
+    users = models.ManyToManyField(User)
     
     def __unicode__(self):
         return self.orgname
