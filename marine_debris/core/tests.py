@@ -8,9 +8,11 @@ Replace this with more appropriate tests for your application.
 from django.test import TestCase, TransactionTestCase
 from django.test.client import Client
 from django.contrib.auth.models import User
-from core.models import DataSheet, Site, State, Event
+from django.contrib.gis.geos import GEOSGeometry 
+from core.models import DataSheet, Site, State, Event, Project
 from pyquery import PyQuery as pq
 import os
+import datetime
 
 
 class TestTransactionBulkUpload(TransactionTestCase):
@@ -329,3 +331,43 @@ class TestBulkCoordBased(TestCase):
         # should have 3 new events at 2 new sites
         self.assertEqual(Event.objects.all().count(), num_events+3)
         self.assertEqual(Site.objects.all().count(), num_sites+2)
+
+class TestCounty(TestCase):
+    fixtures = ['test_data', 'counties']
+
+    def test_counties(self):
+        pnt = GEOSGeometry('SRID=4326;POINT(-122 44)')
+        s = Site(geometry = pnt)
+        s.save()
+        self.assertEqual(s.state.initials, 'OR')
+        self.assertEqual(s.county, 'Lane')
+
+    def test_offshore(self):
+        pnt = GEOSGeometry('SRID=4326;POINT(-125 44)')
+        s = Site(geometry = pnt)
+        s.save()
+        self.assertEqual(s.state.initials, 'OR')
+        self.assertEqual(s.county, 'Lane')
+
+    def test_way_offshore(self):
+        pnt = GEOSGeometry('SRID=4326;POINT(-127 44)')
+        s = Site(geometry = pnt)
+        s.save()
+        self.assertEqual(s.state, None)
+        self.assertEqual(s.county, None)
+
+    def test_edge_case(self):
+        pnt = GEOSGeometry('SRID=4326;POINT(-124.014723 45.045150)')
+        s = Site(geometry = pnt)
+        s.save()
+        self.assertEqual(s.state.initials, 'OR')
+        self.assertEqual(s.county, 'Tillamook')
+
+    def test_presave(self):
+        pnt = GEOSGeometry('SRID=4326;POINT(-124.014723 45.045150)')
+        site = Site(sitename="TestSite3", geometry=pnt)
+        self.assertEqual(site.state, None)
+        self.assertEqual(site.county, None)
+        site.save()
+        self.assertEqual(site.state.initials, "OR")
+        self.assertEqual(site.county, "Tillamook")

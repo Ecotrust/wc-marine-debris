@@ -460,6 +460,7 @@ def bulk_import(request):
                     if ds.site_type == 'coord-based':
                         # just insert it 
                         site, created = Site.objects.get_or_create(**site_key)
+                        site.save()
                         sites.append({'name':site_text, 'site':site})
                     else:
                         urlargs = urlencode(site_key) 

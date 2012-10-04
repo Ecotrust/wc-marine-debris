@@ -325,10 +325,39 @@ class Site (models.Model):
     class Meta:
         unique_together = (("sitename", "state", "county"))
         
+    def impute_state_county(self):
+        '''
+        Based on the geometry, sets state and county
+        '''
+        pnt = self.geometry
+        counties = County.objects.filter(geom__bboverlaps=pnt.buffer(1)) # search in a 1 degree radius
+
+        closest = None
+        shortest_distance = 181
+        for county in counties:
+            if county.geom.intersects(pnt):
+                # direct hit
+                closest = county
+                break
+            d = county.geom.distance(pnt)
+            if d < shortest_distance:
+                # look for the closest if no direct hit
+                closest = county
+                shortest_distance = d
+
+        if not closest:
+            return None
+
+        self.county = closest.name
+        self.state = State.objects.filter(initials=closest.stateabr)[0]
+
+        return closest
+
     def save(self, *args, **kwargs):
         if not self.sitename or self.sitename.strip() == '':
             self.sitename = str(self.geometry.get_coords()[0]) + ', ' + str(self.geometry.get_coords()[1])
-        #TODO if not state or county, determine based on coords?
+        if (not self.state or not self.county) and self.geometry:
+            self.impute_state_county()
         super(Site, self).save(*args, **kwargs)
 
 class Event (models.Model):
@@ -375,3 +404,38 @@ class FieldValue (models.Model):
     class Meta:
         ordering = ['event_id', 'field_id__internal_name']
     
+
+# This is an auto-generated Django model module created by ogrinspect.
+class County(models.Model):
+    statefp = models.CharField(max_length=2)
+    countyfp = models.CharField(max_length=3)
+    name = models.CharField(max_length=100)
+    stateabr = models.CharField(max_length=2)
+    geom = models.MultiPolygonField(srid=4326)
+    objects = models.GeoManager()
+
+# Auto-generated `LayerMapping` dictionary for County model
+county_mapping = {
+    'statefp' : 'STATEFP',
+    'countyfp' : 'COUNTYFP',
+    'name' : 'NAME',
+    'stateabr' : 'STATEABR',
+    'geom' : 'MULTIPOLYGON',
+}
+
+
+from django.contrib.gis.utils import LayerMapping
+def load_shp(path, feature_class):
+    '''
+    Loads a shapefile into a model (used to load Counties in this case)
+    First we ran ogrinspect to generate the class and mapping. 
+        python manage.py ogrinspect ~/projects/marine_debris/counties/western_counties.shp County --mapping --srid=4326 --multi
+    Pasted code into models.py and modified as necessary.
+    Finally, loaded the shapefile from shell:
+        from core import models
+        models.load_shp('/home/mperry/projects/marine_debris/counties/western_counties.shp', models.County)
+    '''
+    mapping = eval("%s_mapping" % feature_class.__name__.lower())
+    print "Saving", path, "to", feature_class, "using", mapping
+    map1 = LayerMapping(feature_class, path, mapping, transform=False, encoding='iso-8859-1')
+    map1.save(strict=True, verbose=True)
