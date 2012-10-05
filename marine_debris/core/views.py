@@ -529,19 +529,16 @@ def bulk_import(request):
                                 row_val_raw = row[k]
                                 if dtype in ['Area', 'Distance', 'Duration', 'Number', 'Volume', 'Weight']: 
                                     if float(existing_val_raw) != float(row_val_raw):
-                                        print "#", k, existing_val_raw, row_val_raw
                                         new_event = True
                                         break
                                 elif dtype == 'Date':
                                     extdate = parse_date(existing_val_raw)
                                     rowdate = parse_date(row_val_raw)
                                     if extdate != rowdate:
-                                        print "#", k, existing_val_raw, row_val_raw
                                         new_event = True
                                         break
                                 else: #text
                                     if existing_val_raw != row_val_raw:
-                                        print "#", k, existing_val_raw, row_val_raw
                                         new_event = True
                                         break
 

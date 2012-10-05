@@ -32,6 +32,8 @@ class TestTransactionBulkUpload(TransactionTestCase):
         self.fpath = os.path.join(testdir, 'test_bulk.csv')
         self.fpath_events12 = os.path.join(testdir, 'test_bulk_events12.csv')
         self.fpath_events23 = os.path.join(testdir, 'test_bulk_events23.csv')
+        self.fpath_notadup = os.path.join(testdir, 'test_derelict_not_actually_a_dup_event.csv')
+        self.fpath_truedup = os.path.join(testdir, 'test_derelict_truedup_events.csv')
 
     def test_post(self):
         self.client.login(username='featuretest', password='pword')
@@ -99,6 +101,45 @@ class TestTransactionBulkUpload(TransactionTestCase):
         self.assertIn("events were found but not loaded", el[0].text_content())
         self.assertIn("Duplicate Event", el[1].text_content())
         self.assertEqual(Event.objects.all().count(), num_events+2)
+
+    def test_post_not_really_dups(self):
+        """
+        We might see a new row with the same lat/lon and date. 
+        Is it truly NEW event that needs to be added (as looking for differing field values might indicate)
+        """
+        self.client.login(username='featuretest', password='pword')
+        url = '/datasheet/bulk_import/'
+        num_events = Event.objects.all().count()
+        with open(self.fpath_notadup) as f:
+            response = self.client.post(url, {
+                'organization': 'Coast Savers', 
+                'project_id': 1, 
+                'datasheet_id': 19,
+                'csvfile': f
+                }
+            )
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(Event.objects.all().count(), num_events+3) # 3 new events
+
+    def test_post_true_dups(self):
+        """
+        We might see a new row with the same lat/lon and date. 
+        Is it really a duplicate (as the unique clause on the event model might indicate) OR
+        """
+        self.client.login(username='featuretest', password='pword')
+        url = '/datasheet/bulk_import/'
+        num_events = Event.objects.all().count()
+        with open(self.fpath_truedup) as f:
+            response = self.client.post(url, {
+                'organization': 'Coast Savers', 
+                'project_id': 1, 
+                'datasheet_id': 19,
+                'csvfile': f
+                }
+            )
+        self.assertEqual(response.status_code, 400, response.content)
+        self.assertEqual(Event.objects.all().count(), num_events)  # nothing added
+
 
 class TestBulkUpload(TestCase):
     fixtures = ['test_data',]
