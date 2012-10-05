@@ -58,12 +58,11 @@ def create_event(request):
         form = CreateEventForm()
         form.fields['state'].widget = form.fields['state'].hidden_widget()
         form.fields['county'].widget = form.fields['county'].hidden_widget()
-        form.fields['site_name'].widget = form.fields['site_name'].hidden_widget()
+        form.fields['sitename'].widget = form.fields['sitename'].hidden_widget()
         form.fields['latitude'].widget = form.fields['latitude'].hidden_widget()
         form.fields['longitude'].widget = form.fields['longitude'].hidden_widget()
-
-        #TODO: Filter Organizations by only those which the user has access to.
-        org_dict = [org.toDict for org in Organization.objects.all()]
+        
+        org_dict = [org.toDict for org in Organization.objects.filter(users=request.user)]
         org_json = simplejson.dumps(org_dict)
         
         return render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'json':org_json, 'active':'events'}))
@@ -87,7 +86,7 @@ def create_event(request):
             
             datasheet = DataSheet.objects.get(sheetname=event['data_sheet'])
             if datasheet.type_id and not datasheet.type_id.display_sites:
-                form.fields['site_name'].widget = form.fields['site_name'].hidden_widget()
+                form.fields['sitename'].widget = form.fields['sitename'].hidden_widget()
                 form.fields['county'].widget = form.fields['county'].hidden_widget()
 
             state_dict = [state.toDict for state in State.objects.all()]
@@ -97,7 +96,7 @@ def create_event(request):
         else:
             form.fields['state'].widget = form.fields['state'].hidden_widget()
             form.fields['county'].widget = form.fields['county'].hidden_widget()
-            form.fields['site_name'].widget = form.fields['site_name'].hidden_widget()
+            form.fields['sitename'].widget = form.fields['sitename'].hidden_widget()
             form.fields['latitude'].widget = form.fields['latitude'].hidden_widget()
             form.fields['longitude'].widget = form.fields['longitude'].hidden_widget()
 
@@ -127,15 +126,13 @@ def event_location(request):
         datasheet_id = eventForm.data['data_sheet']
         datasheet = DataSheet.objects.get(id=datasheet_id)
         if datasheet.type_id and datasheet.type_id.display_sites:
-            event['site_name'] = eventForm.data['site_name']
+            event['sitename'] = eventForm.data['sitename']
             event['county'] = eventForm.data['county']
         event['state'] = eventForm.data['state']
         event['latitude'] = eventForm.data['latitude']
         event['longitude'] = eventForm.data['longitude']
-        form = DataSheetForm(datasheet, None)
-        
-        
-    
+        form = DataSheetForm(datasheet, None, request.POST)
+
         return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'eventForm': eventForm.as_p(), 'event':event, 'active':'events'}))
     else :
         eventForm.fields['organization'].widget = eventForm.fields['organization'].hidden_widget()
@@ -156,12 +153,12 @@ def event_save(request):
         datasheet = DataSheet.objects.get(id=createEventForm.data['data_sheet'])
         state = State.objects.get(initials=createEventForm.data['state'])
         point = Point(float(createEventForm.data['longitude']), float(createEventForm.data['latitude']))
-        site = Site.objects.get_or_create(state = state, county = createEventForm.data['county'], geometry = point, sitename = createEventForm.data['site_name'])
+        site = Site.objects.get_or_create(state = state, county = createEventForm.data['county'], geometry = point, sitename = createEventForm.data['sitename'])
         date = datetime.datetime.strptime(createEventForm.data['date'], '%m/%d/%Y')
         event = Event(proj_id = project, datasheet_id = datasheet, cleanupdate = date, site = site[0])
         event.save()
         if event.id:
-            datasheetForm = DataSheetForm(event.datasheet_id, event, request.POST)
+            datasheetForm = DataSheetForm(event.datasheet_id, event, None, request.POST)
         if event.id and datasheetForm.is_valid():
             datasheetForm.save()
             return HttpResponseRedirect('/events/True')
@@ -176,7 +173,7 @@ def event_save(request):
             event['data_sheet'] = createEventForm.data['data_sheet']
             event['state'] = createEventForm.data['state']
             event['county'] = createEventForm.data['county']
-            event['site_name'] = createEventForm.data['site_name']
+            event['sitename'] = createEventForm.data['sitename']
             event['latitude'] = createEventForm.data['latitude']
             event['longitude'] = createEventForm.data['longitude']
             return render_to_response('fill_datasheet.html', RequestContext(request, {'form':datasheetForm.as_p(), 'eventForm': createEventForm.as_p(), 'error':'Form is not valid, please review.', 'event': event}))
@@ -245,7 +242,7 @@ def datasheets(request):
 def edit_datasheet(request, event_id):
     event = Event.objects.get(id=event_id)
     if request.method == 'GET':
-        form = DataSheetForm(event.datasheet_id, event)
+        form = DataSheetForm(event.datasheet_id, event, None)
         event_details = {
             'organization': event.proj_id.projectorganization_set.get(is_lead=True).organization_id.orgname,
             'project': event.proj_id.projname,
@@ -257,11 +254,11 @@ def edit_datasheet(request, event_id):
         }
         if event.datasheet_id.type_id.display_sites:
             event_details['county'] = event.site.county
-            event_details['site_name'] = event.site.sitename
+            event_details['sitename'] = event.site.sitename
         return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'eventForm': None, 'event': event_details, 'action': '/datasheet/edit/'+str(event_id), 'active': 'events'}))
     else:
         datasheetForm = DataSheetForm
-        form = datasheetForm(event.datasheet_id, event, request.POST)
+        form = datasheetForm(event.datasheet_id, event, None, request.POST)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect('/events/True')
@@ -277,7 +274,7 @@ def edit_datasheet(request, event_id):
         }
         if event.datasheet_id.type_id.display_sites:
             event_details['county'] = event.site.county
-            event_details['site_name'] = event.site.sitename
+            event_details['sitename'] = event.site.sitename
         return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'eventForm': None, 'event': event_details, 'action': '/datasheet/edit/'+str(event.event_id), 'active': 'events', 'error':'Some answers were invalid. Please review them.'}))
     
     
@@ -441,7 +438,7 @@ def bulk_import(request):
             unique_site_keys = []
             for i, row in enumerate(rows):
                 qd = get_querydict(ds, row)
-                ds_form = DataSheetForm(ds, None, qd)
+                ds_form = DataSheetForm(ds, None, None, qd)
                 
                 if not ds_form.is_valid():
                     for question, message in ds_form.errors.items():
@@ -574,7 +571,7 @@ def bulk_import(request):
                             raise e # something unexepected
 
                     qd = get_querydict(ds, row)
-                    ds_final_form = DataSheetForm(ds, event, qd)
+                    ds_final_form = DataSheetForm(ds, event, None, qd)
                     if ds_final_form.is_valid():
                         try:
                             ds_final_form.save()

@@ -126,7 +126,7 @@
 
 	$(function() {
 		$( ".date" ).datepicker({dateFormat: 'yy-mm-dd'});
-        $( "#id_site_name" ).on('blur', function(){
+        $( "#id_sitename" ).on('blur', function(){
             $( "#id_latitude" ).val(app.viewModel.selectedSite().lat);
             $( "#id_longitude" ).val(app.viewModel.selectedSite().lon);
             pointSelected(app.viewModel.selectedSite().lat, app.viewModel.selectedSite().lon);
