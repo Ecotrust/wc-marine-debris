@@ -45,10 +45,10 @@
       "is_active": true,
       "is_superuser": true,
       "is_staff": true,
-      "last_login": "2012-10-02 19:05:01",
+      "last_login": "2012-10-05 09:58:11",
       "groups": [],
       "user_permissions": [],
-      "password": "sha1$9d8b6$eb63736a27ec0dc762c1af4409fd871ac17883e7",
+      "password": "pbkdf2_sha256$10000$SmfI2uA19rAe$n8u3NUuiXoJnp9q5KePA/GY81KE+yAzO0QXFKzOn4MU=",
       "email": "asdf@asd.com",
       "date_joined": "2012-08-03 17:05:05"
     }
@@ -135,6 +135,24 @@
     "model": "core.datatype",
     "fields": {
       "name": "Other"
+    }
+  },
+  {
+    "pk": 15,
+    "model": "core.unit",
+    "fields": {
+      "long_name": "Count",
+      "data_type": 7,
+      "short_name": "Count"
+    }
+  },
+  {
+    "pk": 16,
+    "model": "core.unit",
+    "fields": {
+      "long_name": "Date",
+      "data_type": 3,
+      "short_name": "Date"
     }
   },
   {
@@ -246,6 +264,15 @@
     }
   },
   {
+    "pk": 17,
+    "model": "core.unit",
+    "fields": {
+      "long_name": "Text",
+      "data_type": 8,
+      "short_name": "Text"
+    }
+  },
+  {
     "pk": 7,
     "model": "core.organization",
     "fields": {
@@ -269,10 +296,10 @@
     "pk": 8,
     "model": "core.organization",
     "fields": {
-      "orgname": "Northwest Straights",
+      "orgname": "Northwest Straits",
       "phone": "n/a",
       "contact": "Ginny Broadhurst",
-      "address": "broadhurst@nwstraights.org"
+      "address": "broadhurst@nwstraits.org"
     }
   },
   {
@@ -465,7 +492,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "0",
-      "datatype": 7,
+      "datatype": 1,
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Area_invasive_plants_removed",
@@ -741,7 +768,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "",
-      "datatype": 4,
+      "datatype": 3,
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Cleanup_day",
@@ -765,7 +792,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "0",
-      "datatype": 7,
+      "datatype": 4,
       "maxvalue": null,
       "unit_id": 1,
       "internal_name": "Cleanup_distance_kilometers",
@@ -861,7 +888,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "",
-      "datatype": 8,
+      "datatype": 5,
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Cleanup_time",
@@ -1128,7 +1155,7 @@
       "datatype": 8,
       "maxvalue": null,
       "unit_id": null,
-      "internal_name": "Description_accomplishments_highliights",
+      "internal_name": "Description_accomplishments_highlights",
       "minvalue": null
     }
   },
@@ -1149,7 +1176,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "0",
-      "datatype": 7,
+      "datatype": 1,
       "maxvalue": null,
       "unit_id": 7,
       "internal_name": "DG_Debris_Area",
@@ -1185,7 +1212,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "",
-      "datatype": 8,
+      "datatype": 3,
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Date_Found",
@@ -1197,7 +1224,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "0",
-      "datatype": 7,
+      "datatype": 4,
       "maxvalue": null,
       "unit_id": 9,
       "internal_name": "DG_Debris_Depth",
@@ -1221,7 +1248,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "",
-      "datatype": 8,
+      "datatype": 4,
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Distance_Shore",
@@ -1233,7 +1260,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "",
-      "datatype": 8,
+      "datatype": 4,
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Debris_Estimated_Depth",
@@ -1341,7 +1368,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "0",
-      "datatype": 7,
+      "datatype": 4,
       "maxvalue": null,
       "unit_id": 9,
       "internal_name": "DG_Debris_Length",
@@ -1449,7 +1476,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "0",
-      "datatype": 7,
+      "datatype": 4,
       "maxvalue": null,
       "unit_id": 9,
       "internal_name": "DG_Debris_Max_Depth",
@@ -1461,7 +1488,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "0",
-      "datatype": 7,
+      "datatype": 4,
       "maxvalue": null,
       "unit_id": 9,
       "internal_name": "DG_Debris_Min_Depth",
@@ -1641,7 +1668,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "0",
-      "datatype": 7,
+      "datatype": 4,
       "maxvalue": null,
       "unit_id": 9,
       "internal_name": "DG_Debris_Suspended_Height",
@@ -1665,7 +1692,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "0",
-      "datatype": 7,
+      "datatype": 4,
       "maxvalue": null,
       "unit_id": 9,
       "internal_name": "DG_Debris_Width",
@@ -1797,7 +1824,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "",
-      "datatype": 8,
+      "datatype": 7,
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Birds",
@@ -1809,7 +1836,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "",
-      "datatype": 8,
+      "datatype": 7,
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Crabs",
@@ -1845,7 +1872,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "",
-      "datatype": 8,
+      "datatype": 7,
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Finfish",
@@ -1869,7 +1896,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "",
-      "datatype": 8,
+      "datatype": 7,
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Lingcod",
@@ -1881,7 +1908,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "",
-      "datatype": 8,
+      "datatype": 7,
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Mammals",
@@ -1905,7 +1932,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "",
-      "datatype": 8,
+      "datatype": 7,
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Other_Crabs",
@@ -1917,7 +1944,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "",
-      "datatype": 8,
+      "datatype": 7,
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Other_Fish",
@@ -1929,7 +1956,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "",
-      "datatype": 8,
+      "datatype": 7,
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Other_Invertabrates",
@@ -1953,7 +1980,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "",
-      "datatype": 8,
+      "datatype": 7,
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Rockfish",
@@ -1965,7 +1992,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "",
-      "datatype": 8,
+      "datatype": 7,
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Salmon",
@@ -1989,7 +2016,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "",
-      "datatype": 8,
+      "datatype": 7,
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "DG_Number_Seastars",
@@ -2181,7 +2208,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "",
-      "datatype": 3,
+      "datatype": 5,
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "End_time",
@@ -2553,7 +2580,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "",
-      "datatype": 13,
+      "datatype": 6,
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Latitude",
@@ -4905,7 +4932,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "0",
-      "datatype": 7,
+      "datatype": 10,
       "maxvalue": null,
       "unit_id": 2,
       "internal_name": "Pounds_Tires",
@@ -5145,7 +5172,7 @@
     "model": "core.field",
     "fields": {
       "default_value": "",
-      "datatype": 3,
+      "datatype": 5,
       "maxvalue": null,
       "unit_id": null,
       "internal_name": "Start_time",
@@ -5723,9 +5750,9 @@
     "model": "core.datasheet",
     "fields": {
       "sheetname": "ICC Cleanup Data",
-      "year_started": 9999,
+      "year_started": 2011,
       "created_by": 6,
-      "type_id": null
+      "type_id": 1
     }
   },
   {
@@ -5742,8 +5769,8 @@
     "pk": 19,
     "model": "core.datasheet",
     "fields": {
-      "sheetname": "Northwest Straights Derelict Gear Data",
-      "year_started": 9999,
+      "sheetname": "Northwest Straits Derelict Gear Data",
+      "year_started": 2002,
       "created_by": 8,
       "type_id": 2
     }
@@ -5883,6 +5910,34 @@
     }
   },
   {
+    "pk": 664,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "55-Gal. Drums",
+      "required": false,
+      "field_id": 221,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "55-Gallon Drums",
+      "grouping": 6
+    }
+  },
+  {
+    "pk": 625,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "6-Pack Holders",
+      "required": false,
+      "field_id": 121,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "6-Pack Holders",
+      "grouping": 2
+    }
+  },
+  {
     "pk": 691,
     "model": "core.datasheetfield",
     "fields": {
@@ -6001,7 +6056,7 @@
       "print_name": "",
       "required": false,
       "field_id": 293,
-      "unit_id": null,
+      "unit_id": 15,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Age",
@@ -6205,6 +6260,20 @@
     }
   },
   {
+    "pk": 660,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Appliances",
+      "required": false,
+      "field_id": 213,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Appliances (refigerators, washers, etc.)",
+      "grouping": 6
+    }
+  },
+  {
     "pk": 46,
     "model": "core.datasheetfield",
     "fields": {
@@ -6261,6 +6330,48 @@
     }
   },
   {
+    "pk": 631,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "",
+      "required": false,
+      "field_id": 142,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Bags(Paper)",
+      "grouping": 9
+    }
+  },
+  {
+    "pk": 622,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "",
+      "required": false,
+      "field_id": 108,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Bags(Plastic)",
+      "grouping": 2
+    }
+  },
+  {
+    "pk": 646,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Bait Containers/Packaging",
+      "required": false,
+      "field_id": 170,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Bait Containers/Packaging",
+      "grouping": 6
+    }
+  },
+  {
     "pk": 712,
     "model": "core.datasheetfield",
     "fields": {
@@ -6272,6 +6383,20 @@
       "sheet_id": 16,
       "field_name": "Bait Containers/Packaging",
       "grouping": 6
+    }
+  },
+  {
+    "pk": 628,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Balloons",
+      "required": false,
+      "field_id": 127,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Balloons",
+      "grouping": 2
     }
   },
   {
@@ -6471,6 +6596,20 @@
     }
   },
   {
+    "pk": 652,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Batteries",
+      "required": false,
+      "field_id": 186,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Batteries",
+      "grouping": 6
+    }
+  },
+  {
     "pk": 718,
     "model": "core.datasheetfield",
     "fields": {
@@ -6653,62 +6792,6 @@
     }
   },
   {
-    "pk": 610,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "",
-      "required": false,
-      "field_id": 64,
-      "unit_id": 4,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Beach: Miles",
-      "grouping": 7
-    }
-  },
-  {
-    "pk": 619,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "",
-      "required": false,
-      "field_id": 99,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Beach: # of Bags ",
-      "grouping": 7
-    }
-  },
-  {
-    "pk": 613,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "",
-      "required": false,
-      "field_id": 78,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Beach: People",
-      "grouping": 7
-    }
-  },
-  {
-    "pk": 616,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "",
-      "required": false,
-      "field_id": 95,
-      "unit_id": 2,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Beach: Pounds",
-      "grouping": 7
-    }
-  },
-  {
     "pk": 402,
     "model": "core.datasheetfield",
     "fields": {
@@ -6751,6 +6834,20 @@
     }
   },
   {
+    "pk": 623,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Beverage Bottles (plastic) 2 liters or less",
+      "required": false,
+      "field_id": 114,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Beverage Bottles (plastic) 2 liters or less",
+      "grouping": 2
+    }
+  },
+  {
     "pk": 689,
     "model": "core.datasheetfield",
     "fields": {
@@ -6762,6 +6859,20 @@
       "sheet_id": 16,
       "field_name": "Beverage Bottles (plastic) 2 liters or less",
       "grouping": 2
+    }
+  },
+  {
+    "pk": 633,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Beverage Cans",
+      "required": false,
+      "field_id": 150,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Beverage Cans",
+      "grouping": 3
     }
   },
   {
@@ -6846,6 +6957,20 @@
       "sheet_id": 11,
       "field_name": "Biohazard",
       "grouping": 11
+    }
+  },
+  {
+    "pk": 651,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Bleach/Cleaner Bottles",
+      "required": false,
+      "field_id": 181,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Bleach/Cleaner Bottles",
+      "grouping": 6
     }
   },
   {
@@ -6947,6 +7072,20 @@
     }
   },
   {
+    "pk": 657,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Building Materials",
+      "required": false,
+      "field_id": 203,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Building Materials",
+      "grouping": 6
+    }
+  },
+  {
     "pk": 723,
     "model": "core.datasheetfield",
     "fields": {
@@ -6957,6 +7096,20 @@
       "answer_options": [],
       "sheet_id": 16,
       "field_name": "Building Materials",
+      "grouping": 6
+    }
+  },
+  {
+    "pk": 640,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Buoys/Floats",
+      "required": false,
+      "field_id": 161,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Buoys/Floats",
       "grouping": 6
     }
   },
@@ -6985,6 +7138,20 @@
       "answer_options": [],
       "sheet_id": 3,
       "field_name": "Caged",
+      "grouping": 6
+    }
+  },
+  {
+    "pk": 639,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Caps, Lids",
+      "required": false,
+      "field_id": 160,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Caps, Lids",
       "grouping": 6
     }
   },
@@ -7227,6 +7394,20 @@
     }
   },
   {
+    "pk": 661,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Cars/Car Parts",
+      "required": false,
+      "field_id": 214,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Cars/Car Parts",
+      "grouping": 6
+    }
+  },
+  {
     "pk": 727,
     "model": "core.datasheetfield",
     "fields": {
@@ -7423,6 +7604,20 @@
     }
   },
   {
+    "pk": 635,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Cigarette Lighters",
+      "required": false,
+      "field_id": 156,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Cigarette Lighters",
+      "grouping": 6
+    }
+  },
+  {
     "pk": 700,
     "model": "core.datasheetfield",
     "fields": {
@@ -7451,6 +7646,20 @@
     }
   },
   {
+    "pk": 634,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Cigarettes/Cigarette Filters",
+      "required": false,
+      "field_id": 155,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Cigarettes/Cigarette Filters",
+      "grouping": 6
+    }
+  },
+  {
     "pk": 699,
     "model": "core.datasheetfield",
     "fields": {
@@ -7474,6 +7683,20 @@
       "unit_id": null,
       "answer_options": [],
       "sheet_id": 10,
+      "field_name": "Cigar Tips",
+      "grouping": 6
+    }
+  },
+  {
+    "pk": 636,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Cigar Tips",
+      "required": false,
+      "field_id": 157,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
       "field_name": "Cigar Tips",
       "grouping": 6
     }
@@ -7619,7 +7842,7 @@
     }
   },
   {
-    "pk": 993,
+    "pk": 994,
     "model": "core.datasheetfield",
     "fields": {
       "print_name": "",
@@ -7633,7 +7856,7 @@
     }
   },
   {
-    "pk": 994,
+    "pk": 993,
     "model": "core.datasheetfield",
     "fields": {
       "print_name": "",
@@ -7656,6 +7879,20 @@
       "unit_id": null,
       "answer_options": [],
       "sheet_id": 9,
+      "field_name": "Cleanup Date",
+      "grouping": 7
+    }
+  },
+  {
+    "pk": 1099,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "",
+      "required": true,
+      "field_id": 10,
+      "unit_id": 16,
+      "answer_options": [],
+      "sheet_id": 15,
       "field_name": "Cleanup Date",
       "grouping": 7
     }
@@ -7885,6 +8122,20 @@
     }
   },
   {
+    "pk": 654,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Clothing, Shoes",
+      "required": false,
+      "field_id": 194,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Clothing, Shoes",
+      "grouping": 6
+    }
+  },
+  {
     "pk": 720,
     "model": "core.datasheetfield",
     "fields": {
@@ -7992,6 +8243,20 @@
       "unit_id": null,
       "answer_options": [],
       "sheet_id": 10,
+      "field_name": "Condoms",
+      "grouping": 11
+    }
+  },
+  {
+    "pk": 649,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Condoms",
+      "required": false,
+      "field_id": 176,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
       "field_name": "Condoms",
       "grouping": 11
     }
@@ -8151,6 +8416,20 @@
     }
   },
   {
+    "pk": 1102,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Country",
+      "required": false,
+      "field_id": 42,
+      "unit_id": 17,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Country",
+      "grouping": 7
+    }
+  },
+  {
     "pk": 679,
     "model": "core.datasheetfield",
     "fields": {
@@ -8179,6 +8458,20 @@
     }
   },
   {
+    "pk": 1101,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Zone or County Cleaned",
+      "required": true,
+      "field_id": 39,
+      "unit_id": 17,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "County",
+      "grouping": 7
+    }
+  },
+  {
     "pk": 34,
     "model": "core.datasheetfield",
     "fields": {
@@ -8190,6 +8483,20 @@
       "sheet_id": 3,
       "field_name": "County",
       "grouping": 7
+    }
+  },
+  {
+    "pk": 659,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Crab/Lobster/Fish Traps",
+      "required": false,
+      "field_id": 210,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Crab/Lobster/Fish Traps",
+      "grouping": 6
     }
   },
   {
@@ -8277,6 +8584,20 @@
     }
   },
   {
+    "pk": 663,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Crates",
+      "required": false,
+      "field_id": 220,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Crates",
+      "grouping": 6
+    }
+  },
+  {
     "pk": 729,
     "model": "core.datasheetfield",
     "fields": {
@@ -8302,6 +8623,20 @@
       "sheet_id": 18,
       "field_name": "Created Date",
       "grouping": 7
+    }
+  },
+  {
+    "pk": 645,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Cups, Plates, Forks, Knives, Spoons",
+      "required": false,
+      "field_id": 168,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Cups, Plates, Forks, Knives, Spoons",
+      "grouping": 6
     }
   },
   {
@@ -8423,7 +8758,7 @@
       "print_name": "",
       "required": false,
       "field_id": 298,
-      "unit_id": null,
+      "unit_id": 16,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Date Found",
@@ -8451,7 +8786,7 @@
       "print_name": "",
       "required": false,
       "field_id": 258,
-      "unit_id": null,
+      "unit_id": 16,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Date Reported",
@@ -8594,6 +8929,20 @@
       "unit_id": null,
       "answer_options": [],
       "sheet_id": 10,
+      "field_name": "Diapers",
+      "grouping": 11
+    }
+  },
+  {
+    "pk": 648,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Diapers",
+      "required": false,
+      "field_id": 175,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
       "field_name": "Diapers",
       "grouping": 11
     }
@@ -8773,7 +9122,7 @@
       "print_name": "",
       "required": false,
       "field_id": 255,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Disposition",
@@ -8921,90 +9270,6 @@
     }
   },
   {
-    "pk": 664,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "55-Gal. Drums",
-      "required": false,
-      "field_id": 221,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Dumping Activities: 55-Gallon Drums",
-      "grouping": 6
-    }
-  },
-  {
-    "pk": 660,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Appliances",
-      "required": false,
-      "field_id": 213,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Dumping Activities: Appliances (refigerators, washers, etc.)",
-      "grouping": 6
-    }
-  },
-  {
-    "pk": 652,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Batteries",
-      "required": false,
-      "field_id": 186,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Dumping Activities: Batteries",
-      "grouping": 6
-    }
-  },
-  {
-    "pk": 657,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Building Materials",
-      "required": false,
-      "field_id": 203,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Dumping Activities: Building Materials",
-      "grouping": 6
-    }
-  },
-  {
-    "pk": 661,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Cars/Car Parts",
-      "required": false,
-      "field_id": 214,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Dumping Activities: Cars/Car Parts",
-      "grouping": 6
-    }
-  },
-  {
-    "pk": 662,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Tires",
-      "required": false,
-      "field_id": 217,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Dumping Activities: Tires",
-      "grouping": 6
-    }
-  },
-  {
     "pk": 785,
     "model": "core.datasheetfield",
     "fields": {
@@ -9067,7 +9332,7 @@
       "print_name": "",
       "required": false,
       "field_id": 331,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Escape Cord Intact",
@@ -9081,7 +9346,7 @@
       "print_name": "",
       "required": false,
       "field_id": 330,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Escape Cord Used",
@@ -9109,7 +9374,7 @@
       "print_name": "",
       "required": false,
       "field_id": 300,
-      "unit_id": null,
+      "unit_id": 9,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Est Water Depth",
@@ -9375,7 +9640,7 @@
       "print_name": "",
       "required": false,
       "field_id": 329,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Fishable",
@@ -9403,11 +9668,25 @@
       "print_name": "",
       "required": false,
       "field_id": 306,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Fishery",
       "grouping": 12
+    }
+  },
+  {
+    "pk": 638,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Fishing Line",
+      "required": false,
+      "field_id": 159,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Fishing Line",
+      "grouping": 6
     }
   },
   {
@@ -9453,6 +9732,20 @@
     }
   },
   {
+    "pk": 626,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Fishing Lures/Light Sticks",
+      "required": false,
+      "field_id": 123,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Fishing Lures/Light Sticks",
+      "grouping": 2
+    }
+  },
+  {
     "pk": 692,
     "model": "core.datasheetfield",
     "fields": {
@@ -9491,6 +9784,20 @@
       "answer_options": [],
       "sheet_id": 5,
       "field_name": "Fishing Net or Rope",
+      "grouping": 6
+    }
+  },
+  {
+    "pk": 642,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Fishing Nets",
+      "required": false,
+      "field_id": 163,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Fishing Nets",
       "grouping": 6
     }
   },
@@ -9557,7 +9864,7 @@
       "print_name": "Food Wrappers/Containers",
       "required": false,
       "field_id": 167,
-      "unit_id": null,
+      "unit_id": 15,
       "answer_options": [],
       "sheet_id": 15,
       "field_name": "Food Wrappers/Containers",
@@ -9627,7 +9934,7 @@
       "print_name": "",
       "required": false,
       "field_id": 295,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Gear Condition",
@@ -9641,7 +9948,7 @@
       "print_name": "",
       "required": false,
       "field_id": 250,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Gear Id",
@@ -9683,7 +9990,7 @@
       "print_name": "",
       "required": false,
       "field_id": 253,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Gear Type",
@@ -9756,6 +10063,20 @@
       "unit_id": null,
       "answer_options": [],
       "sheet_id": 10,
+      "field_name": "Glass Beverage Bottles",
+      "grouping": 4
+    }
+  },
+  {
+    "pk": 630,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Beverage Bottles (glass)",
+      "required": false,
+      "field_id": 139,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
       "field_name": "Glass Beverage Bottles",
       "grouping": 4
     }
@@ -10103,7 +10424,7 @@
       "print_name": "",
       "required": false,
       "field_id": 289,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Habitat Type",
@@ -10159,7 +10480,7 @@
       "print_name": "",
       "required": false,
       "field_id": 299,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "How Found",
@@ -10257,7 +10578,7 @@
       "print_name": "",
       "required": false,
       "field_id": 304,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Investigated Desc",
@@ -10377,13 +10698,27 @@
     }
   },
   {
-    "pk": 1097,
+    "pk": 605,
     "model": "core.datasheetfield",
     "fields": {
       "print_name": "",
       "required": false,
       "field_id": 47,
-      "unit_id": null,
+      "unit_id": 5,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Latitude",
+      "grouping": 7
+    }
+  },
+  {
+    "pk": 1097,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "",
+      "required": true,
+      "field_id": 47,
+      "unit_id": 5,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Latitude (dd)",
@@ -10411,7 +10746,7 @@
       "print_name": "",
       "required": false,
       "field_id": 279,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Lat/Long Reliability",
@@ -10523,7 +10858,7 @@
       "print_name": "",
       "required": false,
       "field_id": 296,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Lethal",
@@ -10556,6 +10891,20 @@
       "sheet_id": 11,
       "field_name": "Level of Trash",
       "grouping": 7
+    }
+  },
+  {
+    "pk": 656,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Light Bulbs/Tubes",
+      "required": false,
+      "field_id": 199,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Light Bulbs/Tubes",
+      "grouping": 6
     }
   },
   {
@@ -10727,6 +11076,20 @@
     }
   },
   {
+    "pk": 607,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "",
+      "required": false,
+      "field_id": 49,
+      "unit_id": 17,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Location ID",
+      "grouping": 7
+    }
+  },
+  {
     "pk": 923,
     "model": "core.datasheetfield",
     "fields": {
@@ -10825,13 +11188,27 @@
     }
   },
   {
-    "pk": 1098,
+    "pk": 606,
     "model": "core.datasheetfield",
     "fields": {
       "print_name": "",
       "required": false,
       "field_id": 48,
-      "unit_id": null,
+      "unit_id": 5,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Longitude",
+      "grouping": 7
+    }
+  },
+  {
+    "pk": 1098,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "",
+      "required": true,
+      "field_id": 48,
+      "unit_id": 5,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Longitude (dd)",
@@ -11003,62 +11380,6 @@
       "answer_options": [],
       "sheet_id": 18,
       "field_name": "Medical: Diapers",
-      "grouping": 11
-    }
-  },
-  {
-    "pk": 649,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Condoms",
-      "required": false,
-      "field_id": 176,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Medical/Personal Hygiene: Condoms",
-      "grouping": 11
-    }
-  },
-  {
-    "pk": 648,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Diapers",
-      "required": false,
-      "field_id": 175,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Medical/Personal Hygiene: Diapers",
-      "grouping": 11
-    }
-  },
-  {
-    "pk": 647,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Syringes",
-      "required": false,
-      "field_id": 174,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Medical/Personal Hygiene: Syringes",
-      "grouping": 11
-    }
-  },
-  {
-    "pk": 650,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Tampons/Tampon Applicators",
-      "required": false,
-      "field_id": 177,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Medical/Personal Hygiene: Tampons/Tampon Applicators",
       "grouping": 11
     }
   },
@@ -11438,6 +11759,20 @@
       "sheet_id": 12,
       "field_name": "Metal Pipe Segments",
       "grouping": 3
+    }
+  },
+  {
+    "pk": 610,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Distance Cleaned",
+      "required": false,
+      "field_id": 64,
+      "unit_id": 4,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Miles",
+      "grouping": 7
     }
   },
   {
@@ -12323,202 +12658,6 @@
     }
   },
   {
-    "pk": 646,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Bait Containers/Packaging",
-      "required": false,
-      "field_id": 170,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Ocean/Waterway Activities: Bait Containers/Packaging",
-      "grouping": 6
-    }
-  },
-  {
-    "pk": 651,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Bleach/Cleaner Bottles",
-      "required": false,
-      "field_id": 181,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Ocean/Waterway Activities: Bleach/Cleaner Bottles",
-      "grouping": 6
-    }
-  },
-  {
-    "pk": 640,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Buoys/Floats",
-      "required": false,
-      "field_id": 161,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Ocean/Waterway Activities: Buoys/Floats",
-      "grouping": 6
-    }
-  },
-  {
-    "pk": 659,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Crab/Lobster/Fish Traps",
-      "required": false,
-      "field_id": 210,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Ocean/Waterway Activities: Crab/Lobster/Fish Traps",
-      "grouping": 6
-    }
-  },
-  {
-    "pk": 663,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Crates",
-      "required": false,
-      "field_id": 220,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Ocean/Waterway Activities: Crates",
-      "grouping": 6
-    }
-  },
-  {
-    "pk": 638,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Fishing Line",
-      "required": false,
-      "field_id": 159,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Ocean/Waterway Activities: Fishing Line",
-      "grouping": 6
-    }
-  },
-  {
-    "pk": 626,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Fishing Lures/Light Sticks",
-      "required": false,
-      "field_id": 123,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Ocean/Waterway Activities: Fishing Lures/Light Sticks",
-      "grouping": 2
-    }
-  },
-  {
-    "pk": 642,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Fishing Nets",
-      "required": false,
-      "field_id": 163,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Ocean/Waterway Activities: Fishing Nets",
-      "grouping": 6
-    }
-  },
-  {
-    "pk": 656,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Light Bulbs/Tubes",
-      "required": false,
-      "field_id": 199,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Ocean/Waterway Activities: Light Bulbs/Tubes",
-      "grouping": 6
-    }
-  },
-  {
-    "pk": 627,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Oil/Lube Bottles",
-      "required": false,
-      "field_id": 126,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Ocean/Waterway Activities: Oil/Lube Bottles",
-      "grouping": 2
-    }
-  },
-  {
-    "pk": 658,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Pallets",
-      "required": false,
-      "field_id": 208,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Ocean/Waterway Activities: Pallets",
-      "grouping": 6
-    }
-  },
-  {
-    "pk": 629,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Plastic Sheeting/Tarps",
-      "required": false,
-      "field_id": 128,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Ocean/Waterway Activities: Plastic Sheeting/Tarps",
-      "grouping": 2
-    }
-  },
-  {
-    "pk": 643,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Rope",
-      "required": false,
-      "field_id": 164,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Ocean/Waterway Activities: Rope",
-      "grouping": 6
-    }
-  },
-  {
-    "pk": 641,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Strapping Bands",
-      "required": false,
-      "field_id": 162,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Ocean/Waterway Activities: Strapping Bands",
-      "grouping": 6
-    }
-  },
-  {
     "pk": 914,
     "model": "core.datasheetfield",
     "fields": {
@@ -12530,6 +12669,20 @@
       "sheet_id": 22,
       "field_name": "Octopus",
       "grouping": 12
+    }
+  },
+  {
+    "pk": 619,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Number of Trash Bags Filled",
+      "required": false,
+      "field_id": 99,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "# of Bags",
+      "grouping": 7
     }
   },
   {
@@ -12600,6 +12753,20 @@
       "sheet_id": 4,
       "field_name": "# of Volunteers ",
       "grouping": 7
+    }
+  },
+  {
+    "pk": 627,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Oil/Lube Bottles",
+      "required": false,
+      "field_id": 126,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Oil/Lube Bottles",
+      "grouping": 2
     }
   },
   {
@@ -13925,7 +14092,7 @@
       "print_name": "",
       "required": false,
       "field_id": 290,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Other Habitat Type",
@@ -14013,6 +14180,20 @@
       "answer_options": [],
       "sheet_id": 3,
       "field_name": "PaidCrew",
+      "grouping": 6
+    }
+  },
+  {
+    "pk": 658,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Pallets",
+      "required": false,
+      "field_id": 208,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Pallets",
       "grouping": 6
     }
   },
@@ -14451,6 +14632,20 @@
     }
   },
   {
+    "pk": 613,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Number of People Working on This Card",
+      "required": false,
+      "field_id": 78,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "People",
+      "grouping": 7
+    }
+  },
+  {
     "pk": 528,
     "model": "core.datasheetfield",
     "fields": {
@@ -14485,7 +14680,7 @@
       "print_name": "",
       "required": false,
       "field_id": 305,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Photo File Names",
@@ -15557,6 +15752,20 @@
     }
   },
   {
+    "pk": 629,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Plastic Sheeting/Tarps",
+      "required": false,
+      "field_id": 128,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Plastic Sheeting/Tarps",
+      "grouping": 2
+    }
+  },
+  {
     "pk": 695,
     "model": "core.datasheetfield",
     "fields": {
@@ -15683,10 +15892,10 @@
     }
   },
   {
-    "pk": 89,
+    "pk": 86,
     "model": "core.datasheetfield",
     "fields": {
-      "print_name": "Straws or Stirrers",
+      "print_name": "Plastic straws or stirrers",
       "required": false,
       "field_id": 119,
       "unit_id": null,
@@ -15697,10 +15906,10 @@
     }
   },
   {
-    "pk": 86,
+    "pk": 89,
     "model": "core.datasheetfield",
     "fields": {
-      "print_name": "Plastic straws or stirrers",
+      "print_name": "Straws or Stirrers",
       "required": false,
       "field_id": 119,
       "unit_id": null,
@@ -15862,6 +16071,20 @@
       "sheet_id": 23,
       "field_name": "Pot Condition",
       "grouping": 12
+    }
+  },
+  {
+    "pk": 616,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Total Estimated Weight Collected",
+      "required": false,
+      "field_id": 95,
+      "unit_id": 2,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Pounds",
+      "grouping": 7
     }
   },
   {
@@ -16053,7 +16276,7 @@
       "print_name": "",
       "required": false,
       "field_id": 263,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Primary Location",
@@ -16109,7 +16332,7 @@
       "print_name": "",
       "required": false,
       "field_id": 247,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Project Name",
@@ -16156,6 +16379,20 @@
       "sheet_id": 20,
       "field_name": "Projgearid",
       "grouping": 7
+    }
+  },
+  {
+    "pk": 632,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Pull Tabs",
+      "required": false,
+      "field_id": 148,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Pull Tabs",
+      "grouping": 3
     }
   },
   {
@@ -16233,9 +16470,9 @@
     "model": "core.datasheetfield",
     "fields": {
       "print_name": "",
-      "required": false,
+      "required": true,
       "field_id": 256,
-      "unit_id": null,
+      "unit_id": 16,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Removal Date",
@@ -16277,7 +16514,7 @@
       "print_name": "",
       "required": false,
       "field_id": 297,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Reported Description",
@@ -16291,7 +16528,7 @@
       "print_name": "",
       "required": false,
       "field_id": 302,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Reported Exposure",
@@ -16305,7 +16542,7 @@
       "print_name": "",
       "required": false,
       "field_id": 303,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Reported Lethality",
@@ -16319,7 +16556,7 @@
       "print_name": "",
       "required": false,
       "field_id": 301,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Reported Location",
@@ -16380,6 +16617,20 @@
       "sheet_id": 23,
       "field_name": "Retrieved?",
       "grouping": 7
+    }
+  },
+  {
+    "pk": 643,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Rope",
+      "required": false,
+      "field_id": 164,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Rope",
+      "grouping": 6
     }
   },
   {
@@ -16501,7 +16752,7 @@
       "print_name": "",
       "required": false,
       "field_id": 254,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Secondary Gear Type",
@@ -16845,202 +17096,6 @@
     }
   },
   {
-    "pk": 625,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "6-Pack Holders",
-      "required": false,
-      "field_id": 121,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Shoreline & Recreational Activities: 6-Pack Holders",
-      "grouping": 2
-    }
-  },
-  {
-    "pk": 631,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "",
-      "required": false,
-      "field_id": 142,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Shoreline & Recreational Activities: Bags(Paper)",
-      "grouping": 9
-    }
-  },
-  {
-    "pk": 622,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "",
-      "required": false,
-      "field_id": 108,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Shoreline & Recreational Activities: Bags(Plastic)",
-      "grouping": 2
-    }
-  },
-  {
-    "pk": 628,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Balloons",
-      "required": false,
-      "field_id": 127,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Shoreline & Recreational Activities: Balloons",
-      "grouping": 2
-    }
-  },
-  {
-    "pk": 623,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Beverage Bottles (plastic) 2 liters or less",
-      "required": false,
-      "field_id": 114,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Shoreline & Recreational Activities: Beverage Bottles (plastic) 2 liters or less",
-      "grouping": 2
-    }
-  },
-  {
-    "pk": 633,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Beverage Cans",
-      "required": false,
-      "field_id": 150,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Shoreline & Recreational Activities: Beverage Cans",
-      "grouping": 3
-    }
-  },
-  {
-    "pk": 639,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Caps, Lids",
-      "required": false,
-      "field_id": 160,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Shoreline & Recreational Activities: Caps, Lids",
-      "grouping": 6
-    }
-  },
-  {
-    "pk": 654,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Clothing, Shoes",
-      "required": false,
-      "field_id": 194,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Shoreline & Recreational Activities: Clothing, Shoes",
-      "grouping": 6
-    }
-  },
-  {
-    "pk": 645,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Cups, Plates, Forks, Knives, Spoons",
-      "required": false,
-      "field_id": 168,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Shoreline & Recreational Activities: Cups, Plates, Forks, Knives, Spoons",
-      "grouping": 6
-    }
-  },
-  {
-    "pk": 630,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Beverage Bottles (glass)",
-      "required": false,
-      "field_id": 139,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Shoreline & Recreational Activities: Glass Beverage Bottles",
-      "grouping": 4
-    }
-  },
-  {
-    "pk": 632,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Pull Tabs",
-      "required": false,
-      "field_id": 148,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Shoreline & Recreational Activities: Pull Tabs",
-      "grouping": 3
-    }
-  },
-  {
-    "pk": 655,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Shotgun Shells/Wadding",
-      "required": false,
-      "field_id": 198,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Shoreline & Recreational Activities: Shotgun Shells/Wadding",
-      "grouping": 6
-    }
-  },
-  {
-    "pk": 624,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Straws, Stirrers",
-      "required": false,
-      "field_id": 119,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Shoreline & Recreational Activities: Straws, Stirrers",
-      "grouping": 2
-    }
-  },
-  {
-    "pk": 653,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Toys",
-      "required": false,
-      "field_id": 192,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Shoreline & Recreational Activities: Toys",
-      "grouping": 6
-    }
-  },
-  {
     "pk": 753,
     "model": "core.datasheetfield",
     "fields": {
@@ -17079,6 +17134,20 @@
       "answer_options": [],
       "sheet_id": 18,
       "field_name": "Shore: Toys",
+      "grouping": 6
+    }
+  },
+  {
+    "pk": 655,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Shotgun Shells/Wadding",
+      "required": false,
+      "field_id": 198,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Shotgun Shells/Wadding",
       "grouping": 6
     }
   },
@@ -17139,104 +17208,6 @@
     }
   },
   {
-    "pk": 605,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "",
-      "required": false,
-      "field_id": 47,
-      "unit_id": 5,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Site Basics: Latitude",
-      "grouping": 7
-    }
-  },
-  {
-    "pk": 607,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "",
-      "required": false,
-      "field_id": 49,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Site Basics: Location ID",
-      "grouping": 7
-    }
-  },
-  {
-    "pk": 606,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "",
-      "required": false,
-      "field_id": 48,
-      "unit_id": 5,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Site Basics: Longitude",
-      "grouping": 7
-    }
-  },
-  {
-    "pk": 603,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Beach Site Name",
-      "required": false,
-      "field_id": 8,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Site Basics: Site Name",
-      "grouping": 7
-    }
-  },
-  {
-    "pk": 604,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "",
-      "required": false,
-      "field_id": 44,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Site Basics: Site Path",
-      "grouping": 7
-    }
-  },
-  {
-    "pk": 608,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "",
-      "required": false,
-      "field_id": 56,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Site Basics: Site Type",
-      "grouping": 5
-    }
-  },
-  {
-    "pk": 609,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "",
-      "required": false,
-      "field_id": 59,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Site Basics: Watershed ID",
-      "grouping": 7
-    }
-  },
-  {
     "pk": 461,
     "model": "core.datasheetfield",
     "fields": {
@@ -17265,6 +17236,20 @@
     }
   },
   {
+    "pk": 603,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Beach Site Name",
+      "required": true,
+      "field_id": 8,
+      "unit_id": 17,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Site Name",
+      "grouping": 7
+    }
+  },
+  {
     "pk": 35,
     "model": "core.datasheetfield",
     "fields": {
@@ -17276,6 +17261,20 @@
       "sheet_id": 3,
       "field_name": "SiteState",
       "grouping": 7
+    }
+  },
+  {
+    "pk": 608,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Type of Cleanup",
+      "required": false,
+      "field_id": 56,
+      "unit_id": 17,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Site Type",
+      "grouping": 5
     }
   },
   {
@@ -17359,62 +17358,6 @@
       "answer_options": [],
       "sheet_id": 18,
       "field_name": "Smoke: Tobacco Packaging",
-      "grouping": 6
-    }
-  },
-  {
-    "pk": 635,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Cigarette Lighters",
-      "required": false,
-      "field_id": 156,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Smoking-Related Activities: Cigarette Lighters",
-      "grouping": 6
-    }
-  },
-  {
-    "pk": 634,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Cigarettes/Cigarette Filters",
-      "required": false,
-      "field_id": 155,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Smoking-Related Activities: Cigarettes/Cigarette Filters",
-      "grouping": 6
-    }
-  },
-  {
-    "pk": 636,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Cigar Tips",
-      "required": false,
-      "field_id": 157,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Smoking-Related Activities: Cigar Tips",
-      "grouping": 6
-    }
-  },
-  {
-    "pk": 637,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "Tobacco Packaging/Wrappers",
-      "required": false,
-      "field_id": 158,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Smoking-Related Activities: Tobacco Packaging/Wrappers",
       "grouping": 6
     }
   },
@@ -17531,6 +17474,20 @@
     }
   },
   {
+    "pk": 1100,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "State",
+      "required": true,
+      "field_id": 41,
+      "unit_id": 17,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "State",
+      "grouping": 7
+    }
+  },
+  {
     "pk": 678,
     "model": "core.datasheetfield",
     "fields": {
@@ -17629,6 +17586,20 @@
     }
   },
   {
+    "pk": 641,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Strapping Bands",
+      "required": false,
+      "field_id": 162,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Strapping Bands",
+      "grouping": 6
+    }
+  },
+  {
     "pk": 706,
     "model": "core.datasheetfield",
     "fields": {
@@ -17640,6 +17611,20 @@
       "sheet_id": 16,
       "field_name": "Strapping Bands",
       "grouping": 6
+    }
+  },
+  {
+    "pk": 624,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Straws, Stirrers",
+      "required": false,
+      "field_id": 119,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Straws, Stirrers",
+      "grouping": 2
     }
   },
   {
@@ -18153,7 +18138,7 @@
       "print_name": "",
       "required": false,
       "field_id": 264,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Sub Location",
@@ -18242,6 +18227,20 @@
       "sheet_id": 12,
       "field_name": "Synthetic Rubber",
       "grouping": 6
+    }
+  },
+  {
+    "pk": 647,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Syringes",
+      "required": false,
+      "field_id": 174,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Syringes",
+      "grouping": 11
     }
   },
   {
@@ -18399,6 +18398,20 @@
     }
   },
   {
+    "pk": 650,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Tampons/Tampon Applicators",
+      "required": false,
+      "field_id": 177,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Tampons/Tampon Applicators",
+      "grouping": 11
+    }
+  },
+  {
     "pk": 716,
     "model": "core.datasheetfield",
     "fields": {
@@ -18489,7 +18502,7 @@
       "print_name": "",
       "required": false,
       "field_id": 259,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Technician",
@@ -18595,6 +18608,20 @@
     }
   },
   {
+    "pk": 662,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Tires",
+      "required": false,
+      "field_id": 217,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Tires",
+      "grouping": 6
+    }
+  },
+  {
     "pk": 728,
     "model": "core.datasheetfield",
     "fields": {
@@ -18675,6 +18702,20 @@
       "answer_options": [],
       "sheet_id": 24,
       "field_name": "Tires",
+      "grouping": 6
+    }
+  },
+  {
+    "pk": 637,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Tobacco Packaging/Wrappers",
+      "required": false,
+      "field_id": 158,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Tobacco Packaging/Wrappers",
       "grouping": 6
     }
   },
@@ -18861,6 +18902,20 @@
     }
   },
   {
+    "pk": 653,
+    "model": "core.datasheetfield",
+    "fields": {
+      "print_name": "Toys",
+      "required": false,
+      "field_id": 192,
+      "unit_id": 15,
+      "answer_options": [],
+      "sheet_id": 15,
+      "field_name": "Toys",
+      "grouping": 6
+    }
+  },
+  {
     "pk": 719,
     "model": "core.datasheetfield",
     "fields": {
@@ -18945,62 +19000,6 @@
     }
   },
   {
-    "pk": 611,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "",
-      "required": false,
-      "field_id": 65,
-      "unit_id": 4,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Underwater: Miles",
-      "grouping": 7
-    }
-  },
-  {
-    "pk": 620,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "",
-      "required": false,
-      "field_id": 100,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Underwater: # of Bags",
-      "grouping": 7
-    }
-  },
-  {
-    "pk": 614,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "",
-      "required": false,
-      "field_id": 79,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Underwater: People",
-      "grouping": 7
-    }
-  },
-  {
-    "pk": 617,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "",
-      "required": false,
-      "field_id": 96,
-      "unit_id": 2,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Underwater: Pounds",
-      "grouping": 7
-    }
-  },
-  {
     "pk": 398,
     "model": "core.datasheetfield",
     "fields": {
@@ -19035,7 +19034,7 @@
       "print_name": "",
       "required": false,
       "field_id": 261,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "Vessel",
@@ -19183,58 +19182,16 @@
     }
   },
   {
-    "pk": 612,
+    "pk": 609,
     "model": "core.datasheetfield",
     "fields": {
       "print_name": "",
       "required": false,
-      "field_id": 66,
-      "unit_id": 4,
+      "field_id": 59,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 15,
-      "field_name": "Watercraft: Miles",
-      "grouping": 7
-    }
-  },
-  {
-    "pk": 621,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "",
-      "required": false,
-      "field_id": 101,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Watercraft: # of Bags",
-      "grouping": 7
-    }
-  },
-  {
-    "pk": 615,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "",
-      "required": false,
-      "field_id": 80,
-      "unit_id": null,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Watercraft: People",
-      "grouping": 7
-    }
-  },
-  {
-    "pk": 618,
-    "model": "core.datasheetfield",
-    "fields": {
-      "print_name": "",
-      "required": false,
-      "field_id": 97,
-      "unit_id": 2,
-      "answer_options": [],
-      "sheet_id": 15,
-      "field_name": "Watercraft: Pounds",
+      "field_name": "Watershed ID",
       "grouping": 7
     }
   },
@@ -19245,7 +19202,7 @@
       "print_name": "",
       "required": false,
       "field_id": 266,
-      "unit_id": null,
+      "unit_id": 17,
       "answer_options": [],
       "sheet_id": 19,
       "field_name": "WDFW Fishery Zone",
