@@ -380,7 +380,6 @@ class Event (models.Model):
     def get_fields(self):
         return[(field.name, field.value_to_string(self)) for field in Event._meta.fields]
         
-
     @property
     def toDict(self):
         return {

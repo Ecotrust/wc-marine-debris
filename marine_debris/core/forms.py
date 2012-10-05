@@ -247,7 +247,7 @@ class DataSheetForm(forms.Form):
             fld = self.fields[field_name]
             answer = self.cleaned_data[field_name]
             value = FieldValue.objects.get_or_create(event_id=fld.event, field_id=fld.field)[0]
-            value.field_value = str(answer)
+            value.field_value = unicode(answer)
             value.last_modified = now
             value.save()
         return True

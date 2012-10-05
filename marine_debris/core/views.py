@@ -323,6 +323,9 @@ def bulk_bad_request(form, request, errors=None):
 
 
 ################# Utilities
+class LatLonError(Exception):
+    pass
+
 def get_required_val(ds, key, row):
     """
     For a site_type and required field key, find the row's current value
@@ -348,9 +351,13 @@ def get_site_key(ds, row):
             'county': get_required_val(ds,'county', row),
         }
     else:
-        site_key = {
-            'geometry': 'POINT(%f %f)' % (float(get_required_val(ds,'lon', row)), float(get_required_val(ds,'lat', row))),
-        }
+        try:
+            site_key = {
+                'geometry': 'POINT(%f %f)' % (float(get_required_val(ds,'lon', row)), float(get_required_val(ds,'lat', row))),
+            }
+        except ValueError:
+            raise LatLonError()
+
     return site_key
 
 def get_querydict(ds, row):
@@ -390,6 +397,7 @@ def bulk_import(request):
     if request.method == 'GET':
         form = BulkImportForm() # instance=ds)
     else:
+        logger = logging.getLogger('datasheet_errors')
         form = BulkImportForm(request.POST, request.FILES)
         if form.is_valid():
             rows = csv.DictReader(request.FILES['csvfile'])
@@ -408,7 +416,6 @@ def bulk_import(request):
             if not valid:
                 errors = ["""Sorry. This datasheet is not configured handle bulk imports. 
                         The database administrator has been notified and will fix the problem ASAP.""", ]
-                logger = logging.getLogger('datasheet_errors')
                 logger.error(message) 
                 return bulk_bad_request(form, request, errors)
 
@@ -440,15 +447,21 @@ def bulk_import(request):
                     for question, message in ds_form.errors.items():
                         fieldnum = int(question.replace("question_",''))
                         fieldname = ds.datasheetfield_set.get(pk=fieldnum).field_name
-                        errors.append("Row %d, column <em>'%s'</em><br/>%s" % (i+1, fieldname, message.as_text().replace("* ","")))
+                        errors.append("Row %d, column <em>'%s'</em><br/>%s" % (i+2, fieldname, message.as_text().replace("* ","")))
+                
+                try: 
+                    parse_date(date_string = get_required_val(ds,'date', row))
+                except ValueError:
+                    errors.append("Row %d, Invalid Date." % (i+2,))
 
                 try:
                     site_key = get_site_key(ds, row)
                     if site_key not in unique_site_keys:
                         unique_site_keys.append(site_key)
                 except State.DoesNotExist:
-                    errors.append("Row %d, Invalid state name" % (i+1, ))
-
+                    errors.append("Row %d, Invalid state name" % (i+2, ))
+                except LatLonError:
+                    errors.append("Row %d, Invalid Latitude/Longitude. Use decimal degrees." % (i+2, ))
             
             sites = []
             for site_key in unique_site_keys:
@@ -479,6 +492,7 @@ def bulk_import(request):
             # valid!
             # loop through rows to create events and submit datasheet forms
             events = []
+            dups = 0
             with transaction.commit_on_success():
                 for i, row in enumerate(rows):
                     site_key = get_site_key(ds, row)
@@ -499,8 +513,12 @@ def bulk_import(request):
                         event.save()
                     except IntegrityError as e:
                         if e.message.startswith('duplicate key value violates unique constraint "core_event'):
-                            errors.append('Event already exists <br> (%s, %s, %s, %s)' % (project.projname,
+                            dups += 1
+                            errors.append('Duplicate event already exists <br> (%s, %s, %s, %s)' % (project.projname,
                                 ds.sheetname, site.sitename, date))
+                            # create dict of fields and compare to dict of Event values
+                            # IE determine if it is ACTUALLY a duplicate
+                            # if it is a "new" event, EITHER create a new site OR a new event id
                             transaction.rollback()
                             continue
                         else:
@@ -509,18 +527,22 @@ def bulk_import(request):
                     qd = get_querydict(ds, row)
                     ds_final_form = DataSheetForm(ds, event, qd)
                     if ds_final_form.is_valid():
-                        ds_final_form.save()
+                        try:
+                            ds_final_form.save()
+                        except Exception as e:
+                            logger.error(unicode(e)) 
+                            errors.append("An internal error occured while saving the form. Please contact the database administrator.")
                     else:
                         raise Exception("""Somehow the datasheetform is now invalid 
                           (despite just validating it previously without event)... errors are '%s'""" % str(ds_final_form.errors))
 
-                    # TODO sanity check if all is well. If not raise an exception to rollback
+                    # all is well for this event
                     events.append(event)
 
                 if len(errors) > 0:
                     transaction.rollback()
-                    if len(events) > 0:
-                        errors.insert(0, "%d new events were found but not loaded due to errors below." % len(events))
+                    if len(events) > 0 and dups > 0:
+                        errors.insert(0, "%d new events were found but not loaded due to %d duplicate events." % (len(events), dups))
                     return bulk_bad_request(form, request, errors)
 
             return render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(), 
