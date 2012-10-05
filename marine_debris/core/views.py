@@ -496,7 +496,7 @@ def bulk_import(request):
             with transaction.commit_on_success():
                 for i, row in enumerate(rows):
                     site_key = get_site_key(ds, row)
-                    site = Site.objects.get(**site_key)
+                    site = Site.objects.filter(**site_key)[0]
                     date_string = get_required_val(ds,'date', row)
                     date = parse_date(date_string)
 
@@ -510,17 +510,69 @@ def bulk_import(request):
                         status = 'New' 
                     )
                     try:
+                        sid = transaction.savepoint()
                         event.save()
                     except IntegrityError as e:
                         if e.message.startswith('duplicate key value violates unique constraint "core_event'):
-                            dups += 1
-                            errors.append('Duplicate event already exists <br> (%s, %s, %s, %s)' % (project.projname,
-                                ds.sheetname, site.sitename, date))
-                            # create dict of fields and compare to dict of Event values
-                            # IE determine if it is ACTUALLY a duplicate
-                            # if it is a "new" event, EITHER create a new site OR a new event id
-                            transaction.rollback()
-                            continue
+                            transaction.savepoint_rollback(sid)
+
+                            # get the fieldvalues of the existing duplicate event
+                            event = Event.objects.get(datasheet_id = ds, proj_id = project, cleanupdate = date, site = site)
+                            existing = event.field_values
+
+                            # compare existing values to the current row's values 
+                            # i.e. determine if it is indeed a new event or a true duplicate
+                            new_event = False
+                            for k, v in existing.items():
+                                existing_val_raw = v[0]
+                                dtype = v[1]
+                                row_val_raw = row[k]
+                                if dtype in ['Area', 'Distance', 'Duration', 'Number', 'Volume', 'Weight']: 
+                                    if float(existing_val_raw) != float(row_val_raw):
+                                        print "#", k, existing_val_raw, row_val_raw
+                                        new_event = True
+                                        break
+                                elif dtype == 'Date':
+                                    extdate = parse_date(existing_val_raw)
+                                    rowdate = parse_date(row_val_raw)
+                                    if extdate != rowdate:
+                                        print "#", k, existing_val_raw, row_val_raw
+                                        new_event = True
+                                        break
+                                else: #text
+                                    if existing_val_raw != row_val_raw:
+                                        print "#", k, existing_val_raw, row_val_raw
+                                        new_event = True
+                                        break
+
+                            if new_event: 
+                                # create a new site 
+                                new_site = Site(**site_key)
+                                new_site.save(use_timestamp=True)
+
+                                # and try again to create the event
+                                event = Event(
+                                    datasheet_id = ds,
+                                    proj_id = project,
+                                    cleanupdate = date,
+                                    site = new_site,
+                                    submitted_by = request.user,
+                                    status = 'New' 
+                                )
+                                try:
+                                    event.save()
+                                except IntegrityError as e:
+                                    if e.message.startswith('duplicate key value violates unique constraint "core_event'):
+                                        dups += 1
+                                        errors.append('Duplicate event already exists <br> (%s, %s, %s, %s)' % (project.projname,
+                                            ds.sheetname, site.sitename, date))
+                            else:
+                                dups += 1
+                                errors.append('Duplicate Event <br/> (%s, %s, %s, %s)' % (project.projname,
+                                    ds.sheetname, site.sitename, date))
+
+                                #transaction.rollback()
+                                #continue
                         else:
                             raise e # something unexepected
 
@@ -542,7 +594,7 @@ def bulk_import(request):
                 if len(errors) > 0:
                     transaction.rollback()
                     if len(events) > 0 and dups > 0:
-                        errors.insert(0, "%d new events were found but not loaded due to %d duplicate events." % (len(events), dups))
+                        errors.insert(0, "%d events were found but not loaded due to %d duplicate events." % (len(events), dups))
                     return bulk_bad_request(form, request, errors)
 
             return render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(), 

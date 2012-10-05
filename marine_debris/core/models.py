@@ -114,6 +114,17 @@ class DataSheet (models.Model):
         return [f.field_name for f in self.datasheetfield_set.all()]
 
     @property
+    def internal_fieldname_lookup(self):
+        """
+        returns 
+        {
+            'Internal_Name': 'Datasheet Field Name',
+            .....
+        }
+        """
+        return dict([(x.field_id.internal_name, x.field_name) for x in self.datasheetfield_set.all()])
+
+    @property
     def required_fieldnames(self):
         """
         Collects the fieldnames for required fields of two types:
@@ -355,7 +366,15 @@ class Site (models.Model):
 
     def save(self, *args, **kwargs):
         if not self.sitename or self.sitename.strip() == '':
-            self.sitename = str(self.geometry.get_coords()[0]) + ', ' + str(self.geometry.get_coords()[1])
+            try:
+                use_timestamp = kwargs.pop('use_timestamp')
+            except KeyError:
+                use_timestamp = False
+            derived_name = str(self.geometry.get_coords()[0]) + ', ' + str(self.geometry.get_coords()[1])
+            if use_timestamp:
+                timestamp = datetime.datetime.now()
+                derived_name = "%s, %s" % (derived_name, timestamp)
+            self.sitename = derived_name
         if (not self.state or not self.county) and self.geometry:
             self.impute_state_county()
         super(Site, self).save(*args, **kwargs)
@@ -380,6 +399,19 @@ class Event (models.Model):
     def get_fields(self):
         return[(field.name, field.value_to_string(self)) for field in Event._meta.fields]
         
+    @property
+    def field_values(self):
+        """
+        return dict with keys as datasheet field names and values
+        """
+        fvals = FieldValue.objects.filter(event_id=self)
+        lut = self.datasheet_id.internal_fieldname_lookup
+        rvals = {}
+        for fval in fvals:
+            key = unicode(lut[fval.field_id.internal_name])
+            rvals[key] = (unicode(fval.field_value), fval.field_id.datatype.name)
+        return rvals
+
     @property
     def toDict(self):
         return {

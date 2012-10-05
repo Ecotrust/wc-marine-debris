@@ -59,7 +59,7 @@ class TestTransactionBulkUpload(TransactionTestCase):
         d = pq(response.content)
         el = d("ul.errorlist li")
         self.assertEqual(response.status_code, 400, response.content)
-        self.assertEqual(len(el), 3) # 3 events that already exist
+        self.assertEqual(len(el), 4, response.content) # 3 events that already exist plus a global error
         self.assertEqual(Event.objects.all().count(), num_events+3)
 
     def test_post_atomic(self):
@@ -96,8 +96,8 @@ class TestTransactionBulkUpload(TransactionTestCase):
         self.assertEqual(response.status_code, 400, response.content)
         # Expect 2 errors: "event 2 exists" AND "event 3 is new but not uploaded"
         self.assertEqual(len(el), 2) 
-        self.assertIn("new events were found but not loaded", el[0].text_content())
-        self.assertIn("Event already exists", el[1].text_content())
+        self.assertIn("events were found but not loaded", el[0].text_content())
+        self.assertIn("Duplicate Event", el[1].text_content())
         self.assertEqual(Event.objects.all().count(), num_events+2)
 
 class TestBulkUpload(TestCase):
@@ -155,8 +155,8 @@ class TestBulkUpload(TestCase):
         d = pq(response.content)
         el = d("ul.errorlist li")
         self.assertEqual(response.status_code, 400, response.content)
-        self.assertEqual(len(el), 1)
-        self.assertTrue("Enter a valid date/time" in el.html(), el.html())
+        self.assertEqual(len(el), 2, response.content)
+        self.assertTrue("Enter a valid date" in el.html(), el.html())
 
     def test_post_bad_minmax(self):
         self.client.login(username='featuretest', password='pword')
@@ -224,7 +224,7 @@ class TestBulkUpload(TestCase):
         el = d("ul.errorlist li")
         self.assertEqual(response.status_code, 400, response.content)
         self.assertEqual(len(el), 4)
-        self.assertTrue( "Row 1, column 'Dump: Appliances'" in el[0].text_content())
+        self.assertTrue( "Row 2, column 'Dump: Appliances'" in el[0].text_content(), response.content)
         self.assertTrue( "Enter a number" in el[3].text_content())
 
     def test_post_bad_csv(self):

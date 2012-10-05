@@ -217,7 +217,7 @@ class DataSheetForm(forms.Form):
                 elif field.default_value  != '':
                     dynamic_args['initial'] = datetime.datetime.strptime(field.default_value, "%Y-%m-%d")
                 dynamic_args['widget'] = forms.TextInput(attrs={'class':'date'})
-                self.fields['question_' + str(question.id)] = forms.DateTimeField( **dynamic_args )
+                self.fields['question_' + str(question.id)] = forms.DateField( **dynamic_args )
             
             elif datatype == 'Yes/No':
                 options = (('yes', 'Yes'), ('no', 'No'))
