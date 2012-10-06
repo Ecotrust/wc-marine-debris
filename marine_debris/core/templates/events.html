@@ -6,13 +6,13 @@
 {% endblock %}
 
 {% block includes %}
-    <script src="{{MEDIA_URL}}third-party/OpenLayers-2.12/OpenLayers.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{{STATIC_URL}}third-party/OpenLayers-2.12/OpenLayers.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" charset="utf-8">
         // Hack to support IE. See http://trac.openlayers.org/wiki/FrequentlyAskedQuestions#WhywontmyvectorlayerworkinIEbeforemypageisdoneloading
         document.namespaces;
     </script>
     {% if map %}
-        <script src="{{MEDIA_URL}}js/gwst/widgets/Map.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{{STATIC_URL}}js/gwst/widgets/Map.js" type="text/javascript" charset="utf-8"></script>
     {% endif %}
 {% endblock %}
 
