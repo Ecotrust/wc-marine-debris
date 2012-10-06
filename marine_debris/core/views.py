@@ -350,7 +350,7 @@ def get_site_key(ds, row):
     else:
         try:
             site_key = {
-                'geometry': 'POINT(%f %f)' % (float(get_required_val(ds,'lon', row)), float(get_required_val(ds,'lat', row))),
+                'geometry': 'POINT(%f %f)' % (float(get_required_val(ds,'longitude', row)), float(get_required_val(ds,'latitude', row))),
             }
         except ValueError:
             raise LatLonError()

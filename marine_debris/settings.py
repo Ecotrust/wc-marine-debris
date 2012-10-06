@@ -183,8 +183,8 @@ REQUIRED_FIELDS = {
         'county': 'County',
     },
     'coord-based': {
-        'lat': 'Latitude',
-        'lon': 'Longitude',
+        'latitude': 'Latitude',
+        'longitude': 'Longitude',
         'date': 'DG_Debris_Removed_Date',
     }
 }
