@@ -32,6 +32,7 @@ class Organization (models.Model):
     contact = models.TextField()
     phone = models.TextField()
     address = models.TextField()
+    users = models.ManyToManyField(User)
     
     def __unicode__(self):
         return self.orgname
@@ -112,6 +113,17 @@ class DataSheet (models.Model):
     @property
     def fieldnames(self):
         return [f.field_name for f in self.datasheetfield_set.all()]
+
+    @property
+    def internal_fieldname_lookup(self):
+        """
+        returns 
+        {
+            'Internal_Name': 'Datasheet Field Name',
+            .....
+        }
+        """
+        return dict([(x.field_id.internal_name, x.field_name) for x in self.datasheetfield_set.all()])
 
     @property
     def required_fieldnames(self):
@@ -258,6 +270,7 @@ class State (models.Model):
         
     class Meta:
         ordering = ['name', 'initials']
+        unique_together = (("name", "initials"))
         
     @property
     def toDict(self):
@@ -282,22 +295,16 @@ class Site (models.Model):
     @property
     def countyDict(self):
         sites = [ site.toDict for site in Site.objects.filter(county = self.county)]
+        if self.county:
+            county = self.county
+        else:
+            county = ''
         county_dict = {
-            'name': self.county,
+            'name': county,
             'sites': sites
         }
         return county_dict
         
-    @property
-    def toDict(self):
-        return {
-            "sitename": self.sitename,
-            "lat": self.geometry.get_coords()[1],
-            "lon": self.geometry.get_coords()[0],
-            "state": self.state.name,
-            "state_initials": self.state.initials,
-            "country": self.county
-       }
     @property
     def toDict(self):
         if self.geometry:
@@ -306,22 +313,71 @@ class Site (models.Model):
         else:
             lat = '' 
             lon = ''
+        if self.sitename:
+            sitename = self.sitename
+        else:
+            sitename = ''
+        if self.state:
+            state = self.state.name
+        else:
+            state = ''
+        if self.county:
+            county = self.county
+        else:
+            county = ''
         site_dict = {
-            'name': self.sitename,
+            'name': sitename,
             'lat': lat,
             'lon': lon,
-            'state': self.state.name,
-            'county': self.county
+            'state': state,
+            'county': county
         }
         return site_dict
         
     class Meta:
         unique_together = (("sitename", "state", "county"))
         
+    def impute_state_county(self):
+        '''
+        Based on the geometry, sets state and county
+        '''
+        pnt = self.geometry
+        counties = County.objects.filter(geom__bboverlaps=pnt.buffer(1)) # search in a 1 degree radius
+
+        closest = None
+        shortest_distance = 181
+        for county in counties:
+            if county.geom.intersects(pnt):
+                # direct hit
+                closest = county
+                break
+            d = county.geom.distance(pnt)
+            if d < shortest_distance:
+                # look for the closest if no direct hit
+                closest = county
+                shortest_distance = d
+
+        if not closest:
+            return None
+
+        self.county = closest.name
+        self.state = State.objects.filter(initials=closest.stateabr)[0]
+
+        return closest
+
     def save(self, *args, **kwargs):
         if not self.sitename or self.sitename.strip() == '':
-            self.sitename = str(self.geometry.get_coords()[0]) + ', ' + str(self.geometry.get_coords()[1])
-        #TODO if not state or county, determine based on coords?
+            try:
+                use_timestamp = kwargs.pop('use_timestamp')
+            except KeyError:
+                use_timestamp = False
+            derived_name = str(self.geometry.get_coords()[0]) + ', ' + str(self.geometry.get_coords()[1])
+            if use_timestamp:
+                timestamp = datetime.datetime.now()
+                derived_name = "%s, %s" % (derived_name, timestamp)
+            self.sitename = derived_name
+        if (not self.state or not self.county) and self.geometry:
+            self.impute_state_county()
         super(Site, self).save(*args, **kwargs)
 
 class Event (models.Model):
@@ -344,6 +400,18 @@ class Event (models.Model):
     def get_fields(self):
         return[(field.name, field.value_to_string(self)) for field in Event._meta.fields]
         
+    @property
+    def field_values(self):
+        """
+        return dict with keys as datasheet field names and values
+        """
+        fvals = FieldValue.objects.filter(event_id=self)
+        lut = self.datasheet_id.internal_fieldname_lookup
+        rvals = {}
+        for fval in fvals:
+            key = unicode(lut[fval.field_id.internal_name])
+            rvals[key] = (unicode(fval.field_value), fval.field_id.datatype.name)
+        return rvals
 
     @property
     def toDict(self):
@@ -368,3 +436,38 @@ class FieldValue (models.Model):
     class Meta:
         ordering = ['event_id', 'field_id__internal_name']
     
+
+# This is an auto-generated Django model module created by ogrinspect.
+class County(models.Model):
+    statefp = models.CharField(max_length=2)
+    countyfp = models.CharField(max_length=3)
+    name = models.CharField(max_length=100)
+    stateabr = models.CharField(max_length=2)
+    geom = models.MultiPolygonField(srid=4326)
+    objects = models.GeoManager()
+
+# Auto-generated `LayerMapping` dictionary for County model
+county_mapping = {
+    'statefp' : 'STATEFP',
+    'countyfp' : 'COUNTYFP',
+    'name' : 'NAME',
+    'stateabr' : 'STATEABR',
+    'geom' : 'MULTIPOLYGON',
+}
+
+
+from django.contrib.gis.utils import LayerMapping
+def load_shp(path, feature_class):
+    '''
+    Loads a shapefile into a model (used to load Counties in this case)
+    First we ran ogrinspect to generate the class and mapping. 
+        python manage.py ogrinspect ~/projects/marine_debris/counties/western_counties.shp County --mapping --srid=4326 --multi
+    Pasted code into models.py and modified as necessary.
+    Finally, loaded the shapefile from shell:
+        from core import models
+        models.load_shp('/home/mperry/projects/marine_debris/counties/western_counties.shp', models.County)
+    '''
+    mapping = eval("%s_mapping" % feature_class.__name__.lower())
+    print "Saving", path, "to", feature_class, "using", mapping
+    map1 = LayerMapping(feature_class, path, mapping, transform=False, encoding='iso-8859-1')
+    map1.save(strict=True, verbose=True)

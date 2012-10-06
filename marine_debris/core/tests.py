@@ -8,9 +8,11 @@ Replace this with more appropriate tests for your application.
 from django.test import TestCase, TransactionTestCase
 from django.test.client import Client
 from django.contrib.auth.models import User
-from core.models import DataSheet, Site, State, Event
+from django.contrib.gis.geos import GEOSGeometry 
+from core.models import DataSheet, Site, State, Event, Project
 from pyquery import PyQuery as pq
 import os
+import datetime
 
 
 class TestTransactionBulkUpload(TransactionTestCase):
@@ -30,6 +32,8 @@ class TestTransactionBulkUpload(TransactionTestCase):
         self.fpath = os.path.join(testdir, 'test_bulk.csv')
         self.fpath_events12 = os.path.join(testdir, 'test_bulk_events12.csv')
         self.fpath_events23 = os.path.join(testdir, 'test_bulk_events23.csv')
+        self.fpath_notadup = os.path.join(testdir, 'test_derelict_not_actually_a_dup_event.csv')
+        self.fpath_truedup = os.path.join(testdir, 'test_derelict_truedup_events.csv')
 
     def test_post(self):
         self.client.login(username='featuretest', password='pword')
@@ -57,7 +61,7 @@ class TestTransactionBulkUpload(TransactionTestCase):
         d = pq(response.content)
         el = d("ul.errorlist li")
         self.assertEqual(response.status_code, 400, response.content)
-        self.assertEqual(len(el), 3) # 3 events that already exist
+        self.assertEqual(len(el), 4, response.content) # 3 events that already exist plus a global error
         self.assertEqual(Event.objects.all().count(), num_events+3)
 
     def test_post_atomic(self):
@@ -94,9 +98,48 @@ class TestTransactionBulkUpload(TransactionTestCase):
         self.assertEqual(response.status_code, 400, response.content)
         # Expect 2 errors: "event 2 exists" AND "event 3 is new but not uploaded"
         self.assertEqual(len(el), 2) 
-        self.assertIn("new events were found but not loaded", el[0].text_content())
-        self.assertIn("Event already exists", el[1].text_content())
+        self.assertIn("events were found but not loaded", el[0].text_content())
+        self.assertIn("Duplicate Event", el[1].text_content())
         self.assertEqual(Event.objects.all().count(), num_events+2)
+
+    def test_post_not_really_dups(self):
+        """
+        We might see a new row with the same lat/lon and date. 
+        Is it truly NEW event that needs to be added (as looking for differing field values might indicate)
+        """
+        self.client.login(username='featuretest', password='pword')
+        url = '/datasheet/bulk_import/'
+        num_events = Event.objects.all().count()
+        with open(self.fpath_notadup) as f:
+            response = self.client.post(url, {
+                'organization': 'Coast Savers', 
+                'project_id': 1, 
+                'datasheet_id': 19,
+                'csvfile': f
+                }
+            )
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(Event.objects.all().count(), num_events+3) # 3 new events
+
+    def test_post_true_dups(self):
+        """
+        We might see a new row with the same lat/lon and date. 
+        Is it really a duplicate (as the unique clause on the event model might indicate) OR
+        """
+        self.client.login(username='featuretest', password='pword')
+        url = '/datasheet/bulk_import/'
+        num_events = Event.objects.all().count()
+        with open(self.fpath_truedup) as f:
+            response = self.client.post(url, {
+                'organization': 'Coast Savers', 
+                'project_id': 1, 
+                'datasheet_id': 19,
+                'csvfile': f
+                }
+            )
+        self.assertEqual(response.status_code, 400, response.content)
+        self.assertEqual(Event.objects.all().count(), num_events)  # nothing added
+
 
 class TestBulkUpload(TestCase):
     fixtures = ['test_data',]
@@ -153,8 +196,8 @@ class TestBulkUpload(TestCase):
         d = pq(response.content)
         el = d("ul.errorlist li")
         self.assertEqual(response.status_code, 400, response.content)
-        self.assertEqual(len(el), 1)
-        self.assertTrue("Enter a valid date/time" in el.html(), el.html())
+        self.assertEqual(len(el), 2, response.content)
+        self.assertTrue("Enter a valid date" in el.html(), el.html())
 
     def test_post_bad_minmax(self):
         self.client.login(username='featuretest', password='pword')
@@ -222,7 +265,7 @@ class TestBulkUpload(TestCase):
         el = d("ul.errorlist li")
         self.assertEqual(response.status_code, 400, response.content)
         self.assertEqual(len(el), 4)
-        self.assertTrue( "Row 1, column 'Dump: Appliances'" in el[0].text_content())
+        self.assertTrue( "Row 2, column 'Dump: Appliances'" in el[0].text_content(), response.content)
         self.assertTrue( "Enter a number" in el[3].text_content())
 
     def test_post_bad_csv(self):
@@ -329,3 +372,43 @@ class TestBulkCoordBased(TestCase):
         # should have 3 new events at 2 new sites
         self.assertEqual(Event.objects.all().count(), num_events+3)
         self.assertEqual(Site.objects.all().count(), num_sites+2)
+
+class TestCounty(TestCase):
+    fixtures = ['test_data', 'counties']
+
+    def test_counties(self):
+        pnt = GEOSGeometry('SRID=4326;POINT(-122 44)')
+        s = Site(geometry = pnt)
+        s.save()
+        self.assertEqual(s.state.initials, 'OR')
+        self.assertEqual(s.county, 'Lane')
+
+    def test_offshore(self):
+        pnt = GEOSGeometry('SRID=4326;POINT(-125 44)')
+        s = Site(geometry = pnt)
+        s.save()
+        self.assertEqual(s.state.initials, 'OR')
+        self.assertEqual(s.county, 'Lane')
+
+    def test_way_offshore(self):
+        pnt = GEOSGeometry('SRID=4326;POINT(-127 44)')
+        s = Site(geometry = pnt)
+        s.save()
+        self.assertEqual(s.state, None)
+        self.assertEqual(s.county, None)
+
+    def test_edge_case(self):
+        pnt = GEOSGeometry('SRID=4326;POINT(-124.014723 45.045150)')
+        s = Site(geometry = pnt)
+        s.save()
+        self.assertEqual(s.state.initials, 'OR')
+        self.assertEqual(s.county, 'Tillamook')
+
+    def test_presave(self):
+        pnt = GEOSGeometry('SRID=4326;POINT(-124.014723 45.045150)')
+        site = Site(sitename="TestSite3", geometry=pnt)
+        self.assertEqual(site.state, None)
+        self.assertEqual(site.county, None)
+        site.save()
+        self.assertEqual(site.state.initials, "OR")
+        self.assertEqual(site.county, "Tillamook")

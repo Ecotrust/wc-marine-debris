@@ -112,7 +112,7 @@ class CreateEventForm(forms.Form):
             }
         )
     )
-    site_name = forms.CharField(
+    sitename = forms.CharField(
         required=False,
         widget = forms.TextInput(
             attrs={
@@ -144,8 +144,8 @@ class CreateEventForm(forms.Form):
             try:
                 datasheet = DataSheet.objects.get(id = self.data['data_sheet'])
                 if datasheet.type_id.display_sites: 
-                    if self.data['site_name'].__len__() > 0:    #site will have name, and name is given
-                        records = Site.objects.filter(sitename=self.data['site_name'])
+                    if self.data['sitename'].__len__() > 0:    #site will have name, and name is given
+                        records = Site.objects.filter(sitename=self.data['sitename'])
                         for record in records:
                             if str(record.geometry.get_coords()[1]) == self.data['latitude'] and str(record.geometry.get_coords()[0]) == self.data['longitude'] and record.county == self.data['county'] and record.state.name == self.data['state']:
                                 matches = [record]
@@ -161,7 +161,7 @@ class CreateEventForm(forms.Form):
         return {'valid':valid, 'exists':exists, 'matches':matches, 'error':error}
     
 class DataSheetForm(forms.Form):
-    def __init__(self, datasheet, event=None, *args, **kwargs):
+    def __init__(self, datasheet, event=None, event_post=None, *args, **kwargs):
         self.datasheet_id = datasheet.id
         questions = DataSheetField.objects.select_related().filter(sheet_id=datasheet.id)
         if event:
@@ -177,6 +177,13 @@ class DataSheetForm(forms.Form):
             dynamic_args = {}
             other_dynamic_args = {}
             field = question.field_id
+                    
+            hidden = False
+            if question.field_id.internal_name in settings.REQUIRED_FIELDS[datasheet.site_type].values() and event_post:
+                hidden = True
+                reqflds = settings.REQUIRED_FIELDS[question.sheet_id.site_type]
+                key =  [k for k, v in reqflds.items() if v == question.field_id.internal_name][0]
+                dynamic_args['initial'] = event_post[key]
 
             datatype = field.datatype.name
             try:
@@ -184,7 +191,11 @@ class DataSheetForm(forms.Form):
             except KeyError:
                 answer = None
 
-            dynamic_args['label'] = question.print_name
+            if question.print_name and not question.print_name == '':
+                dynamic_args['label'] = question.print_name
+            else:
+                dynamic_args['label'] = question.field_name
+                
             dynamic_args['required'] = question.required
             
             if datatype in ['Area', 'Distance', 'Duration', 'Number', 'Volume', 'Weight']: 
@@ -193,49 +204,58 @@ class DataSheetForm(forms.Form):
                     dynamic_args['min_value'] = int(field.minvalue)
                 if field.maxvalue != None:
                     dynamic_args['max_value'] = int(field.maxvalue)
-                if answer:
-                    dynamic_args['initial'] = answer
-                elif field.default_value != '':
-                    dynamic_args['initial'] = int(field.default_value)
+                if not dynamic_args.has_key('initial'):
+                    if answer:
+                        dynamic_args['initial'] = answer
+                    elif field.default_value != '':
+                        dynamic_args['initial'] = int(field.default_value)
                 self.fields['question_' + str(question.id)] = forms.FloatField( **dynamic_args )
                 
             elif datatype == 'True/False':
-                if answer:
-                    dynamic_args['initial'] = answer
-                elif field.default_value != '':
-                    dynamic_args['initial'] = bool(field.default_value)
+                if not dynamic_args.has_key('initial'):
+                    if answer:
+                        dynamic_args['initial'] = answer
+                    elif field.default_value != '':
+                        dynamic_args['initial'] = bool(field.default_value)
                 dynamic_args['required'] = False
                 self.fields['question_' + str(question.id)] = forms.BooleanField( **dynamic_args )
                 
             elif datatype == 'Date':
-                if answer:
-                    dynamic_args['initial'] = datetime.datetime.strptime(answer, "%Y-%m-%d")
-                elif field.default_value  != '':
-                    dynamic_args['initial'] = datetime.datetime.strptime(field.default_value, "%Y-%m-%d")
+                if not dynamic_args.has_key('initial'):
+                    if answer:
+                        dynamic_args['initial'] = datetime.datetime.strptime(answer, "%Y-%m-%d")
+                    elif field.default_value  != '':
+                        dynamic_args['initial'] = datetime.datetime.strptime(field.default_value, "%Y-%m-%d")
                 dynamic_args['widget'] = forms.TextInput(attrs={'class':'date'})
-                self.fields['question_' + str(question.id)] = forms.DateTimeField( **dynamic_args )
+                self.fields['question_' + str(question.id)] = forms.DateField( **dynamic_args )
             
             elif datatype == 'Yes/No':
                 options = (('yes', 'Yes'), ('no', 'No'))
                 dynamic_args['choices'] = options
-                if answer:
-                    dynamic_args['initial'] = answer
-                elif field.default_value != '':
-                    dynamic_args['initial'] = field.default_value
+                if not dynamic_args.has_key('initial'):
+                    if answer:
+                        dynamic_args['initial'] = answer
+                    elif field.default_value != '':
+                        dynamic_args['initial'] = field.default_value
                 self.fields['question_' + str(question.id)] = forms.ChoiceField( **dynamic_args )
             
             else:
-                if answer:
-                    dynamic_args['initial'] = answer
-                elif field.default_value != '':
-                    dynamic_args['initial'] = field.default_value
+                if not dynamic_args.has_key('initial'):
+                    if answer:
+                        dynamic_args['initial'] = answer
+                    elif field.default_value != '':
+                        dynamic_args['initial'] = field.default_value
                 self.fields['question_' + str(question.id)] = forms.CharField( **dynamic_args )
 
             self.fields['question_' + str(question.id)].question = question
             self.fields['question_' + str(question.id)].field = field 
             self.fields['question_' + str(question.id)].answer = answer
             self.fields['question_' + str(question.id)].event = event
-            self.event = event
+
+            if hidden:
+                self.fields['question_' + str(question.id)].widget = self.fields['question_' + str(question.id)].hidden_widget()
+            
+        self.event = event
 
     def save(self):
         now = datetime.datetime.today()
@@ -243,12 +263,17 @@ class DataSheetForm(forms.Form):
             fld = self.fields[field_name]
             answer = self.cleaned_data[field_name]
             value = FieldValue.objects.get_or_create(event_id=fld.event, field_id=fld.field)[0]
-            value.field_value = str(answer)
+            value.field_value = unicode(answer)
             value.last_modified = now
             value.save()
         return True
            
 
 class CreateSiteForm(forms.ModelForm):
+    county = forms.CharField(required=True,)
+    sitename = forms.CharField(required=True,)
+    longitude = forms.CharField(required=False)
+    latitude = forms.CharField(required=False)
+    geometry = forms.CharField(widget=forms.HiddenInput())
     class Meta:
         model = Site
