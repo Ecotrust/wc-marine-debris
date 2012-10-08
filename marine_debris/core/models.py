@@ -420,7 +420,7 @@ class Event (models.Model):
         rvals = {}
         for fval in fvals:
             key = unicode(lut[fval.field_id.internal_name])
-            rvals[key] = (unicode(fval.field_value), fval.field_id.datatype.name)
+            rvals[key] = (fval.field_value, fval.field_id.datatype.name)
         return rvals
 
     @property

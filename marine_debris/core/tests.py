@@ -118,7 +118,7 @@ class TestTransactionBulkUpload(TransactionTestCase):
                 'csvfile': f
                 }
             )
-        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(Event.objects.all().count(), num_events+3) # 3 new events
 
     def test_post_true_dups(self):
@@ -137,7 +137,7 @@ class TestTransactionBulkUpload(TransactionTestCase):
                 'csvfile': f
                 }
             )
-        self.assertEqual(response.status_code, 400, response.content)
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(Event.objects.all().count(), num_events)  # nothing added
 
 
