@@ -40,6 +40,9 @@ img.olTileImage {
 #map .olControlAttribution {
 	bottom: 0px;
 }
+.clearfix {
+	clear: both;
+}
 /* tabs
 --------------------------------------------------------------------------------------------------------------------
    updated defaults for Bootstrap tabs, .wcga on .tabbable
@@ -75,6 +78,9 @@ img.olTileImage {
 	border: 1px solid #e8e8e8;
 	}
 
+.dataTables_length {
+	display: none;
+}
 /* tables table-striped, table-hover
 --------------------------------------------------------------------------------------------------------------------
    updated defaults for Bootstrap tables table-striped, table-hover, .wcga on .table-striped, .wcga on .table-hover
@@ -87,6 +93,9 @@ img.olTileImage {
 .wcga.table-hover tbody tr:hover th,
 .wcga.table-hover tbody tr:hover td { background-color: #eee; }
 
+.buttons {
+	margin-top: 50px;
+}
 
 .container { background: #fcfcfc; overflow: auto; }
 
