@@ -541,17 +541,21 @@ def bulk_import(request):
                                         break
 
                             if new_event: 
-                                # create a new site 
-                                new_site = Site(**site_key)
-                                new_site.save(use_timestamp=True)
+                                # increment the event dup id
+                                existing_events = Event.objects.filter(datasheet_id = ds, proj_id = project, cleanupdate = date, site = site)
+                                try:
+                                    maxdup = max([x.dup for x in existing_events])
+                                except ValueError:
+                                    maxdup = 0
 
                                 # and try again to create the event
                                 event = Event(
                                     datasheet_id = ds,
                                     proj_id = project,
                                     cleanupdate = date,
-                                    site = new_site,
+                                    site = site,
                                     submitted_by = request.user,
+                                    dup = maxdup + 1,
                                     status = 'New' 
                                 )
                                 try:
