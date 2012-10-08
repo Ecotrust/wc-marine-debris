@@ -33,6 +33,7 @@ i { margin-right: 5px; }
 
 #map {
 	height: 500px;
+	margin-bottom: 20px;
 }
 img.olTileImage {
     max-width: 256px !important;
@@ -42,6 +43,9 @@ img.olTileImage {
 }
 .clearfix {
 	clear: both;
+}
+.filter-box {
+	margin-top: 10px;
 }
 /* tabs
 --------------------------------------------------------------------------------------------------------------------
@@ -154,9 +158,9 @@ img.olTileImage {
 	margin: 10px; padding: 10px; min-height: 100px;
 	background: #fff;
 	border: 1px solid #eee;
-	-webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.25);
+	/*-webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.25);
        -moz-box-shadow: 0 1px 1px rgba(0,0,0,0.25);
-			box-shadow: 0 1px 1px rgba(0,0,0,0.25);
+			box-shadow: 0 1px 1px rgba(0,0,0,0.25);*/
 	}
 
 	.wcga-database h2 { margin-top: 0; }
