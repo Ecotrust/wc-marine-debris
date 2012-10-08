@@ -275,17 +275,20 @@ class State (models.Model):
         
     @property
     def toDict(self):
-    
         timeout=60*60*24*7
-    
         key = 'statecache_%s' % self.id
         res = cache.get(key)
         if res == None:
-            counties = [ site.countyDict for site in Site.objects.filter(state=self)]
+            counties = [x.county for x in Site.objects.filter(state=self).distinct('county')]
+            counties_list = []
+            for county in counties:
+                sites = [x.toDict for x in Site.objects.filter(state=self, county=county)]
+                county_dict = { 'name': county, 'sites': sites }
+                counties_list.append(county_dict)
             res = {
                 'name': self.name,
                 'initials': self.initials,
-                'counties': counties
+                'counties': counties_list
             }
             cache.set(key, res, timeout)
         return res
