@@ -525,15 +525,25 @@ def bulk_import(request):
                                 dtype = v[1]
                                 row_val_raw = row[k]
                                 if dtype in ['Area', 'Distance', 'Duration', 'Number', 'Volume', 'Weight']: 
-                                    if float(existing_val_raw) != float(row_val_raw):
-                                        new_event = True
-                                        break
+                                    try:
+                                        if float(existing_val_raw) != float(row_val_raw):
+                                            new_event = True
+                                            break
+                                    except ValueError:
+                                        if existing_val_raw != row_val_raw:
+                                            new_event = True
+                                            break
                                 elif dtype == 'Date':
-                                    extdate = parse_date(existing_val_raw)
-                                    rowdate = parse_date(row_val_raw)
-                                    if extdate != rowdate:
-                                        new_event = True
-                                        break
+                                    try:
+                                        extdate = parse_date(existing_val_raw)
+                                        rowdate = parse_date(row_val_raw)
+                                        if extdate != rowdate:
+                                            new_event = True
+                                            break
+                                    except ValueError:
+                                        if existing_val_raw != row_val_raw:
+                                            new_event = True
+                                            break
                                 else: #text
                                     if existing_val_raw != row_val_raw:
                                         new_event = True
