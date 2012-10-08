@@ -11,7 +11,7 @@ import sys
 with open(sys.argv[1], 'rb') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
-        pnt = GEOSGeometry('SRID=4326;POINT(%s %s)' % (row['latitude'], row['latitude']))
+        pnt = GEOSGeometry('SRID=4326;POINT(%s %s)' % (row['longitude'], row['latitude']))
         state = State.objects.get(name=row['state'])
         s = Site(geometry=pnt, sitename=row['sitename'], county=row['county'], state=state)
         s.save()
