@@ -20,8 +20,21 @@
     
 {% block leftcontent %}
 <h2>Search Database</h2>
- 
-                <div class="tabbable wcga">
+ <div class="row-fluid">
+   <div class="span12"> <!-- data-bind="options: locations, selectedOptions: locationFilter, chosen: true"  -->
+     <p>Filter by State and County</p>
+     <select class="location" data-placeholder="Filter by location(s)..." data-bind="foreach: states, selectedOptions: locationFilter" multiple style="width: 350px">
+         <optgroup data-bind="attr: {label: $data.name}">
+           <option data-bind="text: $data.name, value: $data.name" disabled></option>
+         <!-- ko foreach: $root.locations[$data.name].counties -->
+           <option data-bind="text: $data.name + ' County', value: $data"></option>
+         <!-- /ko -->
+         </optgroup>
+     </select>
+   </div>
+ </div>
+ <hr/>
+       <!--     <div class="tabbable wcga">
               <ul class="nav nav-tabs">
                   <li class="active">
                     <a href="#search-database-tab-content-location" data-toggle="tab">Location</a>
@@ -42,19 +55,7 @@
                 
                 <div class="tab-content">
                   <div class="tab-pane active" id="search-database-tab-content-location">
-                    <div class="row-fluid">
-                      <div class="span12"> <!-- data-bind="options: locations, selectedOptions: locationFilter, chosen: true"  -->
-                        <p>Filter by State and County</p>
-                        <select class="location" data-placeholder="Filter by location(s)..." data-bind="foreach: states, selectedOptions: locationFilter" multiple style="width: 350px">
-                            <optgroup data-bind="attr: {label: $data.name}">
-                              <option data-bind="text: $data.name, value: $data.name" disabled></option>
-                            <!-- ko foreach: $root.locations[$data.name].counties -->
-                              <option data-bind="text: $data.name + ' County', value: $data"></option>
-                            <!-- /ko -->
-                            </optgroup>
-                        </select>
-                      </div>
-                    </div>
+                    
                   </div>
                   <div class="tab-pane" id="search-database-tab-content-type-of-debris">
                     All Types of Debris
@@ -77,7 +78,7 @@
                   </div>
                 </div>
             </div>
-            
+           --> 
         <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { 
             dataSource: filteredEvents, options: {'bFilter': false, aLengthMenu: false}, 
             columns: [
