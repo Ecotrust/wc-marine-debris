@@ -29,8 +29,21 @@ i { margin-right: 5px; }
 .navbar .navbar-inner {
 	padding: 0px 10px 0px 0px;
 }
+.dataTables_wrapper{
+	margin-top: 25px;
+}
+.dataTables_info {
+position: absolute;
+	top: -22px;
+	left: 0px;
+}
 
 
+.dataTables_paginate {
+	position: absolute;
+	top: -22px;
+	right: 0px;
+}
 #map {
 	height: 500px;
 	margin-bottom: 20px;
