@@ -33,12 +33,19 @@ i { margin-right: 5px; }
 
 #map {
 	height: 500px;
+	margin-bottom: 20px;
 }
 img.olTileImage {
     max-width: 256px !important;
 }
 #map .olControlAttribution {
 	bottom: 0px;
+}
+.clearfix {
+	clear: both;
+}
+.filter-box {
+	margin-top: 10px;
 }
 /* tabs
 --------------------------------------------------------------------------------------------------------------------
@@ -75,6 +82,9 @@ img.olTileImage {
 	border: 1px solid #e8e8e8;
 	}
 
+.dataTables_length {
+	display: none;
+}
 /* tables table-striped, table-hover
 --------------------------------------------------------------------------------------------------------------------
    updated defaults for Bootstrap tables table-striped, table-hover, .wcga on .table-striped, .wcga on .table-hover
@@ -87,6 +97,9 @@ img.olTileImage {
 .wcga.table-hover tbody tr:hover th,
 .wcga.table-hover tbody tr:hover td { background-color: #eee; }
 
+.buttons {
+	margin-top: 50px;
+}
 
 .container { background: #fcfcfc; overflow: auto; }
 
@@ -145,9 +158,9 @@ img.olTileImage {
 	margin: 10px; padding: 10px; min-height: 100px;
 	background: #fff;
 	border: 1px solid #eee;
-	-webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.25);
+	/*-webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.25);
        -moz-box-shadow: 0 1px 1px rgba(0,0,0,0.25);
-			box-shadow: 0 1px 1px rgba(0,0,0,0.25);
+			box-shadow: 0 1px 1px rgba(0,0,0,0.25);*/
 	}
 
 	.wcga-database h2 { margin-top: 0; }

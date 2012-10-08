@@ -2,11 +2,12 @@
 
 {% block styles %}
     <link href="/site-media/third-party/chosen/chosen.css" rel="stylesheet" />
+    <link href="/site-media/third-party/jquery/css/jquery.dataTables.css" rel="stylesheet" />
 
 {% endblock %}
 
 {% block includes %}
-    <script src="{{STATIC_URL}}third-party/OpenLayers-2.12/OpenLayers.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/site-media/third-party/OpenLayers-2.12/OpenLayers.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" charset="utf-8">
         // Hack to support IE. See http://trac.openlayers.org/wiki/FrequentlyAskedQuestions#WhywontmyvectorlayerworkinIEbeforemypageisdoneloading
         document.namespaces;
@@ -19,8 +20,21 @@
     
 {% block leftcontent %}
 <h2>Search Database</h2>
- 
-                <div class="tabbable wcga">
+ <div class="row-fluid">
+   <div class="span12"> <!-- data-bind="options: locations, selectedOptions: locationFilter, chosen: true"  -->
+     <p>Filter by State and County</p>
+     <select class="location" data-placeholder="Filter by location(s)..." data-bind="foreach: states, selectedOptions: locationFilter" multiple style="width: 350px">
+         <optgroup data-bind="attr: {label: $data.name}">
+           <option data-bind="text: $data.name, value: $data.name" disabled></option>
+         <!-- ko foreach: $root.locations[$data.name].counties -->
+           <option data-bind="text: $data.name, value: $data"></option>
+         <!-- /ko -->
+         </optgroup>
+     </select>
+   </div>
+ </div>
+ <hr/>
+       <!--     <div class="tabbable wcga">
               <ul class="nav nav-tabs">
                   <li class="active">
                     <a href="#search-database-tab-content-location" data-toggle="tab">Location</a>
@@ -41,19 +55,7 @@
                 
                 <div class="tab-content">
                   <div class="tab-pane active" id="search-database-tab-content-location">
-                    <div class="row-fluid">
-                      <div class="span12"> <!-- data-bind="options: locations, selectedOptions: locationFilter, chosen: true"  -->
-                        <p>Filter by State and County</p>
-                        <select class="location" data-placeholder="Filter by location(s)..." data-bind="foreach: states, selectedOptions: locationFilter" multiple style="width: 350px">
-                            <optgroup data-bind="attr: {label: $data.name}">
-                              <option data-bind="text: $data.name, value: $data.name" disabled></option>
-                            <!-- ko foreach: $root.locations[$data.name].counties -->
-                              <option data-bind="text: $data.name + ' County', value: $data"></option>
-                            <!-- /ko -->
-                            </optgroup>
-                        </select>
-                      </div>
-                    </div>
+                    
                   </div>
                   <div class="tab-pane" id="search-database-tab-content-type-of-debris">
                     All Types of Debris
@@ -76,39 +78,19 @@
                   </div>
                 </div>
             </div>
-            <p class="pull-right">
-            <label class="checkbox">
-                <input type="checkbox" data-bind="checked: filterByExtent"> Only show reports within extent of map
-              </label>
-            </p>
-    <table class="table wcga table-striped table-hover table-condensed">
-      <tr>
-        <th>Description</th>
-        <th>Site</th>
-        <th>Location</th>
-        <th>Organization</th>
-        <th>Project</th>
-        <th>Date</th>
-      </tr>
-    <tbody data-bind="foreach: filteredEvents">
-    <tr id="event-row" data-bind="with: $data">
-      <!--<td><a href="/event/view/{{r.event_details.event.id}}">{{r.event_details.event.id}}</a></td>-->
-      <td>description</td>
-      <td><span data-bind="text: event.site.name"></span></td>
-      <td><span data-bind="text: event.site.state"></span>, <span data-bind="text: event.site.county"></span></td>
-      <td><span data-bind="text: organization.name"></span></td>
-      <td><span data-bind="text: project.name"></span></td>
-      <td><span data-bind="text: date"></td>
-
-    <!--  <td><form method="get" action="/event/edit/{{r.event.id}}">
-        <input id="edit" class='btn' name="edit" type="submit" value="Edit"  />
-    </form></td>
-    <td><form method="get" action="/event/delete/{{r.event.id}}">
-        <input id="delete-view" class='btn' name="delete-view" type="submit" value="Delete" />
-    </form></td>-->
-    </tr>
+           --> 
+        <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { 
+            dataSource: filteredEvents, options: {'bFilter': false, iDisplayLength: 5}, 
+            columns: [
+                { mDataProp: 'site.name', sTitle: 'Site'},
+                { mDataProp: 'site.state', sTitle: 'State' },
+                { mDataProp: 'project.name', sTitle: 'Project Name'},
+                { mDataProp: 'date', sTitle: 'Date' }
+            ]
+        }">    
     </table>
-<p class="align-right">
+<div class="row-fluid buttons">
+<p class="pull-right">
   <a href="/datasheet/bulk_import" class="btn">
     <i class="icon-share-alt"></i> Import Events
   </a>
@@ -116,6 +98,7 @@
     <i class="icon-plus"></i> Create Event 
   </a>
 </p>
+</div>
 {% endblock %}    
 {% block rightcontent %}
     {%if data %}
@@ -125,6 +108,13 @@
             <p>report!</p>
         {% else %}
             <div id="map"></div>
+            <div class="clearfix filter-box">
+              <p class="pull-right">
+              <label class="checkbox">
+                  <input type="checkbox" data-bind="checked: filterByExtent"> Only show reports within extent of map
+                </label>
+              </p>
+            </div>
         {% endif %}
     {% endif %}
 

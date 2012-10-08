@@ -46,6 +46,7 @@ def events(request, submit=False):
         result.append({'event_details':event_details})
         event_dicts.append({
                 "event": event.toDict,
+                "site": event.site.toDict,
                 "organization": event_details['org'].organization_id.toDict,
                 "date": event_details['date'],
                 "project": proj.toDict
