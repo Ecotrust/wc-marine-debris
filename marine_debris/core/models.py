@@ -378,15 +378,8 @@ class Site (models.Model):
 
     def save(self, *args, **kwargs):
         if not self.sitename or self.sitename.strip() == '':
-            try:
-                use_timestamp = kwargs.pop('use_timestamp')
-            except KeyError:
-                use_timestamp = False
-            derived_name = str(self.geometry.get_coords()[0]) + ', ' + str(self.geometry.get_coords()[1])
-            if use_timestamp:
-                timestamp = datetime.datetime.now()
-                derived_name = "%s, %s" % (derived_name, timestamp)
-            self.sitename = derived_name
+            self.sitename = str(self.geometry.get_coords()[0]) + ', ' + str(self.geometry.get_coords()[1])
+
         if (not self.state or not self.county) and self.geometry:
             self.impute_state_county()
         
@@ -407,6 +400,7 @@ class Event (models.Model):
     proj_id = models.ForeignKey(Project)
     cleanupdate = models.DateField(default=datetime.date.today())
     site = models.ForeignKey(Site, null=True, blank=True, default= None)
+    dup = models.IntegerField(default=0)
     submitted_by = models.ForeignKey(User, null=True, blank=True, default=None)
     status = models.CharField(max_length=30, choices=StatusChoices, default='New', blank=True)
     
@@ -438,7 +432,7 @@ class Event (models.Model):
     
     class Meta:
         ordering = ['proj_id__projname', 'site', 'cleanupdate']
-        unique_together = (("datasheet_id", "proj_id", "cleanupdate", "site"),)
+        unique_together = (("datasheet_id", "proj_id", "cleanupdate", "site", "dup"),)
     
 class FieldValue (models.Model):
     field_id = models.ForeignKey(Field)

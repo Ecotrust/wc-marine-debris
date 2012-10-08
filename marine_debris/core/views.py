@@ -526,32 +526,46 @@ def bulk_import(request):
                                 dtype = v[1]
                                 row_val_raw = row[k]
                                 if dtype in ['Area', 'Distance', 'Duration', 'Number', 'Volume', 'Weight']: 
-                                    if float(existing_val_raw) != float(row_val_raw):
-                                        new_event = True
-                                        break
+                                    try:
+                                        if float(existing_val_raw) != float(row_val_raw):
+                                            new_event = True
+                                            break
+                                    except ValueError:
+                                        if existing_val_raw != row_val_raw:
+                                            new_event = True
+                                            break
                                 elif dtype == 'Date':
-                                    extdate = parse_date(existing_val_raw)
-                                    rowdate = parse_date(row_val_raw)
-                                    if extdate != rowdate:
-                                        new_event = True
-                                        break
+                                    try:
+                                        extdate = parse_date(existing_val_raw)
+                                        rowdate = parse_date(row_val_raw)
+                                        if extdate != rowdate:
+                                            new_event = True
+                                            break
+                                    except ValueError:
+                                        if existing_val_raw != row_val_raw:
+                                            new_event = True
+                                            break
                                 else: #text
                                     if existing_val_raw != row_val_raw:
                                         new_event = True
                                         break
 
                             if new_event: 
-                                # create a new site 
-                                new_site = Site(**site_key)
-                                new_site.save(use_timestamp=True)
+                                # increment the event dup id
+                                existing_events = Event.objects.filter(datasheet_id = ds, proj_id = project, cleanupdate = date, site = site)
+                                try:
+                                    maxdup = max([x.dup for x in existing_events])
+                                except ValueError:
+                                    maxdup = 0
 
                                 # and try again to create the event
                                 event = Event(
                                     datasheet_id = ds,
                                     proj_id = project,
                                     cleanupdate = date,
-                                    site = new_site,
+                                    site = site,
                                     submitted_by = request.user,
+                                    dup = maxdup + 1,
                                     status = 'New' 
                                 )
                                 try:
