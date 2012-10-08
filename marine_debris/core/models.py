@@ -8,6 +8,7 @@ from datetime import date
 from django.contrib.gis.admin import OSMGeoAdmin
 from south.modelsinspector import add_introspection_rules
 add_introspection_rules([], ["^django\.contrib\.gis\.db\.models\.fields\.PointField"])
+from django.core.cache import cache
 
 # Create your models here.
 class DataType (models.Model):
@@ -274,13 +275,20 @@ class State (models.Model):
         
     @property
     def toDict(self):
-        counties = [ site.countyDict for site in Site.objects.filter(state=self)]
-        state_dict = {
-            'name': self.name,
-            'initials': self.initials,
-            'counties': counties
-        }
-        return state_dict
+    
+        timeout=60*60*24*7
+    
+        key = 'statecache_%s' % self.id
+        res = cache.get(key)
+        if res == None:
+            counties = [ site.countyDict for site in Site.objects.filter(state=self)]
+            res = {
+                'name': self.name,
+                'initials': self.initials,
+                'counties': counties
+            }
+            cache.set(key, res, timeout)
+        return res
         
 class Site (models.Model):
     sitename = models.TextField(blank=True, null=True)
@@ -378,6 +386,11 @@ class Site (models.Model):
             self.sitename = derived_name
         if (not self.state or not self.county) and self.geometry:
             self.impute_state_county()
+        
+        if self.state:
+            key = 'statecache_%s' % self.state.id
+            cache.delete(key)
+        
         super(Site, self).save(*args, **kwargs)
 
 class Event (models.Model):
