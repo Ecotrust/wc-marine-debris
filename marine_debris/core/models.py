@@ -427,7 +427,8 @@ class Event (models.Model):
     def toDict(self):
         return {
             "site": self.site.toDict,
-            "project": self.proj_id.toDict
+            "project": self.proj_id.toDict,
+            "id": self.id
         } 
     
     class Meta:
