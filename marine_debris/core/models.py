@@ -127,6 +127,17 @@ class DataSheet (models.Model):
         return dict([(x.field_id.internal_name, x.field_name) for x in self.datasheetfield_set.all()])
 
     @property
+    def unit_lookup(self):
+        """
+        returns
+        {
+            'Internal_Name': 'Datasheet Field Unit',
+            .....
+        }
+        """
+        return dict([(datasheet.field_id.internal_name, datasheet.unit_id.short_name) for datasheet in self.datasheetfield_set.all()])
+        
+    @property
     def required_fieldnames(self):
         """
         Collects the fieldnames for required fields of two types:
@@ -430,17 +441,30 @@ class Event (models.Model):
         """
         fvals = FieldValue.objects.filter(event_id=self)
         name_lut = self.datasheet_id.internal_fieldname_lookup
-        # unit_lut = self.datasheet_id.unit_lookup
+        unit_lut = self.datasheet_id.unit_lookup
         rvals = []
         for fval in fvals:
-            key = unicode(name_lut[fval.field_id.internal_name])
+            text = unicode(name_lut[fval.field_id.internal_name])
+            value = fval.field_value
+            unit = unicode(unit_lut[fval.field_id.internal_name])
+            if value.isalpha() and value == 'None' or value == '':
+                value = ''
+                unit = ''
+            else:
+                try:
+                    if float(value) == 0.0:
+                        value = ''
+                        unit = ''
+                except ValueError:
+                    pass
+            if unit == 'Text' or unit == 'Count':
+                unit = ''
             rvals.append({
-                'text': key,
-                'value': fval.field_value, 
-                'unit': ''
+                'text': text,
+                'value': value, 
+                'unit': unit
             })
         return rvals
-    
 
     @property
     def toDict(self):
