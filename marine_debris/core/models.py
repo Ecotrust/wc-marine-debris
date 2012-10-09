@@ -135,7 +135,7 @@ class DataSheet (models.Model):
             .....
         }
         """
-        return dict([(datasheet.field_id.internal_name, datasheet.unit_id.short_name) for datasheet in self.datasheetfield_set.all()])
+        return dict([(datasheet.field_id.internal_name, datasheet.unit_id.short_name) for datasheet in self.datasheetfield_set.all() if datasheet.unit_id])
         
     @property
     def required_fieldnames(self):
@@ -446,7 +446,10 @@ class Event (models.Model):
         for fval in fvals:
             text = unicode(name_lut[fval.field_id.internal_name])
             value = fval.field_value
-            unit = unicode(unit_lut[fval.field_id.internal_name])
+            if fval.field_id.internal_name in unit_lut.keys():
+                unit = unicode(unit_lut[fval.field_id.internal_name])
+            else:
+                unit = ''
             if value.isalpha() and value == 'None' or value == '':
                 value = ''
                 unit = ''
