@@ -205,14 +205,9 @@ def edit_event(request, event_id):
     
 def view_event(request, event_id):
     event = Event.objects.get(id=event_id)
-    site = Site.objects.get(id=event.site.id)
-    values = FieldValue.objects.filter(event_id=event_id)
-    fields = []
-    for value in values:
-        field_name = Field.objects.get(id=value.field_id.id).internal_name
-        field = (field_name, value.field_value)
-        fields.append(field)
-    return render_to_response('view_event.html', RequestContext(request,{'event':event, 'site':site, 'fields':fields, 'active':'events'}))
+    fields = simplejson.dumps(event.field_values_list)
+    
+    return HttpResponse(fields, mimetype='application/json')
     
 @login_required
 def delete_event(request, event_id):
@@ -507,6 +502,7 @@ def bulk_import(request):
                         submitted_by = request.user,
                         status = 'New' 
                     )
+                    events.append(event)
                     try:
                         sid = transaction.savepoint()
                         event.save()
@@ -514,45 +510,58 @@ def bulk_import(request):
                         if e.message.startswith('duplicate key value violates unique constraint "core_event'):
                             transaction.savepoint_rollback(sid)
 
-                            # get the fieldvalues of the existing duplicate event
-                            event = Event.objects.get(datasheet_id = ds, proj_id = project, cleanupdate = date, site = site)
-                            existing = event.field_values
+                            # check against ALL events that match
+                            existing_events = Event.objects.filter(datasheet_id = ds, proj_id = project, cleanupdate = date, site = site)
 
                             # compare existing values to the current row's values 
                             # i.e. determine if it is indeed a new event or a true duplicate
                             new_event = False
-                            for k, v in existing.items():
-                                existing_val_raw = v[0]
-                                dtype = v[1]
-                                row_val_raw = row[k]
-                                if dtype in ['Area', 'Distance', 'Duration', 'Number', 'Volume', 'Weight']: 
+                            for e in existing_events:
+                                existing = e.field_values
+
+                                for k, v in existing.items():
+                                    existing_val_raw = v[0]
+                                    dtype = v[1]
+
                                     try:
-                                        if float(existing_val_raw) != float(row_val_raw):
+                                        row_val_raw = row[k]
+                                    except KeyError:
+                                        row_val_raw = None
+
+                                    if existing_val_raw in [u'None', u'', None]:
+                                        if row_val_raw is not None and row_val_raw != '':
                                             new_event = True
                                             break
-                                    except ValueError:
+                                        else: 
+                                            continue
+
+                                    if dtype in ['Area', 'Distance', 'Duration', 'Number', 'Volume', 'Weight']: 
+                                        try:
+                                            if float(existing_val_raw) != float(row_val_raw):
+                                                new_event = True
+                                                break
+                                        except ValueError:
+                                            if existing_val_raw != row_val_raw:
+                                                new_event = True
+                                                break
+                                    elif dtype == 'Date':
+                                        try:
+                                            extdate = parse_date(existing_val_raw)
+                                            rowdate = parse_date(row_val_raw)
+                                            if extdate != rowdate:
+                                                new_event = True
+                                                break
+                                        except ValueError:
+                                            if existing_val_raw != row_val_raw:
+                                                new_event = True
+                                                break
+                                    else: #text
                                         if existing_val_raw != row_val_raw:
                                             new_event = True
                                             break
-                                elif dtype == 'Date':
-                                    try:
-                                        extdate = parse_date(existing_val_raw)
-                                        rowdate = parse_date(row_val_raw)
-                                        if extdate != rowdate:
-                                            new_event = True
-                                            break
-                                    except ValueError:
-                                        if existing_val_raw != row_val_raw:
-                                            new_event = True
-                                            break
-                                else: #text
-                                    if existing_val_raw != row_val_raw:
-                                        new_event = True
-                                        break
 
                             if new_event: 
                                 # increment the event dup id
-                                existing_events = Event.objects.filter(datasheet_id = ds, proj_id = project, cleanupdate = date, site = site)
                                 try:
                                     maxdup = max([x.dup for x in existing_events])
                                 except ValueError:
@@ -575,13 +584,12 @@ def bulk_import(request):
                                         dups += 1
                                         errors.append('Duplicate event already exists <br> (%s, %s, %s, %s)' % (project.projname,
                                             ds.sheetname, site.sitename, date))
+                                        continue
                             else:
                                 dups += 1
                                 errors.append('Duplicate Event <br/> (%s, %s, %s, %s)' % (project.projname,
                                     ds.sheetname, site.sitename, date))
-
-                                #transaction.rollback()
-                                #continue
+                                continue
                         else:
                             raise e # something unexepected
 
@@ -596,9 +604,6 @@ def bulk_import(request):
                     else:
                         raise Exception("""Somehow the datasheetform is now invalid 
                           (despite just validating it previously without event)... errors are '%s'""" % str(ds_final_form.errors))
-
-                    # all is well for this event
-                    events.append(event)
 
                 if len(errors) > 0:
                     transaction.rollback()
