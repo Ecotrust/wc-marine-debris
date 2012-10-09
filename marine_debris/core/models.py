@@ -422,6 +422,25 @@ class Event (models.Model):
             key = unicode(lut[fval.field_id.internal_name])
             rvals[key] = (fval.field_value, fval.field_id.datatype.name)
         return rvals
+        
+    @property
+    def field_values_list(self):
+        """
+        return a list of dicts of field values. KEYS: 'text', 'value', 'unit'
+        """
+        fvals = FieldValue.objects.filter(event_id=self)
+        name_lut = self.datasheet_id.internal_fieldname_lookup
+        # unit_lut = self.datasheet_id.unit_lookup
+        rvals = []
+        for fval in fvals:
+            key = unicode(name_lut[fval.field_id.internal_name])
+            rvals.append({
+                'text': key,
+                'value': fval.field_value, 
+                'unit': ''
+            })
+        return rvals
+    
 
     @property
     def toDict(self):

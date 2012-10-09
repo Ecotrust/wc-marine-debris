@@ -205,14 +205,9 @@ def edit_event(request, event_id):
     
 def view_event(request, event_id):
     event = Event.objects.get(id=event_id)
-    site = Site.objects.get(id=event.site.id)
-    values = FieldValue.objects.filter(event_id=event_id)
-    fields = []
-    for value in values:
-        field_name = Field.objects.get(id=value.field_id.id).internal_name
-        field = (field_name, value.field_value)
-        fields.append(field)
-    return render_to_response('view_event.html', RequestContext(request,{'event':event, 'site':site, 'fields':fields, 'active':'events'}))
+    fields = simplejson.dumps(event.field_values_list)
+    
+    return HttpResponse(fields, mimetype='application/json')
     
 @login_required
 def delete_event(request, event_id):
