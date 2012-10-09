@@ -127,6 +127,9 @@
                 </div>      
               </div>
               <div class="tab-pane" id="event-details-content">
+                <div data-bind="ifnot: activeEvent">
+                  <p>Click on an event in the table for details.</p>
+                </div>
                 <div data-bind="if: activeEvent">
                   <div data-bind="with: activeEvent">
                     <h4><span data-bind="text: site.name"></span></h4>
@@ -139,11 +142,13 @@
                       <dt>date</dt>
                       <dd><span data-bind="text: date"></span></dd>
                     </dl>
-                    <table class="table">
-                      <tr>
-                        <td>location</td>
-                        <td><span</td>
-                      </tr>
+                    <table class="table" data-bind="if: data">
+                      <tbody data-bind="foreach: data">
+                        <tr>
+                          <td data-bind="text: text">l/td>
+                          <td><span data-bind="text: value"></span> <span data-bind="text: unit"></span></td>
+                        </tr>
+                      </tbody>
                     </table>
                   </div>
                 </div>
@@ -251,10 +256,19 @@
           pos = new OpenLayers.LonLat(event.event.site.lon, event.event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
       $target.addClass('active');
       $target.siblings().removeClass('active');
+      
+      if (! event.data) {
+        event.data = ko.observable(false);
+        $.get('/event/view/'+event.event.id, function (data) {
+          app.activeEvent().data(data);
+        });
+      }
+
+
       self.activeEvent(event);
+
       if (! self.filterByExtent()) {
         map.setCenter(pos, 12);
-
       }
       
     };
