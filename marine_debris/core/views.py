@@ -44,12 +44,15 @@ def events(request, submit=False):
         event_details['event'] = event
         result.append({'event_details':event_details})
         event_dicts.append({
-                "event": event.toDict,
-                "site": event.site.toDict,
-                "organization": event_details['org'].organization_id.toDict,
-                "date": event_details['date'],
-                "project": proj.toDict
-            })
+            "event": event.toEventsDict,
+            "site": event.site.toDict,
+            "organization": {
+                "name": event_details['org'].organization_id.orgname
+            },
+            "date": event_details['date'],
+            "project": {"name": proj.projname}
+        })
+        
     return render_to_response( 'events.html', RequestContext(request,{'result':result, 'submit':submit, 'active':'events', 'event_json': simplejson.dumps(event_dicts)}))
 
 @login_required
