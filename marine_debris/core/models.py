@@ -188,11 +188,15 @@ class DataSheet (models.Model):
 
     @property
     def toDict(self):
+        if self.type_id:
+            type = self.type_id.type
+        else:
+            type = 'None'
         ds_dict = {
             'name': self.sheetname,
             'start_date': self.year_started,
             'id': self.id,
-            'event_type':self.type_id.type,
+            'event_type':type,
         }
         return ds_dict
     
