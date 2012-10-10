@@ -33,61 +33,19 @@
      </select>
    </div>
  </div>
-       <!--     <div class="tabbable wcga">
-              <ul class="nav nav-tabs">
-                  <li class="active">
-                    <a href="#search-database-tab-content-location" data-toggle="tab">Location</a>
-                  </li>
-                  <li>
-                    <a href="#search-database-tab-content-type-of-debris" data-toggle="tab">Type of debris</a>
-                  </li>
-                  <li>
-                    <a href="#search-database-tab-content-organization" data-toggle="tab">Organization</a>
-                  </li>
-                  <li>
-                    <a href="#search-database-tab-content-date" data-toggle="tab">Date</a>
-                  </li>
-                  <li>
-                    <a href="#search-database-tab-content-keyword" data-toggle="tab">Keyword</a>
-                  </li>
-              </ul>
-                
-                <div class="tab-content">
-                  <div class="tab-pane active" id="search-database-tab-content-location">
-                    
-                  </div>
-                  <div class="tab-pane" id="search-database-tab-content-type-of-debris">
-                    All Types of Debris
-                  </div>
-                  <div class="tab-pane" id="search-database-tab-content-organization">
-                    All Organizations
-                  </div>
-                  <div class="tab-pane" id="search-database-tab-content-date">
-                    All Dates
-                  </div>
-                  <div class="tab-pane" id="search-database-tab-content-keyword">
-                    <form>
-                      <div class="input-append">
-                          <input type="text" class="span4">
-                          <button type="submit" class="btn">
-                            <i class="icon-search"></i> Search
-                          </button>
-                        </div>
-                    </form>
-                  </div>
-                </div>
-            </div>
-           --> 
-        <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { 
-            dataSource: filteredEvents, rowTemplate: 'rowTemplate', options: {'bFilter': false, iDisplayLength: 5}, 
-            columns: [
-                { mDataProp: 'site.name', sTitle: 'Site'},
-                { mDataProp: 'site.state', sTitle: 'State' },
-                { mDataProp: 'project.name', sTitle: 'Project Name'},
-                { mDataProp: 'date', sTitle: 'Date' }
-              ]
-        }">    
+  <div class="events-table">
+    <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { 
+        dataSource: filteredEvents, rowTemplate: 'rowTemplate', options: {'bFilter': false, iDisplayLength: 5}, 
+        columns: [
+            { mDataProp: 'site.name', sTitle: 'Site'},
+            { mDataProp: 'site.state', sTitle: 'State' },
+            { mDataProp: 'project.name', sTitle: 'Project Name'},
+            { mDataProp: 'date', sTitle: 'Date' }
+          ]
+    }">    
     </table>
+  </div>
+
 <div class="row-fluid buttons">
 <p class="pull-right">
   <a href="/datasheet/bulk_import" class="btn">
@@ -142,14 +100,16 @@
                       <dt>date</dt>
                       <dd><span data-bind="text: date"></span></dd>
                     </dl>
-                    <table class="table" data-bind="if: data">
-                      <tbody data-bind="foreach: data">
-                        <tr>
-                          <td data-bind="text: text">l/td>
-                          <td><span data-bind="text: value"></span> <span data-bind="text: unit"></span></td>
-                        </tr>
-                      </tbody>
-                    </table>
+                    <div data-bind="if: data">
+                      <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { dataSource: data,  columns: [{mDataProp: 'text', sTitle: 'Text'}, {mDataProp:'value', sTitle: 'Value'}, { bSortable: false, mDataProp: 'unit' }] }">
+                        <tbody>
+                          <tr data-bind="visible: value">
+                            <td data-bind="text: text">l/td>
+                            <td><span data-bind="text: value"></span> <span data-bind="text: unit"></span></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </div>
