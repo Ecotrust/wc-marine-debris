@@ -52,14 +52,16 @@ def get_events():
                 event_details['org'] = orgs[0]
             org = Organization.objects.filter()
             event_details['event'] = event
+            dict = event.toEventsDict
             res.append({
-                "event": event.toEventsDict,
-                "site": event.site.toDict,
+                "date": event_details['date'],
                 "organization": {
                     "name": event_details['org'].organization_id.orgname
                 },
-                "date": event_details['date'],
-                "project": {"name": proj.projname}
+                "project": dict['project'],
+                "site": dict['site'],
+                "datasheet": dict['datasheet'],
+                "id": dict['id'],
             })
         cache.set(key, res, timeout)
     return res
