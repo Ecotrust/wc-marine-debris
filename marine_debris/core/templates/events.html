@@ -37,7 +37,7 @@
         <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { 
             dataSource: filteredEvents, rowTemplate: 'rowTemplate', options: {'bFilter': false, iDisplayLength: 5}, 
             columns: [
-                { mDataProp: 'event.datasheet.event_type', sTitle: 'Event Type'},
+                { mDataProp: 'datasheet.event_type', sTitle: 'Event Type'},
                 { mDataProp: 'site.name', sTitle: 'Site'},
                 { mDataProp: 'site.county', sTitle: 'County'},
                 { mDataProp: 'site.st_initials', sTitle: 'State' },
@@ -126,7 +126,7 @@
 
 <script src="/site-media/third-party/chosen/chosen.jquery.js"></script>
 <script type="text/html" id="rowTemplate">
-  <td data-bind="text: event.datasheet.event_type, click: $root.zoomTo"></td>
+  <td data-bind="text: datasheet.event_type, click: $root.zoomTo"></td>
   <td data-bind="text: site.name, click: $root.zoomTo"></td>
   <td data-bind="text: site.county, click: $root.zoomTo"></td>
   <td data-bind="text: site.st_initials, click: $root.zoomTo"></td>
@@ -146,8 +146,8 @@
     
     // populate location list for filtering
     $.each(self.events, function (i, event) {
-      var state = event.event.site.state,
-          county = event.event.site.county,
+      var state = event.site.state,
+          county = event.site.county,
           countiesl
       if (self.locations[state]) {
         counties = $.map(self.locations[state].counties, function (county) {
@@ -158,8 +158,8 @@
         }
       } else {
         self.locations[state] = {
-          counties: [{name: event.event.site.county, type: 'county'}],
-          state: event.event.site.state
+          counties: [{name: event.site.county, type: 'county'}],
+          state: event.site.state
         } 
       }
     });
@@ -186,7 +186,7 @@
       $.each(self.events, function (i, event) {
         if (self.locationFilter() && self.locationFilter().length !== 0) {
           $.each(self.locationFilter(), function (i, filter) {
-            if ((filter.type === 'state' && filter.name === event.event.site.state) || (filter.type === 'county' && filter.name === event.event.site.county)) {
+            if ((filter.type === 'state' && filter.name === event.site.state) || (filter.type === 'county' && filter.name === event.site.county)) {
               if (self.filterByExtent()) {
                         if (self.mapExtent().containsLonLat(event.pos)) {
                           filteredEvents.push(event);                
@@ -219,13 +219,13 @@
     self.zoomTo = function (event, e) {
 
       var $target = $(e.target).closest('tr'),
-          pos = new OpenLayers.LonLat(event.event.site.lon, event.event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
+          pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
       $target.addClass('active');
       $target.siblings().removeClass('active');
       
       if (! event.data) {
         event.data = ko.observable(false);
-        $.get('/event/view/'+event.event.id, function (data) {
+        $.get('/event/view/'+event.id, function (data) {
           app.activeEvent().data(data);
         });
       }
@@ -246,7 +246,7 @@
   app.addMakers = function (events) {
     app.markers.clearMarkers();
     $.each(events, function (i, event) {
-      var pos = new OpenLayers.LonLat(event.event.site.lon, event.event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
+      var pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
       event.pos = pos;
       app.markers.addMarker(new OpenLayers.Marker(pos));
     });

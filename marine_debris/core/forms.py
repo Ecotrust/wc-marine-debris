@@ -167,7 +167,7 @@ class CreateEventForm(forms.Form):
         error = None
         datasheet = DataSheet.objects.get(id = self.data['data_sheet'])
         if datasheet.type_id.display_sites:
-            state = State.objects.get(name = self.data['state'])
+            state = State.objects.get(initials = self.data['state'])
             sites = Site.objects.filter(sitename = self.data['sitename'], county = self.data['county'], state = state)
         else:
             point = Point(float(self.data['longitude']), float(self.data['latitude']))
