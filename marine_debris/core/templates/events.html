@@ -33,6 +33,7 @@
      </select>
    </div>
  </div>
+<<<<<<< HEAD
   <div class="events-table">
     <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { 
         dataSource: filteredEvents, rowTemplate: 'rowTemplate', options: {'bFilter': false, iDisplayLength: 5}, 
@@ -43,6 +44,63 @@
             { mDataProp: 'date', sTitle: 'Date' }
           ]
     }">    
+=======
+       <!--     <div class="tabbable wcga">
+              <ul class="nav nav-tabs">
+                  <li class="active">
+                    <a href="#search-database-tab-content-location" data-toggle="tab">Location</a>
+                  </li>
+                  <li>
+                    <a href="#search-database-tab-content-type-of-debris" data-toggle="tab">Type of debris</a>
+                  </li>
+                  <li>
+                    <a href="#search-database-tab-content-organization" data-toggle="tab">Organization</a>
+                  </li>
+                  <li>
+                    <a href="#search-database-tab-content-date" data-toggle="tab">Date</a>
+                  </li>
+                  <li>
+                    <a href="#search-database-tab-content-keyword" data-toggle="tab">Keyword</a>
+                  </li>
+              </ul>
+                
+                <div class="tab-content">
+                  <div class="tab-pane active" id="search-database-tab-content-location">
+                    
+                  </div>
+                  <div class="tab-pane" id="search-database-tab-content-type-of-debris">
+                    All Types of Debris
+                  </div>
+                  <div class="tab-pane" id="search-database-tab-content-organization">
+                    All Organizations
+                  </div>
+                  <div class="tab-pane" id="search-database-tab-content-date">
+                    All Dates
+                  </div>
+                  <div class="tab-pane" id="search-database-tab-content-keyword">
+                    <form>
+                      <div class="input-append">
+                          <input type="text" class="span4">
+                          <button type="submit" class="btn">
+                            <i class="icon-search"></i> Search
+                          </button>
+                        </div>
+                    </form>
+                  </div>
+                </div>
+            </div>
+           --> 
+        <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { 
+            dataSource: filteredEvents, rowTemplate: 'rowTemplate', options: {'bFilter': false, iDisplayLength: 5}, 
+            columns: [
+                { mDataProp: 'event.datasheet.event_type', sTitle: 'Event Type'},
+                { mDataProp: 'site.name', sTitle: 'Site'},
+                { mDataProp: 'site.county', sTitle: 'County'},
+                { mDataProp: 'site.st_initials', sTitle: 'State' },
+                { mDataProp: 'date', sTitle: 'Date' }
+              ]
+        }">    
+>>>>>>> origin/master
     </table>
   </div>
 
@@ -125,9 +183,10 @@
 
 <script src="/site-media/third-party/chosen/chosen.jquery.js"></script>
 <script type="text/html" id="rowTemplate">
+  <td data-bind="text: event.datasheet.event_type, click: $root.zoomTo"></td>
   <td data-bind="text: site.name, click: $root.zoomTo"></td>
-  <td data-bind="text: site.state, click: $root.zoomTo"></td>
-  <td data-bind="text: project.name, click: $root.zoomTo"></td>
+  <td data-bind="text: site.county, click: $root.zoomTo"></td>
+  <td data-bind="text: site.st_initials, click: $root.zoomTo"></td>
   <td data-bind="text: date, click: $root.zoomTo"></td>
 </script>
 {% endblock %}

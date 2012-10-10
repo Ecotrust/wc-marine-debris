@@ -17,7 +17,6 @@ from django.contrib.gis.geos import Point
 from django.utils.http import urlencode
 import datetime
 import string
-import datetime
 import logging
 import csv
 from forms import *
@@ -45,12 +44,15 @@ def events(request, submit=False):
         event_details['event'] = event
         result.append({'event_details':event_details})
         event_dicts.append({
-                "event": event.toDict,
-                "site": event.site.toDict,
-                "organization": event_details['org'].organization_id.toDict,
-                "date": event_details['date'],
-                "project": proj.toDict
-            })
+            "event": event.toEventsDict,
+            "site": event.site.toDict,
+            "organization": {
+                "name": event_details['org'].organization_id.orgname
+            },
+            "date": event_details['date'],
+            "project": {"name": proj.projname}
+        })
+        
     return render_to_response( 'events.html', RequestContext(request,{'result':result, 'submit':submit, 'active':'events', 'event_json': simplejson.dumps(event_dicts)}))
 
 @login_required
@@ -117,11 +119,12 @@ def event_location(request):
     event['organization'] = eventForm.data['organization']
     event['project'] = eventForm.data['project']
     event['date'] = eventForm.data['date']
-    datasheetName = DataSheet.objects.get(id=eventForm.data['data_sheet']).sheetname
-    event['data_sheet'] = datasheetName
+    datasheet = DataSheet.objects.get(id=eventForm.data['data_sheet'])
+    event['data_sheet'] = datasheet.sheetname
     site_check = eventForm.validate_site()
+    unique_check = eventForm.validate_unique()
     
-    if site_check['valid']:        #TODO: Manage new sites here!
+    if site_check['valid'] and unique_check['valid']:        #TODO: Manage new sites here!
         for item in eventForm.fields.items():
             eventForm.fields[item[0]].widget = eventForm.fields[item[0]].hidden_widget()
         datasheet_id = eventForm.data['data_sheet']
@@ -136,15 +139,25 @@ def event_location(request):
 
         return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'eventForm': eventForm.as_p(), 'event':event, 'active':'events'}))
     else :
+    
+        error = 'There is an error in your location data. Please be sure to fill out all required fields.'
+        if not site_check['valid'] and not site_check['error'] == '':
+            error = site_check['error']
+        elif not unique_check['valid'] and not unique_check['error'] == '':
+            error = unique_check['error']
+    
         eventForm.fields['organization'].widget = eventForm.fields['organization'].hidden_widget()
         eventForm.fields['project'].widget = eventForm.fields['project'].hidden_widget()
         eventForm.fields['date'].widget = eventForm.fields['date'].hidden_widget()
         eventForm.fields['data_sheet'].widget = eventForm.fields['data_sheet'].hidden_widget()
+        if not datasheet.type_id.display_sites:
+            eventForm.fields['county'].widget = eventForm.fields['county'].hidden_widget()
+            eventForm.fields['sitename'].widget = eventForm.fields['sitename'].hidden_widget()
         
         state_dict = [state.toDict for state in State.objects.all()]
         state_json = simplejson.dumps(state_dict)
         
-        return render_to_response('event_location.html', RequestContext(request, {'form': eventForm.as_p(), 'states': state_json, 'event':event, 'active': 'events', 'error': 'There is an error in your location data. Please be sure to fill out all required fields.'}))
+        return render_to_response('event_location.html', RequestContext(request, {'form': eventForm.as_p(), 'states': state_json, 'event':event, 'active': 'events', 'error': error }))
 
 @login_required
 def event_save(request):
@@ -154,7 +167,17 @@ def event_save(request):
         datasheet = DataSheet.objects.get(id=createEventForm.data['data_sheet'])
         state = State.objects.get(initials=createEventForm.data['state'])
         point = Point(float(createEventForm.data['longitude']), float(createEventForm.data['latitude']))
-        site = Site.objects.get_or_create(state = state, county = createEventForm.data['county'], geometry = point, sitename = createEventForm.data['sitename'])
+        
+        if datasheet.type_id.display_sites:        
+            sitename = createEventForm.data['sitename']
+        else:
+            sitename = "%s, %s" % (createEventForm.data['longitude'], createEventForm.data['latitude'])
+
+        if createEventForm.data['county'] == '':
+            site = Site.objects.get_or_create(state = state, geometry = str(point), sitename = sitename)
+        else:
+            site = Site.objects.get_or_create(state = state, county = createEventForm.data['county'], geometry = str(point), sitename = sitename)
+        
         date = datetime.datetime.strptime(createEventForm.data['date'], '%m/%d/%Y')
         event = Event(proj_id = project, datasheet_id = datasheet, cleanupdate = date, site = site[0])
         event.save()

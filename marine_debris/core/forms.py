@@ -4,7 +4,9 @@ from django.forms.util import ValidationError
 from django.forms.util import ErrorList
 import re, datetime
 from django.forms import TextInput, Textarea
+from django.contrib.gis.geos import Point
 from cgi import escape
+import datetime
 
 class EventForm(forms.ModelForm):
     class Meta:
@@ -159,6 +161,26 @@ class CreateEventForm(forms.Form):
             except:
                 valid = False                   #datasheet not found. Not valid.
         return {'valid':valid, 'exists':exists, 'matches':matches, 'error':error}
+        
+    def validate_unique(self, *args, **kwargs):
+        valid = True
+        error = None
+        datasheet = DataSheet.objects.get(id = self.data['data_sheet'])
+        if datasheet.type_id.display_sites:
+            state = State.objects.get(name = self.data['state'])
+            sites = Site.objects.filter(sitename = self.data['sitename'], county = self.data['county'], state = state)
+        else:
+            point = Point(float(self.data['longitude']), float(self.data['latitude']))
+            sites = Site.objects.filter(geometry = point)
+        if sites.__len__() > 0:
+            for site in sites:
+                date = datetime.datetime.date(datetime.datetime.strptime(self.data['date'], "%m/%d/%Y"))
+                project = Project.objects.get(projname = self.data['project'])
+                dupes = Event.objects.filter(cleanupdate = date, proj_id = project, site = site, datasheet_id = datasheet)
+                if dupes.__len__() > 0:
+                    error = 'An event for this project, date, location, and datasheet already exists! Please do not enter duplicate data.'
+                    valid = False
+        return {'valid': valid, 'error': error}
     
 class DataSheetForm(forms.Form):
     def __init__(self, datasheet, event=None, event_post=None, *args, **kwargs):
@@ -223,9 +245,9 @@ class DataSheetForm(forms.Form):
             elif datatype == 'Date':
                 if not dynamic_args.has_key('initial'):
                     if answer:
-                        dynamic_args['initial'] = datetime.datetime.strptime(answer, "%Y-%m-%d")
+                        dynamic_args['initial'] = datetime.datetime.date(datetime.datetime.strptime(answer, "%Y-%m-%d"))
                     elif field.default_value  != '':
-                        dynamic_args['initial'] = datetime.datetime.strptime(field.default_value, "%Y-%m-%d")
+                        dynamic_args['initial'] = datetime.datetime.date(datetime.datetime.strptime(field.default_value, "%Y-%m-%d"))
                 dynamic_args['widget'] = forms.TextInput(attrs={'class':'date'})
                 self.fields['question_' + str(question.id)] = forms.DateField( **dynamic_args )
             

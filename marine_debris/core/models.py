@@ -188,10 +188,15 @@ class DataSheet (models.Model):
 
     @property
     def toDict(self):
+        if self.type_id:
+            type = self.type_id.type
+        else:
+            type = 'None'
         ds_dict = {
             'name': self.sheetname,
             'start_date': self.year_started,
             'id': self.id,
+            'event_type':type,
         }
         return ds_dict
     
@@ -341,8 +346,10 @@ class Site (models.Model):
             sitename = ''
         if self.state:
             state = self.state.name
+            st_initials = self.state.initials
         else:
             state = ''
+            st_initials = ''
         if self.county:
             county = self.county
         else:
@@ -352,6 +359,7 @@ class Site (models.Model):
             'lat': lat,
             'lon': lon,
             'state': state,
+            'st_initials': st_initials,
             'county': county
         }
         return site_dict
@@ -474,7 +482,19 @@ class Event (models.Model):
         return {
             "site": self.site.toDict,
             "project": self.proj_id.toDict,
-            "id": self.id
+            "id": self.id,
+            "datasheet": self.datasheet_id.toDict
+        } 
+        
+    @property
+    def toEventsDict(self):
+        return {
+            "site": self.site.toDict,
+            "project": {
+                "name": self.proj_id.projname
+            },
+            "id": self.id,
+            "datasheet": self.datasheet_id.toDict
         } 
     
     class Meta:
