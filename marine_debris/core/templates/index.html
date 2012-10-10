@@ -1,21 +1,45 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div style="height:250px">
-        <h1>WCGA Marine Debris Database</h1>
+    <div id="myCarousel" class="carousel slide">
+      <!-- Carousel items -->
+      <div class="carousel-inner">
+        <div class="active item">
+            <img src="{{MEDIA_URL}}/img/big_sur.jpg"/>
+        </div>
+        <div class="item">
+            <img src="{{MEDIA_URL}}/img/beach.jpg"/>
+        </div>
+        <div class="item">
+            <img src="{{MEDIA_URL}}/img/seals.jpg"/>
+        </div>
+      </div>
+      <!-- Carousel nav -->
+      <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+      <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
     </div>
 {% endblock %}
 {% block leftcontent %}
-    <h1>About The Database</h1>
-    <p>With the help of partner organizations such as Save our Shores and the Surfrider Foundation, The West Coast Governor's Association has established a database to track marine debris.</p>
-    <p>Debris is tracked by [location], [type] and [partner organization].  Information from the database can be visualized in reports and maps on this website or downloaded for further analysis.</p>
+   <h2>Explore the Database</h2>
+   <p>This database provides comprehensive access to information on West Coast marine debris including beach cleanups and derelict gear removal.</p>
+   <ul>
+        <li>Search and download data</li>
+        <li>Sign in and add an event</li>
+        <!-- <li>View reports [not available in beta]</li>   
+        <li>Learn about contributing organizations [not available in beta]</li>-->
+    </ul> 
 {% endblock %}
 {% block rightcontent %}
-    <!--<img src="http://29.media.tumblr.com/tumblr_m0e71x9dTu1r6e6ylo1_400.gif" />
-    <img src="http://25.media.tumblr.com/tumblr_lmfstuAT7i1qdapaao1_250.gif" />
-    <img src="http://24.media.tumblr.com/tumblr_m2x17daGJP1r73wdao1_250.gif" />
-     <img src="http://mikecane.files.wordpress.com/2007/03/kitten.jpg" /> 
-    <img src="http://24.media.tumblr.com/tumblr_lx0csyDRUL1qdlh1io1_250.gif" />
-    <!--<img src="http://25.media.tumblr.com/tumblr_lk64ayaE4h1qbhtrto1_500.gif" />
-    <img src="http://25.media.tumblr.com/tumblr_lx13rlDw4J1r88qbco1_500.gif" />-->
+    <h2>About the Marine Debris Action Coordination Team</h2>
+    <p>As part of the West Coast Governors Alliance (WCGA) on Ocean Health, the Marine Debris Action Coordination Team (ACT) brings together stakeholders and experts representing state, federal, regional, tribal, and not-for-profit organizations within Washington, Oregon, and California to create a framework to identify, assess, prevent and reduce marine debris.</p>
+    <ul>
+        <li><a href="http://westcoastoceans.org">Learn more about the WCGA</a></li>
+        <li><a>Learn more about the WCGA Marine Debris ACT</a></li>
+    </ul>
+    <h2>Impacts of marine debris</h2>
+    <p>Marine debris is a pervasive global problem that impacts human safety, commerce, wildlife, and the environment.    Much of the debris generated along the West Coast ends up in the Pacific Ocean,  and its impacts can cross jurisdictional lines.  Therefore, working collaboratively on a regional  scale can increase the effectiveness of tackling this issue.</p>
+    <ul>
+        <li><a href="http://marinedebris.noaa.gov/">Learn more about marine debris</a></li>
+    </ul>
+
 {% endblock %}
