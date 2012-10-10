@@ -86,7 +86,7 @@
     <div class="navbar-inner">
       <ul class="nav">
         {% ifequal active 'home' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/">Home</a></li>
-        {% ifequal active 'events' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/events">Events</a></li>
+        {% ifequal active 'events' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/events">Data</a></li>
         {% if user.is_superuser %}
             {% ifequal active 'admin' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/admin">Admin</a></li>
         {% endif %}
@@ -100,8 +100,8 @@
       </div>
     </div>
   </div>
-  <!--
-    <div class="row">
+  
+  <div class="row">
     <div class="span12 content-header">
       {% block content %}
         <div style="height:125px">
@@ -110,7 +110,6 @@
 
       </div>
     </div>
-  -->
   <div class="row">
       <div class="span6">
         <div class="wcga-database wcga-database-left">
