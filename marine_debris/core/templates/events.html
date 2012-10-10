@@ -1,4 +1,4 @@
-{% extends "data_base.html" %}
+{% extends "base.html" %}
 
 {% block styles %}
     <link href="/site-media/third-party/chosen/chosen.css" rel="stylesheet" />
@@ -135,7 +135,7 @@
 {% endblock %}
 
 {% block js %}
-  function viewModel() {
+ function viewModel() {
     var self = this;
     
     self.events = {{event_json|safe}};
@@ -324,6 +324,6 @@
 
     });
     app.addMakers(app.filteredEvents());
-  })
+  }) 
 {% endblock %}
     
