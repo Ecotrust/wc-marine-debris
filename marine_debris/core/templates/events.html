@@ -37,7 +37,6 @@
         <table class="table wcga table-striped table-hover table-condensed" id="events-table" data-bind="dataTable: { 
             dataSource: filteredEvents, rowTemplate: 'rowTemplate', options: {'bFilter': false, iDisplayLength: 5}, 
             columns: [
-                { mDataProp: 'id', sTitle: 'id'},
                 { mDataProp: 'datasheet.event_type', sTitle: 'Event Type'},
                 { mDataProp: 'site.name', sTitle: 'Site'},
                 { mDataProp: 'site.county', sTitle: 'County'},
@@ -127,7 +126,6 @@
 
 <script src="/site-media/third-party/chosen/chosen.jquery.js"></script>
 <script type="text/html" id="rowTemplate">
-  <td data-bind="text: id, click: $root.zoomTo"></td>
   <td data-bind="text: datasheet.event_type, click: $root.zoomTo"></td>
   <td data-bind="text: site.name, click: $root.zoomTo"></td>
   <td data-bind="text: site.county, click: $root.zoomTo"></td>
