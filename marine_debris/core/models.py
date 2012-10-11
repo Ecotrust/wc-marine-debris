@@ -488,15 +488,16 @@ class Event (models.Model):
         
     @property
     def toEventsDict(self):
+        proj = self.proj_id
         return {
             "site": self.site.toDict,
             "project": {
-                "name": self.proj_id.projname
+                "name": proj.projname
             },
             "id": self.id,
             "datasheet": self.datasheet_id.toDict,
             "organization": {
-                "name": self.proj_id.projectorganization_set.order_by('-is_lead')[0].organization_id.orgname
+                "name": proj.projectorganization_set.order_by('-is_lead')[0].organization_id.orgname
             },
             "date" : self.cleanupdate.strftime('%m/%d/%Y')
         } 
