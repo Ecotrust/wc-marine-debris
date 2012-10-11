@@ -494,8 +494,20 @@ class Event (models.Model):
                 "name": self.proj_id.projname
             },
             "id": self.id,
-            "datasheet": self.datasheet_id.toDict
+            "datasheet": self.datasheet_id.toDict,
+            "organization": {
+                "name": self.proj_id.projectorganization_set.order_by('-is_lead')[0].organization_id.orgname
+            },
+            "date" : self.cleanupdate.strftime('%m/%d/%Y')
         } 
+        
+    def save(self, *args, **kwargs):
+        
+        if self.id:
+            key = 'eventcache_%s' % self.id
+            cache.delete(key)
+        
+        super(Event, self).save(*args, **kwargs)
     
     class Meta:
         ordering = ['proj_id__projname', 'site', 'cleanupdate']

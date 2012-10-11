@@ -189,6 +189,16 @@ REQUIRED_FIELDS = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+        'OPTIONS': {
+            'MAX_ENTRIES': 100000,
+        },
+    }
+}
+
 SOUTH_TESTS_MIGRATE = False
 
 SERVER_SRID = 4326

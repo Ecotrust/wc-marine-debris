@@ -34,42 +34,18 @@ def events(request, submit=False):
     return render_to_response( 'events.html', RequestContext(request,{'submit':submit, 'active':'events', 'event_json': simplejson.dumps(event_dicts)}))
     
 def get_events():
-    timeout=60*60*24*7
-    key = 'eventcache'
-    res = cache.get(key)
-    if res == None:
-        qs = Event.objects.filter()
-        res = []
-        for event in qs.all(): 
-            event_details = {}
-            event_details['date'] = event.cleanupdate.strftime('%m/%d/%Y')
-            proj = event.proj_id
-            orgs = ProjectOrganization.objects.filter(project_id = proj.id)
-            lead_org = orgs.filter(is_lead=True)
-            if lead_org.count() == 1:
-                event_details['org'] = lead_org[0]
-            else:
-                event_details['org'] = orgs[0]
-            org = Organization.objects.filter()
-            event_details['event'] = event
+    qs = Event.objects.filter()
+    res = []
+    for event in qs: 
+        timeout=60*60*24*7*52*10
+        key = 'eventcache_%s' % event.id
+        dict = cache.get(key)
+        if not dict:
             dict = event.toEventsDict
-            res.append({
-                "date": event_details['date'],
-                "organization": {
-                    "name": event_details['org'].organization_id.orgname
-                },
-                "project": dict['project'],
-                "site": dict['site'],
-                "datasheet": dict['datasheet'],
-                "id": dict['id'],
-            })
-        cache.set(key, res, timeout)
+            cache.set(key, dict, timeout)
+        res.append(dict)
     return res
 
-def clear_event_cache():
-    key = 'eventcache'
-    cache.delete(key)
-    
 @login_required
 def create_event(request):
     if request.method == 'GET':
@@ -200,7 +176,6 @@ def event_save(request):
             datasheetForm = DataSheetForm(event.datasheet_id, event, None, request.POST)
         if event.id and datasheetForm.is_valid():
             datasheetForm.save()
-            clear_event_cache()
             return HttpResponseRedirect('/events/True')
         else:
             Event.delete(event)
