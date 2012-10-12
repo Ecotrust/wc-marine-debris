@@ -57,7 +57,7 @@ def get_events(request):
     if count:
         qs = Event.objects.filter()[int(start_index):int(start_index) + int(count)]
     else:
-        qs = Event.objects.filter()[0:300]
+        qs = Event.objects.filter()
     res = []
     for event in qs: 
         timeout=60*60*24*7*52*10

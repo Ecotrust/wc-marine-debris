@@ -141,20 +141,14 @@ function viewModel(options) {
 
 };
 
-app.get_events = function (start_index, count) {
+app.get_events = function () {
   $.ajax({
         url: "/events/get",
         type: 'GET',
-        data: { 'count': count, 'start_index': start_index},
         dataType: 'json'
   }).done(function(events) { 
-    
     app.viewModel.addEvents(events);
     app.addPoints(app.viewModel.filteredEvents());
-    start_index = start_index + count;
-    if (start_index < event_count) {
-      app.get_events(start_index, count);
-    }
   });
 };
 
@@ -218,8 +212,7 @@ $.ajax({
       
     });
   }).then(function () {
-    var start_index = 0, count = 100;
-    app.get_events(start_index, count);
+    app.get_events();
 
   });
 
