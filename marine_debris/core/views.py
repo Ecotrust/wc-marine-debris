@@ -52,7 +52,12 @@ def get_locations(request):
     }))
     
 def get_events(request):
-    qs = Event.objects.filter()
+    start_index = request.GET.get('start_index', 0)
+    count = request.GET.get('count', False)
+    if count:
+        qs = Event.objects.filter()[parse_int(start_index):parse_int(start_index) + parse_int(count)]
+    else:
+        qs = Event.objects.filter()[0:300]
     res = []
     for event in qs: 
         timeout=60*60*24*7*52*10

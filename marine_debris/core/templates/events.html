@@ -133,6 +133,10 @@
   <td data-bind="text: date, click: $root.zoomTo"></td>
 </script>
 
+<script>
+  var event_count = {{event_count|safe}};
+</script>
+
 <script src="/site-media/js/events.js"></script>
 {% endblock %}
 
