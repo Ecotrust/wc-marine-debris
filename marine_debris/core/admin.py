@@ -6,6 +6,7 @@ from django.db import models
 
 
 databrowse.site.register(AnswerOption)
+databrowse.site.register(County)
 databrowse.site.register(DataSheet)
 databrowse.site.register(DataSheetField)
 databrowse.site.register(DataType)
@@ -47,6 +48,13 @@ class ProjectOrganizationInline(admin.TabularInline):
     }
      
 class AnswerOptionAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.TextField: {
+            'widget': TextInput()
+        },
+    }
+    
+class CountyAdmin(admin.ModelAdmin):
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -180,6 +188,7 @@ class UnitAdmin(admin.ModelAdmin):
     
     
 admin.site.register(AnswerOption,AnswerOptionAdmin)
+admin.site.register(County,CountyAdmin)
 admin.site.register(DataSheet,DataSheetAdmin)
 admin.site.register(DataSheetField,DataSheetFieldAdmin)
 admin.site.register(DataType,DataTypeAdmin)
