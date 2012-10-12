@@ -174,11 +174,8 @@ function viewModel() {
 app.viewModel = new viewModel()
 
 app.addPoints = function(events) {
-  //app.points.destroyFeatures();
-  $.each(events, function(i, event) {
-   
-    //app.markers.addMarker(new OpenLayers.Marker(pos));
-  });
+  app.points.removeAllFeatures();
+  app.points.addFeatures($.map(events, function (event) { return event.feature; }))
 };
 
 // bind the viewmodel
