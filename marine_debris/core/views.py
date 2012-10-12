@@ -55,7 +55,7 @@ def get_events(request):
     start_index = request.GET.get('start_index', 0)
     count = request.GET.get('count', False)
     if count:
-        qs = Event.objects.filter()[parse_int(start_index):parse_int(start_index) + parse_int(count)]
+        qs = Event.objects.filter()[int(start_index):int(start_index) + int(count)]
     else:
         qs = Event.objects.filter()[0:300]
     res = []

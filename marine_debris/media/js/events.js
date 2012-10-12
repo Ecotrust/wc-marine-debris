@@ -40,25 +40,29 @@ app.points = new OpenLayers.Layer.Vector("Events", {
 function viewModel(options) {
   var self = this;
 
-  self.events = options.events;
+  self.events = ko.observableArray();
   self.states = options.locations.states;
   self.locations = options.locations.locations;
 
   self.locationFilter = ko.observableArray();
 
   // populate points
-  $.each(self.events, function(i, event) {
-    var state = event.site.state,
-      pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")),
-      point = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(event.site.lon, event.site.lat));
+  self.addEvents = function (events) {
+    $.each(events, function(i, event) {
+      var state = event.site.state,
+        pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")),
+        point = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(event.site.lon, event.site.lat));
 
-    event.pos = pos;
-    event.feature = point;
-    point.event = event;
-    point.geometry.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
-    app.points.addFeatures(point);
-    app.points.drawFeature(point);
-  });
+      event.pos = pos;
+      event.feature = point;
+      point.event = event;
+      point.geometry.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
+      app.points.addFeatures(point);
+      app.points.drawFeature(point);
+      self.events().push(event);
+    });
+    self.events.valueHasMutated();
+  }
 
   // store mapextent here
   self.mapExtent = ko.observable();
@@ -69,7 +73,7 @@ function viewModel(options) {
   self.filteredEvents = ko.computed(function() {
     var filteredEvents = [];
     self.showSpinner(true);
-    $.each(self.events, function(i, event) {
+    $.each(self.events(), function(i, event) {
       if(self.locationFilter() && self.locationFilter().length !== 0) {
         $.each(self.locationFilter(), function(i, filter) {
           if((filter.type === 'state' && filter.name === event.site.state) || (filter.type === 'county' && filter.name === event.site.county)) {
@@ -137,28 +141,87 @@ function viewModel(options) {
 
 };
 
-$.when(
-    $.ajax({
-      url: "/events/get_locations",
-      type: 'GET',
-      dataType: 'json'
-    }),
-    $.ajax({
-      url: "/events/get",
-      type: 'GET'
-    })
-).then(function(locations, events_json) { 
-  var events = JSON.parse(events_json[0]);
-  app.viewModel = new viewModel({
-    locations:locations[0], 
-    events: events
+app.get_events = function (start_index, count) {
+  $.ajax({
+        url: "/events/get",
+        type: 'GET',
+        data: { 'count': count, 'start_index': start_index},
+        dataType: 'json'
+  }).done(function(events) { 
+    
+    app.viewModel.addEvents(events);
+    app.addPoints(app.viewModel.filteredEvents());
+    start_index = start_index + count;
+    if (start_index < event_count) {
+      app.get_events(start_index, count);
+    }
   });
-  // bind the viewmodel
-  ko.applyBindings(app.viewModel);
-  $(".location").chosen();
-  app.viewModel.mapExtent(map.getExtent());
-  app.addPoints(app.viewModel.filteredEvents());
-});
+};
+
+$.ajax({
+    url: "/events/get_locations",
+    type: 'GET',
+    dataType: 'json'
+  }).done(function (locations) {
+    app.viewModel = new viewModel({
+      locations: locations
+    });
+    // bind the viewmodel
+    ko.applyBindings(app.viewModel);  
+    app.viewModel.mapExtent(map.getExtent());
+
+    $(".location").chosen();
+
+
+    $(document).ready(function() {
+      $(".location").chosen().change(function(event, option) {
+        var $select = $(event.target);
+        if(option.deselected) {
+          $select.find('[value="' + option.deselected + '"]').attr('disabled', 'disabled');
+          app.viewModel.locationFilter.remove(function(filter) {
+            return filter.name === option.deselected;
+          })
+          $select.trigger("liszt:updated");
+
+        }
+      });
+
+      $('.chzn-results').on('click', '.group-result', function(event) {
+        var $optgroup = $(event.target),
+          name = $optgroup.text(),
+          $select = $('.location'),
+          $option = $select.find('[value="' + name + '"]'),
+          index = -1,
+          selected = $select.val() || [];
+
+        $.each(app.viewModel.locationFilter(), function(i, filter) {
+          if(filter.name === name) {
+            index = i;
+          }
+        });
+        if(index === -1) {
+          $option.removeAttr('disabled');
+          selected.push(name)
+          app.viewModel.locationFilter.push({
+            name: name,
+            type: 'state'
+          });
+        } else {
+          $option.attr('disabled', true);
+          selected.splice($.inArray(name, selected), 1);
+          app.viewModel.locationFilter.splice(index, 1);
+
+        }
+        $select.val(selected);
+        $select.trigger("liszt:updated");
+      });
+      
+    });
+  }).then(function () {
+    var start_index = 0, count = 100;
+    app.get_events(start_index, count);
+
+  });
 
 app.addPoints = function(events) {
   app.points.removeAllFeatures();
@@ -203,49 +266,3 @@ map.events.register("moveend", map, function() {
 });
 
 
-
-$(document).ready(function() {
-  $(".location").change(function(event, option) {
-    var $select = $(event.target);
-    if(option.deselected) {
-      $select.find('[value="' + option.deselected + '"]').attr('disabled', 'disabled');
-      app.viewModel.locationFilter.remove(function(filter) {
-        return filter.name === option.deselected;
-      })
-      $select.trigger("liszt:updated");
-
-    }
-  });
-
-  $('.chzn-results').on('click', '.group-result', function(event) {
-    var $optgroup = $(event.target),
-      name = $optgroup.text(),
-      $select = $('.location'),
-      $option = $select.find('[value="' + name + '"]'),
-      index = -1,
-      selected = $select.val() || [];
-
-    $.each(app.viewModel.locationFilter(), function(i, filter) {
-      if(filter.name === name) {
-        index = i;
-      }
-    });
-    if(index === -1) {
-      $option.removeAttr('disabled');
-      selected.push(name)
-      app.viewModel.locationFilter.push({
-        name: name,
-        type: 'state'
-      });
-    } else {
-      $option.attr('disabled', true);
-      selected.splice($.inArray(name, selected), 1);
-      app.viewModel.locationFilter.splice(index, 1);
-
-    }
-    $select.val(selected);
-    $select.trigger("liszt:updated");
-
-  });
-  
-});
