@@ -309,6 +309,14 @@ class State (models.Model):
             cache.set(key, res, timeout)
         return res
         
+    @property
+    def toSimpleDict(self):
+        return {
+            'name': self.name,
+            'initials': self.initials,
+            'type': 'state',
+        }
+        
 class Site (models.Model):
     sitename = models.TextField(blank=True, null=True)
     state = models.ForeignKey(State, blank=True, null=True)
