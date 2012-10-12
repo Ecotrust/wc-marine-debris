@@ -28,8 +28,10 @@ def index(request):
     return render_to_response( 'index.html', RequestContext(request,{'thankyou': False, 'active':'home'}))
 
 def events(request, submit=False): 
-        
-    event_dicts = get_events()
+    event_count = Event.objects.all().count()
+    return render_to_response( 'events.html', RequestContext(request,{'submit':submit, 'active':'events', 'event_count': event_count}))
+    
+def get_locations(request):
     states = []
     locations = {}
     for state in State.objects.all().order_by('name'):
@@ -44,10 +46,12 @@ def events(request, submit=False):
             'counties' : counties,
             'state' : state.name,
         }
-        
-    return render_to_response( 'events.html', RequestContext(request,{'submit':submit, 'active':'events', 'event_json': simplejson.dumps(event_dicts), 'states': simplejson.dumps(states), 'locations': simplejson.dumps(locations)}))
+    return HttpResponse(simplejson.dumps({
+        'states': states,
+        'locations': locations,
+    }))
     
-def get_events():
+def get_events(request):
     qs = Event.objects.filter()
     res = []
     for event in qs: 
@@ -58,7 +62,7 @@ def get_events():
             dict = event.toEventsDict
             cache.set(key, dict, timeout)
         res.append(dict)
-    return res
+    return HttpResponse(simplejson.dumps(res))
 
 @login_required
 def create_event(request):

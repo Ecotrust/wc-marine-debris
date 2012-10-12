@@ -37,67 +37,32 @@ app.points = new OpenLayers.Layer.Vector("Events", {
 
 
 
-function viewModel() {
+function viewModel(options) {
   var self = this;
 
-  self.events = event_json;
+  self.events = options.events;
+  self.states = options.locations.states;
+  self.locations = options.locations.locations;
 
   self.locationFilter = ko.observableArray();
 
-  self.locations = {};
-
-  // populate location list for filtering
+  // populate points
   $.each(self.events, function(i, event) {
     var state = event.site.state,
-      county = event.site.county,
-      counties,
       pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")),
       point = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(event.site.lon, event.site.lat));
 
     event.pos = pos;
     event.feature = point;
     point.event = event;
-    //app.points.addFeatures(pos);
     point.geometry.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
     app.points.addFeatures(point);
     app.points.drawFeature(point);
-    if(self.locations[state]) {
-      counties = $.map(self.locations[state].counties, function(county) {
-        return county.name;
-      });
-      if($.inArray(county, counties) === -1) {
-        self.locations[state].counties.push({
-          name: county,
-          type: 'county',
-          state: state
-        });
-      }
-    } else {
-      self.locations[state] = {
-        counties: [{
-          name: event.site.county,
-          type: 'county'
-        }],
-        state: event.site.state
-      }
-    }
   });
 
   // store mapextent here
   self.mapExtent = ko.observable();
   self.filterByExtent = ko.observable(false);
-
-  self.states = $.map(self.locations, function(location) {
-    return {
-      name: location.state,
-      type: 'state'
-    }
-  }).sort(function(a, b) {
-    {
-      return a.name.localeCompare(b.name);
-    }
-  });
-
 
   self.showSpinner = ko.observable(false);
 
@@ -171,18 +136,34 @@ function viewModel() {
 
 
 };
-app.viewModel = new viewModel()
+
+$.when(
+    $.ajax({
+      url: "/events/get_locations",
+      type: 'GET',
+      dataType: 'json'
+    }),
+    $.ajax({
+      url: "/events/get",
+      type: 'GET'
+    })
+).then(function(locations, events_json) { 
+  var events = JSON.parse(events_json[0]);
+  app.viewModel = new viewModel({
+    locations:locations[0], 
+    events: events
+  });
+  // bind the viewmodel
+  ko.applyBindings(app.viewModel);
+  $(".location").chosen();
+  app.viewModel.mapExtent(map.getExtent());
+  app.addPoints(app.viewModel.filteredEvents());
+});
 
 app.addPoints = function(events) {
   app.points.removeAllFeatures();
   app.points.addFeatures($.map(events, function (event) { return event.feature; }))
 };
-
-// bind the viewmodel
-ko.applyBindings(app.viewModel);
-
-// initialize the select widget
-$(".location").chosen();
 
 esriOcean = new OpenLayers.Layer.XYZ("ESRI Ocean", "http://services.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/${z}/${y}/${x}", {
   sphericalMercator: true,
@@ -215,7 +196,7 @@ app.points.events.on({
  }
  });
 
-app.viewModel.mapExtent(map.getExtent());
+
 
 map.events.register("moveend", map, function() {
   app.viewModel.mapExtent(map.getExtent());
@@ -224,7 +205,7 @@ map.events.register("moveend", map, function() {
 
 
 $(document).ready(function() {
-  $(".location").chosen().change(function(event, option) {
+  $(".location").change(function(event, option) {
     var $select = $(event.target);
     if(option.deselected) {
       $select.find('[value="' + option.deselected + '"]').attr('disabled', 'disabled');
@@ -266,5 +247,5 @@ $(document).ready(function() {
     $select.trigger("liszt:updated");
 
   });
-  app.addPoints(app.viewModel.filteredEvents());
+  
 });
