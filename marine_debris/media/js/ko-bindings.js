@@ -168,7 +168,107 @@ cog.utils.string.trimStart = function (string, chars) {
 
     return string;
 };
+$.fn.dataTableExt.oApi.fnDisplayStart = function ( oSettings, iStart, bRedraw )
+{
+    if ( typeof bRedraw == 'undefined' )
+    {
+        bRedraw = true;
+    }
+      
+    oSettings._iDisplayStart = iStart;
+    oSettings.oApi._fnCalculateEnd( oSettings );
+      
+    if ( bRedraw )
+    {
+        oSettings.oApi._fnDraw( oSettings );
+    }
+};
 
+$.fn.dataTableExt.oApi.fnFindCellRowIndexes = function ( oSettings, sSearch, iColumn )
+{
+    var
+        i,iLen, j, jLen,
+        aOut = [], aData;
+      
+    for ( i=0, iLen=oSettings.aoData.length ; i<iLen ; i++ )
+    {
+        aData = oSettings.aoData[i]._aData;
+          
+        if ( typeof iColumn == 'undefined' )
+        {
+            for ( j=0, jLen=aData.length ; j<jLen ; j++ )
+            {
+                if ( aData[j] == sSearch )
+                {
+                    aOut.push( i );
+                }
+            }
+        }
+        else if ( aData[iColumn] == sSearch )
+        {
+            aOut.push( i );
+        }
+    }
+      
+    return aOut;
+};
+$.fn.dataTableExt.oApi.fnDisplayRow = function ( oSettings, nRow )
+{
+    // Account for the "display" all case - row is already displayed
+    if ( oSettings._iDisplayLength == -1 )
+    {
+        return;
+    }
+  
+    // Find the node in the table
+    var iPos = -1;
+    for( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+    {
+        if( oSettings.aoData[ oSettings.aiDisplay[i] ].nTr == nRow )
+        {
+            iPos = i;
+            break;
+        }
+    }
+      
+    // Alter the start point of the paging display
+    if( iPos >= 0 )
+    {
+        oSettings._iDisplayStart = ( Math.floor(i / oSettings._iDisplayLength) ) * oSettings._iDisplayLength;
+        this.oApi._fnCalculateEnd( oSettings );
+    }
+      
+    this.oApi._fnDraw( oSettings );
+};
+
+$.fn.dataTableExt.oApi.fnFindCellRowNodes = function ( oSettings, sSearch, iColumn )
+{
+    var
+        i,iLen, j, jLen,
+        aOut = [], aData;
+      
+    for ( i=0, iLen=oSettings.aoData.length ; i<iLen ; i++ )
+    {
+        aData = oSettings.aoData[i]._aData;
+          
+        if ( typeof iColumn == 'undefined' )
+        {
+            for ( j=0, jLen=aData.length ; j<jLen ; j++ )
+            {
+                if ( aData[j] == sSearch )
+                {
+                    aOut.push( oSettings.aoData[i].nTr );
+                }
+            }
+        }
+        else if ( aData[iColumn] == sSearch )
+        {
+            aOut.push( oSettings.aoData[i].nTr );
+        }
+    }
+      
+    return aOut;
+};
 // cog.utils.string.repeat = function (string, count) {
 //     /// <summary>
 //     /// Repeats a string the specified amount of times.
@@ -314,7 +414,6 @@ cog.utils.string.trimStart = function (string, chars) {
                             ko.utils.arrayForEach(newItems, function (item) {
                                 unwrappedItems.push(ko.utils.unwrapObservable(item));
                             });
-
                             // Add the new data back into the data table.
                             dataTable.fnAddData(unwrappedItems);
 
@@ -343,7 +442,6 @@ cog.utils.string.trimStart = function (string, chars) {
                         // Empty the row that has been build by the DataTable of any child elements.
                         var destRow = $(row);
                         destRow.empty();
-
                         // For each column in the data table...
                         ko.utils.arrayForEach(columns, function (column) {
                             var columnName = column.mDataProp;
@@ -355,7 +453,6 @@ cog.utils.string.trimStart = function (string, chars) {
                         var accesor = eval("srcData['" + columnName.replace(".", "']['") + "']");
                         ko.applyBindingsToNode(newCell[0], { text: accesor }, bindingContext.createChildContext(srcData));
                         });
-
                     return next(destRow[0], srcData, displayIndex, displayIndexFull);
                 });
             }

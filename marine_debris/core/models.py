@@ -309,6 +309,14 @@ class State (models.Model):
             cache.set(key, res, timeout)
         return res
         
+    @property
+    def toSimpleDict(self):
+        return {
+            'name': self.name,
+            'initials': self.initials,
+            'type': 'state',
+        }
+        
 class Site (models.Model):
     sitename = models.TextField(blank=True, null=True)
     state = models.ForeignKey(State, blank=True, null=True)
@@ -488,15 +496,16 @@ class Event (models.Model):
         
     @property
     def toEventsDict(self):
+        proj = self.proj_id
         return {
             "site": self.site.toDict,
             "project": {
-                "name": self.proj_id.projname
+                "name": proj.projname
             },
             "id": self.id,
             "datasheet": self.datasheet_id.toDict,
             "organization": {
-                "name": self.proj_id.projectorganization_set.order_by('-is_lead')[0].organization_id.orgname
+                "name": proj.projectorganization_set.order_by('-is_lead')[0].organization_id.orgname
             },
             "date" : self.cleanupdate.strftime('%m/%d/%Y')
         } 

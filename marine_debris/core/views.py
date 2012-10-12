@@ -30,8 +30,22 @@ def index(request):
 def events(request, submit=False): 
         
     event_dicts = get_events()
+    states = []
+    locations = {}
+    for state in State.objects.all().order_by('name'):
+        states.append(state.toSimpleDict)
+        counties = []
+        for county in County.objects.filter(stateabr=state.initials):
+            counties.append({
+                "name": county.name,
+                "type": 'county',
+            })
+        locations[state.name] = {
+            'counties' : counties,
+            'state' : state.name,
+        }
         
-    return render_to_response( 'events.html', RequestContext(request,{'submit':submit, 'active':'events', 'event_json': simplejson.dumps(event_dicts)}))
+    return render_to_response( 'events.html', RequestContext(request,{'submit':submit, 'active':'events', 'event_json': simplejson.dumps(event_dicts), 'states': simplejson.dumps(states), 'locations': simplejson.dumps(locations)}))
     
 def get_events():
     qs = Event.objects.filter()
