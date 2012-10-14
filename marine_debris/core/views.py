@@ -28,8 +28,7 @@ def index(request):
     return render_to_response( 'index.html', RequestContext(request,{'thankyou': False, 'active':'home'}))
 
 def events(request, submit=False): 
-    event_count = Event.objects.all().count()
-    return render_to_response( 'events.html', RequestContext(request,{'submit':submit, 'active':'events', 'event_count': event_count}))
+    return render_to_response( 'events.html', RequestContext(request,{'submit':submit, 'active':'events'}))
     
 def get_locations(request):
     states = []
