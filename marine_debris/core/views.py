@@ -25,7 +25,10 @@ from models import *
 
 
 def index(request): 
-    return render_to_response( 'index.html', RequestContext(request,{'thankyou': False, 'active':'home'}))
+
+    lbs_per_mile = get_state_stats()
+
+    return render_to_response( 'index.html', RequestContext(request,{'thankyou': False, 'active':'home', 'lbs_per_mile': lbs_per_mile}))
 
 def events(request, submit=False): 
     return render_to_response( 'events.html', RequestContext(request,{'submit':submit, 'active':'events'}))
@@ -68,6 +71,32 @@ def get_events(request):
         res.append(dict)
     return HttpResponse(simplejson.dumps(res))
 
+def get_state_stats():
+    stats = []
+    state_stats = {}
+    for state in State.objects.all():
+        state_stats[state.name] = {}
+        state_stats[state.name]['name'] = state.name
+        state_stats[state.name]['pounds'] = 0
+        state_stats[state.name]['miles'] = 0
+        state_stats[state.name]['lbs_per_mi'] = 0
+        
+    dist_answers = FieldValue.objects.filter(event_id__datasheet_id__type_id__display_sites = True, field_id__internal_name = 'Cleanup_distance_beach')
+    pound_answers = FieldValue.objects.filter(event_id__datasheet_id__type_id__display_sites = True, field_id__internal_name = 'Pounds_trash_beach')
+        
+    for answer in dist_answers:
+        pounds = pound_answers.filter(event_id = answer.event_id)
+        if pounds.count() == 1 and float(answer.field_value) > 0 and float(pounds[0].field_value) > 0:       #Need only 1 pounds answer/event, value is skewed if miles or pounds are not collected.
+            state_stats[answer.event_id.site.state.name]['miles'] = state_stats[answer.event_id.site.state.name]['miles'] + float(answer.field_value)
+            state_stats[pounds[0].event_id.site.state.name]['pounds'] = state_stats[pounds[0].event_id.site.state.name]['pounds'] + float(pounds[0].field_value)
+    for state in state_stats:
+        if not state_stats[state]['miles'] == 0:
+            state_stats[state]['lbs_per_mi'] = state_stats[state]['pounds']/state_stats[state]['miles']
+        # elif answer.field_id.internal_name == 'Pounds_trash_beach':
+        stats.append(state_stats[state])
+            
+    return stats
+    
 @login_required
 def create_event(request):
     if request.method == 'GET':
