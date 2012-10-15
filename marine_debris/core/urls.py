@@ -12,6 +12,8 @@ urlpatterns = patterns('',
     url(r'^datasheet/bulk_import/$', bulk_import),
     url(r'^events/get$', get_events),
     url(r'^events/get_locations$', get_locations),
+    url(r'^events/get_values/cleanup$', get_cleanup_values),
+    
     url(r'^events/([A-Za-z0-9_-]+)$', events),
     url(r'^events$', events),
     url(r'^event/create/location$', event_location),

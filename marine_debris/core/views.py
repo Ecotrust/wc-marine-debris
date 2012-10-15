@@ -97,6 +97,34 @@ def get_state_stats():
             
     return stats
     
+def get_cleanup_values(request):
+    cleanup_events = Event.objects.filter(datasheet_id__type_id__type = 'Site Cleanup')  #TODO: get this type name dynamically, or via settings
+                                        #TODO: Filter by query as well!!! ########
+    agg_fields = {}
+    for field in Field.objects.all():
+        agg_fields[field.internal_name] = {
+            'name': field.internal_name,
+            'type': field.datatype.name,
+            'value': None
+        }
+
+    field_values = FieldValue.objects.filter(event_id__in = cleanup_events, field_id__datatype__aggregatable = True)
+    
+    for field_value in field_values:
+        field = agg_fields[field_value.field_id.internal_name]
+        if not field['value']:
+            field['value'] = 0
+        if field_value.field_value and not field_value.field_value == 'None':
+            field['value'] = field['value'] + float(field_value.field_value)
+ 
+    field_list = []
+    for agg_field in agg_fields:
+        field_list.append({
+            'field': agg_fields[agg_field]
+        })
+ 
+    return HttpResponse(simplejson.dumps(field_list))
+    
 @login_required
 def create_event(request):
     if request.method == 'GET':

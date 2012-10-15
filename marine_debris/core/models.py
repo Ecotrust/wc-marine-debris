@@ -13,6 +13,7 @@ from django.core.cache import cache
 # Create your models here.
 class DataType (models.Model):
     name = models.TextField()
+    aggregatable = models.BooleanField(default=False)
     
     def __unicode__(self):
         return self.name
