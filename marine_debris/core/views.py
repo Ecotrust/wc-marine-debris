@@ -52,15 +52,36 @@ def get_locations(request):
         'states': states,
         'locations': locations,
     }))
-    
+
+sort_cols = {
+    "site.st_initials": 'site__state',
+    "datasheet.event_type": "datasheet_id__type_id",
+    "site.name": "site__sitename",
+    "site.county": "site__county",
+    "date": "cleanupdate"
+
+}
+
 def get_events(request):
     start_index = request.GET.get('iDisplayStart', 0)
     count = request.GET.get('iDisplayLength', False)
     sEcho = request.GET.get('sEcho', False)
+    sort_column = request.GET.get('iSortCol_0', False)
+   
+    qs = Event.objects.filter()
+
+    if sort_column:
+        sort_name_key = request.GET.get("mDataProp_%s" % sort_column, False)
+        sort_dir = request.GET.get("sSortDir_0", False)
+        if sort_name_key:
+            sort_name = sort_cols[sort_name_key]
+            if sort_dir == 'desc':
+                sort_name = "-" + sort_name
+            qs = qs.order_by(sort_name)
+
     if count:
-        qs = Event.objects.filter()[int(start_index):int(start_index) + int(count)]
-    else:
-        qs = Event.objects.filter()
+        qs = qs[int(start_index):int(start_index) + int(count)]
+
     data = []
     for event in qs: 
         timeout=60*60*24*7*52*10
