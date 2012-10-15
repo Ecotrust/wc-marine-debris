@@ -46,6 +46,16 @@ function viewModel(options) {
 
   self.locationFilter = ko.observableArray();
 
+  self.dataTablesOptions = {
+    'bFilter': false, 
+    "iDisplayLength": 5,
+    "bProcessing": true,
+    "bServerSide": true,
+    "sAjaxSource": "/events/get",
+    "iDisplayStart": 0
+
+  };
+
   // populate points
   self.addEvents = function (events) {
     $.each(events, function(i, event) {
@@ -59,9 +69,9 @@ function viewModel(options) {
       point.geometry.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
       app.points.addFeatures(point);
       app.points.drawFeature(point);
-      self.events().push(event);
+      //self.events().push(event);
     });
-    self.events.valueHasMutated();
+    //self.events.valueHasMutated();
   }
 
   // store mapextent here
@@ -142,14 +152,14 @@ function viewModel(options) {
 };
 
 app.get_events = function () {
-  $.ajax({
-        url: "/events/get",
-        type: 'GET',
-        dataType: 'json'
-  }).done(function(events) { 
-    app.viewModel.addEvents(events);
-    app.addPoints(app.viewModel.filteredEvents());
-  });
+  // $.ajax({
+  //       url: "/events/get",
+  //       type: 'GET',
+  //       dataType: 'json'
+  // }).done(function(events) { 
+  //   app.viewModel.addEvents(events);
+  //   app.addPoints(app.viewModel.filteredEvents());
+  // });
 };
 
 $.ajax({

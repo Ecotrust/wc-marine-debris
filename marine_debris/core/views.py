@@ -54,13 +54,14 @@ def get_locations(request):
     }))
     
 def get_events(request):
-    start_index = request.GET.get('start_index', 0)
-    count = request.GET.get('count', False)
+    start_index = request.GET.get('iDisplayStart', 0)
+    count = request.GET.get('iDisplayLength', False)
+    sEcho = request.GET.get('sEcho', False)
     if count:
         qs = Event.objects.filter()[int(start_index):int(start_index) + int(count)]
     else:
         qs = Event.objects.filter()
-    res = []
+    data = []
     for event in qs: 
         timeout=60*60*24*7*52*10
         key = 'eventcache_%s' % event.id
@@ -68,7 +69,13 @@ def get_events(request):
         if not dict:
             dict = event.toEventsDict
             cache.set(key, dict, timeout)
-        res.append(dict)
+        data.append(dict)
+    res = {
+       "aaData": data,
+       "iTotalRecords": len(data),
+       "iTotalDisplayRecords": Event.objects.all().count(),
+       "sEcho": sEcho
+    }
     return HttpResponse(simplejson.dumps(res))
 
 def get_state_stats():
