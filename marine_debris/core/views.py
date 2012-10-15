@@ -97,8 +97,11 @@ def get_state_stats():
             
     return stats
     
-def get_cleanup_values(request):
-    cleanup_events = Event.objects.filter(datasheet_id__type_id__type = 'Site Cleanup')  #TODO: get this type name dynamically, or via settings
+def get_event_values(request):
+    
+    type = 'Site Cleanup'   #TODO: get this type name dynamically so we can show derelict and others
+
+    cleanup_events = Event.objects.filter(datasheet_id__type_id__type = type)  
                                         #TODO: Filter by query as well!!! ########
     agg_fields = {}
     for field in Field.objects.all():
