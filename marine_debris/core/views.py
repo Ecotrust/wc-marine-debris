@@ -76,11 +76,7 @@ def get_events(request):
 
     if filter_json:
         filters = simplejson.loads(filter_json)
-        for filter in filters:
-            if filter['type'] == "county":
-                qs = qs.filter(site__county=filter['name']  + " County")
-            if filter['type'] == "state":
-                qs = qs.filter(site__state__name=filter['name'])
+        qs = Event.filter(filters)
 
     if sort_column:
         sort_name_key = request.GET.get("mDataProp_%s" % sort_column, False)

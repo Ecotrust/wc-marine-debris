@@ -438,6 +438,16 @@ class Event (models.Model):
     def get_fields(self):
         return[(field.name, field.value_to_string(self)) for field in Event._meta.fields]
         
+    @classmethod
+    def filter(cls, filters):
+        events = cls.objects.filter()
+        for filter in filters:
+            if filter['type'] == "county":
+                events = events.filter(site__county=filter['name']  + " County")
+            if filter['type'] == "state":
+                events = events.filter(site__state__name=filter['name'])
+        return events
+        
     @property
     def field_values(self):
         """
