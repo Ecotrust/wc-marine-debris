@@ -31,7 +31,10 @@ def index(request):
     return render_to_response( 'index.html', RequestContext(request,{'thankyou': False, 'active':'home', 'lbs_per_mile': lbs_per_mile}))
 
 def events(request, submit=False): 
-    return render_to_response( 'events.html', RequestContext(request,{'submit':submit, 'active':'events'}))
+
+    report_values = get_event_values_list(request)
+
+    return render_to_response( 'events.html', RequestContext(request,{'submit':submit, 'active':'events', 'report_values': simplejson.dumps(report_values)}))
     
 def get_locations(request):
     states = []
@@ -54,12 +57,7 @@ def get_locations(request):
     }))
     
 def get_events(request):
-    start_index = request.GET.get('start_index', 0)
-    count = request.GET.get('count', False)
-    if count:
-        qs = Event.objects.filter()[int(start_index):int(start_index) + int(count)]
-    else:
-        qs = Event.objects.filter()
+    qs = Event.objects.filter()
     res = []
     for event in qs: 
         timeout=60*60*24*7*52*10
@@ -97,35 +95,54 @@ def get_state_stats():
             
     return stats
     
-def get_event_values(request):
+def get_event_values_list(request):
     
     type = 'Site Cleanup'   #TODO: get this type name dynamically so we can show derelict and others
 
-    cleanup_events = Event.objects.filter(datasheet_id__type_id__type = type)  
-                                        #TODO: Filter by query as well!!! ########
-    agg_fields = {}
-    for field in Field.objects.all():
-        agg_fields[field.internal_name] = {
-            'name': field.internal_name,
-            'type': field.datatype.name,
-            'value': None
-        }
+    timeout = 60*60*24*7
+    key = "reportcache_%s" % type
+    field_list = cache.get(key)
+    if not field_list:
+        cleanup_events = Event.objects.filter(datasheet_id__type_id__type = type)
+                                            #TODO: Filter by query as well!!! ########
 
-    field_values = FieldValue.objects.filter(event_id__in = cleanup_events, field_id__datatype__aggregatable = True)
+        agg_fields = {}
+        for field in Field.objects.all():
+            agg_fields[field.internal_name] = {
+                'name': field.internal_name,
+                'type': field.datatype.name,
+                'unit': [],
+                'value': None
+            }
+
+        field_values = FieldValue.objects.filter(event_id__in = cleanup_events, field_id__datatype__aggregatable = True)
+        
+        for field_value in field_values:
+            field = agg_fields[field_value.field_id.internal_name]
+            if not field['value']:
+                field['value'] = 0
+            if field_value.field_value and not field_value.field_value == 'None':
+                field['value'] = field['value'] + float(field_value.field_value)
+            if field['unit'].__len__() == 0:
+                ds = field_value.event_id.datasheet_id
+                unit = DataSheetField.objects.get(sheet_id = ds, field_id = field_value.field_id).unit_id.short_name
+                if unit in ['dd', 'dd mm.mm', 'ft', 'kg', 'km', 'mi', 'mm', 'mm.000', '%', 'lbs', 'sq ft']:
+                    field['unit'] = [unit]
+                else:
+                    field['unit'] = [' ']
+                print "%s" % field['unit'][0]
+            # else:     #TODO: get translators in here to handle converting unit types and feeding a whole selection of values
+     
+        field_list = []
+        for agg_field in agg_fields:
+            field_list.append({
+                'field': agg_fields[agg_field]
+            })
+        cache.set(key, field_list, timeout)
+    return field_list
     
-    for field_value in field_values:
-        field = agg_fields[field_value.field_id.internal_name]
-        if not field['value']:
-            field['value'] = 0
-        if field_value.field_value and not field_value.field_value == 'None':
-            field['value'] = field['value'] + float(field_value.field_value)
- 
-    field_list = []
-    for agg_field in agg_fields:
-        field_list.append({
-            'field': agg_fields[agg_field]
-        })
- 
+def get_event_values(request):
+    field_list = get_event_values_list(request)
     return HttpResponse(simplejson.dumps(field_list))
     
 @login_required
