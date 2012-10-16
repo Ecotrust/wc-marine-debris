@@ -444,15 +444,18 @@ class Event (models.Model):
         filtered_events = None
         for filter in filters:              #TODO: THis is not cumulative for multiple filters of the same type
             timeout = 60*60*24*7
-            key = 'reportcache_%s_%s' % (filter['type'], filter['name'])
+            if filter['type'] == "county":
+                key = 'reportcache_%s_%s_%s' % (filter['type'], filter['name'].replace(" ","_"), filter['state'])
+            else:
+                key = 'reportcache_%s_%s' % (filter['type'], filter['name'].replace(" ","_"))
             res = cache.get(key)
             if not res:
                 if filter['type'] == "county":
-                    county_events = events.filter(site__county=filter['name']  + " County")
+                    county_events = events.filter(site__county=filter['name']  + " County", site__state__name=filter['state'])
                     if county_events.count() > 0:
                         res =  county_events
                     else:
-                        res = events.filter(site__county=filter['name'])
+                        res = events.filter(site__county=filter['name'], site__state__name=filter['state'])
                 if filter['type'] == "state":
                     res = events.filter(site__state__name=filter['name'])
                 if filter['type'] == "event_type":

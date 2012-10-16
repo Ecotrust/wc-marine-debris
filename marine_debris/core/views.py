@@ -135,9 +135,6 @@ def get_event_values_list(request, filters=None):
     type = 'Site Cleanup'   #TODO: get this type name dynamically so we can show derelict and others
     field_list = None
     key = False
-    print "-----------------"
-    print "-----------------"
-    print "-----------------"
     if not filters:    
         timeout = 60*60*24*7
         key = "reportcache_%s" % type.replace(" ","_")
@@ -180,16 +177,8 @@ def get_event_values_list(request, filters=None):
                 'field': agg_fields[agg_field]
             })
         if key:
-            print "key %s NOT cached" % key
             cache.set(key, field_list, timeout)
-    else:
-        if key:
-            print "key %s cached" % key
-        else:
-            print "NO KEY"
-    print "-----------------"
-    print "-----------------"
-    print "-----------------"
+            
     return field_list
     
 def get_event_values(request):
