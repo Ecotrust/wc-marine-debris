@@ -84,7 +84,8 @@ def get_events(request):
 
     if filter_json:
         filters = simplejson.loads(filter_json)
-        qs = Event.filter(filters)
+        if filters.__len__() > 0:
+            qs = Event.filter(filters)
 
     if sort_column:
         sort_name_key = request.GET.get("mDataProp_%s" % sort_column, False)
@@ -120,9 +121,13 @@ def get_event_values_list(request, filters=None):
     
     type = 'Site Cleanup'   #TODO: get this type name dynamically so we can show derelict and others
     field_list = None
+    key = False
+    print "-----------------"
+    print "-----------------"
+    print "-----------------"
     if not filters:    
         timeout = 60*60*24*7
-        key = "reportcache_%s" % type
+        key = "reportcache_%s" % type.replace(" ","_")
         field_list = cache.get(key)
     if not field_list:
         cleanup_events = Event.objects.filter(datasheet_id__type_id__type = type)
@@ -161,8 +166,17 @@ def get_event_values_list(request, filters=None):
             field_list.append({
                 'field': agg_fields[agg_field]
             })
-        if not filters:
+        if key:
+            print "key %s NOT cached" % key
             cache.set(key, field_list, timeout)
+    else:
+        if key:
+            print "key %s cached" % key
+        else:
+            print "NO KEY"
+    print "-----------------"
+    print "-----------------"
+    print "-----------------"
     return field_list
     
 def get_event_values(request):

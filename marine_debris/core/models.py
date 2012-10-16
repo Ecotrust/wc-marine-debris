@@ -441,12 +441,28 @@ class Event (models.Model):
     @classmethod
     def filter(cls, filters):
         events = cls.objects.filter()
+        filtered_events = None
         for filter in filters:              #TODO: THis is not cumulative for multiple filters of the same type
-            if filter['type'] == "county":
-                events = events.filter(site__county=filter['name']  + " County")
-            if filter['type'] == "state":
-                events = events.filter(site__state__name=filter['name'])
-        return events
+            timeout = 60*60*24*7
+            key = 'reportcache_%s_%s' % (filter['type'], filter['name'])
+            res = cache.get(key)
+            if not res:
+                if filter['type'] == "county":
+                    county_events = events.filter(site__county=filter['name']  + " County")
+                    if county_events.count() > 0:
+                        res =  county_events
+                    else:
+                        res = events.filter(site__county=filter['name'])
+                if filter['type'] == "state":
+                    res = events.filter(site__state__name=filter['name'])
+                if filter['type'] == "event_type":
+                    res = events.filter(datasheet_id__type_id__name=filter['name'])
+                cache.set(key, res, timeout)
+            if filtered_events:
+                filtered_events | res
+            else:
+                filtered_events = res
+        return filtered_events
         
     @property
     def field_values(self):

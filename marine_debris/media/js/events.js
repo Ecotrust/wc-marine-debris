@@ -129,7 +129,6 @@ function viewModel(options) {
   };
 
   self.locationFilter.subscribe(function () {
-    // debugger;
     $('#events-table').dataTable().fnReloadAjax();
     self.getReport(self.locationFilter());
   });
@@ -182,7 +181,6 @@ app.get_events = function () {
         dataType: 'json'
   }).done(function(res) { 
     app.viewModel.addEvents(res.aaData);
-    // app.addPoints(app.viewModel.filteredEvents());
     app.addPoints(app.viewModel.events());
   });
 };
