@@ -69,11 +69,8 @@ function viewModel(options) {
       event.feature = point;
       point.event = event;
       point.geometry.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
-      // app.points.addFeatures(point);
-      // app.points.drawFeature(point);
       self.events().push(event);
     });
-    self.events.valueHasMutated();
   }
 
   // store mapextent here
@@ -85,8 +82,8 @@ function viewModel(options) {
   self.filteredEvents = ko.computed(function() {
     var filteredEvents = [];
     self.showSpinner(true);
-    $.each(self.events(), function(i, event) {
-      if(self.locationFilter() && self.locationFilter().length !== 0) {
+    if(self.locationFilter() && self.locationFilter().length !== 0) {
+      $.each(self.events(), function(i, event) {
         $.each(self.locationFilter(), function(i, filter) {
           if((filter.type === 'state' && filter.name === event.site.state) || (filter.type === 'county' && filter.name === event.site.county)) {
             if(self.filterByExtent()) {
@@ -98,7 +95,10 @@ function viewModel(options) {
             }
           }
         });
-      } else {
+      });
+        
+    } else {
+      $.each(self.events(), function(i, event) {
         // no filtering
         if(self.filterByExtent()) {
           if(self.mapExtent().containsLonLat(event.pos)) {
@@ -107,13 +107,14 @@ function viewModel(options) {
         } else {
           filteredEvents.push(event);
         }
-      }
-    });
+      });
+    }
     self.showSpinner(false);
     return filteredEvents;
   });
   
   self.getReport = function (filters) {
+    self.showSpinner(true);
     $.ajax({
         url: "/events/get_values",
         type: 'GET',
@@ -123,10 +124,12 @@ function viewModel(options) {
         dataType: 'json'
     }).done(function(report) { 
         self.report(report);
+        self.showSpinner(false);
     });
   };
 
   self.locationFilter.subscribe(function () {
+    // debugger;
     $('#events-table').dataTable().fnReloadAjax();
     self.getReport(self.locationFilter());
   });
@@ -179,7 +182,8 @@ app.get_events = function () {
         dataType: 'json'
   }).done(function(res) { 
     app.viewModel.addEvents(res.aaData);
-    app.addPoints(app.viewModel.filteredEvents());
+    // app.addPoints(app.viewModel.filteredEvents());
+    app.addPoints(app.viewModel.events());
   });
 };
 
