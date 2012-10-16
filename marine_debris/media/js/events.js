@@ -122,7 +122,6 @@ function viewModel(options) {
         },
         dataType: 'json'
     }).done(function(report) { 
-        debugger;
         self.report(report);
     });
   };

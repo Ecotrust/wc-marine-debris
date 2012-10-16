@@ -125,6 +125,7 @@ def get_event_values_list(request, filters=None):
         key = "reportcache_%s" % type
         field_list = cache.get(key)
     if not field_list:
+        cleanup_events = Event.objects.filter(datasheet_id__type_id__type = type)
         if filters:
             cleanup_events = Event.filter(filters)
         cleanup_events = cleanup_events.filter(datasheet_id__type_id__type = type)  #TODO: get filter by type to work in "filters"
