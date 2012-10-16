@@ -67,8 +67,17 @@ def get_events(request):
     count = request.GET.get('iDisplayLength', False)
     sEcho = request.GET.get('sEcho', False)
     sort_column = request.GET.get('iSortCol_0', False)
-   
+    filter_json = request.GET.get('filter', False)
+
     qs = Event.objects.filter()
+
+    if filter_json:
+        filters = simplejson.loads(filter_json)
+        for filter in filters:
+            if filter['type'] == "county":
+                qs = qs.filter(site__county=filter['name']  + " County")
+            if filter['type'] == "state":
+                qs = qs.filter(site__state__name=filter['name'])
 
     if sort_column:
         sort_name_key = request.GET.get("mDataProp_%s" % sort_column, False)
@@ -78,7 +87,7 @@ def get_events(request):
             if sort_dir == 'desc':
                 sort_name = "-" + sort_name
             qs = qs.order_by(sort_name)
-
+    filtered_count = qs.count()
     if count:
         qs = qs[int(start_index):int(start_index) + int(count)]
 
@@ -93,8 +102,8 @@ def get_events(request):
         data.append(dict)
     res = {
        "aaData": data,
-       "iTotalRecords": len(data),
-       "iTotalDisplayRecords": Event.objects.all().count(),
+       "iTotalRecords": Event.objects.all().count(),
+       "iTotalDisplayRecords": filtered_count,
        "sEcho": sEcho
     }
     return HttpResponse(simplejson.dumps(res))

@@ -336,7 +336,7 @@ class Site (models.Model):
         else:
             county = ''
         county_dict = {
-            'name': county,
+            'name': county.replace(" County", ""),
             'sites': sites
         }
         return county_dict
@@ -369,7 +369,7 @@ class Site (models.Model):
             'lon': lon,
             'state': state,
             'st_initials': st_initials,
-            'county': county
+            'county': county.replace(" County", "")
         }
         return site_dict
         

@@ -52,8 +52,10 @@ function viewModel(options) {
     "bProcessing": true,
     "bServerSide": true,
     "sAjaxSource": "/events/get",
-    "iDisplayStart": 0
-
+    "iDisplayStart": 0,
+    "fnServerParams": function ( aoData ) {
+      aoData.push( { "name": "filter", "value": JSON.stringify(self.locationFilter()) } );
+    }
   };
 
   // populate points
@@ -67,11 +69,11 @@ function viewModel(options) {
       event.feature = point;
       point.event = event;
       point.geometry.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
-      app.points.addFeatures(point);
-      app.points.drawFeature(point);
-      //self.events().push(event);
+      // app.points.addFeatures(point);
+      // app.points.drawFeature(point);
+      self.events().push(event);
     });
-    //self.events.valueHasMutated();
+    self.events.valueHasMutated();
   }
 
   // store mapextent here
@@ -109,6 +111,10 @@ function viewModel(options) {
     });
     self.showSpinner(false);
     return filteredEvents;
+  });
+
+  self.locationFilter.subscribe(function () {
+    $('#events-table').dataTable().fnReloadAjax();
   });
 
   self.filteredEvents.subscribe(function() {
@@ -152,14 +158,14 @@ function viewModel(options) {
 };
 
 app.get_events = function () {
-  // $.ajax({
-  //       url: "/events/get",
-  //       type: 'GET',
-  //       dataType: 'json'
-  // }).done(function(events) { 
-  //   app.viewModel.addEvents(events);
-  //   app.addPoints(app.viewModel.filteredEvents());
-  // });
+  $.ajax({
+        url: "/events/get",
+        type: 'GET',
+        dataType: 'json'
+  }).done(function(res) { 
+    app.viewModel.addEvents(res.aaData);
+    app.addPoints(app.viewModel.filteredEvents());
+  });
 };
 
 $.ajax({
