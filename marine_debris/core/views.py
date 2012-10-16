@@ -16,6 +16,8 @@ from django.forms.models import modelformset_factory
 from django.contrib.gis.geos import Point
 from django.utils.http import urlencode
 from django.core.cache import cache
+from django.contrib.gis.geos import Polygon
+
 import datetime
 import string
 import logging
@@ -55,6 +57,7 @@ def get_locations(request):
             counties.append({
                 "name": county.name,
                 "type": 'county',
+                "state": state.name
             })
         locations[state.name] = {
             'counties' : counties,
@@ -86,6 +89,16 @@ def get_events(request):
         filters = simplejson.loads(filter_json)
         if filters.__len__() > 0:
             qs = Event.filter(filters)
+        # for filter in filters:
+        #     if filter['type'] == "bbox":
+        #         bbox = tuple(filter['bbox'].split(','))
+        #         geom = Polygon.from_bbox(bbox)
+        #         import pdb; pdb.set_trace()
+        #         qs = qs.filter(site__geometry__within=geom)
+        #     if filter['type'] == "county":
+        #         qs = qs.filter(site__county=filter['name']  + " County")
+        #     if filter['type'] == "state":
+        #         qs = qs.filter(site__state__name=filter['name'])
 
     if sort_column:
         sort_name_key = request.GET.get("mDataProp_%s" % sort_column, False)

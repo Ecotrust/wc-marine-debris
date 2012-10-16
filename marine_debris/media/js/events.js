@@ -54,7 +54,11 @@ function viewModel(options) {
     "sAjaxSource": "/events/get",
     "iDisplayStart": 0,
     "fnServerParams": function ( aoData ) {
-      aoData.push( { "name": "filter", "value": JSON.stringify(self.locationFilter()) } );
+      var filters = self.locationFilter();
+      if (self.filterByExtent()) {
+        filters.push({"type": "bbox", "bbox": self.mapExtent().transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326")).toBBOX() });
+      };
+      aoData.push( { "name": "filter", "value": JSON.stringify(filters) });
     }
   };
 
