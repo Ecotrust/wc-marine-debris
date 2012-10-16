@@ -84,6 +84,7 @@ function viewModel(options) {
   self.showSpinner = ko.observable(false);
 
   self.filteredEvents = ko.computed(function() {
+    console.log('filtering events');
     var filteredEvents = [];
     self.showSpinner(true);
     if(self.locationFilter() && self.locationFilter().length !== 0) {
@@ -101,17 +102,15 @@ function viewModel(options) {
         });
       });
         
-    } else {
+    } else if (self.filterByExtent()) {
       $.each(self.events(), function(i, event) {
-        // no filtering
-        if(self.filterByExtent()) {
           if(self.mapExtent().containsLonLat(event.pos)) {
             filteredEvents.push(event);
           }
-        } else {
-          filteredEvents.push(event);
-        }
-      });
+        });
+    } else {
+      console.log('no filter');
+      filteredEvents = self.events();
     }
     self.showSpinner(false);
     return filteredEvents;
@@ -206,6 +205,7 @@ $.ajax({
 
     $(document).ready(function() {
       $(".location").chosen().change(function(event, option) {
+        console.log('change');
         var $select = $(event.target);
         if(option.deselected) {
           $select.find('[value="' + option.deselected + '"]').attr('disabled', 'disabled');
