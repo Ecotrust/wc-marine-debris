@@ -441,7 +441,7 @@ class Event (models.Model):
     @classmethod
     def filter(cls, filters):
         events = cls.objects.filter()
-        for filter in filters:
+        for filter in filters:              #TODO: THis is not cumulative for multiple filters of the same type
             if filter['type'] == "county":
                 events = events.filter(site__county=filter['name']  + " County")
             if filter['type'] == "state":

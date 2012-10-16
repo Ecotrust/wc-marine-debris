@@ -26,7 +26,6 @@ from models import *
 
 def index(request): 
 
-    # lbs_per_mile = get_state_stats()
     event_count = [
         {
             "type": "Site Cleanup",
@@ -117,42 +116,17 @@ def get_events(request):
     }
     return HttpResponse(simplejson.dumps(res))
 
-def get_state_stats():
-    stats = []
-    state_stats = {}
-    for state in State.objects.all():
-        state_stats[state.name] = {}
-        state_stats[state.name]['name'] = state.name
-        state_stats[state.name]['pounds'] = 0
-        state_stats[state.name]['miles'] = 0
-        state_stats[state.name]['lbs_per_mi'] = 0
-        
-    dist_answers = FieldValue.objects.filter(event_id__datasheet_id__type_id__display_sites = True, field_id__internal_name = 'Cleanup_distance_beach')
-    pound_answers = FieldValue.objects.filter(event_id__datasheet_id__type_id__display_sites = True, field_id__internal_name = 'Pounds_trash_beach')
-        
-    for answer in dist_answers:
-        pounds = pound_answers.filter(event_id = answer.event_id)
-        if pounds.count() == 1 and float(answer.field_value) > 0 and float(pounds[0].field_value) > 0:       #Need only 1 pounds answer/event, value is skewed if miles or pounds are not collected.
-            state_stats[answer.event_id.site.state.name]['miles'] = state_stats[answer.event_id.site.state.name]['miles'] + float(answer.field_value)
-            state_stats[pounds[0].event_id.site.state.name]['pounds'] = state_stats[pounds[0].event_id.site.state.name]['pounds'] + float(pounds[0].field_value)
-    for state in state_stats:
-        if not state_stats[state]['miles'] == 0:
-            state_stats[state]['lbs_per_mi'] = state_stats[state]['pounds']/state_stats[state]['miles']
-        # elif answer.field_id.internal_name == 'Pounds_trash_beach':
-        stats.append(state_stats[state])
-            
-    return stats
-    
-def get_event_values_list(request):
+def get_event_values_list(request, filters=None):
     
     type = 'Site Cleanup'   #TODO: get this type name dynamically so we can show derelict and others
-
-    timeout = 60*60*24*7
-    key = "reportcache_%s" % type
-    field_list = cache.get(key)
+    field_list = None
+    if not filters:    
+        timeout = 60*60*24*7
+        key = "reportcache_%s" % type
+        field_list = cache.get(key)
     if not field_list:
-        cleanup_events = Event.objects.filter(datasheet_id__type_id__type = type)
-                                            #TODO: Filter by query as well!!! ########
+        cleanup_events = Event.filter(filters)
+        cleanup_events = cleanup_events.filter(datasheet_id__type_id__type = type)  #TODO: get filter by type to work in "filters"
 
         agg_fields = {}
         for field in Field.objects.all():
@@ -178,7 +152,6 @@ def get_event_values_list(request):
                     field['unit'] = [unit]
                 else:
                     field['unit'] = [' ']
-                print "%s" % field['unit'][0]
             # else:     #TODO: get translators in here to handle converting unit types and feeding a whole selection of values
      
         field_list = []
@@ -186,11 +159,15 @@ def get_event_values_list(request):
             field_list.append({
                 'field': agg_fields[agg_field]
             })
-        cache.set(key, field_list, timeout)
+        if not filters:
+            cache.set(key, field_list, timeout)
     return field_list
     
 def get_event_values(request):
-    field_list = get_event_values_list(request)
+    filters = request.GET.get('filters', None)
+    if filters:
+        filters = simplejson.loads(filters)
+    field_list = get_event_values_list(request, filters)
     return HttpResponse(simplejson.dumps(field_list))
     
 @login_required

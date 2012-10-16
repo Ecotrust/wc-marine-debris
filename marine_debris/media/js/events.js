@@ -112,9 +112,24 @@ function viewModel(options) {
     self.showSpinner(false);
     return filteredEvents;
   });
+  
+  self.getReport = function (filters) {
+    $.ajax({
+        url: "/events/get_values",
+        type: 'GET',
+        data: {
+            "filters" : JSON.stringify(filters)
+        },
+        dataType: 'json'
+    }).done(function(report) { 
+        debugger;
+        self.report(report);
+    });
+  };
 
   self.locationFilter.subscribe(function () {
     $('#events-table').dataTable().fnReloadAjax();
+    self.getReport(self.locationFilter());
   });
 
   self.filteredEvents.subscribe(function() {
@@ -155,7 +170,6 @@ function viewModel(options) {
   };
 
   self.report = ko.observable(init_report);
-  
   
 };
 
