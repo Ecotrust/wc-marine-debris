@@ -154,7 +154,9 @@ function viewModel(options) {
     $(row).siblings().removeClass('active');
   };
 
-
+  self.report = ko.observable(init_report);
+  
+  
 };
 
 app.get_events = function () {

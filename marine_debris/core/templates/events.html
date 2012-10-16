@@ -105,10 +105,10 @@
                       <dd><span data-bind="text: date"></span></dd>
                     </dl>
                     <div data-bind="if: data">
-                      <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { dataSource: data,  columns: [{mDataProp: 'text', sTitle: 'Text'}, {mDataProp:'value', sTitle: 'Value'}, { bSortable: false, mDataProp: 'unit' }] }">
+                      <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { dataSource: data, columns: [{mDataProp: 'text', sTitle: 'Text'}, {mDataProp:'value', sTitle: 'Value'}, { bSortable: false, mDataProp: 'unit' }] }">
                         <tbody>
                           <tr data-bind="visible: value">
-                            <td data-bind="text: text">l/td>
+                            <td data-bind="text: text"></td>
                             <td><span data-bind="text: value"></span> <span data-bind="text: unit"></span></td>
                           </tr>
                         </tbody>
@@ -120,18 +120,19 @@
               
               <div class="tab-pane" id="report-values-content">
             
-                <h4><span>Aggregate Data</span></h4>
+                <!-- ACTIONS:
+                    Get spinner up when loading report.
+                    On page load, load cached report for all cleanups.
+                    On filter, get report for filtered cleanups.
+                -->
+                <h4><span>Report</span></h4>
                 
-                <!--<div data-bind="if: data">
-                  <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { dataSource: data,  columns: [{mDataProp: 'text', sTitle: 'Text'}, {mDataProp:'value', sTitle: 'Value'}, { bSortable: false, mDataProp: 'unit' }] }">
-                    <tbody>
-                      <tr data-bind="visible: value">
-                        <td data-bind="text: text">l/td>
-                        <td><span data-bind="text: value"></span> <span data-bind="text: unit"></span></td>
-                      </tr>
-                    </tbody>
+                
+                
+                <div data-bind="if: report">
+                  <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { dataSource: report, rowTemplate: 'reportRowTemplate', columns: [{mDataProp: 'field.name', sTitle: 'Field'}, {mDataProp:'field.value', sTitle: 'Value'}, {mDataProp:'field.unit', sTitle: ''}] }">
                   </table>
-                </div> -->
+                </div>
 
               </div>
               
@@ -146,6 +147,11 @@
 {% block scripts %}
 
 <script src="/site-media/third-party/chosen/chosen.jquery.js"></script>
+<script type="text/html" id="reportRowTemplate">
+  <td data-bind="text: field.name.replace(/_/g,' ')"></td>
+  <td data-bind="text: field.value"></td>
+  <td data-bind="text: field.unit"></td>
+</script>
 <script type="text/html" id="rowTemplate">
   <td data-bind="text: datasheet.event_type, click: $root.zoomTo"></td>
   <td data-bind="text: site.name, click: $root.zoomTo"></td>
@@ -153,11 +159,13 @@
   <td data-bind="text: site.st_initials, click: $root.zoomTo"></td>
   <td data-bind="text: date, click: $root.zoomTo"></td>
 </script>
+<script>
+  var init_report = {{report_values|safe}};
+</script>
 
 <script src="/site-media/js/events.js"></script>
 {% endblock %}
 
 {% block js %}
-  
 {% endblock %}
     

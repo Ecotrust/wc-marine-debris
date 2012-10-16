@@ -514,8 +514,12 @@ class Event (models.Model):
     def save(self, *args, **kwargs):
         
         if self.id:
-            key = 'eventcache_%s' % self.id
-            cache.delete(key)
+            eventkey = 'eventcache_%s' % self.id
+            cache.delete(eventkey)
+            
+        if self.datasheet_id and self.datasheet_id.type_id and self.datasheet_id.type_id.type:
+            reportkey = 'reportcache_%s' % self.datasheet_id.type_id.type
+            cache.delete(reportkey)
         
         super(Event, self).save(*args, **kwargs)
     
