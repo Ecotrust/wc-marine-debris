@@ -16,6 +16,8 @@ from django.forms.models import modelformset_factory
 from django.contrib.gis.geos import Point
 from django.utils.http import urlencode
 from django.core.cache import cache
+from django.contrib.gis.geos import Polygon
+
 import datetime
 import string
 import logging
@@ -25,11 +27,27 @@ from models import *
 
 
 def index(request): 
-    return render_to_response( 'index.html', RequestContext(request,{'thankyou': False, 'active':'home'}))
+
+    event_count = [
+        {
+            "type": "Site Cleanup",
+            "count": Event.objects.filter(datasheet_id__type_id__type = "Site Cleanup").count(),
+        },
+        {
+            "type" : "Derelict Gear Report",
+            "count": Event.objects.filter(datasheet_id__type_id__type = "Derelict Gear Report").count()
+        }
+    ]
+
+    return render_to_response( 'index.html', RequestContext(request,{'thankyou': False, 'active':'home', 'event_count': event_count}))
 
 def events(request, submit=False): 
-        
-    event_dicts = get_events()
+
+    report_values = get_event_values_list(request)
+
+    return render_to_response( 'events.html', RequestContext(request,{'submit':submit, 'active':'events', 'report_values': simplejson.dumps(report_values)}))
+    
+def get_locations(request):
     states = []
     locations = {}
     for state in State.objects.all().order_by('name'):
@@ -39,17 +57,63 @@ def events(request, submit=False):
             counties.append({
                 "name": county.name,
                 "type": 'county',
+                "state": state.name
             })
         locations[state.name] = {
             'counties' : counties,
             'state' : state.name,
         }
-        
-    return render_to_response( 'events.html', RequestContext(request,{'submit':submit, 'active':'events', 'event_json': simplejson.dumps(event_dicts), 'states': simplejson.dumps(states), 'locations': simplejson.dumps(locations)}))
-    
-def get_events():
+    return HttpResponse(simplejson.dumps({
+        'states': states,
+        'locations': locations,
+    }))
+
+sort_cols = {
+    "site.st_initials": 'site__state',
+    "datasheet.event_type": "datasheet_id__type_id",
+    "site.name": "site__sitename",
+    "site.county": "site__county",
+    "date": "cleanupdate"
+}
+
+def get_events(request):
+    start_index = request.GET.get('iDisplayStart', 0)
+    count = request.GET.get('iDisplayLength', False)
+    sEcho = request.GET.get('sEcho', False)
+    sort_column = request.GET.get('iSortCol_0', False)
+    filter_json = request.GET.get('filter', False)
+
     qs = Event.objects.filter()
-    res = []
+
+    if filter_json:
+        filters = simplejson.loads(filter_json)
+        if filters.__len__() > 0:
+            qs = Event.filter(filters)
+        # for filter in filters:
+        #     if filter['type'] == "bbox":
+        #         bbox = tuple(filter['bbox'].split(','))
+        #         geom = Polygon.from_bbox(bbox)
+        #         import pdb; pdb.set_trace()
+        #         qs = qs.filter(site__geometry__within=geom)
+        #     if filter['type'] == "county":
+        #         qs = qs.filter(site__county=filter['name']  + " County")
+        #     if filter['type'] == "state":
+        #         qs = qs.filter(site__state__name=filter['name'])
+
+    if sort_column:
+        sort_name_key = request.GET.get("mDataProp_%s" % sort_column, False)
+        sort_dir = request.GET.get("sSortDir_0", False)
+        if sort_name_key:
+            sort_name = sort_cols[sort_name_key]
+            if sort_dir == 'desc':
+                sort_name = "-" + sort_name
+            qs = qs.order_by(sort_name)
+    filtered_count = qs.count()
+    if count:
+        qs = qs[int(start_index):int(start_index) + int(count)]
+
+    data = []
+
     for event in qs: 
         timeout=60*60*24*7*52*10
         key = 'eventcache_%s' % event.id
@@ -57,9 +121,84 @@ def get_events():
         if not dict:
             dict = event.toEventsDict
             cache.set(key, dict, timeout)
-        res.append(dict)
-    return res
+        data.append(dict)
+    res = {
+       "aaData": data,
+       "iTotalRecords": Event.objects.all().count(),
+       "iTotalDisplayRecords": filtered_count,
+       "sEcho": sEcho
+    }
+    return HttpResponse(simplejson.dumps(res))
 
+def get_event_values_list(request, filters=None):
+    
+    type = 'Site Cleanup'   #TODO: get this type name dynamically so we can show derelict and others
+    field_list = None
+    key = False
+    print "-----------------"
+    print "-----------------"
+    print "-----------------"
+    if not filters:    
+        timeout = 60*60*24*7
+        key = "reportcache_%s" % type.replace(" ","_")
+        field_list = cache.get(key)
+    if not field_list:
+        cleanup_events = Event.objects.filter(datasheet_id__type_id__type = type)
+        if filters:
+            cleanup_events = Event.filter(filters)
+        cleanup_events = cleanup_events.filter(datasheet_id__type_id__type = type)  #TODO: get filter by type to work in "filters"
+
+        agg_fields = {}
+        for field in Field.objects.all():
+            agg_fields[field.internal_name] = {
+                'name': field.internal_name,
+                'type': field.datatype.name,
+                'unit': [],
+                'value': None
+            }
+
+        field_values = FieldValue.objects.filter(event_id__in = cleanup_events, field_id__datatype__aggregatable = True)
+        
+        for field_value in field_values:
+            field = agg_fields[field_value.field_id.internal_name]
+            if not field['value']:
+                field['value'] = 0
+            if field_value.field_value and not field_value.field_value == 'None':
+                field['value'] = field['value'] + float(field_value.field_value)
+            if field['unit'].__len__() == 0:
+                ds = field_value.event_id.datasheet_id
+                unit = DataSheetField.objects.get(sheet_id = ds, field_id = field_value.field_id).unit_id.short_name
+                if unit in ['dd', 'dd mm.mm', 'ft', 'kg', 'km', 'mi', 'mm', 'mm.000', '%', 'lbs', 'sq ft']:
+                    field['unit'] = [unit]
+                else:
+                    field['unit'] = [' ']
+            # else:     #TODO: get translators in here to handle converting unit types and feeding a whole selection of values
+     
+        field_list = []
+        for agg_field in agg_fields:
+            field_list.append({
+                'field': agg_fields[agg_field]
+            })
+        if key:
+            print "key %s NOT cached" % key
+            cache.set(key, field_list, timeout)
+    else:
+        if key:
+            print "key %s cached" % key
+        else:
+            print "NO KEY"
+    print "-----------------"
+    print "-----------------"
+    print "-----------------"
+    return field_list
+    
+def get_event_values(request):
+    filters = request.GET.get('filters', None)
+    if filters:
+        filters = simplejson.loads(filters)
+    field_list = get_event_values_list(request, filters)
+    return HttpResponse(simplejson.dumps(field_list))
+    
 @login_required
 def create_event(request):
     if request.method == 'GET':

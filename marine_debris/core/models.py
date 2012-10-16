@@ -13,6 +13,7 @@ from django.core.cache import cache
 # Create your models here.
 class DataType (models.Model):
     name = models.TextField()
+    aggregatable = models.BooleanField(default=False)
     
     def __unicode__(self):
         return self.name
@@ -335,7 +336,7 @@ class Site (models.Model):
         else:
             county = ''
         county_dict = {
-            'name': county,
+            'name': county.replace(" County", ""),
             'sites': sites
         }
         return county_dict
@@ -368,7 +369,7 @@ class Site (models.Model):
             'lon': lon,
             'state': state,
             'st_initials': st_initials,
-            'county': county
+            'county': county.replace(" County", "")
         }
         return site_dict
         
@@ -436,6 +437,32 @@ class Event (models.Model):
         
     def get_fields(self):
         return[(field.name, field.value_to_string(self)) for field in Event._meta.fields]
+        
+    @classmethod
+    def filter(cls, filters):
+        events = cls.objects.filter()
+        filtered_events = None
+        for filter in filters:              #TODO: THis is not cumulative for multiple filters of the same type
+            timeout = 60*60*24*7
+            key = 'reportcache_%s_%s' % (filter['type'], filter['name'])
+            res = cache.get(key)
+            if not res:
+                if filter['type'] == "county":
+                    county_events = events.filter(site__county=filter['name']  + " County")
+                    if county_events.count() > 0:
+                        res =  county_events
+                    else:
+                        res = events.filter(site__county=filter['name'])
+                if filter['type'] == "state":
+                    res = events.filter(site__state__name=filter['name'])
+                if filter['type'] == "event_type":
+                    res = events.filter(datasheet_id__type_id__name=filter['name'])
+                cache.set(key, res, timeout)
+            if filtered_events:
+                filtered_events | res
+            else:
+                filtered_events = res
+        return filtered_events
         
     @property
     def field_values(self):
@@ -513,8 +540,12 @@ class Event (models.Model):
     def save(self, *args, **kwargs):
         
         if self.id:
-            key = 'eventcache_%s' % self.id
-            cache.delete(key)
+            eventkey = 'eventcache_%s' % self.id
+            cache.delete(eventkey)
+            
+        if self.datasheet_id and self.datasheet_id.type_id and self.datasheet_id.type_id.type:
+            reportkey = 'reportcache_%s' % self.datasheet_id.type_id.type
+            cache.delete(reportkey)
         
         super(Event, self).save(*args, **kwargs)
     

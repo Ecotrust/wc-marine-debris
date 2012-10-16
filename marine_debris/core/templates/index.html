@@ -32,6 +32,14 @@
         <img src="{{STATIC_URL}}img/cleanup.jpg"/>
         <p>California Coastal Commission, ICC</p>
     </div>
+    <div>
+        <p>Events count</p>
+        <table><tr><th>Type</th><th>Count</th></tr>
+        {% for type in event_count %}
+            <tr><td>{{type.type|safe}}</td><td>{{type.count}}</td></tr>
+        {% endfor %}
+        </table>
+    </div>
 {% endblock %}
 {% block rightcontent %}
     <h2>About the Marine Debris Action Coordination Team</h2>

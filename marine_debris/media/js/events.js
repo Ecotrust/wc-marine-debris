@@ -37,75 +37,58 @@ app.points = new OpenLayers.Layer.Vector("Events", {
 
 
 
-function viewModel() {
+function viewModel(options) {
   var self = this;
 
-  self.events = event_json;
+  self.events = ko.observableArray();
+  self.states = options.locations.states;
+  self.locations = options.locations.locations;
 
   self.locationFilter = ko.observableArray();
 
-  self.locations = {};
-
-  // populate location list for filtering
-  $.each(self.events, function(i, event) {
-    var state = event.site.state,
-      county = event.site.county,
-      counties,
-      pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")),
-      point = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(event.site.lon, event.site.lat));
-
-    event.pos = pos;
-    event.feature = point;
-    point.event = event;
-    //app.points.addFeatures(pos);
-    point.geometry.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
-    app.points.addFeatures(point);
-    app.points.drawFeature(point);
-    if(self.locations[state]) {
-      counties = $.map(self.locations[state].counties, function(county) {
-        return county.name;
-      });
-      if($.inArray(county, counties) === -1) {
-        self.locations[state].counties.push({
-          name: county,
-          type: 'county',
-          state: state
-        });
-      }
-    } else {
-      self.locations[state] = {
-        counties: [{
-          name: event.site.county,
-          type: 'county'
-        }],
-        state: event.site.state
-      }
+  self.dataTablesOptions = {
+    'bFilter': false, 
+    "iDisplayLength": 5,
+    "bProcessing": true,
+    "bServerSide": true,
+    "sAjaxSource": "/events/get",
+    "iDisplayStart": 0,
+    "fnServerParams": function ( aoData ) {
+      var filters = self.locationFilter();
+      if (self.filterByExtent()) {
+        filters.push({"type": "bbox", "bbox": self.mapExtent().transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326")).toBBOX() });
+      };
+      aoData.push( { "name": "filter", "value": JSON.stringify(filters) });
     }
-  });
+  };
+
+  // populate points
+  self.addEvents = function (events) {
+    $.each(events, function(i, event) {
+      var state = event.site.state,
+        pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")),
+        point = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(event.site.lon, event.site.lat));
+
+      event.pos = pos;
+      event.feature = point;
+      point.event = event;
+      point.geometry.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
+      self.events().push(event);
+    });
+  }
 
   // store mapextent here
   self.mapExtent = ko.observable();
   self.filterByExtent = ko.observable(false);
 
-  self.states = $.map(self.locations, function(location) {
-    return {
-      name: location.state,
-      type: 'state'
-    }
-  }).sort(function(a, b) {
-    {
-      return a.name.localeCompare(b.name);
-    }
-  });
-
-
   self.showSpinner = ko.observable(false);
 
   self.filteredEvents = ko.computed(function() {
+    console.log('filtering events');
     var filteredEvents = [];
     self.showSpinner(true);
-    $.each(self.events, function(i, event) {
-      if(self.locationFilter() && self.locationFilter().length !== 0) {
+    if(self.locationFilter() && self.locationFilter().length !== 0) {
+      $.each(self.events(), function(i, event) {
         $.each(self.locationFilter(), function(i, filter) {
           if((filter.type === 'state' && filter.name === event.site.state) || (filter.type === 'county' && filter.name === event.site.county)) {
             if(self.filterByExtent()) {
@@ -117,19 +100,40 @@ function viewModel() {
             }
           }
         });
-      } else {
-        // no filtering
-        if(self.filterByExtent()) {
+      });
+        
+    } else if (self.filterByExtent()) {
+      $.each(self.events(), function(i, event) {
           if(self.mapExtent().containsLonLat(event.pos)) {
             filteredEvents.push(event);
           }
-        } else {
-          filteredEvents.push(event);
-        }
-      }
-    });
+        });
+    } else {
+      console.log('no filter');
+      filteredEvents = self.events();
+    }
     self.showSpinner(false);
     return filteredEvents;
+  });
+  
+  self.getReport = function (filters) {
+    self.showSpinner(true);
+    $.ajax({
+        url: "/events/get_values",
+        type: 'GET',
+        data: {
+            "filters" : JSON.stringify(filters)
+        },
+        dataType: 'json'
+    }).done(function(report) { 
+        self.report(report);
+        self.showSpinner(false);
+    });
+  };
+
+  self.locationFilter.subscribe(function () {
+    $('#events-table').dataTable().fnReloadAjax();
+    self.getReport(self.locationFilter());
   });
 
   self.filteredEvents.subscribe(function() {
@@ -169,23 +173,90 @@ function viewModel() {
     $(row).siblings().removeClass('active');
   };
 
-
+  self.report = ko.observable(init_report);
+  
 };
-app.viewModel = new viewModel()
 
-app.addPoints = function(events) {
-  //app.points.destroyFeatures();
-  $.each(events, function(i, event) {
-   
-    //app.markers.addMarker(new OpenLayers.Marker(pos));
+app.get_events = function () {
+  $.ajax({
+        url: "/events/get",
+        type: 'GET',
+        dataType: 'json'
+  }).done(function(res) { 
+    app.viewModel.addEvents(res.aaData);
+    app.addPoints(app.viewModel.events());
   });
 };
 
-// bind the viewmodel
-ko.applyBindings(app.viewModel);
+$.ajax({
+    url: "/events/get_locations",
+    type: 'GET',
+    dataType: 'json'
+  }).done(function (locations) {
+    app.viewModel = new viewModel({
+      locations: locations
+    });
+    // bind the viewmodel
+    ko.applyBindings(app.viewModel);  
+    app.viewModel.mapExtent(map.getExtent());
 
-// initialize the select widget
-$(".location").chosen();
+    $(".location").chosen();
+
+
+    $(document).ready(function() {
+      $(".location").chosen().change(function(event, option) {
+        console.log('change');
+        var $select = $(event.target);
+        if(option.deselected) {
+          $select.find('[value="' + option.deselected + '"]').attr('disabled', 'disabled');
+          app.viewModel.locationFilter.remove(function(filter) {
+            return filter.name === option.deselected;
+          })
+          $select.trigger("liszt:updated");
+
+        }
+      });
+
+      $('.chzn-results').on('click', '.group-result', function(event) {
+        var $optgroup = $(event.target),
+          name = $optgroup.text(),
+          $select = $('.location'),
+          $option = $select.find('[value="' + name + '"]'),
+          index = -1,
+          selected = $select.val() || [];
+
+        $.each(app.viewModel.locationFilter(), function(i, filter) {
+          if(filter.name === name) {
+            index = i;
+          }
+        });
+        if(index === -1) {
+          $option.removeAttr('disabled');
+          selected.push(name)
+          app.viewModel.locationFilter.push({
+            name: name,
+            type: 'state'
+          });
+        } else {
+          $option.attr('disabled', true);
+          selected.splice($.inArray(name, selected), 1);
+          app.viewModel.locationFilter.splice(index, 1);
+
+        }
+        $select.val(selected);
+        $select.trigger("liszt:updated");
+      });
+      
+    });
+  }).then(function () {
+    app.get_events();
+
+  });
+
+app.addPoints = function(events) {
+  app.points.removeAllFeatures();
+  app.points.addFeatures($.map(events, function (event) { return event.feature; }))
+};
 
 esriOcean = new OpenLayers.Layer.XYZ("ESRI Ocean", "http://services.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/${z}/${y}/${x}", {
   sphericalMercator: true,
@@ -218,56 +289,10 @@ app.points.events.on({
  }
  });
 
-app.viewModel.mapExtent(map.getExtent());
+
 
 map.events.register("moveend", map, function() {
   app.viewModel.mapExtent(map.getExtent());
 });
 
 
-
-$(document).ready(function() {
-  $(".location").chosen().change(function(event, option) {
-    var $select = $(event.target);
-    if(option.deselected) {
-      $select.find('[value="' + option.deselected + '"]').attr('disabled', 'disabled');
-      app.viewModel.locationFilter.remove(function(filter) {
-        return filter.name === option.deselected;
-      })
-      $select.trigger("liszt:updated");
-
-    }
-  });
-
-  $('.chzn-results').on('click', '.group-result', function(event) {
-    var $optgroup = $(event.target),
-      name = $optgroup.text(),
-      $select = $('.location'),
-      $option = $select.find('[value="' + name + '"]'),
-      index = -1,
-      selected = $select.val() || [];
-
-    $.each(app.viewModel.locationFilter(), function(i, filter) {
-      if(filter.name === name) {
-        index = i;
-      }
-    });
-    if(index === -1) {
-      $option.removeAttr('disabled');
-      selected.push(name)
-      app.viewModel.locationFilter.push({
-        name: name,
-        type: 'state'
-      });
-    } else {
-      $option.attr('disabled', true);
-      selected.splice($.inArray(name, selected), 1);
-      app.viewModel.locationFilter.splice(index, 1);
-
-    }
-    $select.val(selected);
-    $select.trigger("liszt:updated");
-
-  });
-  app.addPoints(app.viewModel.filteredEvents());
-});

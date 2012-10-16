@@ -81,7 +81,7 @@ class DataSheetFieldAdmin(admin.ModelAdmin):
     }
 
 class DataTypeAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'name')
+    list_display = ('__unicode__', 'name', 'aggregatable')
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
