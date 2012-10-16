@@ -66,7 +66,6 @@ sort_cols = {
 }
 
 def get_events(request):
-<<<<<<< HEAD
     start_index = request.GET.get('iDisplayStart', 0)
     count = request.GET.get('iDisplayLength', False)
     sEcho = request.GET.get('sEcho', False)
@@ -96,10 +95,7 @@ def get_events(request):
         qs = qs[int(start_index):int(start_index) + int(count)]
 
     data = []
-=======
-    qs = Event.objects.filter()
-    res = []
->>>>>>> origin/master
+
     for event in qs: 
         timeout=60*60*24*7*52*10
         key = 'eventcache_%s' % event.id
