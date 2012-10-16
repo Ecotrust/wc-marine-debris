@@ -33,9 +33,10 @@
         <p>California Coastal Commission, ICC</p>
     </div>
     <div>
-        <table><tr><th>State</th><th>Lbs per mi</th></tr>
-        {% for state in lbs_per_mile %}
-            <tr><td>{{state.name|safe}}</td><td>{{state.lbs_per_mi}}</td></tr>
+        <p>Events count</p>
+        <table><tr><th>Type</th><th>Count</th></tr>
+        {% for type in event_count %}
+            <tr><td>{{type.type|safe}}</td><td>{{type.count}}</td></tr>
         {% endfor %}
         </table>
     </div>

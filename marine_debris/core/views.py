@@ -26,9 +26,19 @@ from models import *
 
 def index(request): 
 
-    lbs_per_mile = get_state_stats()
+    # lbs_per_mile = get_state_stats()
+    event_count = [
+        {
+            "type": "Site Cleanup",
+            "count": Event.objects.filter(datasheet_id__type_id__type = "Site Cleanup").count(),
+        },
+        {
+            "type" : "Derelict Gear Report",
+            "count": Event.objects.filter(datasheet_id__type_id__type = "Derelict Gear Report").count()
+        }
+    ]
 
-    return render_to_response( 'index.html', RequestContext(request,{'thankyou': False, 'active':'home', 'lbs_per_mile': lbs_per_mile}))
+    return render_to_response( 'index.html', RequestContext(request,{'thankyou': False, 'active':'home', 'event_count': event_count}))
 
 def events(request, submit=False): 
 
@@ -62,7 +72,6 @@ sort_cols = {
     "site.name": "site__sitename",
     "site.county": "site__county",
     "date": "cleanupdate"
-
 }
 
 def get_events(request):
