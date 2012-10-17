@@ -9,6 +9,7 @@ from django.contrib.gis.admin import OSMGeoAdmin
 from south.modelsinspector import add_introspection_rules
 add_introspection_rules([], ["^django\.contrib\.gis\.db\.models\.fields\.PointField"])
 from django.core.cache import cache
+from django.db.models import Q
 
 # Create your models here.
 class DataType (models.Model):
@@ -297,6 +298,7 @@ class State (models.Model):
         res = cache.get(key)
         if res == None:
             counties = [x.county for x in Site.objects.filter(state=self).distinct('county')]
+            counties = list(set(counties))      #distinct not doing as intended
             counties_list = []
             for county in counties:
                 sites = [x.toDict for x in Site.objects.filter(state=self, county=county)]
@@ -444,22 +446,25 @@ class Event (models.Model):
         filtered_events = None
         for filter in filters:              #TODO: THis is not cumulative for multiple filters of the same type
             timeout = 60*60*24*7
-            key = 'reportcache_%s_%s' % (filter['type'], filter['name'])
+            if filter['type'] == "county":
+                key = 'reportcache_%s_%s_%s' % (filter['type'], filter['name'].replace(" ","_"), filter['state'])
+            else:
+                key = 'reportcache_%s_%s' % (filter['type'], filter['name'].replace(" ","_"))
             res = cache.get(key)
             if not res:
                 if filter['type'] == "county":
-                    county_events = events.filter(site__county=filter['name']  + " County")
+                    county_events = events.filter(site__county=filter['name']  + " County", site__state__name=filter['state'])
                     if county_events.count() > 0:
                         res =  county_events
                     else:
-                        res = events.filter(site__county=filter['name'])
+                        res = events.filter(site__county=filter['name'], site__state__name=filter['state'])
                 if filter['type'] == "state":
                     res = events.filter(site__state__name=filter['name'])
                 if filter['type'] == "event_type":
                     res = events.filter(datasheet_id__type_id__name=filter['name'])
                 cache.set(key, res, timeout)
             if filtered_events:
-                filtered_events | res
+                filtered_events = filtered_events | res
             else:
                 filtered_events = res
         return filtered_events
@@ -546,6 +551,18 @@ class Event (models.Model):
         if self.datasheet_id and self.datasheet_id.type_id and self.datasheet_id.type_id.type:
             reportkey = 'reportcache_%s' % self.datasheet_id.type_id.type
             cache.delete(reportkey)
+            
+            typekey = 'reportcache_event_type_%s' % self.datasheet_id.type_id.type
+            cache.delete(typekey)
+            #TODO: These are the same and will be consolidated - the second is handled through this class's filter method
+        
+        if self.site and self.site.state:
+            statekey = 'reportcache_state_%s' % self.site.state.name
+            cache.delete(statekey)
+                
+            countykey = 'reportcache_county_%s_%s' % (self.site.county, self.site.state.name)
+            cache.delete(countykey)
+            
         
         super(Event, self).save(*args, **kwargs)
     
@@ -574,6 +591,9 @@ class County(models.Model):
     stateabr = models.CharField(max_length=2)
     geom = models.MultiPolygonField(srid=4326)
     objects = models.GeoManager()
+    
+    def __unicode__(self):
+        return "%s" % self.name
 
 # Auto-generated `LayerMapping` dictionary for County model
 county_mapping = {

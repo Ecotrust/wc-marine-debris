@@ -84,13 +84,14 @@ function viewModel(options) {
   self.showSpinner = ko.observable(false);
 
   self.filteredEvents = ko.computed(function() {
-    console.log('filtering events');
     var filteredEvents = [];
     self.showSpinner(true);
     if(self.locationFilter() && self.locationFilter().length !== 0) {
       $.each(self.events(), function(i, event) {
         $.each(self.locationFilter(), function(i, filter) {
-          if((filter.type === 'state' && filter.name === event.site.state) || (filter.type === 'county' && filter.name === event.site.county)) {
+          if((filter.type === 'state' && filter.name === event.site.state) || 
+            (filter.type === 'county' && filter.name === event.site.county.replace(" County", "") && filter.state === event.site.state) ||
+            (filter.type === 'event_type' && filter.name === event.datasheet.event_type)) {
             if(self.filterByExtent()) {
               if(self.mapExtent().containsLonLat(event.pos)) {
                 filteredEvents.push(event);
@@ -109,7 +110,6 @@ function viewModel(options) {
           }
         });
     } else {
-      console.log('no filter');
       filteredEvents = self.events();
     }
     self.showSpinner(false);
@@ -200,28 +200,59 @@ $.ajax({
     ko.applyBindings(app.viewModel);  
     app.viewModel.mapExtent(map.getExtent());
 
-    $(".location").chosen();
-
+    $("select.location").chosen();
+    $("select.type").chosen();
 
     $(document).ready(function() {
+      $("select.type").val([]);
+      $("select.type").chosen().change(function (event, option ) {
+        if (option.selected) {
+          app.viewModel.locationFilter.push({
+            type: "event_type",
+            name: "option.selected"
+          });
+        } else if (option.deselected) {
+          app.viewModel.locationFilter.remove(function (filter) {
+            return filter.type === 'event_type' && filter.name === option.deselected;
+          });
+        }
+      });
       $(".location").chosen().change(function(event, option) {
-        console.log('change');
-        var $select = $(event.target);
-        if(option.deselected) {
-          $select.find('[value="' + option.deselected + '"]').attr('disabled', 'disabled');
-          app.viewModel.locationFilter.remove(function(filter) {
-            return filter.name === option.deselected;
-          })
-          $select.trigger("liszt:updated");
+        var $select = $(event.target),
+          state,
+          name;
+        if(option){
+          if (option.deselected) {
+            state = option.deselected.split(':')[0];
+            name = option.deselected.split(':')[1];
+            $select.find('[value="' + name + '"]').attr('disabled', 'disabled');
+              
+            app.viewModel.locationFilter.remove(function(filter) {
+              if (filter.type === 'county') {
+                return (filter.name === name && filter.state === state);
+              } else {
+                return (filter.name === name);
+              }
+            });
+              
+            $select.trigger("liszt:updated");
 
+          } else {
+            app.viewModel.locationFilter.push({
+              name: option.selected.split(':')[1],
+              type: 'county',
+              state: option.selected.split(':')[0]
+            });
+          }
         }
       });
 
+      //When a state name is selected from filter box
       $('.chzn-results').on('click', '.group-result', function(event) {
         var $optgroup = $(event.target),
           name = $optgroup.text(),
           $select = $('.location'),
-          $option = $select.find('[value="' + name + '"]'),
+          $option = $select.find('[value="' + 'state:'+name + '"]'),
           index = -1,
           selected = $select.val() || [];
 
@@ -232,18 +263,19 @@ $.ajax({
         });
         if(index === -1) {
           $option.removeAttr('disabled');
-          selected.push(name)
+          selected.push('state:'+name);
           app.viewModel.locationFilter.push({
             name: name,
             type: 'state'
           });
         } else {
           $option.attr('disabled', true);
-          selected.splice($.inArray(name, selected), 1);
+          selected.splice($.inArray('state:'+name, selected), 1);
           app.viewModel.locationFilter.splice(index, 1);
 
         }
         $select.val(selected);
+        $select.trigger('change');
         $select.trigger("liszt:updated");
       });
       
