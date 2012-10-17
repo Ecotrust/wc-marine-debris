@@ -89,7 +89,9 @@ function viewModel(options) {
     if(self.locationFilter() && self.locationFilter().length !== 0) {
       $.each(self.events(), function(i, event) {
         $.each(self.locationFilter(), function(i, filter) {
-          if((filter.type === 'state' && filter.name === event.site.state) || (filter.type === 'county' && filter.name === event.site.county.replace(" County", "") && filter.state === event.site.state)) {
+          if((filter.type === 'state' && filter.name === event.site.state) || 
+            (filter.type === 'county' && filter.name === event.site.county.replace(" County", "") && filter.state === event.site.state) ||
+            (filter.type === 'event_type' && filter.name === event.datasheet.event_type)) {
             if(self.filterByExtent()) {
               if(self.mapExtent().containsLonLat(event.pos)) {
                 filteredEvents.push(event);
@@ -198,10 +200,22 @@ $.ajax({
     ko.applyBindings(app.viewModel);  
     app.viewModel.mapExtent(map.getExtent());
 
-    $(".location").chosen();
-
+    $("select.location").chosen();
+    $("select.type").chosen();
 
     $(document).ready(function() {
+      $("select.type").chosen().change(function (event, option ) {
+        if (option.selected) {
+          app.viewModel.locationFilter.push({
+            type: "event_type",
+            name: "option.selected"
+          });
+        } else if (option.deselected) {
+          app.viewModel.locationFilter.remove(function (filter) {
+            return filter.type === 'event_type' && filter.name === option.deselected;
+          });
+        }
+      });
       $(".location").chosen().change(function(event, option) {
         var $select = $(event.target),
           state,
