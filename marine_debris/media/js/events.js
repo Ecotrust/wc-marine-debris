@@ -208,7 +208,7 @@ $.ajax({
         if (option.selected) {
           app.viewModel.locationFilter.push({
             type: "event_type",
-            name: "option.selected"
+            name: option.selected
           });
         } else if (option.deselected) {
           app.viewModel.locationFilter.remove(function (filter) {

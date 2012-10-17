@@ -442,20 +442,26 @@ class Event (models.Model):
     @classmethod
     def filter(cls, filters):
         event_types = []
+        site_filters = []
         for filter in filters:
             if filter['type'] == 'event_type':
-                event_type.append(filter['name'])
+                event_types.append(filter['name'])
+            else:
+                site_filters.append(filter)
                 
         if event_types == []:
             event_types.append('all')
-        
-        filtered_events = None
         for event_type in event_types:
             if event_type == 'all':
                 events = cls.objects.all()
             else:
-                events = cls.objects.filter(datasheet_id__type_id__type)
-            for filter in filters:              
+                events = cls.objects.filter(datasheet_id__type_id__type = event_type)
+            if site_filters == []:
+                filtered_events = events.all()
+            else:
+                filtered_events = None
+            for filter in site_filters:              
+            
                 timeout = 60*60*24*7
                 if filter['type'] == "county":
                     key = 'reportcache_%s_%s_%s' % (filter['type'], filter['name'].replace(" ","_"), filter['state'])
@@ -472,8 +478,6 @@ class Event (models.Model):
                             res = events.filter(site__county=filter['name'], site__state__name=filter['state'])
                     if filter['type'] == "state":
                         res = events.filter(site__state__name=filter['name'])
-                    if filter['type'] == "event_type":
-                        res = events.filter(datasheet_id__type_id__name=filter['name'])
                     cache.set(key, res, timeout)
                 if filtered_events:
                     filtered_events = filtered_events | res
