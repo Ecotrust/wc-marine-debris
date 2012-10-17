@@ -27,7 +27,7 @@
          <optgroup data-bind="attr: {label: $data.name}">
            <option data-bind="text: $data.name, value: 'state:'+$data.name" disabled></option>
          <!-- ko foreach: $root.locations[$data.name].counties -->
-           <option data-bind="text: $data.name, value: $data.state+':'+$data.name"></option>
+           <option data-bind="text: $data.name + ', ' + $parent.initials, value: $data.state+':'+$data.name"></option>
          <!-- /ko -->
          </optgroup>
      </select>

@@ -89,7 +89,7 @@ function viewModel(options) {
     if(self.locationFilter() && self.locationFilter().length !== 0) {
       $.each(self.events(), function(i, event) {
         $.each(self.locationFilter(), function(i, filter) {
-          if((filter.type === 'state' && filter.name === event.site.state) || (filter.type === 'county' && filter.name === event.site.county.replace(" County", ""))) {
+          if((filter.type === 'state' && filter.name === event.site.state) || (filter.type === 'county' && filter.name === event.site.county.replace(" County", "") && filter.state === event.site.state)) {
             if(self.filterByExtent()) {
               if(self.mapExtent().containsLonLat(event.pos)) {
                 filteredEvents.push(event);
@@ -203,13 +203,17 @@ $.ajax({
 
     $(document).ready(function() {
       $(".location").chosen().change(function(event, option) {
-        var $select = $(event.target);
+        var $select = $(event.target),
+          state,
+          name;
         if(option){
           if (option.deselected) {
-            $select.find('[value="' + option.deselected.split(':')[1] + '"]').attr('disabled', 'disabled');
+            state = option.deselected.split(':')[0];
+            name = option.deselected.split(':')[1];
+            $select.find('[value="' + name + '"]').attr('disabled', 'disabled');
               
             app.viewModel.locationFilter.remove(function(filter) {
-              return filter.name === option.deselected.split(':')[1];
+              return (filter.name === name && filter.state === state);
             });
               
             $select.trigger("liszt:updated");
