@@ -297,6 +297,7 @@ class State (models.Model):
         res = cache.get(key)
         if res == None:
             counties = [x.county for x in Site.objects.filter(state=self).distinct('county')]
+            counties = list(set(counties))      #distinct not doing as intended
             counties_list = []
             for county in counties:
                 sites = [x.toDict for x in Site.objects.filter(state=self, county=county)]
@@ -549,6 +550,18 @@ class Event (models.Model):
         if self.datasheet_id and self.datasheet_id.type_id and self.datasheet_id.type_id.type:
             reportkey = 'reportcache_%s' % self.datasheet_id.type_id.type
             cache.delete(reportkey)
+            
+            typekey = 'reportcache_event_type_%s' % self.datasheet_id.type_id.type
+            cache.delete(typekey)
+            #TODO: These are the same and will be consolidated - the second is handled through this class's filter method
+        
+        if self.site and self.site.state:
+            statekey = 'reportcache_state_%s' % self.site.state.name
+            cache.delete(statekey)
+                
+            countykey = 'reportcache_county_%s_%s' % (self.site.county, self.site.state.name)
+            cache.delete(countykey)
+            
         
         super(Event, self).save(*args, **kwargs)
     
