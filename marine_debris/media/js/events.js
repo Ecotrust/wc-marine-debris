@@ -195,6 +195,7 @@ $.ajax({
     $("select.type").chosen();
 
     $(document).ready(function() {
+      $("select.type").val([]);
       $("select.type").chosen().change(function (event, option ) {
         if (option.selected) {
           app.viewModel.locationFilter.push({
