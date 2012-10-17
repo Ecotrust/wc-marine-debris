@@ -64,6 +64,7 @@ function viewModel(options) {
 
   // populate points
   self.addEvents = function (events) {
+    self.events([]);
     $.each(events, function(i, event) {
       var state = event.site.state,
         pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")),
@@ -84,36 +85,8 @@ function viewModel(options) {
   self.showSpinner = ko.observable(false);
 
   self.filteredEvents = ko.computed(function() {
-    var filteredEvents = [];
-    self.showSpinner(true);
-    if(self.locationFilter() && self.locationFilter().length !== 0) {
-      $.each(self.events(), function(i, event) {
-        $.each(self.locationFilter(), function(i, filter) {
-          if((filter.type === 'state' && filter.name === event.site.state) || 
-            (filter.type === 'county' && filter.name === event.site.county.replace(" County", "") && filter.state === event.site.state) ||
-            (filter.type === 'event_type' && filter.name === event.datasheet.event_type)) {
-            if(self.filterByExtent()) {
-              if(self.mapExtent().containsLonLat(event.pos)) {
-                filteredEvents.push(event);
-              }
-            } else {
-              filteredEvents.push(event);
-            }
-          }
-        });
-      });
-        
-    } else if (self.filterByExtent()) {
-      $.each(self.events(), function(i, event) {
-          if(self.mapExtent().containsLonLat(event.pos)) {
-            filteredEvents.push(event);
-          }
-        });
-    } else {
-      filteredEvents = self.events();
-    }
     self.showSpinner(false);
-    return filteredEvents;
+    return self.events();
   });
   
   self.getReport = function (filters) {
@@ -133,8 +106,10 @@ function viewModel(options) {
 
   self.locationFilter.subscribe(function () {
     $('#events-table').dataTable().fnReloadAjax();
+    app.get_event_points(self.locationFilter());
     self.getReport(self.locationFilter());
   });
+
 
   self.filteredEvents.subscribe(function() {
     app.addPoints(self.filteredEvents());
@@ -177,6 +152,22 @@ function viewModel(options) {
   
 };
 
+
+app.get_event_points = function(filters) {
+  $.ajax({
+        url: "/events/get",
+        type: 'GET',
+        data: {
+            "filter" : JSON.stringify(filters)
+        },
+        dataType: 'json'
+  }).done(function(res) { 
+    app.viewModel.addEvents(res.aaData);
+    app.addPoints(app.viewModel.events());
+  });
+};
+
+
 app.get_events = function () {
   $.ajax({
         url: "/events/get",
@@ -215,6 +206,7 @@ $.ajax({
             return filter.type === 'event_type' && filter.name === option.deselected;
           });
         }
+        
       });
       $(".location").chosen().change(function(event, option) {
         var $select = $(event.target),
@@ -235,7 +227,6 @@ $.ajax({
             });
               
             $select.trigger("liszt:updated");
-
           } else {
             app.viewModel.locationFilter.push({
               name: option.selected.split(':')[1],
