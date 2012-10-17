@@ -46,6 +46,7 @@ i { margin-right: 5px; }
 .thumbnail p {
 	text-align: right;
 }
+
 .events-table .dataTables_wrapper{
 	margin-top: 25px;
 }
@@ -178,7 +179,7 @@ img.olTileImage {
 
 
 		.masthead-title {
-			float: left; margin-left: 22px;
+			float: right; margin-left: 22px;
 			font-size: 34px; color: #ddd; line-height: 44px;
 			}
 
