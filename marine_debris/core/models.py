@@ -9,6 +9,7 @@ from django.contrib.gis.admin import OSMGeoAdmin
 from south.modelsinspector import add_introspection_rules
 add_introspection_rules([], ["^django\.contrib\.gis\.db\.models\.fields\.PointField"])
 from django.core.cache import cache
+from django.db.models import Q
 
 # Create your models here.
 class DataType (models.Model):
@@ -463,7 +464,7 @@ class Event (models.Model):
                     res = events.filter(datasheet_id__type_id__name=filter['name'])
                 cache.set(key, res, timeout)
             if filtered_events:
-                filtered_events | res
+                filtered_events = filtered_events | res
             else:
                 filtered_events = res
         return filtered_events
@@ -590,6 +591,9 @@ class County(models.Model):
     stateabr = models.CharField(max_length=2)
     geom = models.MultiPolygonField(srid=4326)
     objects = models.GeoManager()
+    
+    def __unicode__(self):
+        return "%s" % self.name
 
 # Auto-generated `LayerMapping` dictionary for County model
 county_mapping = {

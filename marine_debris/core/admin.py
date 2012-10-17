@@ -55,6 +55,7 @@ class AnswerOptionAdmin(admin.ModelAdmin):
     }
     
 class CountyAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'name', 'stateabr')
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()

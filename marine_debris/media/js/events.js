@@ -213,7 +213,11 @@ $.ajax({
             $select.find('[value="' + name + '"]').attr('disabled', 'disabled');
               
             app.viewModel.locationFilter.remove(function(filter) {
-              return (filter.name === name && filter.state === state);
+              if (filter.type === 'county') {
+                return (filter.name === name && filter.state === state);
+              } else {
+                return (filter.name === name);
+              }
             });
               
             $select.trigger("liszt:updated");
