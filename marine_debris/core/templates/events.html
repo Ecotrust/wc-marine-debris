@@ -23,11 +23,11 @@
  <div class="row-fluid">
    <div class="span12"> <!-- data-bind="options: locations, selectedOptions: locationFilter, chosen: true"  -->
      <p>Filter by State and County</p>
-     <select class="location" data-placeholder="Filter by location(s)..." data-bind="foreach: states, selectedOptions: locationFilter" multiple style="width: 350px">
+     <select class="location" data-placeholder="Filter by location(s)..." data-bind="foreach: states" multiple style="width: 350px">
          <optgroup data-bind="attr: {label: $data.name}">
-           <option data-bind="text: $data.name, value: $data.name" disabled></option>
+           <option data-bind="text: $data.name, value: 'state:'+$data.name" disabled></option>
          <!-- ko foreach: $root.locations[$data.name].counties -->
-           <option data-bind="text: $data.name, value: $data"></option>
+           <option data-bind="text: $data.name, value: $data.state+':'+$data.name"></option>
          <!-- /ko -->
          </optgroup>
      </select>
