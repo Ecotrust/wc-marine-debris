@@ -34,7 +34,7 @@
 <BODY>
 {% endblock %}
 
-<div class="container container-masthead">  
+<div class="container-fluid container-masthead">  
   <div class="masthead">
     <div class="masthead-logo">
       <p class="masthead-logo-line1">WEST COAST GOVERNORS</p>
@@ -42,10 +42,11 @@
       <p class="masthead-logo-line3">CALIFORNIA OREGON WASHINGTON</p>
     </div>
     <p class="masthead-title">Marine Debris Database</p>
+    <div class="clearfix"></div>
   </div>
 </div>
 
-<div class="container container-content">
+<div class="container-fluid container-content">
   <div class="navbar">
     <div class="navbar-inner">
       <ul class="nav">
@@ -64,15 +65,15 @@
       </div>
     </div>
   </div>
-  
-  <div class="row">
+<!--  {% block content %}
+  <div class="row-fluid">
     <div class="span12 content-header">
-      {% block content %}
-      {% endblock %}
 
       </div>
     </div>
-  <div class="row">
+  {% endblock %}-->
+
+  <div class="row-fluid">
       <div class="span6">
         <div class="wcga-database wcga-database-left">
           {% block leftcontent %}
