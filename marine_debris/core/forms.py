@@ -58,7 +58,6 @@ class CreateEventForm(forms.Form):
         choices = org_choices, 
         widget = forms.Select(
             attrs={
-                'class': 'span3', 
                 'data-bind':'options: data.orgs ? data.orgs : [], optionsText: "name", value: selectedOrganizationName, optionsValue: "name", optionsCaption: "Choose..."'
             }
         )
@@ -102,7 +101,7 @@ class CreateEventForm(forms.Form):
         required=False,
         widget = forms.Select(
             attrs={
-            'class':'span3 state-select',
+            'class':'state-select',
             'data-bind':'options: data.states ? data.states : [], optionsText: "name", value: selectedStateName, optionsValue: "initials", optionsCaption: "Choose..."'
             }
         )
@@ -112,7 +111,7 @@ class CreateEventForm(forms.Form):
         required=False,
         widget = forms.Select(
             attrs={
-                'class':'span3 county-select',
+                'class':'county-select',
                 'data-bind':'options: selectedState().counties ? selectedState().counties.sort(function(a, b) { return a.name.localeCompare(b.name) }) : [], optionsText: "name", value: selectedCountyName, optionsValue: "name", optionsCaption: "Choose...", enable: selectedState'
             }
         )
