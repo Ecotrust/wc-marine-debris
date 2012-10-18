@@ -83,19 +83,20 @@ function viewModel(options) {
   self.filterByExtent = ko.observable(false);
 
   self.showSpinner = ko.observable(false);
-
+  self.showReportSpinner = ko.observable(false);
   self.filteredEvents = ko.computed(function() {
     self.showSpinner(false);
     return self.events();
   });
   
   self.getReport = function (filters) {
-    self.showSpinner(true);
+    self.showReportSpinner(true);
+    $('#report').addClass('fade');
     $.ajax({
         url: "/events/get_values",
         type: 'GET',
         data: {
-            "filters" : JSON.stringify(filters)
+            "filters" : JSON.stringify(filters || [])
         },
         dataType: 'json'
     }).done(function(report) { 
@@ -115,7 +116,8 @@ function viewModel(options) {
             }
         });
         self.report(report);
-        self.showSpinner(false);
+        self.showReportSpinner(false);
+        $("#report").removeClass('false');
     });
   };
 
@@ -298,7 +300,7 @@ $.ajax({
     });
   }).then(function () {
     app.get_events();
-
+    app.getReport();
   });
 
 app.addPoints = function(events) {

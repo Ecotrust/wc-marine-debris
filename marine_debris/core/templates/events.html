@@ -136,11 +136,8 @@
                     On page load, load cached report for all cleanups.
                     On filter, get report for filtered cleanups.
                 -->
-                <h4><span>Report</span></h4>
-                
-                
-                
-                <div data-bind="if: report">
+                <h4>Report <img src="/site-media/img/ajax-loader.gif" data-bind="visible: showReportSpinner"/></h4>
+                <div data-bind="if: report" class="fade" id="report">
                   <dl data-bind="foreach: report().event_values" class="dl-horizontal">
                     <dt data-bind="text:$data.field.display_name"></dt>
                     <dd data-bind="text:$data.field.value"></dd>
