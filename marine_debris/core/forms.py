@@ -58,7 +58,7 @@ class CreateEventForm(forms.Form):
         choices = org_choices, 
         widget = forms.Select(
             attrs={
-                'class': 'span6', 
+                'class': 'span3', 
                 'data-bind':'options: data.orgs ? data.orgs : [], optionsText: "name", value: selectedOrganizationName, optionsValue: "name", optionsCaption: "Choose..."'
             }
         )
@@ -90,6 +90,9 @@ class CreateEventForm(forms.Form):
     state_choices = []
     for state in State.objects.all():
         state_choices.append((state.initials, state.name))
+    county_choices = []
+    for county in County.objects.all():
+        county_choices.append((county.name, county.name))
     site_choices = []
     for site in Site.objects.all().exclude(sitename=''):
         site_choices.append(escape('"' + str(site.sitename) + '"'))
@@ -99,18 +102,18 @@ class CreateEventForm(forms.Form):
         required=False,
         widget = forms.Select(
             attrs={
-            'class':'span6',
+            'class':'span3 state-select',
             'data-bind':'options: data.states ? data.states : [], optionsText: "name", value: selectedStateName, optionsValue: "initials", optionsCaption: "Choose..."'
             }
         )
     )
-    county = forms.CharField(
+    county = forms.ChoiceField(
+        choices = county_choices,
         required=False,
-        widget = forms.TextInput(
+        widget = forms.Select(
             attrs={
-                'class':'county-typeahead',
-                'autocomplete':'off',
-                'data-bind':'value: selectedCountyName, enable: selectedState'
+                'class':'span3 county-select',
+                'data-bind':'options: selectedState().counties ? selectedState().counties.sort(function(a, b) { return a.name.localeCompare(b.name) }) : [], optionsText: "name", value: selectedCountyName, optionsValue: "name", optionsCaption: "Choose...", enable: selectedState'
             }
         )
     )
@@ -124,8 +127,22 @@ class CreateEventForm(forms.Form):
             }
         )
     )
-    longitude = forms.CharField(required=False)
-    latitude = forms.CharField(required=False)
+    longitude = forms.CharField(
+        required=False,
+        widget = forms.TextInput(
+            attrs={
+                'data-bind': 'enable: selectedCounty'
+            }
+        )
+    )
+    latitude = forms.CharField(
+        required=False,
+        widget = forms.TextInput(
+            attrs={
+                'data-bind': 'enable: selectedCounty'
+            }
+        )
+    )
     
     #Check the event details fields of the form for validity
     def validate_event(self, *args, **kwargs):

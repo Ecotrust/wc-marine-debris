@@ -121,8 +121,9 @@ function viewModel(options) {
         $("#report").show();
     });
   };
-
-  // TODO: Load reports on clicking the "Reports" tab
+  $("#report-tab").on('shown', function(event) {
+    self.getReport(self.locationFilter());
+  });
 
   self.locationFilter.subscribe(function () {
     $('#events-table').dataTable().fnReloadAjax();

@@ -240,7 +240,7 @@ img.olTileImage {
 
 	.wcga-database h2 { margin-top: 0; }
 
-	.wcga-database select { width: 160px; }
+	/*.wcga-database select { width: 160px; }*/
 
 	.wcga-database-btn-group { margin-bottom: 20px; }
 
@@ -309,3 +309,7 @@ img.olTileImage {
 	width: 449px; height: 240px;
 	background: url('../images/bing_clean.png') 0 0 no-repeat;
 	}
+    
+.map-buttons {
+    margin-top: 20px;
+}

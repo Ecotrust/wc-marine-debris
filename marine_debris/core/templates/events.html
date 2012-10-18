@@ -85,7 +85,7 @@
                   <a href="#event-details-content" data-toggle="tab">Event Details</a>
                 </li>
                 <li> 
-                  <a href="#report-values-content" data-toggle="tab">Report</a>
+                  <a href="#report-values-content" id="report-tab" data-toggle="tab">Report</a>
                 </li>                
               </ul>
             <div class="tab-content">
@@ -140,7 +140,7 @@
                     On filter, get report for filtered cleanups.
                 -->
                 <h4>Report <img src="/site-media/img/ajax-loader.gif" data-bind="visible: showReportSpinner"/></h4>
-                <div data-bind="if: report" class="fade" id="report">
+                <div data-bind="if: report" id="report">
                   <dl data-bind="foreach: report().event_values" class="dl-horizontal">
                     <dt data-bind="text:$data.field.display_name"></dt>
                     <dd data-bind="text:$data.field.value"></dd>

@@ -3,6 +3,7 @@
 {% block styles %}
 <link rel="stylesheet" href="/site-media/third-party/OpenLayers-2.12/theme/default/style.css" type="text/css">
 <link rel="stylesheet" href="/site-media/css/map_style.css" type="text/css">
+<link href="/site-media/third-party/chosen/chosen.css" rel="stylesheet" />
 {% endblock %}
 
 {% block content %}
@@ -25,9 +26,9 @@
         {% csrf_token %}
         {{form}}
         <div id="map" class="smallmap"></div>
-        <p><button type="button" class="btn" id="back" value="Back" onClick="history.go(-1);return true;">Back</button>
-        <input id="submit" type="submit" value="Continue" class='btn' style="margin:15px"/>
-        </p>
+        <div class="map-buttons"><button type="button" class="btn" id="back" value="Back" onClick="history.go(-1);return true;">Back</button>
+        <button type="submit" class='btn'>Continue</button>
+        </div>
         </form>
     
 {% endblock %}    
@@ -41,17 +42,15 @@
         </script>
         <script src="/site-media/third-party/OpenLayers-2.12/OpenLayers.js"></script>
         <script src="/site-media/js/widgets/map.js"></script>
+        <script src="/site-media/third-party/chosen/chosen.jquery.js"></script>
 {% endblock %}
 
 {% block js %}
     
     $(document).ready(function () {
-        $(".county-typeahead").typeahead({
-            source: function () {
-                return $.map(app.viewModel.selectedState().counties, function (county) {
-                   return county.name;
-                })
-            }
+        $(".county-select").chosen();
+        $(".state-select").on("change", function (){
+            $(".county-select").trigger("liszt:updated");
         });
         $(".site-typeahead").typeahead({
             source: function () {
