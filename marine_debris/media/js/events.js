@@ -99,6 +99,21 @@ function viewModel(options) {
         },
         dataType: 'json'
     }).done(function(report) { 
+        var mapping = {
+            'Number_volunteers_beach': 'Volunteers',
+            'Pounds_trash_beach': 'Lbs of trash',
+            'Cleanup_distance_beach': 'Miles cleaned'
+        };
+        report.event_values = $.map(report, function(field) {
+            if ($.inArray(field.field.name, [
+                'Number_volunteers_beach',
+                'Pounds_trash_beach',
+                'Cleanup_distance_beach'
+            ]) !== -1){
+                field.field.display_name = mapping[field.field.name];
+                return field;
+            }
+        });
         self.report(report);
         self.showSpinner(false);
     });
@@ -148,7 +163,7 @@ function viewModel(options) {
     $(row).siblings().removeClass('active');
   };
 
-  self.report = ko.observable(init_report);
+  self.report = ko.observable();
   
 };
 

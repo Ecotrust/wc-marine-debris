@@ -443,6 +443,8 @@ class Event (models.Model):
     def filter(cls, filters):
         event_types = []
         site_filters = []
+        if filters == None:
+            filters = []
         for filter in filters:
             if filter['type'] == 'event_type':
                 event_types.append(filter['name'])
@@ -467,7 +469,6 @@ class Event (models.Model):
                     key = 'reportcache_%s_%s_%s' % (filter['type'], filter['name'].replace(" ","_"), filter['state'])
                 else:
                     key = 'reportcache_%s_%s' % (filter['type'], filter['name'].replace(" ","_"))
-                cache.delete(key)
                 res = cache.get(key)
                 if not res:
                     if filter['type'] == "county":

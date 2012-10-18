@@ -132,36 +132,33 @@ def get_events(request):
 
 def get_event_values_list(request, filters=None):
     
-    type = 'Site Cleanup'   #TODO: get this type name dynamically so we can show derelict and others
-    field_list = None
-    key = False
-    if not filters:    
-        timeout = 60*60*24*7
-        key = "reportcache_%s" % type.replace(" ","_")
-        field_list = cache.get(key)
-    if not field_list:
-        cleanup_events = Event.objects.filter(datasheet_id__type_id__type = type)
-        if filters:
-            cleanup_events = Event.filter(filters)
-        cleanup_events = cleanup_events.filter(datasheet_id__type_id__type = type)  #TODO: get filter by type to work in "filters"
+    # type = 'Site Cleanup'   #TODO: get this type name dynamically so we can show derelict and others
+    # field_list = None
+    # key = False
+    # if not filters:    
+        # timeout = 60*60*24*7
+        # key = "reportcache_%s" % type.replace(" ","_")
+        # field_list = cache.get(key)
+    # if not field_list:
+        # cleanup_events = Event.objects.filter(datasheet_id__type_id__type = type)
+        # if filters:
+    cleanup_events = Event.filter(filters)
+    agg_fields = {}
 
-        agg_fields = {}
-        for field in Field.objects.all():
-            agg_fields[field.internal_name] = {
-                'name': field.internal_name,
-                'type': field.datatype.name,
-                'unit': [],
-                'value': None
-            }
-
-        field_values = FieldValue.objects.filter(event_id__in = cleanup_events, field_id__datatype__aggregatable = True)
-        
-        for field_value in field_values:
-            field = agg_fields[field_value.field_id.internal_name]
+    field_values = FieldValue.objects.filter(event_id__in = cleanup_events, field_id__datatype__aggregatable = True)
+    
+    for field_value in field_values:
+        field_name = field_value.field_id.internal_name
+        if field_value.field_value and not field_value.field_value in ['', None, 'None']:
+            if not agg_fields.has_key(field_name):
+                agg_fields[field_name] = get_agg_template(field_value.field_id)
+            field = agg_fields[field_name]
+            
+            
             if not field['value']:
                 field['value'] = 0
-            if field_value.field_value and not field_value.field_value == 'None':
-                field['value'] = field['value'] + float(field_value.field_value)
+            
+            field['value'] = field['value'] + float(field_value.field_value)
             if field['unit'].__len__() == 0:
                 ds = field_value.event_id.datasheet_id
                 unit = DataSheetField.objects.get(sheet_id = ds, field_id = field_value.field_id).unit_id.short_name
@@ -171,15 +168,23 @@ def get_event_values_list(request, filters=None):
                     field['unit'] = [' ']
             # else:     #TODO: get translators in here to handle converting unit types and feeding a whole selection of values
      
-        field_list = []
-        for agg_field in agg_fields:
-            field_list.append({
-                'field': agg_fields[agg_field]
-            })
-        if key:
-            cache.set(key, field_list, timeout)
+    field_list = []
+    for agg_field in agg_fields:
+        field_list.append({
+            'field': agg_fields[agg_field]
+        })
+    # if key:
+        # cache.set(key, field_list, timeout)
             
     return field_list
+    
+def get_agg_template(field):
+    return {
+        'name': field.internal_name,
+        'type': field.datatype.name,
+        'unit': [],
+        'value': None
+    }
     
 def get_event_values(request):
     filters = request.GET.get('filters', None)

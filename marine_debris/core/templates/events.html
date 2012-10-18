@@ -136,6 +136,10 @@
                 
                 
                 <div data-bind="if: report">
+                  <dl data-bind="foreach: report().event_values" class="dl-horizontal">
+                    <dt data-bind="text:$data.field.display_name"></dt>
+                    <dd data-bind="text:$data.field.value"></dd>
+                  </dl>
                   <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { dataSource: report, rowTemplate: 'reportRowTemplate', columns: [{mDataProp: 'field.name', sTitle: 'Field'}, {mDataProp:'field.value', sTitle: 'Value'}, {mDataProp:'field.unit', sTitle: ''}] }">
                   </table>
                 </div>
