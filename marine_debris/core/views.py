@@ -43,9 +43,7 @@ def index(request):
 
 def events(request, submit=False): 
 
-    report_values = get_event_values_list(request)
-
-    return render_to_response( 'events.html', RequestContext(request,{'submit':submit, 'active':'events', 'report_values': simplejson.dumps(report_values)}))
+    return render_to_response( 'events.html', RequestContext(request,{'submit':submit, 'active':'events'}))
     
 def get_locations(request):
     states = []
