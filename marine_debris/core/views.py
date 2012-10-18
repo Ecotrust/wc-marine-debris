@@ -315,7 +315,7 @@ def event_save(request):
             site = Site.objects.get_or_create(state = state, county = createEventForm.data['county'], geometry = str(point), sitename = sitename)
         
         date = datetime.datetime.strptime(createEventForm.data['date'], '%m/%d/%Y')
-        event = Event(proj_id = project, datasheet_id = datasheet, cleanupdate = date, site = site[0])
+        event = Event(proj_id = project, datasheet_id = datasheet, cleanupdate = date, site = site[0], submitted_by = request.user)
         event.save()
         if event.id:
             datasheetForm = DataSheetForm(event.datasheet_id, event, None, request.POST)
