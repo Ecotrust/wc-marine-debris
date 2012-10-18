@@ -294,7 +294,6 @@ class State (models.Model):
     def toDict(self):
         timeout=60*60*24*7
         key = 'statecache_%s' % self.id
-        cache.delete(key)
         res = cache.get(key)
         if res == None:
             counties = [x.county for x in Site.objects.filter(state=self).distinct('county')]
@@ -464,7 +463,6 @@ class Event (models.Model):
             else:
                 filtered_events = None
             for filter in site_filters:              
-            
                 timeout = 60*60*24*7
                 if filter['type'] == "county":
                     key = 'reportcache_%s_%s_%s' % (filter['type'], filter['name'].split(' County')[0].replace(" ","_"), filter['state'])
