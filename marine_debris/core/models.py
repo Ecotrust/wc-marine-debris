@@ -460,24 +460,16 @@ class Event (models.Model):
             else:
                 events = cls.objects.filter(datasheet_id__type_id__type = event_type)
             if site_filters == []:
-                filtered_events = events.all()
+                filtered_events = events
             else:
                 filtered_events = None
-            for filter in site_filters:              
-                timeout = 60*60*24*7
+            for filter in site_filters:
                 if filter['type'] == "county":
-                    key = 'reportcache_%s_%s_%s' % (filter['type'], filter['name'].split(' County')[0].replace(" ","_"), filter['state'])
-                else:
-                    key = 'reportcache_%s_%s' % (filter['type'], filter['name'].replace(" ","_"))
-                res = cache.get(key)
-                if not res:
-                    if filter['type'] == "county":
-                        res = events.filter(site__county=filter['name'], site__state__name=filter['state'])
-                        res_county = events.filter(site__county=filter['name'] + ' County', site__state__name=filter['state'])
-                        res = res | res_county
-                    if filter['type'] == "state":
-                        res = events.filter(site__state__name=filter['name'])
-                    cache.set(key, res, timeout)
+                    res = events.filter(site__county=filter['name'], site__state__name=filter['state'])
+                    res_county = events.filter(site__county=filter['name'] + ' County', site__state__name=filter['state'])
+                    res = res | res_county
+                if filter['type'] == "state":
+                    res = events.filter(site__state__name=filter['name'])
                 if filtered_events:
                     filtered_events = filtered_events | res
                 else:
@@ -567,16 +559,16 @@ class Event (models.Model):
             reportkey = 'reportcache_%s' % self.datasheet_id.type_id.type
             cache.delete(reportkey)
             
-            typekey = 'reportcache_event_type_%s' % self.datasheet_id.type_id.type
-            cache.delete(typekey)
+            # typekey = 'reportcache_event_type_%s' % self.datasheet_id.type_id.type
+            # cache.delete(typekey)
             #TODO: These are the same and will be consolidated - the second is handled through this class's filter method
         
-        if self.site and self.site.state:
-            statekey = 'reportcache_state_%s' % self.site.state.name
-            cache.delete(statekey)
+        # if self.site and self.site.state:
+            # statekey = 'reportcache_state_%s' % self.site.state.name
+            # cache.delete(statekey)
                 
-            countykey = 'reportcache_county_%s_%s' % (self.site.county, self.site.state.name)
-            cache.delete(countykey)
+            # countykey = 'reportcache_county_%s_%s' % (self.site.county, self.site.state.name)
+            # cache.delete(countykey)
             
         
         super(Event, self).save(*args, **kwargs)
