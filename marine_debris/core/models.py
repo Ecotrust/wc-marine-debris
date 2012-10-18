@@ -294,6 +294,7 @@ class State (models.Model):
     def toDict(self):
         timeout=60*60*24*7
         key = 'statecache_%s' % self.id
+        cache.delete(key)
         res = cache.get(key)
         if res == None:
             counties = [x.county for x in Site.objects.filter(state=self).distinct('county')]
@@ -301,7 +302,7 @@ class State (models.Model):
             counties_list = []
             for county in counties:
                 sites = [x.toDict for x in Site.objects.filter(state=self, county=county)]
-                county_dict = { 'name': county, 'sites': sites }
+                county_dict = { 'name': county.split(' County')[0], 'sites': sites }
                 counties_list.append(county_dict)
             res = {
                 'name': self.name,
@@ -466,17 +467,15 @@ class Event (models.Model):
             
                 timeout = 60*60*24*7
                 if filter['type'] == "county":
-                    key = 'reportcache_%s_%s_%s' % (filter['type'], filter['name'].replace(" ","_"), filter['state'])
+                    key = 'reportcache_%s_%s_%s' % (filter['type'], filter['name'].split(' County')[0].replace(" ","_"), filter['state'])
                 else:
                     key = 'reportcache_%s_%s' % (filter['type'], filter['name'].replace(" ","_"))
                 res = cache.get(key)
                 if not res:
                     if filter['type'] == "county":
-                        county_events = events.filter(site__county=filter['name']  + " County", site__state__name=filter['state'])
-                        if county_events.count() > 0:
-                            res =  county_events
-                        else:
-                            res = events.filter(site__county=filter['name'], site__state__name=filter['state'])
+                        res = events.filter(site__county=filter['name'], site__state__name=filter['state'])
+                        res_county = events.filter(site__county=filter['name'] + ' County', site__state__name=filter['state'])
+                        res = res | res_county
                     if filter['type'] == "state":
                         res = events.filter(site__state__name=filter['name'])
                     cache.set(key, res, timeout)

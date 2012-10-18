@@ -259,7 +259,7 @@ def event_location(request):
     site_check = eventForm.validate_site()
     unique_check = eventForm.validate_unique()
     
-    if site_check['valid'] and unique_check['valid']:        #TODO: Manage new sites here!
+    if eventForm.is_valid() and site_check['valid'] and unique_check['valid']:        #TODO: Manage new sites here!
         for item in eventForm.fields.items():
             eventForm.fields[item[0]].widget = eventForm.fields[item[0]].hidden_widget()
         datasheet_id = eventForm.data['data_sheet']
@@ -271,6 +271,7 @@ def event_location(request):
         event['latitude'] = eventForm.data['latitude']
         event['longitude'] = eventForm.data['longitude']
         form = DataSheetForm(datasheet, None, request.POST)
+        
 
         return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'eventForm': eventForm.as_p(), 'event':event, 'active':'events'}))
     else :
