@@ -294,14 +294,15 @@ class State (models.Model):
     def toDict(self):
         timeout=60*60*24*7
         key = 'statecache_%s' % self.id
+        cache.delete(key)
         res = cache.get(key)
         if res == None:
-            counties = [x.county for x in Site.objects.filter(state=self).distinct('county')]
-            counties = list(set(counties))      #distinct not doing as intended
+            stateabr = State.objects.get(name=self).initials
+            counties = [county.name for county in County.objects.filter(stateabr=stateabr)]
             counties_list = []
             for county in counties:
                 sites = [x.toDict for x in Site.objects.filter(state=self, county=county)]
-                county_dict = { 'name': county.split(' County')[0], 'sites': sites }
+                county_dict = { 'name': county, 'sites': sites }
                 counties_list.append(county_dict)
             res = {
                 'name': self.name,

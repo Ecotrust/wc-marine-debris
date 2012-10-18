@@ -192,18 +192,10 @@ def get_event_values(request):
     
 @login_required
 def create_event(request):
+    error = None
     if request.method == 'GET':
         form = CreateEventForm()
-        form.fields['state'].widget = form.fields['state'].hidden_widget()
-        form.fields['county'].widget = form.fields['county'].hidden_widget()
-        form.fields['sitename'].widget = form.fields['sitename'].hidden_widget()
-        form.fields['latitude'].widget = form.fields['latitude'].hidden_widget()
-        form.fields['longitude'].widget = form.fields['longitude'].hidden_widget()
-        
-        org_dict = [org.toDict for org in Organization.objects.filter(users=request.user)]
-        org_json = simplejson.dumps(org_dict)
-        
-        return render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'json':org_json, 'active':'events'}))
+
     else :
         eventForm = CreateEventForm
         form = eventForm(request.POST)
@@ -232,19 +224,20 @@ def create_event(request):
             
             return render_to_response('event_location.html', RequestContext(request, {'form':form.as_p(), 'states': state_json, 'event': event, 'active':'events'}))
         else:
-            form.fields['state'].widget = form.fields['state'].hidden_widget()
-            form.fields['county'].widget = form.fields['county'].hidden_widget()
-            form.fields['sitename'].widget = form.fields['sitename'].hidden_widget()
-            form.fields['latitude'].widget = form.fields['latitude'].hidden_widget()
-            form.fields['longitude'].widget = form.fields['longitude'].hidden_widget()
-
-            #TODO: Filter Organizations by only those which the user has access to.
-            org_dict = [org.toDict for org in Organization.objects.all()]
-            org_json = simplejson.dumps(org_dict)
+            error = 'Form is not valid, please review.'
         
-            res = render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'json':org_json, 'error':'Form is not valid, please review.', 'active':'events'}))
-            res.status_code = 400
-            return res
+    form.fields['state'].widget = form.fields['state'].hidden_widget()
+    form.fields['county'].widget = form.fields['county'].hidden_widget()
+    form.fields['sitename'].widget = form.fields['sitename'].hidden_widget()
+    form.fields['latitude'].widget = form.fields['latitude'].hidden_widget()
+    form.fields['longitude'].widget = form.fields['longitude'].hidden_widget()
+
+    org_dict = [org.toDict for org in Organization.objects.filter(users=request.user)]
+    org_json = simplejson.dumps(org_dict)
+
+    res = render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'json':org_json, 'error': error, 'active':'events'}))
+    res.status_code = 400
+    return res
 
 @login_required            
 def event_location(request):
