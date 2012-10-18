@@ -81,12 +81,9 @@ def get_events(request):
     sort_column = request.GET.get('iSortCol_0', False)
     filter_json = request.GET.get('filter', False)
 
-    qs = Event.objects.filter()
-
     if filter_json:
         filters = simplejson.loads(filter_json)
-        if filters.__len__() > 0:
-            qs = Event.filter(filters)
+        qs = Event.filter(filters)
         # for filter in filters:
         #     if filter['type'] == "bbox":
         #         bbox = tuple(filter['bbox'].split(','))
@@ -97,6 +94,8 @@ def get_events(request):
         #         qs = qs.filter(site__county=filter['name']  + " County")
         #     if filter['type'] == "state":
         #         qs = qs.filter(site__state__name=filter['name'])
+    else:
+        qs = Event.objects.all()
 
     if sort_column:
         sort_name_key = request.GET.get("mDataProp_%s" % sort_column, False)
