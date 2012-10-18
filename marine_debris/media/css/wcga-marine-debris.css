@@ -55,6 +55,20 @@ i { margin-right: 5px; }
 	left: 0px;
 }
 
+.wcga-database h2 {
+	margin-bottom: 0px;
+}
+
+.filter-container {
+	margin-bottom: 10px;
+}
+
+.filter-container h4 {
+	margin-bottom: 5px;
+	margin-top: 5px;
+	font-size: 16px;
+}
+
 .wcga.table tr.active td {
 	font-weight: bold;
 }
