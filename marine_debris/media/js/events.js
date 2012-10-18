@@ -169,6 +169,8 @@ function viewModel(options) {
 
 
 app.get_event_points = function(filters) {
+  $('#map').addClass('fade');
+  app.viewModel.showSpinner(true);
   $.ajax({
         url: "/events/get",
         type: 'GET',
@@ -179,11 +181,16 @@ app.get_event_points = function(filters) {
   }).done(function(res) { 
     app.viewModel.addEvents(res.aaData);
     app.addPoints(app.viewModel.events());
+    $('#map').removeClass('fade');
+    app.viewModel.showSpinner(false);
+
   });
 };
 
 
 app.get_events = function () {
+  $('#map').addClass('fade');
+  app.viewModel.showSpinner(true);
   $.ajax({
         url: "/events/get",
         type: 'GET',
@@ -191,6 +198,9 @@ app.get_events = function () {
   }).done(function(res) { 
     app.viewModel.addEvents(res.aaData);
     app.addPoints(app.viewModel.events());
+    $('#map').removeClass('fade');
+    app.viewModel.showSpinner(false);
+
   });
 };
 

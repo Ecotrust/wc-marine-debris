@@ -3,13 +3,13 @@
     <!-- Carousel items -->
     <div class="carousel-inner">
         <div class="active item">
-            <img src="{{MEDIA_URL}}img/big_sur.jpg" />
+            <img src="{{STATIC_URL}}img/big_sur.jpg"/>
         </div>
         <div class="item">
-            <img src="{{MEDIA_URL}}img/beach.jpg" />
+            <img src="{{STATIC_URL}}img/beach.jpg"/>
         </div>
         <div class="item">
-            <img src="{{MEDIA_URL}}img/seals.jpg" />
+            <img src="{{STATIC_URL}}img/seals.jpg"/>
         </div>
     </div>
     <!-- Carousel nav -->
@@ -31,7 +31,7 @@
                 <a href="/events">Search and view data</a>
             </li>
             <li>
-                <a href="/accounts/login">Sign in and add an event</a>
+                <a href="{% url django.contrib.auth.views.login %}?next=/event/create">Sign in and add an event</a>
             </li>
             <!-- <li>View reports [not available in beta]</li>   
             <li>Learn about contributing organizations [not available in beta]</li>-->
@@ -41,7 +41,7 @@
 <div class="row-fluid">
     <div class="span9">
         <div class="thumbnail">
-            <img src="{{MEDIA_URL}}img/cleanup.jpg" />
+            <img src="{{STATIC_URL}}img/cleanup.jpg" />
             <p>
                 California Coastal Commission, ICC
             </p>

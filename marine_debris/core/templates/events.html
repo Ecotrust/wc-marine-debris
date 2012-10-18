@@ -22,21 +22,24 @@
 <h2>Query Database <img src="/site-media/img/ajax-loader.gif" data-bind="visible: showSpinner"/></h2>
  <div class="row-fluid">
    <div class="span12">
-     <p>Filter by Report Type</p>
+     <div class="filter-container">
+     <h4>Filter by Report Type</h4>
       <select class="type" multiple="true" data-placeholder="Filter by event type(s)..." style="width: 350px">
         <option value="Derelict Gear Report">Derelict Gear Report</option>
         <option value="Site Cleanup">Site Cleanup</option>
       </select>
-     
-     <p>Filter by State and County</p>
-     <select class="location" data-placeholder="Filter by location(s)..." data-bind="foreach: states" multiple style="width: 350px">
-         <optgroup data-bind="attr: {label: $data.name}">
-           <option data-bind="text: $data.name, value: 'state:'+$data.name" disabled></option>
-         <!-- ko foreach: $root.locations[$data.name].counties -->
-           <option data-bind="text: $data.name + ', ' + $parent.initials, value: $data.state+':'+$data.name"></option>
-         <!-- /ko -->
-         </optgroup>
-     </select>
+     </div>
+     <div class="filter-container">
+       <h4>Filter by State and County</h4>
+       <select class="location" data-placeholder="Filter by location(s)..." data-bind="foreach: states" multiple style="width: 350px">
+           <optgroup data-bind="attr: {label: $data.name}">
+             <option data-bind="text: $data.name, value: 'state:'+$data.name" disabled></option>
+           <!-- ko foreach: $root.locations[$data.name].counties -->
+             <option data-bind="text: $data.name + ', ' + $parent.initials, value: $data.state+':'+$data.name"></option>
+           <!-- /ko -->
+           </optgroup>
+       </select>
+     </div>
    </div>
  </div>
   <div class="events-table">
@@ -53,6 +56,7 @@
     </table>
   </div>
 
+{% if user.is_authenticated %}
 <div class="row-fluid buttons">
 <p class="pull-right">
   <a href="/datasheet/bulk_import" class="btn" disabled>
@@ -63,6 +67,7 @@
   </a>
 </p>
 </div>
+{% endif %}
 {% endblock %}    
 {% block rightcontent %}
     {%if data %}
