@@ -84,6 +84,7 @@ function viewModel(options) {
 
   self.showSpinner = ko.observable(false);
   self.showReportSpinner = ko.observable(false);
+  self.showMapSpinner = ko.observable(true);
   self.filteredEvents = ko.computed(function() {
     self.showSpinner(false);
     return self.events();
@@ -91,7 +92,7 @@ function viewModel(options) {
   
   self.getReport = function (filters) {
     self.showReportSpinner(true);
-    $('#report').addClass('fade');
+    $('#report').hide();
     $.ajax({
         url: "/events/get_values",
         type: 'GET',
@@ -117,7 +118,7 @@ function viewModel(options) {
         });
         self.report(report);
         self.showReportSpinner(false);
-        $("#report").removeClass('false');
+        $("#report").show();
     });
   };
 
@@ -172,7 +173,7 @@ function viewModel(options) {
 
 app.get_event_points = function(filters) {
   $('#map').addClass('fade');
-  app.viewModel.showSpinner(true);
+  app.viewModel.showMapSpinner(true);
   $.ajax({
         url: "/events/get",
         type: 'GET',
@@ -184,7 +185,7 @@ app.get_event_points = function(filters) {
     app.viewModel.addEvents(res.aaData);
     app.addPoints(app.viewModel.events());
     $('#map').removeClass('fade');
-    app.viewModel.showSpinner(false);
+    app.viewModel.showMapSpinner(false);
 
   });
 };
@@ -192,7 +193,7 @@ app.get_event_points = function(filters) {
 
 app.get_events = function () {
   $('#map').addClass('fade');
-  app.viewModel.showSpinner(true);
+  app.viewModel.showMapSpinner(true);
   $.ajax({
         url: "/events/get",
         type: 'GET',
@@ -201,7 +202,7 @@ app.get_events = function () {
     app.viewModel.addEvents(res.aaData);
     app.addPoints(app.viewModel.events());
     $('#map').removeClass('fade');
-    app.viewModel.showSpinner(false);
+    app.viewModel.showMapSpinner(false);
 
   });
 };
@@ -300,7 +301,7 @@ $.ajax({
     });
   }).then(function () {
     app.get_events();
-    app.getReport();
+    app.viewModel.getReport();
   });
 
 app.addPoints = function(events) {

@@ -90,7 +90,10 @@
               </ul>
             <div class="tab-content">
               <div class="tab-pane active" id="map-content">
-                <div id="map"></div>
+                <div id="map_wrapper">
+                  <div id="map"></div>
+                  <img src="/site-media/img/ajax-loader.gif" data-bind="visible: showMapSpinner"/>
+                </div>
                <!-- <div class="clearfix filter-box">
                   <p class="pull-right">
                   <label class="checkbox" disabled>

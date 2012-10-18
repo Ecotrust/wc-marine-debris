@@ -78,9 +78,20 @@ i { margin-right: 5px; }
 	top: -22px;
 	right: 0px;
 }
+#map_wrapper {
+	position: relative;
+}
+#map_wrapper img {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+}
 #map {
 	height: 500px;
 	margin-bottom: 20px;
+}
+#report-values-content {
+	min-height: 450px
 }
 .fade {
 	opacity: .6;
