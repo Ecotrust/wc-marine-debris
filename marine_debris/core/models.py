@@ -9,7 +9,6 @@ from django.contrib.gis.admin import OSMGeoAdmin
 from south.modelsinspector import add_introspection_rules
 add_introspection_rules([], ["^django\.contrib\.gis\.db\.models\.fields\.PointField"])
 from django.core.cache import cache
-from django.db.models import Q
 
 # Create your models here.
 class DataType (models.Model):
@@ -442,31 +441,48 @@ class Event (models.Model):
         
     @classmethod
     def filter(cls, filters):
-        events = cls.objects.filter()
-        filtered_events = None
-        for filter in filters:              #TODO: THis is not cumulative for multiple filters of the same type
-            timeout = 60*60*24*7
-            if filter['type'] == "county":
-                key = 'reportcache_%s_%s_%s' % (filter['type'], filter['name'].replace(" ","_"), filter['state'])
+        event_types = []
+        site_filters = []
+        for filter in filters:
+            if filter['type'] == 'event_type':
+                event_types.append(filter['name'])
             else:
-                key = 'reportcache_%s_%s' % (filter['type'], filter['name'].replace(" ","_"))
-            res = cache.get(key)
-            if not res:
+                site_filters.append(filter)
+                
+        if event_types == []:
+            event_types.append('all')
+        for event_type in event_types:
+            if event_type == 'all':
+                events = cls.objects.all()
+            else:
+                events = cls.objects.filter(datasheet_id__type_id__type = event_type)
+            if site_filters == []:
+                filtered_events = events.all()
+            else:
+                filtered_events = None
+            for filter in site_filters:              
+            
+                timeout = 60*60*24*7
                 if filter['type'] == "county":
-                    county_events = events.filter(site__county=filter['name']  + " County", site__state__name=filter['state'])
-                    if county_events.count() > 0:
-                        res =  county_events
-                    else:
-                        res = events.filter(site__county=filter['name'], site__state__name=filter['state'])
-                if filter['type'] == "state":
-                    res = events.filter(site__state__name=filter['name'])
-                if filter['type'] == "event_type":
-                    res = events.filter(datasheet_id__type_id__name=filter['name'])
-                cache.set(key, res, timeout)
-            if filtered_events:
-                filtered_events = filtered_events | res
-            else:
-                filtered_events = res
+                    key = 'reportcache_%s_%s_%s' % (filter['type'], filter['name'].replace(" ","_"), filter['state'])
+                else:
+                    key = 'reportcache_%s_%s' % (filter['type'], filter['name'].replace(" ","_"))
+                cache.delete(key)
+                res = cache.get(key)
+                if not res:
+                    if filter['type'] == "county":
+                        county_events = events.filter(site__county=filter['name']  + " County", site__state__name=filter['state'])
+                        if county_events.count() > 0:
+                            res =  county_events
+                        else:
+                            res = events.filter(site__county=filter['name'], site__state__name=filter['state'])
+                    if filter['type'] == "state":
+                        res = events.filter(site__state__name=filter['name'])
+                    cache.set(key, res, timeout)
+                if filtered_events:
+                    filtered_events = filtered_events | res
+                else:
+                    filtered_events = res
         return filtered_events
         
     @property
