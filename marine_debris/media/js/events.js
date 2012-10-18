@@ -21,6 +21,34 @@ app.points = new OpenLayers.Layer.Vector("Events", {
       strokeWidth: 2,
       strokeOpacity: 0.8
     }, {
+      rules: [
+       new OpenLayers.Rule({
+           // a rule contains an optional filter
+           filter: new OpenLayers.Filter.Comparison({
+               type: OpenLayers.Filter.Comparison.EQUAL_TO,
+               property: "event_type", // the "foo" feature attribute
+               value: "Site Cleanup"
+           }),
+           // if a feature matches the above filter, use this symbolizer
+          symbolizer: {
+                fillColor: "#ffcc66",
+                fillOpacity: 0.8,
+                strokeColor: "#cc6633",
+          }
+       }),
+       new OpenLayers.Rule({
+           // a rule contains an optional filter
+           filter: new OpenLayers.Filter.Comparison({
+               type: OpenLayers.Filter.Comparison.EQUAL_TO,
+               property: "event_type", // the "foo" feature attribute
+               value: "Derelict Gear Report"
+           }),
+           symbolizer: {
+                fillColor: "#aaa",
+                fillOpacity: 0.8,
+                strokeColor: "#333",
+           }
+       })],
       context: {
         radius: function(feature) {
           return 5//Math.min(feature.attributes.count, 7) + 3;
@@ -69,10 +97,10 @@ function viewModel(options) {
       var state = event.site.state,
         pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")),
         point = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(event.site.lon, event.site.lat));
-
-      event.pos = pos;
       event.feature = point;
       point.event = event;
+      point.attributes.id = event.id;
+      point.attributes.event_type = event.datasheet.event_type;
       point.geometry.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
       self.events().push(event);
     });
@@ -144,10 +172,9 @@ function viewModel(options) {
     var $table = $('#events-table').dataTable(), row,
       pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
 
- 
     if ($.inArray(event.feature, app.points.selectedFeatures) === -1) {
       app.selectControl.unselectAll();
-      app.selectControl.select(event.feature);
+      app.selectControl.select(app.points.getFeaturesByAttribute('id', event.id)[0]);
     } 
     if(!event.data) {
       event.data = ko.observable(false);
@@ -158,10 +185,11 @@ function viewModel(options) {
     } else {
       self.activeEvent(event);
     }
-
+    if (e) {
+      app.map.setCenter(pos, 11);      
+    }
 
     if(!self.filterByExtent() && ! self.mapExtent().containsLonLat(pos)) {
-      app.map.setCenter(pos);
     }
 
     // display the row in datatables
@@ -231,6 +259,7 @@ $.ajax({
     app.viewModel.mapExtent(map.getExtent());
 
     $("select.location").chosen();
+    $("select.type").val([]);
     $("select.type").chosen();
     $(".filters").removeClass('hide');
     $(document).ready(function() {
