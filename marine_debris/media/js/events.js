@@ -122,10 +122,14 @@ function viewModel(options) {
     });
   };
 
+  // TODO: Load reports on clicking the "Reports" tab
+
   self.locationFilter.subscribe(function () {
     $('#events-table').dataTable().fnReloadAjax();
     app.get_event_points(self.locationFilter());
-    self.getReport(self.locationFilter());
+    if ($("#report").is(":visible")){
+        self.getReport(self.locationFilter());
+    }
   });
 
 
@@ -301,7 +305,6 @@ $.ajax({
     });
   }).then(function () {
     app.get_events();
-    app.viewModel.getReport();
   });
 
 app.addPoints = function(events) {
