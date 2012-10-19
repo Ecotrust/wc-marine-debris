@@ -39,7 +39,7 @@ def index(request):
         }
     ]
 
-    return render_to_response( 'index.html', RequestContext(request,{'thankyou': False, 'active':'home', 'event_count': event_count}))
+    return render_to_response( 'index.html', RequestContext(request,{'STATIC_URL':settings.STATIC_URL, 'thankyou': False, 'active':'home', 'event_count': event_count}))
 
 def events(request, submit=False): 
 
