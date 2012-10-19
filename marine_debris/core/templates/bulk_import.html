@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
-
+{% block content %}
+{% endblock %}
 {% block leftcontent %}
 <h2> Bulk import from .csv file</i></h2>
     <form class="bulk-form" method="post" enctype="multipart/form-data" action="{% if action %}{{ action }}{% else %}{{event.id}}{% endif %}">

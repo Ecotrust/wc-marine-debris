@@ -74,11 +74,18 @@ function viewModel(options) {
 
   self.locationFilter = ko.observableArray();
 
+  // optikons for the right hand tables
+  self.reportTableOptions = {
+    'iDisplayLength': -1,
+     "sDom": '<"filter"f><"wrapper"lipt>'
+  };
+
   self.dataTablesOptions = {
     'bFilter': false, 
-    "iDisplayLength": 5,
+    "iDisplayLength": 12,
     "bProcessing": true,
     "bServerSide": true,
+    "sPaginationType": "full_numbers",
     "sAjaxSource": "/events/get",
     "iDisplayStart": 0,
     "fnServerParams": function ( aoData ) {
@@ -117,7 +124,7 @@ function viewModel(options) {
 
   self.showSpinner = ko.observable(false);
   self.showReportSpinner = ko.observable(false);
-  self.showMapSpinner = ko.observable(true);
+  self.mapIsLoading = ko.observable(true);
   self.filteredEvents = ko.computed(function() {
     self.showSpinner(false);
     return self.events();
@@ -180,7 +187,7 @@ function viewModel(options) {
     var $table = $('#events-table').dataTable(), row,
       feature = app.points.getFeaturesByAttribute('id', event.id)[0],
       pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
-    if ($.inArray(feature, app.points.selectedFeatures) === -1) {
+    if (! self.mapIsLoading() && $.inArray(feature, app.points.selectedFeatures) === -1) {
       app.selectControl.unselectAll();
       app.selectControl.select(feature);
     } 
@@ -218,7 +225,7 @@ function viewModel(options) {
 
 app.get_event_points = function(filters) {
   $('#map').addClass('fade');
-  app.viewModel.showMapSpinner(true);
+  app.viewModel.mapIsLoading(true);
   $.ajax({
         url: "/events/get",
         type: 'GET',
@@ -230,7 +237,7 @@ app.get_event_points = function(filters) {
     app.viewModel.addEvents(res.aaData);
     app.addPoints(app.viewModel.events());
     $('#map').removeClass('fade');
-    app.viewModel.showMapSpinner(false);
+    app.viewModel.mapIsLoading(false);
 
   });
 };
@@ -238,7 +245,7 @@ app.get_event_points = function(filters) {
 
 app.get_events = function () {
   $('#map').addClass('fade');
-  app.viewModel.showMapSpinner(true);
+  app.viewModel.mapIsLoading(true);
   $.ajax({
         url: "/events/get",
         type: 'GET',
@@ -247,7 +254,7 @@ app.get_events = function () {
     app.viewModel.addEvents(res.aaData);
     app.addPoints(app.viewModel.events());
     $('#map').removeClass('fade');
-    app.viewModel.showMapSpinner(false);
+    app.viewModel.mapIsLoading(false);
 
   });
 };
@@ -318,6 +325,12 @@ $.ajax({
         }
       });
 
+      $(".location").find("optgroup").each(function () {
+        var $optgroup = $(this), name = $optgroup.attr('label');
+        $option = $("<option>", { value: "state:" + name, text: name, class: "dummy-state" });
+        $optgroup.append($option.hide());
+      });
+      $(".location").trigger("liszt:updated");
       //When a state name is selected from filter box
       $('.chzn-results').on('click', '.group-result', function(event) {
         var $optgroup = $(event.target),
@@ -327,20 +340,25 @@ $.ajax({
           index = -1,
           selected = $select.val() || [];
 
+        // if ($option.length === 0) {
+          
+        // }
+
         $.each(app.viewModel.locationFilter(), function(i, filter) {
           if(filter.name === name) {
             index = i;
           }
         });
         if(index === -1) {
-          $option.removeAttr('disabled');
+          // $optgroup.append($option);
+          $select.trigger("liszt:updated");
           selected.push('state:'+name);
           app.viewModel.locationFilter.push({
             name: name,
             type: 'state'
           });
         } else {
-          $option.attr('disabled', true);
+          // $optgroup.remove($option);
           selected.splice($.inArray('state:'+name, selected), 1);
           app.viewModel.locationFilter.splice(index, 1);
 
