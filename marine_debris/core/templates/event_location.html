@@ -27,7 +27,7 @@
         {{form}}
         <div id="map" class="smallmap"></div>
         <div class="map-buttons"><button type="button" class="btn" id="back" value="Back" onClick="history.go(-1);return true;">Back</button>
-        <button type="submit" class='btn'>Continue</button>
+        <button data-bind="enable: latitude() && longitude() && selectedSiteName()" type="submit" class='btn'>Continue</button>
         </div>
         </form>
     
@@ -36,8 +36,8 @@
 {% block scripts %}
         <script>
             function updateCoordVals(lon, lat) {
-                $( "#id_latitude" ).val(lat.toFixed(6));
-                $( "#id_longitude" ).val(lon.toFixed(6));
+                app.viewModel.latitude(lat.toFixed(6));
+                app.viewModel.longitude(lon.toFixed(6));
             }
         </script>
         <script src="/site-media/third-party/OpenLayers-2.12/OpenLayers.js"></script>
@@ -69,6 +69,8 @@
         self.data = json;
 
         self.selectedStateName = ko.observable();
+        self.latitude = ko.observable();
+        self.longitude = ko.observable();
         self.selectedState = ko.computed(function() {
             var state = false;
             if (self.selectedStateName()){
@@ -126,8 +128,8 @@
 	$(function() {
 		$( ".date" ).datepicker({dateFormat: 'yy-mm-dd'});
         $( "#id_sitename" ).on('blur', function(){
-            $( "#id_latitude" ).val(app.viewModel.selectedSite().lat);
-            $( "#id_longitude" ).val(app.viewModel.selectedSite().lon);
+            app.viewModel.latitude(app.viewModel.selectedSite().lat);
+            app.viewModel.longitude(app.viewModel.selectedSite().lon);
             pointSelected(app.viewModel.selectedSite().lat, app.viewModel.selectedSite().lon);
         });
       

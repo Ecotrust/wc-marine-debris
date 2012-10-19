@@ -130,7 +130,7 @@ class CreateEventForm(forms.Form):
         required=False,
         widget = forms.TextInput(
             attrs={
-                'data-bind': 'enable: selectedCounty'
+                'data-bind': 'enable: selectedCounty, value: longitude'
             }
         )
     )
@@ -138,7 +138,7 @@ class CreateEventForm(forms.Form):
         required=False,
         widget = forms.TextInput(
             attrs={
-                'data-bind': 'enable: selectedCounty'
+                'data-bind': 'enable: selectedCounty, value: latitude'
             }
         )
     )

@@ -17,7 +17,7 @@
     {{form}}
     <p>
     <button type="button" class="btn" id="back" value="Back" onClick="history.go(-1);return true;">Back</button>
-    <button type="submit" class='btn'>Continue</button>
+    <button disabled="disabled" id="create-continue" type="submit" class='btn'>Continue</button>
     </p>
     </form>
     
@@ -67,6 +67,14 @@
                 });
             } else {
                 return false;
+            }
+        });
+        
+        self.selectedDatasheet.subscribe(function () {
+            if ($('#id_data_sheet option:selected')[0].value != "") {
+                $('#create-continue').removeAttr('disabled');
+            } else {
+                $('#create-continue').attr('disabled', 'disabled');
             }
         });
         

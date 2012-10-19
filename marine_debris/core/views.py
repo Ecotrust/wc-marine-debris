@@ -193,6 +193,7 @@ def get_event_values(request):
 @login_required
 def create_event(request):
     error = None
+    status_code = 200
     if request.method == 'GET':
         form = CreateEventForm()
 
@@ -225,6 +226,7 @@ def create_event(request):
             return render_to_response('event_location.html', RequestContext(request, {'form':form.as_p(), 'states': state_json, 'event': event, 'active':'events'}))
         else:
             error = 'Form is not valid, please review.'
+            status_code = 400
         
     form.fields['state'].widget = form.fields['state'].hidden_widget()
     form.fields['county'].widget = form.fields['county'].hidden_widget()
@@ -236,7 +238,7 @@ def create_event(request):
     org_json = simplejson.dumps(org_dict)
 
     res = render_to_response('create_event.html', RequestContext(request,{'form':form.as_p(), 'json':org_json, 'error': error, 'active':'events'}))
-    res.status_code = 400
+    res.status_code = status_code
     return res
 
 @login_required            
