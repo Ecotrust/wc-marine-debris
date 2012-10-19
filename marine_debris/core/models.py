@@ -94,7 +94,6 @@ class EventType (models.Model):
     class Meta:
         ordering = ['type']
     
-
 class DataSheetError(Exception):
     pass
 
@@ -590,7 +589,6 @@ class FieldValue (models.Model):
     class Meta:
         ordering = ['event_id', 'field_id__internal_name']
     
-
 # This is an auto-generated Django model module created by ogrinspect.
 class County(models.Model):
     statefp = models.CharField(max_length=2)
@@ -611,7 +609,6 @@ county_mapping = {
     'stateabr' : 'STATEABR',
     'geom' : 'MULTIPOLYGON',
 }
-
 
 from django.contrib.gis.utils import LayerMapping
 def load_shp(path, feature_class):

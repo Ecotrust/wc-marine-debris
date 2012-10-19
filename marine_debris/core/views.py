@@ -56,7 +56,7 @@ def get_locations(request):
     for state in State.objects.all().order_by('name'):
         states.append(state.toSimpleDict)
         counties = []
-        for county in County.objects.filter(stateabr=state.initials):
+        for county in County.objects.filter(stateabr=state.initials).order_by('name'):
             counties.append({
                 "name": county.name,
                 "type": 'county',
