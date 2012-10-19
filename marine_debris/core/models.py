@@ -294,6 +294,7 @@ class State (models.Model):
     def toDict(self):
         timeout=60*60*24*7
         key = 'statecache_%s' % self.id
+        cache.delete(key)
         res = cache.get(key)
         if res == None:
             stateabr = State.objects.get(name=self).initials
@@ -301,6 +302,8 @@ class State (models.Model):
             counties_list = []
             for county in counties:
                 sites = [x.toDict for x in Site.objects.filter(state=self, county=county)]
+                if sites == []:
+                    sites = [x.toDict for x in Site.objects.filter(state=self, county=county+' County')]
                 county_dict = { 'name': county, 'sites': sites }
                 counties_list.append(county_dict)
             res = {
