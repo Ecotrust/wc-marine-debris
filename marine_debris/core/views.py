@@ -48,8 +48,11 @@ def index(request):
 
 def events(request, submit=False): 
 
-    return render_to_response( 'events.html', RequestContext(request,{'submit':submit, 'active':'events'}))
-    
+    if submit:
+        return render_to_response( 'events.html', RequestContext(request,{'submit':True, 'added_site':submit, 'active':'events'}))
+    else:
+        return render_to_response( 'events.html', RequestContext(request,{'submit':submit, 'added_site':None, 'active':'events'}))
+        
 def get_locations(request):
     states = []
     locations = {}
@@ -336,7 +339,7 @@ def event_save(request):
             datasheetForm = DataSheetForm(event.datasheet_id, event, None, request.POST)
         if event.id and datasheetForm.is_valid():
             datasheetForm.save()
-            return HttpResponseRedirect('/events/True')
+            return HttpResponseRedirect('/events/%s' % event.id)
         else:
             Event.delete(event)
             if site[1]:
