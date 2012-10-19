@@ -41,7 +41,7 @@ app.points = new OpenLayers.Layer.Vector("Events", {
            filter: new OpenLayers.Filter.Comparison({
                type: OpenLayers.Filter.Comparison.EQUAL_TO,
                property: "event_type", // the "foo" feature attribute
-               value: "Derelict Gear Report"
+               value: "Gear Removal"
            }),
            symbolizer: {
                 fillColor: "#aaa",

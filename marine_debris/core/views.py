@@ -34,8 +34,8 @@ def index(request):
             "count": Event.objects.filter(datasheet_id__type_id__type = "Site Cleanup").count(),
         },
         {
-            "type" : "Derelict Gear Report",
-            "count": Event.objects.filter(datasheet_id__type_id__type = "Derelict Gear Report").count()
+            "type" : "Gear Removal",
+            "count": Event.objects.filter(datasheet_id__type_id__type = "Gear Removal").count()
         }
     ]
     
@@ -48,8 +48,11 @@ def index(request):
 
 def events(request, submit=False): 
 
-    return render_to_response( 'events.html', RequestContext(request,{'submit':submit, 'active':'events'}))
-    
+    if submit:
+        return render_to_response( 'events.html', RequestContext(request,{'submit':True, 'added_site':submit, 'active':'events'}))
+    else:
+        return render_to_response( 'events.html', RequestContext(request,{'submit':submit, 'added_site':None, 'active':'events'}))
+        
 def get_locations(request):
     states = []
     locations = {}
@@ -120,6 +123,7 @@ def get_events(request):
     for event in qs: 
         timeout=60*60*24*7*52*10
         key = 'eventcache_%s' % event.id
+        cache.delete(key)
         dict = cache.get(key)
         if not dict:
             dict = event.toEventsDict
@@ -236,14 +240,18 @@ def create_event(request):
             event['data_sheet'] = datasheetName
             
             datasheet = DataSheet.objects.get(sheetname=event['data_sheet'])
-            if datasheet.type_id and not datasheet.type_id.display_sites:
+            if datasheet.type_id:
+                derelict = not datasheet.type_id.display_sites
+            else:
+                derelict = False
+            if derelict:
                 form.fields['sitename'].widget = form.fields['sitename'].hidden_widget()
                 form.fields['county'].widget = form.fields['county'].hidden_widget()
-
+            
             state_dict = [state.toDict for state in State.objects.all()]
             state_json = simplejson.dumps(state_dict)
             
-            return render_to_response('event_location.html', RequestContext(request, {'form':form.as_p(), 'states': state_json, 'event': event, 'active':'events'}))
+            return render_to_response('event_location.html', RequestContext(request, {'form':form.as_p(), 'states': state_json, 'event': event, 'derelict': derelict, 'active':'events'}))
         else:
             error = 'Form is not valid, please review.'
             status_code = 400
@@ -336,7 +344,7 @@ def event_save(request):
             datasheetForm = DataSheetForm(event.datasheet_id, event, None, request.POST)
         if event.id and datasheetForm.is_valid():
             datasheetForm.save()
-            return HttpResponseRedirect('/events/True')
+            return HttpResponseRedirect('/events/%s' % event.id)
         else:
             Event.delete(event)
             if site[1]:

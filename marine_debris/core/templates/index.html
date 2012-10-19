@@ -30,11 +30,17 @@
             <li>
                 <a href="/events">Search and view data</a>
             </li>
+            {% if user.is_authenticated %}
+            <li>
+                <a href="/event/create">Add an event</a>
+            </li>
+            {% else %}
             <li>
                 <a href="{% url django.contrib.auth.views.login %}?next=/event/create">Sign in and add an event</a>
             </li>
             <!-- <li>View reports [not available in beta]</li>   
             <li>Learn about contributing organizations [not available in beta]</li>-->
+            {% endif %}
         </ul>
     </div>
 </div>

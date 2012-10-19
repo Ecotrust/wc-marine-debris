@@ -19,7 +19,11 @@
 {% endblock %}    
 {% block rightcontent %}
         <h2>Location</h2>
-        <p>If you know the latitude and longitude of the derelict gear, enter it in the fields below. If not, select the approximate location on the map, and identify that this is an approximation using the checkbox below.</p>
+        {% if derelict %}
+            <p>If you know the latitude and longitude of the derelict gear, enter it in the fields below. If not, select the approximate location on the map, and identify that this is an approximation using the checkbox below.</p>
+        {% else %}
+            <p>Use the select boxes below to identify your cleanup's state, county, and sitename. If your sitename is not recognized, zoom in and click on the map below to identify it (the latitude and longitude fields will be filled out automatically).</p>
+        {% endif %}
         {% if error %}<p style="color:red">{{error}}</p>{% endif %}
         <form class="event-form" method="post" action="{% if action %}{{ action }}{% else %}/event/create/location{% endif %}">
         {% csrf_token %}
