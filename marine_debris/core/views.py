@@ -34,8 +34,8 @@ def index(request):
             "count": Event.objects.filter(datasheet_id__type_id__type = "Site Cleanup").count(),
         },
         {
-            "type" : "Derelict Gear Report",
-            "count": Event.objects.filter(datasheet_id__type_id__type = "Derelict Gear Report").count()
+            "type" : "Gear Removal",
+            "count": Event.objects.filter(datasheet_id__type_id__type = "Gear Removal").count()
         }
     ]
     
@@ -104,7 +104,7 @@ def get_events(request):
         #     if filter['type'] == "state":
         #         qs = qs.filter(site__state__name=filter['name'])
     else:
-        qs = Event.objects.all()
+        qs = Event.objects.all()[0:500]
 
     if sort_column:
         sort_name_key = request.GET.get("mDataProp_%s" % sort_column, False)
@@ -123,6 +123,7 @@ def get_events(request):
     for event in qs: 
         timeout=60*60*24*7*52*10
         key = 'eventcache_%s' % event.id
+        cache.delete(key)
         dict = cache.get(key)
         if not dict:
             dict = event.toEventsDict
