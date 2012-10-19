@@ -59,6 +59,13 @@
                 })
             }
         });            
+        
+        $(".typeahead").on("click", ".active", function(event) {
+            app.viewModel.selectedSiteName($(event.target).text());
+            $( "#id_sitename" ).trigger("blur");
+        });
+        
+        
     });
 
     var app = {}, 
