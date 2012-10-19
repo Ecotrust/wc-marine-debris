@@ -94,9 +94,12 @@ i { margin-right: 5px; }
 	min-height: 450px
 }
 .fade {
-	opacity: .6;
+	opacity: .4;
 }
 
+.hide {
+	visibility: hidden;
+}
 img.olTileImage {
     max-width: 256px !important;
 }
@@ -181,7 +184,7 @@ img.olTileImage {
 
 	.masthead {
 		margin-bottom: 20px;
-		height: 80px; padding: 20px;
+		height: 60px; padding: 20px;
 		background: #5170b0;
 		background: -webkit-linear-gradient(top, #2b3943 0%, #2b3943 100%);
 		background:    -moz-linear-gradient(top, #2b3943 0%, #2b3943 100%);
@@ -230,7 +233,7 @@ img.olTileImage {
 /* database */
 
 .wcga-database {
-	margin: 10px; padding: 10px; min-height: 100px;
+	margin: 10px 0px; padding: 10px;
 	background: #fff;
 	border: 1px solid #eee;
 	/*-webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.25);
@@ -312,4 +315,9 @@ img.olTileImage {
     
 .map-buttons {
     margin-top: 20px;
+}
+@media (max-width: 768px) {
+	.container-masthead .masthead {
+		height: 90px;
+	}
 }
