@@ -38,8 +38,13 @@ def index(request):
             "count": Event.objects.filter(datasheet_id__type_id__type = "Derelict Gear Report").count()
         }
     ]
+    
+    if settings.SERVER == 'Dev':
+        static_media_url = settings.MEDIA_URL
+    else:
+        static_media_url = settings.STATIC_URL
 
-    return render_to_response( 'index.html', RequestContext(request,{'STATIC_URL':settings.STATIC_URL, 'thankyou': False, 'active':'home', 'event_count': event_count}))
+    return render_to_response( 'index.html', RequestContext(request,{'STATIC_URL':static_media_url, 'thankyou': False, 'active':'home', 'event_count': event_count}))
 
 def events(request, submit=False): 
 

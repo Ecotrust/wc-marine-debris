@@ -2,6 +2,7 @@
 import os, sys
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+SERVER = 'Apache'   #Set to 'Dev' in local settings if running Django's dev server
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
