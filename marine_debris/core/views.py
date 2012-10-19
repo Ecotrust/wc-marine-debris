@@ -104,7 +104,7 @@ def get_events(request):
         #     if filter['type'] == "state":
         #         qs = qs.filter(site__state__name=filter['name'])
     else:
-        qs = Event.objects.all()[0:500]
+        qs = Event.objects.all()
 
     if sort_column:
         sort_name_key = request.GET.get("mDataProp_%s" % sort_column, False)
