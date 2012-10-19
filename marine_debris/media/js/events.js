@@ -275,7 +275,6 @@ $.ajax({
     $("select.type").chosen();
     $(".filters").removeClass('hide');
     $(document).ready(function() {
-      $(".wcga-database").height(Math.max($(".wcga-database-left").height(), $(".wcga-database-right").height()));  
       $("select.type").val([]);
       $("select.type").chosen().change(function (event, option ) {
         if (option.selected) {
