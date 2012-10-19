@@ -38,8 +38,13 @@ def index(request):
             "count": Event.objects.filter(datasheet_id__type_id__type = "Derelict Gear Report").count()
         }
     ]
+    
+    if settings.SERVER == 'Dev':
+        static_media_url = settings.MEDIA_URL
+    else:
+        static_media_url = settings.STATIC_URL
 
-    return render_to_response( 'index.html', RequestContext(request,{'STATIC_URL':settings.STATIC_URL, 'thankyou': False, 'active':'home', 'event_count': event_count}))
+    return render_to_response( 'index.html', RequestContext(request,{'STATIC_URL':static_media_url, 'thankyou': False, 'active':'home', 'event_count': event_count}))
 
 def events(request, submit=False): 
 
@@ -51,7 +56,7 @@ def get_locations(request):
     for state in State.objects.all().order_by('name'):
         states.append(state.toSimpleDict)
         counties = []
-        for county in County.objects.filter(stateabr=state.initials):
+        for county in County.objects.filter(stateabr=state.initials).order_by('name'):
             counties.append({
                 "name": county.name,
                 "type": 'county',
