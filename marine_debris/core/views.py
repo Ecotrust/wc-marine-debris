@@ -80,6 +80,7 @@ def get_events(request):
     sEcho = request.GET.get('sEcho', False)
     sort_column = request.GET.get('iSortCol_0', False)
     filter_json = request.GET.get('filter', False)
+    start_id = request.GET.get('startID', False)
 
     if filter_json:
         filters = simplejson.loads(filter_json)
@@ -106,11 +107,11 @@ def get_events(request):
                 sort_name = "-" + sort_name
             qs = qs.order_by(sort_name)
     filtered_count = qs.count()
-    if count:
+    if count and not start_id:
         qs = qs[int(start_index):int(start_index) + int(count)]
 
     data = []
-
+    found_records = 0
     for event in qs: 
         timeout=60*60*24*7*52*10
         key = 'eventcache_%s' % event.id
@@ -118,7 +119,21 @@ def get_events(request):
         if not dict:
             dict = event.toEventsDict
             cache.set(key, dict, timeout)
-        data.append(dict)
+        if not start_id:
+            data.append(dict)
+        else:
+            # if we do have a startid (because we clicked on a map point)
+            # loop thorugh the sorted filtered list and grap the records from
+            # the clicked event, up to count
+            if event.id == int(start_id):
+                data.append(dict)
+                found_records = 1
+            if found_records > 0 and found_records <= int(count):
+                data.append(dict)
+                found_records = found_records + 1
+            elif found_records > int(count):
+                break
+
     res = {
        "aaData": data,
        "iTotalRecords": Event.objects.all().count(),

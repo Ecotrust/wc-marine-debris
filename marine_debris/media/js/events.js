@@ -83,6 +83,11 @@ function viewModel(options) {
     "iDisplayStart": 0,
     "fnServerParams": function ( aoData ) {
       var filters = self.locationFilter();
+      if (self.startID) {
+        console.log(self.startID);
+        aoData.push({ "name": "startID", "value": self.startID });
+        self.startID = null;
+      }
       if (self.filterByExtent()) {
         filters.push({"type": "bbox", "bbox": self.mapExtent().transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326")).toBBOX() });
       };
@@ -99,7 +104,7 @@ function viewModel(options) {
         point = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(event.site.lon, event.site.lat));
       event.feature = point;
       point.event = event;
-      point.attributes.id = event.id;
+      point.attributes = event;
       point.attributes.event_type = event.datasheet.event_type;
       point.geometry.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
       self.events().push(event);
@@ -167,14 +172,17 @@ function viewModel(options) {
   });
 
   self.activeEvent = ko.observable();
+
+  self.startID = null;
+
   self.zoomTo = function(event, e) {
 
     var $table = $('#events-table').dataTable(), row,
+      feature = app.points.getFeaturesByAttribute('id', event.id)[0],
       pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
-
-    if ($.inArray(event.feature, app.points.selectedFeatures) === -1) {
+    if ($.inArray(feature, app.points.selectedFeatures) === -1) {
       app.selectControl.unselectAll();
-      app.selectControl.select(app.points.getFeaturesByAttribute('id', event.id)[0]);
+      app.selectControl.select(feature);
     } 
     if(!event.data) {
       event.data = ko.observable(false);
@@ -185,16 +193,20 @@ function viewModel(options) {
     } else {
       self.activeEvent(event);
     }
+
+    // if e, we are clicking on the table
     if (e) {
       app.map.setCenter(pos, 11);      
+    } else {
+      // we are clicking on the table
+      self.startID = event.id;
+      $('#events-table').dataTable().fnReloadAjax();
     }
 
-    if(!self.filterByExtent() && ! self.mapExtent().containsLonLat(pos)) {
-    }
-
+  
     // display the row in datatables
-    row = $table.fnFindCellRowNodes(event.id, 'id')[0];
-    $table.fnDisplayRow(row);
+    // row = $table.fnFindCellRowNodes(event.id, 'id')[0];
+    // $table.fnDisplayRow(row);
     $(row).addClass('active');
     $(row).siblings().removeClass('active');
   };

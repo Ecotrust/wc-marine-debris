@@ -10,7 +10,7 @@ var map_options = {
     projection: new OpenLayers.Projection("EPSG:900913"),
     displayProjection: new OpenLayers.Projection("EPSG:4326"),
     units: "m",
-    numZoomLevels: 21,
+    numZoomLevels: 13,
     maxResolution: 156543.0339,
     eventListeners: {
         "zoomend": this.zoomHandler,
@@ -21,8 +21,8 @@ var map_options = {
 esriOcean = new OpenLayers.Layer.XYZ("ESRI Ocean", "http://services.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/${z}/${y}/${x}", {
     sphericalMercator: true,
     projection: map_options.displayProjection,
+    numZoomLevels: map_options.numZoomLevels,
     isBaseLayer: true,
-    // numZoomLevels: 13,
     maxExtent: map_extent,
 });
 

@@ -78,6 +78,11 @@ i { margin-right: 5px; }
 	top: -22px;
 	right: 0px;
 }
+
+.wcga-database-right .dataTables_paginate, .wcga-database-right  .dataTables_info{
+    margin-top: 15px;
+}
+
 #map_wrapper {
 	position: relative;
 }
