@@ -30,7 +30,11 @@
         {{form}}
         <div id="map" class="smallmap"></div>
         <div class="map-buttons"><button type="button" class="btn" id="back" value="Back" onClick="history.go(-1);return true;">Back</button>
-        <button data-bind="enable: latitude() && longitude() && selectedSiteName()" type="submit" class='btn'>Continue</button>
+        {% if derelict %}
+        <button data-bind="enable: selectedStateName() && latitude() && longitude()" type="submit" class='btn'>Continue</button>
+        {% else %}
+        <button data-bind="enable: selectedStateName() && selectedCountyName() && latitude() && longitude() && selectedSiteName()" type="submit" class='btn'>Continue</button>
+        {% endif %}
         </div>
         </form>
     
@@ -67,8 +71,6 @@
             app.viewModel.selectedSiteName($(event.target).text());
             $( "#id_sitename" ).trigger("blur");
         });
-        
-        
     });
 
     var app = {}, 
