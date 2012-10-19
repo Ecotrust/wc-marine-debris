@@ -65,14 +65,14 @@
       </div>
     </div>
   </div>
-{% block content %}
-  <div class="row-fluid">
+ 
+  {% block content %}
+   <div class="row-fluid">
     <div class="span12 content-header">
-
       </div>
     </div>
   {% endblock %}
-
+ 
   <div class="row-fluid">
       <div class="span6">
         <div class="wcga-database wcga-database-left">
@@ -101,6 +101,7 @@
 {% endblock %}
 
 <script>
+$(".wcga-database").height(Math.max($(".wcga-database-left").height(), $(".wcga-database-right").height()));  
 {% block js %}
 
 {% endblock %}

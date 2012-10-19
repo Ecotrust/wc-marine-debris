@@ -14,7 +14,7 @@
     </script>
 {% endblock %}
 
-    
+ {% block content %}{% endblock %}    
 {% block leftcontent %}
 <h2>Query Database <img src="/site-media/img/ajax-loader.gif" data-bind="visible: showSpinner"/></h2>
  <div class="row-fluid">
@@ -43,11 +43,11 @@
         <table class="table wcga table-striped table-hover table-condensed" id="events-table" data-bind="dataTable: { 
             rowTemplate: 'rowTemplate', options: dataTablesOptions, 
             columns: [
-                { mDataProp: 'datasheet.event_type', sTitle: 'Event Type'},
-                { mDataProp: 'site.name', sTitle: 'Site'},
-                { mDataProp: 'site.county', sTitle: 'County'},
-                { mDataProp: 'site.st_initials', sTitle: 'State' },
-                { mDataProp: 'date', sTitle: 'Date' }
+                { mDataProp: 'datasheet.event_type', sTitle: 'Event Type', 'sWidth': '20%'},
+                { mDataProp: 'site.name', sTitle: 'Site', 'sWidth': '30%'},
+                { mDataProp: 'site.county', sTitle: 'County', 'sWidth': '20%'},
+                { mDataProp: 'site.st_initials', sTitle: 'State', 'sWidth': '10%'},
+                { mDataProp: 'date', sTitle: 'Date', 'sWidth': '10%' }
               ]
         }">    
     </table>

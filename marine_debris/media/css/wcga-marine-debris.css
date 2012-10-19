@@ -19,6 +19,9 @@ h6 { font-weight: normal; }
 
 i { margin-right: 5px; }
 
+.carousel .item > img {
+	width: 100%;
+}
 .align-right { text-align: right; }
 
 .row { margin-bottom: 10px; }
@@ -92,12 +95,23 @@ i { margin-right: 5px; }
 	left: 50%;
 }
 #map {
-	height: 500px;
+	height: 600px;
 	margin-bottom: 20px;
 }
 #report-values-content {
 	min-height: 450px
 }
+.carousel-control {
+	display: none;
+}
+
+/*.carousel.carousel-fade .item {
+  -webkit-transition: opacity 1s ease-in-out;
+  -moz-transition: opacity 1s ease-in-out;
+  -ms-transition: opacity 1s ease-in-out;
+  -o-transition: opacity 1s ease-in-out;
+  transition: opacity 1s ease-in-out;
+}*/
 .fade {
 	opacity: .4;
 }
