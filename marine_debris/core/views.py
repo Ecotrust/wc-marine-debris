@@ -334,7 +334,11 @@ def event_save(request):
         if createEventForm.data['county'] == '':
             site = Site.objects.get_or_create(state = state, geometry = str(point), sitename = sitename)
         else:
-            site = Site.objects.get_or_create(state = state, county = createEventForm.data['county'], geometry = str(point), sitename = sitename)
+            county = createEventForm.data['county']
+            if Site.objects.filter(state=state, county=county, geometry = str(point), sitename = sitename).count() == 0:
+                if Site.objects.filter(state=state, county=county+' County', geometry = str(point), sitename = sitename).count() > 0:
+                    county = county + ' County'
+            site = Site.objects.get_or_create(state = state, county = county, geometry = str(point), sitename = sitename)
         
         date = datetime.datetime.strptime(createEventForm.data['date'], '%m/%d/%Y')
         event = Event(proj_id = project, datasheet_id = datasheet, cleanupdate = date, site = site[0], submitted_by = request.user)

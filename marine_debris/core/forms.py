@@ -165,7 +165,7 @@ class CreateEventForm(forms.Form):
                     if self.data['sitename'].__len__() > 0:    #site will have name, and name is given
                         records = Site.objects.filter(sitename=self.data['sitename'])
                         for record in records:
-                            if str(record.geometry.get_coords()[1]) == self.data['latitude'] and str(record.geometry.get_coords()[0]) == self.data['longitude'] and record.county == self.data['county'] and record.state.name == self.data['state']:
+                            if str(record.geometry.get_coords()[1]) == self.data['latitude'] and str(record.geometry.get_coords()[0]) == self.data['longitude'] and (record.county == self.data['county'] or record.county == self.data['county']+' County') and record.state.initials == self.data['state']:
                                 matches = [record]
                                 exists = True
                                 break
