@@ -83,16 +83,17 @@ i { margin-right: 5px; }
 }
 
 .wcga-database-right .dataTables_paginate, .wcga-database-right  .dataTables_info{
-    margin-top: 15px;
+    display: none;
 }
 
 #map_wrapper {
 	position: relative;
 }
-#map_wrapper img {
+#map_wrapper .loader {
 	position: absolute;
-	top: 50%;
-	left: 50%;
+	top: 40%;
+	left: 40%;
+	text-align: center;
 }
 #map {
 	height: 600px;
@@ -250,7 +251,14 @@ img.olTileImage {
 	color: white;
 }
 /* database */
-
+.filter {
+	float: right;
+}
+.wcga-database-right .wrapper {
+	height: 450px;
+	overflow: auto;
+	clear:both;
+}
 .wcga-database {
 	margin: 10px 0px; padding: 10px;
 	background: #fff;
