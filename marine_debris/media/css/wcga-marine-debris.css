@@ -240,6 +240,9 @@ img.olTileImage {
 .wcga-database .chzn-container .chzn-results .group-result {
 	color: #333;
 }
+
+
+
 .wcga-database .chzn-container .chzn-results .group-result:hover {
 	background-color: #3875D7;
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3875d7', endColorstr='#2a62bc', GradientType=0 );
