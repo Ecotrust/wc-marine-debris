@@ -33,7 +33,7 @@ app.points = new OpenLayers.Layer.Vector("Events", {
           symbolizer: {
                 fillColor: "#ffcc66",
                 fillOpacity: 0.8,
-                strokeColor: "#cc6633",
+                strokeColor: "#cc6633"
           }
        }),
        new OpenLayers.Rule({
@@ -46,7 +46,7 @@ app.points = new OpenLayers.Layer.Vector("Events", {
            symbolizer: {
                 fillColor: "#aaa",
                 fillOpacity: 0.8,
-                strokeColor: "#333",
+                strokeColor: "#333"
            }
        })],
       context: {
@@ -224,39 +224,45 @@ function viewModel(options) {
 
 
 app.get_event_points = function(filters) {
-  $('#map').addClass('fade');
-  app.viewModel.mapIsLoading(true);
-  $.ajax({
-        url: "/events/get",
-        type: 'GET',
-        data: {
-            "filter" : JSON.stringify(filters)
-        },
-        dataType: 'json'
-  }).done(function(res) { 
-    app.viewModel.addEvents(res.aaData);
-    app.addPoints(app.viewModel.events());
-    $('#map').removeClass('fade');
-    app.viewModel.mapIsLoading(false);
+  if (! ($.browser.msie && $.browser.version > 8)) {
+    $('#map').addClass('fade');
+    app.viewModel.mapIsLoading(true);
+    $.ajax({
+          url: "/events/get",
+          type: 'GET',
+          data: {
+              "filter" : JSON.stringify(filters)
+          },
+          dataType: 'json'
+    }).done(function(res) { 
+      app.viewModel.addEvents(res.aaData);
+      app.addPoints(app.viewModel.events());
+      $('#map').removeClass('fade');
+      app.viewModel.mapIsLoading(false);
 
-  });
+    });  
+  }
+  
 };
 
 
 app.get_events = function () {
-  $('#map').addClass('fade');
-  app.viewModel.mapIsLoading(true);
-  $.ajax({
-        url: "/events/get",
-        type: 'GET',
-        dataType: 'json'
-  }).done(function(res) { 
-    app.viewModel.addEvents(res.aaData);
-    app.addPoints(app.viewModel.events());
-    $('#map').removeClass('fade');
-    app.viewModel.mapIsLoading(false);
+  if (! ($.browser.msie && $.browser.version > 8)) {
+    $('#map').addClass('fade');
+    app.viewModel.mapIsLoading(true);
+    $.ajax({
+          url: "/events/get",
+          type: 'GET',
+          dataType: 'json'
+    }).done(function(res) { 
+      app.viewModel.addEvents(res.aaData);
+      app.addPoints(app.viewModel.events());
+      $('#map').removeClass('fade');
+      app.viewModel.mapIsLoading(false);
 
-  });
+    });    
+  }
+
 };
 // var onResize = function () {
 //   $(".wcga-database").height(Math.max($(".wcga-database-left").height(), $(".wcga-database-right").height()));
@@ -327,7 +333,7 @@ $.ajax({
 
       $(".location").find("optgroup").each(function () {
         var $optgroup = $(this), name = $optgroup.attr('label');
-        $option = $("<option>", { value: "state:" + name, text: name, class: "dummy-state" });
+        $option = $("<option>", { "value": "state:" + name, "text": name, "class": "dummy-state" });
         $optgroup.append($option.hide());
       });
       $(".location").trigger("liszt:updated");
@@ -375,7 +381,7 @@ $.ajax({
 
 app.addPoints = function(events) {
   app.points.removeAllFeatures();
-  app.points.addFeatures($.map(events, function (event) { return event.feature; }))
+  app.points.addFeatures($.map(events, function (event) { return event.feature; }))  
 };
 
 esriOcean = new OpenLayers.Layer.XYZ("ESRI Ocean", "http://services.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/${z}/${y}/${x}", {
