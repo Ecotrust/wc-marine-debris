@@ -293,7 +293,6 @@ class State (models.Model):
     def toDict(self):
         timeout=60*60*24*7
         key = 'statecache_%s' % self.id
-        cache.delete(key)
         res = cache.get(key)
         if res == None:
             stateabr = State.objects.get(name=self).initials
