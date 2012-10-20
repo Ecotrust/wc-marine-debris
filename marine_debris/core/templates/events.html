@@ -91,9 +91,9 @@
               <div class="tab-pane active" id="map-content">
                 <div id="map_wrapper">
                   <div id="map"></div>
-                  <div class="loader">
+                  <div class="loader" data-bind="visible: mapIsLoading">
                     <p>Map is loading.</p>
-                    <img src="/site-media/img/ajax-loader.gif" data-bind="visible: mapIsLoading"/>
+                    <img src="/site-media/img/ajax-loader.gif" />
                   </div>
                 </div>
                <!-- <div class="clearfix filter-box">

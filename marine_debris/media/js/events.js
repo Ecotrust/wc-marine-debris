@@ -124,7 +124,7 @@ function viewModel(options) {
 
   self.showSpinner = ko.observable(false);
   self.showReportSpinner = ko.observable(false);
-  self.mapIsLoading = ko.observable(true);
+  self.mapIsLoading = ko.observable(false);
   self.filteredEvents = ko.computed(function() {
     self.showSpinner(false);
     return self.events();
@@ -187,7 +187,7 @@ function viewModel(options) {
     var $table = $('#events-table').dataTable(), row,
       feature = app.points.getFeaturesByAttribute('id', event.id)[0],
       pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
-    if (! self.mapIsLoading() && $.inArray(feature, app.points.selectedFeatures) === -1) {
+    if (! self.mapIsLoading() && $.inArray(feature, app.points.selectedFeatures) === -1 && ! ($.browser.msie && $.browser.version < 9)) {
       app.selectControl.unselectAll();
       app.selectControl.select(feature);
     } 
@@ -224,7 +224,7 @@ function viewModel(options) {
 
 
 app.get_event_points = function(filters) {
-  if (! ($.browser.msie && $.browser.version > 8)) {
+  if (! ($.browser.msie && $.browser.version < 9)) {
     $('#map').addClass('fade');
     app.viewModel.mapIsLoading(true);
     $.ajax({
@@ -247,7 +247,7 @@ app.get_event_points = function(filters) {
 
 
 app.get_events = function () {
-  if (! ($.browser.msie && $.browser.version > 8)) {
+  if (! ($.browser.msie && $.browser.version < 9)) {
     $('#map').addClass('fade');
     app.viewModel.mapIsLoading(true);
     $.ajax({
@@ -289,6 +289,8 @@ $.ajax({
     $(".filters").removeClass('hide');
     $(document).ready(function() {
       $("select.type").val([]);
+
+
       $("select.type").chosen().change(function (event, option ) {
         if (option.selected) {
           app.viewModel.locationFilter.push({
@@ -349,6 +351,8 @@ $.ajax({
         // if ($option.length === 0) {
           
         // }
+
+
 
         $.each(app.viewModel.locationFilter(), function(i, filter) {
           if(filter.name === name) {
