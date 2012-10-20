@@ -18,8 +18,8 @@
 {% block leftcontent %}
 <!-- If a site was added, {{submit}} = True, {{added_site}} is your event.id -->
 <h2>Query Database <img src="/site-media/img/ajax-loader.gif" data-bind="visible: showSpinner"/></h2>
- <div class="row-fluid">
-   <div class="span12 hide filters">
+ <div class="row-fluid filters hide">
+   <div class="span12 ">
      <div class="filter-container">
      <h4>Filter by Report Type</h4>
       <select class="type" multiple="true" data-placeholder="Filter by event type(s)..." style="width: 350px">
@@ -30,11 +30,11 @@
      <div class="filter-container">
        <h4>Filter by State and County</h4>
        <select class="location" data-placeholder="Filter by location(s)..." data-bind="foreach: states" multiple style="width: 350px">
-           <optgroup data-bind="attr: {label: $data.name}">
-             <option data-bind="text: $data.name, value: 'state:'+$data.name" disabled></option>
-           <!-- ko foreach: $root.locations[$data.name].counties -->
+           <optgroup data-bind="foreach: $root.locations[$data.name].counties, attr: {label: $data.name}">
+             {# <option data-bind="text: $data.name, value: 'state:'+$data.name" disabled></option> #}
+           <!--  foreach: $root.locations[$data.name].counties -->
              <option data-bind="text: $data.name + ', ' + $parent.initials, value: $data.state+':'+$data.name"></option>
-           <!-- /ko -->
+           <!-- -->
            </optgroup>
        </select>
      </div>
@@ -44,10 +44,10 @@
         <table class="table wcga table-striped table-hover table-condensed" id="events-table" data-bind="dataTable: { 
             rowTemplate: 'rowTemplate', options: dataTablesOptions, 
             columns: [
-                { mDataProp: 'datasheet.event_type', sTitle: 'Event Type', 'sWidth': '20%'},
-                { mDataProp: 'site.name', sTitle: 'Site', 'sWidth': '30%'},
-                { mDataProp: 'site.county', sTitle: 'County', 'sWidth': '20%'},
-                { mDataProp: 'site.st_initials', sTitle: 'State', 'sWidth': '10%'},
+                { mDataProp: 'datasheet.event_type', sTitle: 'Event Type', 'sWidth': '25%'},
+                { mDataProp: 'site.name', sTitle: 'Site', 'sWidth': '35%'},
+                { mDataProp: 'site.county', sTitle: 'County', 'sWidth': '15%'},
+                { mDataProp: 'site.st_initials', sTitle: 'State', 'sWidth': '5%'},
                 { mDataProp: 'date', sTitle: 'Date', 'sWidth': '10%' }
               ]
         }">    
@@ -91,7 +91,10 @@
               <div class="tab-pane active" id="map-content">
                 <div id="map_wrapper">
                   <div id="map"></div>
-                  <img src="/site-media/img/ajax-loader.gif" data-bind="visible: showMapSpinner"/>
+                  <div class="loader" data-bind="visible: mapIsLoading">
+                    <p>Map is loading.</p>
+                    <img src="/site-media/img/ajax-loader.gif" />
+                  </div>
                 </div>
                <!-- <div class="clearfix filter-box">
                   <p class="pull-right">
@@ -117,8 +120,9 @@
                       <dt>date</dt>
                       <dd><span data-bind="text: date"></span></dd>
                     </dl>
-                    <div data-bind="if: data">
-                      <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { dataSource: data, columns: [{mDataProp: 'text', sTitle: 'Text'}, {mDataProp:'value', sTitle: 'Value'}, { bSortable: false, mDataProp: 'unit' }] }">
+                    <div class="filter"></div>
+                    <div data-bind="if: data" class="table-container">
+                      <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { dataSource: data, options: $root.reportTableOptions, columns: [{mDataProp: 'text', sTitle: 'Text'}, {mDataProp:'value', sTitle: 'Value'}, { bSortable: false, mDataProp: 'unit' }] }">
                         <tbody>
                           <tr data-bind="visible: value">
                             <td data-bind="text: text"></td>
@@ -144,7 +148,8 @@
                     <dt data-bind="text:$data.field.display_name"></dt>
                     <dd data-bind="text:$data.field.value"></dd>
                   </dl>
-                  <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { dataSource: report, rowTemplate: 'reportRowTemplate', columns: [{mDataProp: 'field.name', sTitle: 'Field'}, {mDataProp:'field.value', sTitle: 'Value'}, {mDataProp:'field.unit', sTitle: ''}] }">
+                  <div class="filter"></div>
+                  <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { dataSource: report, options: $root.reportTableOptions, rowTemplate: 'reportRowTemplate', columns: [{mDataProp: 'field.name', sTitle: 'Field'}, {mDataProp:'field.value', sTitle: 'Value'}, {mDataProp:'field.unit', sTitle: ''}] }">
                   </table>
                 </div>
 

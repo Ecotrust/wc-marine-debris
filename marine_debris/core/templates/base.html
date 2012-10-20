@@ -96,12 +96,16 @@
 <SCRIPT src="/site-media/third-party/bootstrap/js/bootstrap.min.js" ></SCRIPT>
 <SCRIPT src="/site-media/third-party/jquery/js/jquery.dataTables.js" ></SCRIPT>
 <SCRIPT src="/site-media/third-party/datejs/date.js" ></SCRIPT>
+
+<SCRIPT src="/site-media/third-party/js/json2.js" ></SCRIPT>
 <SCRIPT src="/site-media/js/ko-bindings.js" ></SCRIPT>
 {% block scripts %}
 {% endblock %}
 
 <script>
-$(".wcga-database").height(Math.max($(".wcga-database-left").height(), $(".wcga-database-right").height()));  
+$(document).ready(function () {
+  $(".wcga-database").height(Math.max($(".wcga-database-left").height(), $(".wcga-database-right").height()));  
+});
 {% block js %}
 
 {% endblock %}
