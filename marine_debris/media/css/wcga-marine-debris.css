@@ -241,6 +241,7 @@ img.olTileImage {
 	color: #333;
 }
 
+.chzn-container-active { z-index: 4000; }
 
 
 .wcga-database .chzn-container .chzn-results .group-result:hover {
