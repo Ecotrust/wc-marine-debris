@@ -82,7 +82,7 @@ function viewModel(options) {
 
   self.dataTablesOptions = {
     'bFilter': false, 
-    "iDisplayLength": 12,
+    "iDisplayLength": 8,
     "bProcessing": true,
     "bServerSide": true,
     "sPaginationType": "full_numbers",
