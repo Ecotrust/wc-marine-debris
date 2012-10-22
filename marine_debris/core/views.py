@@ -120,8 +120,9 @@ def get_events(request):
 
     data = []
     found_records = 0
+
+    timeout=60*60*24*7*52*10
     for event in qs: 
-        timeout=60*60*24*7*52*10
         key = 'eventcache_%s' % event.id
         dict = cache.get(key)
         if not dict:
@@ -133,14 +134,15 @@ def get_events(request):
             # if we do have a startid (because we clicked on a map point)
             # loop thorugh the sorted filtered list and grap the records from
             # the clicked event, up to count
+            if found_records > int(count):
+                break
             if event.id == int(start_id):
                 data.append(dict)
                 found_records = 1
-            if found_records > 0 and found_records <= int(count):
+            elif found_records >= 1 and found_records < int(count):
                 data.append(dict)
                 found_records = found_records + 1
-            elif found_records > int(count):
-                break
+            
 
     res = {
        "aaData": data,

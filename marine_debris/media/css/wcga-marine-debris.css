@@ -206,11 +206,11 @@ img.olTileImage {
 		margin-bottom: 20px;
 		height: 60px; padding: 20px;
 		background: #5170b0;
-		background: -webkit-linear-gradient(top, #2b3943 0%, #2b3943 100%);
-		background:    -moz-linear-gradient(top, #2b3943 0%, #2b3943 100%);
-		background:     -ms-linear-gradient(top, #2b3943 0%, #2b3943 100%);
-		background:      -o-linear-gradient(top, #2b3943 0%, #2b3943 100%);
-		background: linear-gradient(to bottom,   #2b3943 0%, #2b3943 100%);
+		background: -webkit-linear-gradient(top, #5170b0 0%, #516181 100%);
+		background:    -moz-linear-gradient(top, #5170b0 0%, #516181 100%);
+		background:     -ms-linear-gradient(top, #5170b0 0%, #516181 100%);
+		background:      -o-linear-gradient(top, #5170b0 0%, #516181 100%);
+		background: linear-gradient(top bottom,   #5170b0 0%, #516181 100%);
 		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5170b0', endColorstr='#516181',GradientType=0 );
 		-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 		   -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
@@ -241,6 +241,7 @@ img.olTileImage {
 	color: #333;
 }
 
+.chzn-container-active { z-index: 4000; }
 
 
 .wcga-database .chzn-container .chzn-results .group-result:hover {

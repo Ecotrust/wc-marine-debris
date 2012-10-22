@@ -82,7 +82,7 @@ function viewModel(options) {
 
   self.dataTablesOptions = {
     'bFilter': false, 
-    "iDisplayLength": 12,
+    "iDisplayLength": 8,
     "bProcessing": true,
     "bServerSide": true,
     "sPaginationType": "full_numbers",
@@ -187,7 +187,7 @@ function viewModel(options) {
     var $table = $('#events-table').dataTable(), row,
       feature = app.points.getFeaturesByAttribute('id', event.id)[0],
       pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
-    if (! self.mapIsLoading() && $.inArray(feature, app.points.selectedFeatures) === -1 && ! ($.browser.msie && $.browser.version < 9)) {
+    if (! self.mapIsLoading() && $.inArray(feature, app.points.selectedFeatures) === -1 &&  !($.browser.msie && $.browser.version < 9)) {
       app.selectControl.unselectAll();
       app.selectControl.select(feature);
     } 
@@ -224,7 +224,7 @@ function viewModel(options) {
 
 
 app.get_event_points = function(filters) {
-  if (! ($.browser.msie && $.browser.version < 9)) {
+  if ( !($.browser.msie && $.browser.version < 9)) {
     $('#map').addClass('fade');
     app.viewModel.mapIsLoading(true);
     $.ajax({
@@ -247,7 +247,7 @@ app.get_event_points = function(filters) {
 
 
 app.get_events = function () {
-  if (! ($.browser.msie && $.browser.version < 9)) {
+  if ( !($.browser.msie && $.browser.version < 9)) {
     $('#map').addClass('fade');
     app.viewModel.mapIsLoading(true);
     $.ajax({
