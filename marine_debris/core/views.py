@@ -165,9 +165,9 @@ def get_event_geojson(request):
     feature_jsons = []
     
     if filter_json:
-        qs = Event.filter(simplejson.loads(filter_json))
+        qs = Event.filter(simplejson.loads(filter_json))[:100]
     else:
-        qs = Event.objects.all()
+        qs = Event.objects.all()[:100]
     
     timeout=60*60*24*7*52*10
     loop_count = 0
@@ -443,7 +443,10 @@ def edit_event(request, event_id):
     
 def view_event(request, event_id):
     event = Event.objects.get(id=event_id)
-    fields = simplejson.dumps(event.field_values_list)
+    fields = simplejson.dumps({
+        "fields": event.field_values_list,
+        "details": event.toEventsDict
+    })
     
     return HttpResponse(fields, mimetype='application/json')
     

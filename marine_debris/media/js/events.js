@@ -19,7 +19,8 @@ app.points = new OpenLayers.Layer.Vector("Events", {
   ],
   protocol: new OpenLayers.Protocol.HTTP({
     url: "/events/get_geojson",
-    format: new OpenLayers.Format.GeoJSON()
+    format: new OpenLayers.Format.GeoJSON(),
+
   }),
   styleMap: new OpenLayers.StyleMap({
     "default": new OpenLayers.Style({
@@ -165,12 +166,25 @@ function viewModel(options) {
 
   self.startID = null;
 
-  self.zoomTo = function(feature, e) {
-    var $table = $('#events-table').dataTable(), row,
-    event = {
+  self.handleTableClick = function (event, e) {
+    var $row = $(e.target).closest('tr'),
+       pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
+    $row.siblings().removeClass('active');
+    $row.addClass('active');
+    self.zoomTo(null, event);
+    app.map.setCenter(pos, app.map.getZoom() + 2);
+  }
+
+  self.zoomTo = function(feature, event) {
+    var $table = $('#events-table').dataTable(), row;
+
+    if (! event) {
+      event = {
         id: feature.cluster[0].attributes.id,
         data: false
-    };
+      };
+    }
+    
       // feature = app.points.getFeaturesByAttribute('id', event.id)[0],
       // pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
     // if (! self.mapIsLoading() && $.inArray(feature, app.points.selectedFeatures) === -1 &&  ( $.browser.msie === undefined || $.browser.version >= 9)) {
@@ -180,21 +194,16 @@ function viewModel(options) {
     if(!event.data) {
       event.data = ko.observable(false);
       $.get('/event/view/' + event.id, function(data) {
-        self.activeEvent({});
-        self.activeEvent().data(data);
+        var event_details = data.details;
+        event_details.data = data.fields;
+        // self.activeEvent({});
+        // self.activeEvent().data(data);
+        self.activeEvent(event_details);
       });
     } else {
       self.activeEvent(event);
     }
 
-    // if e, we are clicking on the table
-    if (e) {
-      // app.map.setCenter(pos, 11);      
-    } else {
-      // we are clicking on the table
-      self.startID = event.id;
-      $('#events-table').dataTable().fnReloadAjax();
-    }
 
     $(row).addClass('active');
     $(row).siblings().removeClass('active');
@@ -387,6 +396,9 @@ app.selectControl.activate();
 app.points.events.on({
   "featureselected": function(e) {
     var bounds;
+
+    $("#events-table").find('tr.active').removeClass('active');
+
     if ( e.feature.attributes.count === 1){
         app.viewModel.zoomTo(e.feature);
     } else {

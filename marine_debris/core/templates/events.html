@@ -172,11 +172,11 @@
   <td data-bind="text: field.unit"></td>
 </script>
 <script type="text/html" id="rowTemplate">
-  <td data-bind="text: datasheet.event_type, click: $root.zoomTo"></td>
-  <td data-bind="text: site.name, click: $root.zoomTo"></td>
-  <td data-bind="text: site.county, click: $root.zoomTo"></td>
-  <td data-bind="text: site.st_initials, click: $root.zoomTo"></td>
-  <td data-bind="text: date, click: $root.zoomTo"></td>
+  <td data-bind="text: datasheet.event_type, click: $root.handleTableClick"></td>
+  <td data-bind="text: site.name, click: $root.handleTableClick"></td>
+  <td data-bind="text: site.county, click: $root.handleTableClick"></td>
+  <td data-bind="text: site.st_initials, click: $root.handleTableClick"></td>
+  <td data-bind="text: date, click: $root.handleTableClick"></td>
 </script>
 
 <script src="/site-media/js/events.js"></script>
