@@ -247,23 +247,15 @@ function viewModel(options) {
       // app.selectControl.unselectAll();
       // app.selectControl.select(feature);
     // } 
-    if(!event.data) {
-      event.data = ko.observable(false);
-      self.showDetailsSpinner(true);
-      $.get('/event/view/' + event.id, function(data) {
-        var event_details = data.details;
-        event_details.data = data.fields;
-        // self.activeEvent({});
-        // self.activeEvent().data(data);
-        self.activeEvent(event_details);
-        self.showDetailsSpinner(false);
-
-      });
-    } else {
-      self.activeEvent(event);
-    }
-
-
+    event.data = ko.observable(false);
+    self.showDetailsSpinner(true);
+    $.get('/event/view/' + event.id, function(data) {
+      var event_details = data.details;
+      event_details.data = data.fields;
+      self.activeEvent(event_details);
+      self.showDetailsSpinner(false);
+    });
+      
     $(row).addClass('active');
     $(row).siblings().removeClass('active');
   };
