@@ -6,6 +6,8 @@ var app = {}, map = new OpenLayers.Map('map', {
   projection: "EPSG:3857"
 });
 
+app.maxZoom = 12;
+
 app.map = map;
 app.rowIndex = {};
 app.points = new OpenLayers.Layer.Vector("Events", {
@@ -363,7 +365,7 @@ app.addPoints = function(events) {
 esriOcean = new OpenLayers.Layer.XYZ("ESRI Ocean", "http://services.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/${z}/${y}/${x}", {
   sphericalMercator: true,
   isBaseLayer: true,
-  numZoomLevels: 13,
+  numZoomLevels: app.maxZoom+1,
   attribution: "Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri"
 });
 map.addLayers([esriOcean, app.points]);
@@ -385,14 +387,14 @@ app.selectControl.activate();
 app.points.events.on({
   "featureselected": function(e) {
     var bounds;
-    if (e.feature.attributes.count === 1){
+    if ( e.feature.attributes.count === 1){
         app.viewModel.zoomTo(e.feature);
     } else {
-        bounds = new OpenLayers.Bounds();
-        $.each(e.feature.cluster, function(index, feature) {
-            bounds.extend(feature.geometry);
-        });
-        app.map.zoomToExtent(bounds);
+        if (app.map.getZoom() === app.maxZoom) {
+            alert("fully zoomed!");
+        } else {
+            app.map.setCenter(e.feature.geometry.bounds.centerLonLat, app.map.getZoom() + 2);
+        }
         
     }
  },
