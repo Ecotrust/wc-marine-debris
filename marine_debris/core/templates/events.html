@@ -105,9 +105,17 @@
                 </div>      -->
               </div>
               <div class="tab-pane" id="event-details-content">
+                <div class="pull-right" data-bind="visible: showDetailsSpinner">
+                  <img src="/site-media/img/ajax-loader.gif" />
+                </div>
+                <div data-bind="if: clusteredEvents().length > 0">
+                  <select data-bind="options: clusteredEvents, optionsText: 'displayName',  optionsCaption: 'Choose event from cluster...', value: selectedClusterEvent">
+                  </select>
+                </div>
                 <div data-bind="ifnot: activeEvent">
                   <p>Click on an event in the table for details.</p>
                 </div>
+
                 <div data-bind="if: activeEvent">
                   <div data-bind="with: activeEvent">
                     <h4><span data-bind="text: site.name"></span></h4>

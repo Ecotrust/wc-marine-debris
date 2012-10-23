@@ -181,7 +181,9 @@ def get_event_geojson(request):
                 gj = event.site.geometry.geojson
                 properties = simplejson.dumps({
                     "id":event.id,
-                    "event_type": event.datasheet_id.type_id.type
+                    "event_type": event.datasheet_id.type_id.type,
+                    "date": event.cleanupdate.strftime('%m/%d/%Y'),
+                    "displayName": "%s / %s" % (event.site.sitename, event.cleanupdate.strftime('%m/%d/%Y'))
                 })
             except AttributeError:
                 pass

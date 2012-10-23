@@ -10,12 +10,41 @@ app.maxZoom = 12;
 
 app.map = map;
 app.rowIndex = {};
+
+OpenLayers.Strategy.AttributeCluster = OpenLayers.Class(OpenLayers.Strategy.Cluster, {
+    /**
+     * the attribute to use for comparison
+     */
+    attribute: null,
+    /**
+     * Method: shouldCluster
+     * Determine whether to include a feature in a given cluster.
+     *
+     * Parameters:
+     * cluster - {<OpenLayers.Feature.Vector>} A cluster.
+     * feature - {<OpenLayers.Feature.Vector>} A feature.
+     *
+     * Returns:
+     * {Boolean} The feature should be included in the cluster.
+     */
+    shouldCluster: function(cluster, feature) {
+        var cc_attrval = cluster.cluster[0].attributes[this.attribute];
+        var fc_attrval = feature.attributes[this.attribute];
+        var superProto = OpenLayers.Strategy.Cluster.prototype;
+        return cc_attrval === fc_attrval && 
+               superProto.shouldCluster.apply(this, arguments);
+    },
+    CLASS_NAME: "OpenLayers.Strategy.AttributeCluster"
+});
+
 app.points = new OpenLayers.Layer.Vector("Events", {
   renderers: OpenLayers.Layer.Vector.prototype.renderers,
   projection: "EPSG:4326",
   strategies:[
     new OpenLayers.Strategy.Fixed(),
-    new OpenLayers.Strategy.Cluster()
+    new OpenLayers.Strategy.AttributeCluster({
+      attribute:'event_type'
+    })
   ],
   protocol: new OpenLayers.Protocol.HTTP({
     url: "/events/get_geojson",
@@ -25,16 +54,25 @@ app.points = new OpenLayers.Layer.Vector("Events", {
   styleMap: new OpenLayers.StyleMap({
     "default": new OpenLayers.Style({
       pointRadius: "${radius}",
-      fillColor: "#ffcc66",
+      fillColor: "${getColor}",
       fillOpacity: 0.8,
       strokeColor: "#cc6633",
       strokeWidth: 2,
-      strokeOpacity: 0.8
+      strokeOpacity: 0.8,
+      label: "${clusterCount}",
+      fontColor: "#333"
     },{ 
       // Rules go here.
       context: {
         radius: function(feature) {
           return Math.min(feature.attributes.count, 7) + 3;
+        },
+        clusterCount: function (feature) {
+          return feature.attributes.count > 1 ? feature.attributes.count: "";
+        },
+        getColor: function(feature) {
+          var type = feature.cluster[0].attributes.event_type;
+          return type === "Site Cleanup" ? "#ffcc66" : "#ccc";
         }
       }
     }),
@@ -105,6 +143,7 @@ function viewModel(options) {
   self.showSpinner = ko.observable(false);
   self.showReportSpinner = ko.observable(false);
   self.mapIsLoading = ko.observable(false);
+  self.showDetailsSpinner = ko.observable(false);
   self.filteredEvents = ko.computed(function() {
     self.showSpinner(false);
     return self.events();
@@ -166,6 +205,18 @@ function viewModel(options) {
 
   self.startID = null;
 
+  // if you click on a cluster with multiple events
+  self.clusteredEvents = ko.observableArray();
+  self.selectedClusterEvent = ko.observable();
+
+  self.selectedClusterEvent.subscribe(function (event) {
+    if (event) {
+        self.zoomTo(null, event);      
+    } else {
+      self.activeEvent(false);
+    }
+  });
+
   self.handleTableClick = function (event, e) {
     var $row = $(e.target).closest('tr'),
        pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
@@ -193,12 +244,15 @@ function viewModel(options) {
     // } 
     if(!event.data) {
       event.data = ko.observable(false);
+      self.showDetailsSpinner(true);
       $.get('/event/view/' + event.id, function(data) {
         var event_details = data.details;
         event_details.data = data.fields;
         // self.activeEvent({});
         // self.activeEvent().data(data);
         self.activeEvent(event_details);
+        self.showDetailsSpinner(false);
+
       });
     } else {
       self.activeEvent(event);
@@ -400,8 +454,13 @@ app.points.events.on({
     $("#events-table").find('tr.active').removeClass('active');
 
     if ( e.feature.attributes.count === 1){
+        app.viewModel.clusteredEvents.removeAll();
         app.viewModel.zoomTo(e.feature);
     } else {
+        app.viewModel.activeEvent(false);
+        app.viewModel.clusteredEvents($.map(e.feature.cluster, function (f) {
+          return f.attributes;
+        }));
         if (app.map.getZoom() === app.maxZoom) {
             alert("fully zoomed!");
         } else {
