@@ -11,7 +11,14 @@ app.rowIndex = {};
 app.points = new OpenLayers.Layer.Vector("Events", {
   renderers: OpenLayers.Layer.Vector.prototype.renderers,
   projection: "EPSG:4326",
-  //strategies:[new OpenLayers.Strategy.Cluster({distance: 5})],
+  strategies:[
+    new OpenLayers.Strategy.Fixed(),
+    new OpenLayers.Strategy.Cluster()
+  ],
+  protocol: new OpenLayers.Protocol.HTTP({
+    url: "/events/get_geojson",
+    format: new OpenLayers.Format.GeoJSON()
+  }),
   styleMap: new OpenLayers.StyleMap({
     "default": new OpenLayers.Style({
       pointRadius: "${radius}",
@@ -20,38 +27,11 @@ app.points = new OpenLayers.Layer.Vector("Events", {
       strokeColor: "#cc6633",
       strokeWidth: 2,
       strokeOpacity: 0.8
-    }, {
-      rules: [
-       new OpenLayers.Rule({
-           // a rule contains an optional filter
-           filter: new OpenLayers.Filter.Comparison({
-               type: OpenLayers.Filter.Comparison.EQUAL_TO,
-               property: "event_type", // the "foo" feature attribute
-               value: "Site Cleanup"
-           }),
-           // if a feature matches the above filter, use this symbolizer
-          symbolizer: {
-                fillColor: "#ffcc66",
-                fillOpacity: 0.8,
-                strokeColor: "#cc6633"
-          }
-       }),
-       new OpenLayers.Rule({
-           // a rule contains an optional filter
-           filter: new OpenLayers.Filter.Comparison({
-               type: OpenLayers.Filter.Comparison.EQUAL_TO,
-               property: "event_type", // the "foo" feature attribute
-               value: "Gear Removal"
-           }),
-           symbolizer: {
-                fillColor: "#aaa",
-                fillOpacity: 0.8,
-                strokeColor: "#333"
-           }
-       })],
+    },{ 
+      // Rules go here.
       context: {
         radius: function(feature) {
-          return 5//Math.min(feature.attributes.count, 7) + 3;
+          return Math.min(feature.attributes.count, 7) + 3;
         }
       }
     }),
@@ -61,9 +41,6 @@ app.points = new OpenLayers.Layer.Vector("Events", {
     }
   })
 });
-
-
-
 
 function viewModel(options) {
   var self = this;
@@ -95,9 +72,9 @@ function viewModel(options) {
         aoData.push({ "name": "startID", "value": self.startID });
         self.startID = null;
       }
-      if (self.filterByExtent()) {
-        filters.push({"type": "bbox", "bbox": self.mapExtent().transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326")).toBBOX() });
-      };
+      // if (self.mapExtent()) {
+        // filters.push({"type": "bbox", "bbox": self.mapExtent().transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326")).toBBOX() });
+      // }
       aoData.push( { "name": "filter", "value": JSON.stringify(filters) });
     }
   };
@@ -167,12 +144,16 @@ function viewModel(options) {
 
   self.locationFilter.subscribe(function () {
     $('#events-table').dataTable().fnReloadAjax();
-    app.get_event_points(self.locationFilter());
+    app.points.refresh({ 
+        params: {
+            'filter': JSON.stringify(self.locationFilter())
+        }
+    });
+    
     if ($("#report").is(":visible")){
         self.getReport(self.locationFilter());
     }
   });
-
 
   self.filteredEvents.subscribe(function() {
     app.addPoints(self.filteredEvents());
@@ -182,19 +163,22 @@ function viewModel(options) {
 
   self.startID = null;
 
-  self.zoomTo = function(event, e) {
-
+  self.zoomTo = function(feature, e) {
     var $table = $('#events-table').dataTable(), row,
-      feature = app.points.getFeaturesByAttribute('id', event.id)[0],
-      pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
-    if (! self.mapIsLoading() && $.inArray(feature, app.points.selectedFeatures) === -1 &&  ( $.browser.msie === undefined || $.browser.version >= 9)) {
-      app.selectControl.unselectAll();
-      app.selectControl.select(feature);
-    } 
+    event = {
+        id: feature.cluster[0].attributes.id,
+        data: false
+    };
+      // feature = app.points.getFeaturesByAttribute('id', event.id)[0],
+      // pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
+    // if (! self.mapIsLoading() && $.inArray(feature, app.points.selectedFeatures) === -1 &&  ( $.browser.msie === undefined || $.browser.version >= 9)) {
+      // app.selectControl.unselectAll();
+      // app.selectControl.select(feature);
+    // } 
     if(!event.data) {
       event.data = ko.observable(false);
       $.get('/event/view/' + event.id, function(data) {
-        self.activeEvent(event);
+        self.activeEvent({});
         self.activeEvent().data(data);
       });
     } else {
@@ -203,23 +187,19 @@ function viewModel(options) {
 
     // if e, we are clicking on the table
     if (e) {
-      app.map.setCenter(pos, 11);      
+      // app.map.setCenter(pos, 11);      
     } else {
       // we are clicking on the table
       self.startID = event.id;
       $('#events-table').dataTable().fnReloadAjax();
     }
 
-  
-    // display the row in datatables
-    // row = $table.fnFindCellRowNodes(event.id, 'id')[0];
-    // $table.fnDisplayRow(row);
     $(row).addClass('active');
     $(row).siblings().removeClass('active');
   };
 
   self.report = ko.observable();
-  
+
 };
 
 
@@ -242,9 +222,7 @@ app.get_event_points = function(filters) {
 
     });  
   }
-  
 };
-
 
 app.get_events = function () {
   if ( $.browser.msie === undefined || $.browser.version >= 9) {
@@ -348,12 +326,6 @@ $.ajax({
           index = -1,
           selected = $select.val() || [];
 
-        // if ($option.length === 0) {
-          
-        // }
-
-
-
         $.each(app.viewModel.locationFilter(), function(i, filter) {
           if(filter.name === name) {
             index = i;
@@ -380,7 +352,7 @@ $.ajax({
       
     });
   }).then(function () {
-    app.get_events();
+    //Do nothing for now
   });
 
 app.addPoints = function(events) {
@@ -412,7 +384,17 @@ app.selectControl.activate();
 
 app.points.events.on({
   "featureselected": function(e) {
-    app.viewModel.zoomTo(e.feature.event);      
+    var bounds;
+    if (e.feature.attributes.count === 1){
+        app.viewModel.zoomTo(e.feature);
+    } else {
+        bounds = new OpenLayers.Bounds();
+        $.each(e.feature.cluster, function(index, feature) {
+            bounds.extend(feature.geometry);
+        });
+        app.map.zoomToExtent(bounds);
+        
+    }
  },
  "featureunselected": function(e) {
    //showStatus("unselected feature " + e.feature.id + " on Vector Layer 1");

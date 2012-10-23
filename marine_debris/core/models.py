@@ -9,6 +9,7 @@ from django.contrib.gis.admin import OSMGeoAdmin
 from south.modelsinspector import add_introspection_rules
 add_introspection_rules([], ["^django\.contrib\.gis\.db\.models\.fields\.PointField"])
 from django.core.cache import cache
+from django.contrib.gis.geos import Polygon
 
 # Create your models here.
 class DataType (models.Model):
@@ -434,6 +435,7 @@ class Event (models.Model):
     dup = models.IntegerField(default=0)
     submitted_by = models.ForeignKey(User, null=True, blank=True, default=None)
     status = models.CharField(max_length=30, choices=StatusChoices, default='New', blank=True)
+    objects = models.GeoManager()
     
     def __unicode__(self):
         return "%s-%s-%s" % (self.proj_id.projname, self.site.sitename, self.cleanupdate.isoformat())
@@ -445,11 +447,16 @@ class Event (models.Model):
     def filter(cls, filters):
         event_types = []
         site_filters = []
+        # bbox_filter = False
         if filters == None:
             filters = []
         for filter in filters:
             if filter['type'] == 'event_type':
                 event_types.append(filter['name'])
+            # if filter['type'] == 'bbox':
+                # bbox = tuple(filter['bbox'].split(','))
+                # geom = Polygon.from_bbox(bbox)
+                # bbox_filter = True                
             else:
                 site_filters.append(filter)
                 
@@ -475,6 +482,8 @@ class Event (models.Model):
                     filtered_events = filtered_events | res
                 else:
                     filtered_events = res
+        # if bbox_filter:
+            # filtered_events = filtered_events.filter(site__geometry__contained=geom)
         return filtered_events
         
     @property
@@ -559,6 +568,9 @@ class Event (models.Model):
         if self.datasheet_id and self.datasheet_id.type_id and self.datasheet_id.type_id.type:
             reportkey = 'reportcache_%s' % self.datasheet_id.type_id.type
             cache.delete(reportkey)
+            
+            geokey = 'geocache_%s' % seld.id
+            cache.delete(geokey)
             
             # typekey = 'reportcache_event_type_%s' % self.datasheet_id.type_id.type
             # cache.delete(typekey)
