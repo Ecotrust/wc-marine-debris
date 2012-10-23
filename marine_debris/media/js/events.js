@@ -489,8 +489,8 @@ app.points.events.on({
 
 
 
-map.events.register("moveend", map, function() {
-  app.viewModel.mapExtent(map.getExtent());
-});
+// map.events.register("moveend", map, function() {
+  // app.viewModel.mapExtent(map.getExtent());
+// });
 
 
