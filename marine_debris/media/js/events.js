@@ -11,11 +11,13 @@ app.maxZoom = 12;
 app.map = map;
 app.rowIndex = {};
 
-OpenLayers.Strategy.AttributeCluster = OpenLayers.Class(OpenLayers.Strategy.Cluster, {
+OpenLayers.Strategy.AttributeCluster = OpenLayers.Class(OpenLayers.Strategy.AnimatedCluster, {
     /**
      * the attribute to use for comparison
      */
     attribute: null,
+    animationMethod: OpenLayers.Easing.Expo.easeOut,
+    animationDuration: 20,
     /**
      * Method: shouldCluster
      * Determine whether to include a feature in a given cluster.
