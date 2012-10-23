@@ -11,13 +11,11 @@ app.maxZoom = 12;
 app.map = map;
 app.rowIndex = {};
 
-OpenLayers.Strategy.AttributeCluster = OpenLayers.Class(OpenLayers.Strategy.AnimatedCluster, {
+OpenLayers.Strategy.AttributeCluster = OpenLayers.Class(OpenLayers.Strategy.Cluster, {
     /**
      * the attribute to use for comparison
      */
     attribute: null,
-    animationMethod: OpenLayers.Easing.Expo.easeOut,
-    animationDuration: 20,
     /**
      * Method: shouldCluster
      * Determine whether to include a feature in a given cluster.
@@ -58,12 +56,13 @@ app.points = new OpenLayers.Layer.Vector("Events", {
       pointRadius: "${radius}",
       fillColor: "${getColor}",
       fillOpacity: 0.8,
-      strokeColor: "${getStrokeColor}",
+      strokeColor: "#cc6633",
       strokeWidth: 2,
       strokeOpacity: 0.8,
       label: "${clusterCount}",
       fontColor: "#333"
     },{ 
+      // Rules go here.
       context: {
         radius: function(feature) {
           return Math.min(feature.attributes.count, 7) + 3;
@@ -73,11 +72,7 @@ app.points = new OpenLayers.Layer.Vector("Events", {
         },
         getColor: function(feature) {
           var type = feature.cluster[0].attributes.event_type;
-          return type === "Site Cleanup" ? "#ffcc66" : "#aaa";
-        },
-        getStrokeColor: function(feature) {
-          var type = feature.cluster[0].attributes.event_type;
-          return type === "Site Cleanup" ? "#cc6633" : "#333";
+          return type === "Site Cleanup" ? "#ffcc66" : "#ccc";
         }
       }
     }),
@@ -430,13 +425,18 @@ app.addPoints = function(events) {
   app.points.addFeatures($.map(events, function (event) { return event.feature; }))  
 };
 
-esriOcean = new OpenLayers.Layer.XYZ("ESRI Ocean", "http://services.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/${z}/${y}/${x}", {
-  sphericalMercator: true,
-  isBaseLayer: true,
-  numZoomLevels: app.maxZoom+1,
-  attribution: "Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri"
-});
-map.addLayers([esriOcean, app.points]);
+// esriOcean = new OpenLayers.Layer.XYZ("ESRI Ocean", "http://services.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/${z}/${y}/${x}", {
+//   sphericalMercator: true,
+//   isBaseLayer: true,
+//   numZoomLevels: app.maxZoom+1,
+//   attribution: "Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri"
+// });
+var hybrid = new OpenLayers.Layer.Bing({
+              name: "Hybrid",
+              key: 'AiEF9gzhYiOfxnplJmKcY768T9GhG071ww0DizfaPFi7AnAKpBAJQ_UrHadSgDX4',
+              type: "AerialWithLabels"
+          });
+map.addLayers([hybrid, app.points]);
 map.setCenter(new OpenLayers.LonLat(-122.5, 41).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")), 5);
 
 app.selectControl = new OpenLayers.Control.SelectFeature(
