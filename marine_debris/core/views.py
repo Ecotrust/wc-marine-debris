@@ -165,13 +165,14 @@ def get_event_geojson(request):
     feature_jsons = []
     
     if filter_json:
-        qs = Event.filter(simplejson.loads(filter_json))[:100]
+        qs = Event.filter(simplejson.loads(filter_json))[:1000]
     else:
-        qs = Event.objects.all()[:100]
+        qs = Event.objects.all()[:1000]
     
     timeout=60*60*24*7*52*10
     loop_count = 0
     for event in qs:
+        print loop_count
         loop_count = loop_count + 1
         key = 'geocache_%s' % event.id
         geo_string = cache.get(key)

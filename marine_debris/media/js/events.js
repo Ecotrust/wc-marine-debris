@@ -48,7 +48,7 @@ app.points = new OpenLayers.Layer.Vector("Events", {
   ],
   protocol: new OpenLayers.Protocol.HTTP({
     url: "/events/get_geojson",
-    format: new OpenLayers.Format.GeoJSON(),
+    format: new OpenLayers.Format.GeoJSON()
 
   }),
   styleMap: new OpenLayers.StyleMap({
@@ -56,7 +56,7 @@ app.points = new OpenLayers.Layer.Vector("Events", {
       pointRadius: "${radius}",
       fillColor: "${getColor}",
       fillOpacity: 0.8,
-      strokeColor: "#cc6633",
+      strokeColor: "${getStrokeColor}",
       strokeWidth: 2,
       strokeOpacity: 0.8,
       label: "${clusterCount}",
@@ -65,7 +65,7 @@ app.points = new OpenLayers.Layer.Vector("Events", {
       // Rules go here.
       context: {
         radius: function(feature) {
-          return Math.min(feature.attributes.count, 7) + 3;
+          return Math.min(feature.attributes.count, 7) + 5;
         },
         clusterCount: function (feature) {
           return feature.attributes.count > 1 ? feature.attributes.count: "";
@@ -73,7 +73,12 @@ app.points = new OpenLayers.Layer.Vector("Events", {
         getColor: function(feature) {
           var type = feature.cluster[0].attributes.event_type;
           return type === "Site Cleanup" ? "#ffcc66" : "#ccc";
-        }
+        },
+        getStrokeColor: function(feature) {
+            var type = feature.cluster[0].attributes.event_type;
+            return type === "Site Cleanup" ? "#cc6633" : "#333";
+
+         }
       }
     }),
     "select": {
@@ -142,7 +147,7 @@ function viewModel(options) {
 
   self.showSpinner = ko.observable(false);
   self.showReportSpinner = ko.observable(false);
-  self.mapIsLoading = ko.observable(false);
+  self.mapIsLoading = ko.observable(true);
   self.showDetailsSpinner = ko.observable(false);
   self.filteredEvents = ko.computed(function() {
     self.showSpinner(false);
@@ -436,6 +441,8 @@ var hybrid = new OpenLayers.Layer.Bing({
               key: 'AiEF9gzhYiOfxnplJmKcY768T9GhG071ww0DizfaPFi7AnAKpBAJQ_UrHadSgDX4',
               type: "AerialWithLabels"
           });
+
+
 map.addLayers([hybrid, app.points]);
 map.setCenter(new OpenLayers.LonLat(-122.5, 41).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")), 5);
 
@@ -453,6 +460,9 @@ app.map.addControl(app.selectControl);
 app.selectControl.activate();
 
 app.points.events.on({
+  "featuresadded": function () {
+    app.viewModel.mapIsLoading(false);
+  },
   "featureselected": function(e) {
     var bounds;
 
@@ -466,11 +476,9 @@ app.points.events.on({
         app.viewModel.clusteredEvents($.map(e.feature.cluster, function (f) {
           return f.attributes;
         }));
-        if (app.map.getZoom() === app.maxZoom) {
-            alert("fully zoomed!");
-        } else {
-            app.map.setCenter(e.feature.geometry.bounds.centerLonLat, app.map.getZoom() + 2);
-        }
+        
+        app.map.setCenter(e.feature.geometry.bounds.centerLonLat, app.map.getZoom() + 2);
+        
         
     }
  },
