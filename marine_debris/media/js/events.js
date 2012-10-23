@@ -58,13 +58,12 @@ app.points = new OpenLayers.Layer.Vector("Events", {
       pointRadius: "${radius}",
       fillColor: "${getColor}",
       fillOpacity: 0.8,
-      strokeColor: "#cc6633",
+      strokeColor: "${getStrokeColor}",
       strokeWidth: 2,
       strokeOpacity: 0.8,
       label: "${clusterCount}",
       fontColor: "#333"
     },{ 
-      // Rules go here.
       context: {
         radius: function(feature) {
           return Math.min(feature.attributes.count, 7) + 3;
@@ -74,7 +73,11 @@ app.points = new OpenLayers.Layer.Vector("Events", {
         },
         getColor: function(feature) {
           var type = feature.cluster[0].attributes.event_type;
-          return type === "Site Cleanup" ? "#ffcc66" : "#ccc";
+          return type === "Site Cleanup" ? "#ffcc66" : "#aaa";
+        },
+        getStrokeColor: function(feature) {
+          var type = feature.cluster[0].attributes.event_type;
+          return type === "Site Cleanup" ? "#cc6633" : "#333";
         }
       }
     }),
