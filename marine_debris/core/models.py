@@ -421,21 +421,30 @@ class Site (models.Model):
         
         super(Site, self).save(*args, **kwargs)
 
-class Event (models.Model):
-    
+class UserTransaction (models.Model):
     StatusChoices = (
         ('New', 'New'),
         ('Accepted', 'Accepted'),
         ('Rejected', 'Rejected')
     )
+    submitted_by = models.ForeignKey(User, null=True, blank=True, default=None)
+    status = models.CharField(max_length=30, choices=StatusChoices, default='New', blank=True)
+        
+class Event (models.Model):
+    StatusChoices = (
+        ('New', 'New'),
+        ('Accepted', 'Accepted'),
+        ('Rejected', 'Rejected')
+    )
+    transaction = models.ForeignKey(UserTransaction, null=True)
     datasheet_id = models.ForeignKey(DataSheet)
     proj_id = models.ForeignKey(Project)
     cleanupdate = models.DateField(default=datetime.date.today())
     site = models.ForeignKey(Site, null=True, blank=True, default= None)
     dup = models.IntegerField(default=0)
+    objects = models.GeoManager()
     submitted_by = models.ForeignKey(User, null=True, blank=True, default=None)
     status = models.CharField(max_length=30, choices=StatusChoices, default='New', blank=True)
-    objects = models.GeoManager()
     
     def __unicode__(self):
         return "%s-%s-%s" % (self.proj_id.projname, self.site.sitename, self.cleanupdate.isoformat())
