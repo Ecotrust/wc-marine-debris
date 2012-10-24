@@ -93,16 +93,6 @@ def get_events(request):
     if filter_json:
         filters = simplejson.loads(filter_json)
         qs = Event.filter(filters)
-        # for filter in filters:
-        #     if filter['type'] == "bbox":
-        #         bbox = tuple(filter['bbox'].split(','))
-        #         geom = Polygon.from_bbox(bbox)
-        #         import pdb; pdb.set_trace()
-        #         qs = qs.filter(site__geometry__within=geom)
-        #     if filter['type'] == "county":
-        #         qs = qs.filter(site__county=filter['name']  + " County")
-        #     if filter['type'] == "state":
-        #         qs = qs.filter(site__state__name=filter['name'])
     else:
         qs = Event.objects.all()
 
@@ -143,7 +133,7 @@ def get_events(request):
                 data.append(dict)
                 found_records = found_records + 1
             
-
+            
     res = {
        "aaData": data,
        "iTotalRecords": Event.objects.all().count(),
@@ -152,6 +142,70 @@ def get_events(request):
     }
     return HttpResponse(simplejson.dumps(res))
 
+def srid_to_proj(srid):
+    """
+    Take a postgis srid and return the proj4 string
+    Useful for custom projections with no authority
+    """
+    from django.contrib.gis.gdal import SpatialReference
+    srs = SpatialReference(srid)
+    return srs.proj.strip()
+    
+def get_feature_json(geom_json, prop_json):
+    return """{
+        "type": "Feature",
+        "geometry": %s,
+        "properties": %s
+    }""" % (geom_json, prop_json)    
+    
+def get_event_geojson(request):
+    srid = settings.GEOJSON_SRID
+    crs = srid_to_proj(srid)
+    filter_json = request.GET.get('filter', False)
+    feature_jsons = []
+    
+    if filter_json:
+        qs = Event.filter(simplejson.loads(filter_json))
+    else:
+        qs = Event.objects.all()
+    
+    timeout=60*60*24*7*52*10
+    loop_count = 0
+    for event in qs:
+        print loop_count
+        loop_count = loop_count + 1
+        key = 'geocache_%s' % event.id
+        geo_string = cache.get(key)
+        if not geo_string:
+            gj = None
+            try:
+                gj = event.site.geometry.geojson
+                properties = simplejson.dumps({
+                    "id":event.id,
+                    "event_type": event.datasheet_id.type_id.type,
+                    "date": event.cleanupdate.strftime('%m/%d/%Y'),
+                    "displayName": "%s / %s" % (event.site.sitename, event.cleanupdate.strftime('%m/%d/%Y'))
+                })
+            except AttributeError:
+                pass
+            
+            geo_string = get_feature_json(gj, properties)
+            cache.set(key, geo_string, timeout)
+        feature_jsons.append(geo_string)
+        
+    geojson = """{
+        "type": "FeatureCollection",
+        "crs": { "type": "name", "properties": {"name": "%s"}},
+        "features": [
+            %s
+        ]
+    }""" % (crs, ', \n'.join(feature_jsons),)
+    
+    response = HttpResponse()
+    response['Content-Type'] = 'application/json'
+    response.write(geojson)
+    return response
+        
 def get_event_values_list(request, filters=None):
     
     # type = 'Site Cleanup'   #TODO: get this type name dynamically so we can show derelict and others
@@ -392,7 +446,10 @@ def edit_event(request, event_id):
     
 def view_event(request, event_id):
     event = Event.objects.get(id=event_id)
-    fields = simplejson.dumps(event.field_values_list)
+    fields = simplejson.dumps({
+        "fields": event.field_values_list,
+        "details": event.toEventsDict
+    })
     
     return HttpResponse(fields, mimetype='application/json')
     

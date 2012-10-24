@@ -8,6 +8,8 @@
 
 {% block includes %}
     <script src="/site-media/third-party/OpenLayers-2.12/OpenLayers.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/site-media/third-party/OpenLayers-2.12/AnimatedCluster.js" type="text/javascript" charset="utf-8"></script>
+
     <script type="text/javascript" charset="utf-8">
         // Hack to support IE. See http://trac.openlayers.org/wiki/FrequentlyAskedQuestions#WhywontmyvectorlayerworkinIEbeforemypageisdoneloading
         document.namespaces;
@@ -105,9 +107,17 @@
                 </div>      -->
               </div>
               <div class="tab-pane" id="event-details-content">
+                <div class="pull-right" data-bind="visible: showDetailsSpinner">
+                  <img src="/site-media/img/ajax-loader.gif" />
+                </div>
+                <div data-bind="if: clusteredEvents().length > 0">
+                  <select data-bind="options: clusteredEvents, optionsText: 'displayName',  optionsCaption: 'Choose event from cluster...', value: selectedClusterEvent">
+                  </select>
+                </div>
                 <div data-bind="ifnot: activeEvent">
                   <p>Click on an event in the table for details.</p>
                 </div>
+
                 <div data-bind="if: activeEvent">
                   <div data-bind="with: activeEvent">
                     <h4><span data-bind="text: site.name"></span></h4>
@@ -172,11 +182,11 @@
   <td data-bind="text: field.unit"></td>
 </script>
 <script type="text/html" id="rowTemplate">
-  <td data-bind="text: datasheet.event_type, click: $root.zoomTo"></td>
-  <td data-bind="text: site.name, click: $root.zoomTo"></td>
-  <td data-bind="text: site.county, click: $root.zoomTo"></td>
-  <td data-bind="text: site.st_initials, click: $root.zoomTo"></td>
-  <td data-bind="text: date, click: $root.zoomTo"></td>
+  <td data-bind="text: datasheet.event_type, click: $root.handleTableClick"></td>
+  <td data-bind="text: site.name, click: $root.handleTableClick"></td>
+  <td data-bind="text: site.county, click: $root.handleTableClick"></td>
+  <td data-bind="text: site.st_initials, click: $root.handleTableClick"></td>
+  <td data-bind="text: date, click: $root.handleTableClick"></td>
 </script>
 
 <script src="/site-media/js/events.js"></script>

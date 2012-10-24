@@ -209,6 +209,8 @@ SOUTH_TESTS_MIGRATE = False
 
 SERVER_SRID = 4326
 
+GEOJSON_SRID = 4326
+
 try:
     from settings_local import *
 except ImportError, exp:
