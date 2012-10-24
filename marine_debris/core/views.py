@@ -165,9 +165,9 @@ def get_event_geojson(request):
     feature_jsons = []
     
     if filter_json:
-        qs = Event.filter(simplejson.loads(filter_json))[:1000]
+        qs = Event.filter(simplejson.loads(filter_json))
     else:
-        qs = Event.objects.all()[:1000]
+        qs = Event.objects.all()
     
     timeout=60*60*24*7*52*10
     loop_count = 0
