@@ -71,7 +71,12 @@ i { margin-right: 5px; }
 	margin-top: 5px;
 	font-size: 16px;
 }
+.olBingAttribution img {
+	position: absolute;
+	right: -15px;
+	bottom: 15px;
 
+}
 .wcga.table tr.active td {
 	font-weight: bold;
 }
