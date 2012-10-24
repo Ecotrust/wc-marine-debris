@@ -139,6 +139,7 @@ function viewModel(options) {
   });
 
   self.locationFilter.subscribe(function () {
+    self.mapIsLoading(true);
     $('#events-table').dataTable().fnReloadAjax();
     app.points.refresh({ 
         params: {
@@ -482,9 +483,12 @@ app.points.events.on({
    //showStatus("unselected feature " + e.feature.id + " on Vector Layer 1");
  }
  });
-
-
-
+$(document).resize(function () {
+  var $table = $('#events-table');
+  $table.css({ width: $(oTable).parent().width() });
+  $table.dataType().fnAdjustColumnSizing();  
+});
+ 
 // map.events.register("moveend", map, function() {
   // app.viewModel.mapExtent(map.getExtent());
 // });
