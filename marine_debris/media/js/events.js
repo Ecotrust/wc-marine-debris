@@ -365,7 +365,8 @@ $.ajax({
     });
   }).then(function () {
     //Do nothing for now
-  app.map.addLayers([app.points])
+  app.map.addLayer(app.points);
+  app.map.raiseLayer(app.points, 2);
 
   });
 
