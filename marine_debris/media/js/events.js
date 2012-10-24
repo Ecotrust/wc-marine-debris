@@ -37,57 +37,6 @@ OpenLayers.Strategy.AttributeCluster = OpenLayers.Class(OpenLayers.Strategy.Clus
     CLASS_NAME: "OpenLayers.Strategy.AttributeCluster"
 });
 
-app.points = new OpenLayers.Layer.Vector("Events", {
-  renderers: OpenLayers.Layer.Vector.prototype.renderers,
-  projection: "EPSG:4326",
-  strategies:[
-    new OpenLayers.Strategy.Fixed(),
-    new OpenLayers.Strategy.AttributeCluster({
-      attribute:'event_type'
-    })
-  ],
-  protocol: new OpenLayers.Protocol.HTTP({
-    url: "/events/get_geojson",
-    format: new OpenLayers.Format.GeoJSON()
-
-  }),
-  styleMap: new OpenLayers.StyleMap({
-    "default": new OpenLayers.Style({
-      pointRadius: "${radius}",
-      fillColor: "${getColor}",
-      fillOpacity: 0.8,
-      strokeColor: "${getStrokeColor}",
-      strokeWidth: 2,
-      strokeOpacity: 0.8,
-      label: "${clusterCount}",
-      fontColor: "#333"
-    },{ 
-      // Rules go here.
-      context: {
-        radius: function(feature) {
-          return Math.min(feature.attributes.count, 7) + 5;
-        },
-        clusterCount: function (feature) {
-          return feature.attributes.count > 1 ? feature.attributes.count: "";
-        },
-        getColor: function(feature) {
-          var type = feature.cluster[0].attributes.event_type;
-          return type === "Site Cleanup" ? "#ffcc66" : "#ccc";
-        },
-        getStrokeColor: function(feature) {
-            var type = feature.cluster[0].attributes.event_type;
-            return type === "Site Cleanup" ? "#cc6633" : "#333";
-
-         }
-      }
-    }),
-    "select": {
-      fillColor: "#8aeeef",
-      strokeColor: "#32a8a9"
-    }
-  })
-});
-
 function viewModel(options) {
   var self = this;
 
@@ -328,7 +277,8 @@ $.ajax({
       locations: locations
     });
     // bind the viewmodel
-    ko.applyBindings(app.viewModel);  
+    ko.applyBindings(app.viewModel);
+
     app.viewModel.mapExtent(map.getExtent());
 
     $("select.location").chosen();
@@ -423,6 +373,8 @@ $.ajax({
     });
   }).then(function () {
     //Do nothing for now
+  app.map.addLayers([app.points])
+
   });
 
 app.addPoints = function(events) {
@@ -436,6 +388,57 @@ app.addPoints = function(events) {
 //   numZoomLevels: app.maxZoom+1,
 //   attribution: "Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri"
 // });
+app.points = new OpenLayers.Layer.Vector("Events", {
+  renderers: OpenLayers.Layer.Vector.prototype.renderers,
+  projection: "EPSG:4326",
+  strategies:[
+    new OpenLayers.Strategy.Fixed(),
+    new OpenLayers.Strategy.AttributeCluster({
+      attribute:'event_type'
+    })
+  ],
+  protocol: new OpenLayers.Protocol.HTTP({
+    url: "/events/get_geojson",
+    format: new OpenLayers.Format.GeoJSON()
+
+  }),
+  styleMap: new OpenLayers.StyleMap({
+    "default": new OpenLayers.Style({
+      pointRadius: "${radius}",
+      fillColor: "${getColor}",
+      fillOpacity: 0.8,
+      strokeColor: "${getStrokeColor}",
+      strokeWidth: 2,
+      strokeOpacity: 0.8,
+      label: "${clusterCount}",
+      fontColor: "#333"
+    },{ 
+      // Rules go here.
+      context: {
+        radius: function(feature) {
+          return Math.min(feature.attributes.count, 7) + 5;
+        },
+        clusterCount: function (feature) {
+          return feature.attributes.count > 1 ? feature.attributes.count: "";
+        },
+        getColor: function(feature) {
+          var type = feature.cluster[0].attributes.event_type;
+          return type === "Site Cleanup" ? "#ffcc66" : "#ccc";
+        },
+        getStrokeColor: function(feature) {
+            var type = feature.cluster[0].attributes.event_type;
+            return type === "Site Cleanup" ? "#cc6633" : "#333";
+
+         }
+      }
+    }),
+    "select": {
+      fillColor: "#8aeeef",
+      strokeColor: "#32a8a9"
+    }
+  })
+});
+
 var hybrid = new OpenLayers.Layer.Bing({
               name: "Hybrid",
               key: 'AiEF9gzhYiOfxnplJmKcY768T9GhG071ww0DizfaPFi7AnAKpBAJQ_UrHadSgDX4',
@@ -443,7 +446,7 @@ var hybrid = new OpenLayers.Layer.Bing({
           });
 
 
-map.addLayers([hybrid, app.points]);
+map.addLayers([hybrid]);
 map.setCenter(new OpenLayers.LonLat(-122.5, 41).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")), 5);
 
 app.selectControl = new OpenLayers.Control.SelectFeature(
