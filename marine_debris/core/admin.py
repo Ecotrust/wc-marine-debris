@@ -22,6 +22,7 @@ databrowse.site.register(ProjectOrganization)
 databrowse.site.register(Site)
 databrowse.site.register(State)
 databrowse.site.register(Unit)
+databrowse.site.register(UserTransaction)
   
 class DataSheetFieldInline(admin.TabularInline):
     model = DataSheetField
@@ -186,6 +187,14 @@ class UnitAdmin(admin.ModelAdmin):
             'widget': TextInput()
         },
     }
+      
+class UserTransactionAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'submitted_by', 'created_date', 'status')
+    formfield_overrides = {
+        models.TextField: {
+            'widget': TextInput()
+        },
+    }
     
     
 admin.site.register(AnswerOption,AnswerOptionAdmin)
@@ -205,3 +214,4 @@ admin.site.register(ProjectOrganization,ProjectOrganizationAdmin)
 admin.site.register(Site,SiteAdmin)
 admin.site.register(State,StateAdmin)
 admin.site.register(Unit,UnitAdmin)
+admin.site.register(UserTransaction,UserTransactionAdmin)

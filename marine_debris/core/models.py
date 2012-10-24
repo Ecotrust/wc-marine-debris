@@ -428,7 +428,11 @@ class UserTransaction (models.Model):
         ('Rejected', 'Rejected')
     )
     submitted_by = models.ForeignKey(User, null=True, blank=True, default=None)
+    created_date = models.DateTimeField(auto_now_add = True, default=datetime.datetime.now())
     status = models.CharField(max_length=30, choices=StatusChoices, default='New', blank=True)
+    
+    def __unicode__(self):
+        return "%s, %s" % (self.submitted_by, self.created_date.isoformat())
         
 class Event (models.Model):
     StatusChoices = (
