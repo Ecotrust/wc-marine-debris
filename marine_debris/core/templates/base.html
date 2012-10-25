@@ -52,6 +52,7 @@
       <ul class="nav">
         {% ifequal active 'home' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/">Home</a></li>
         {% ifequal active 'events' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/events">Data</a></li>
+        {% ifequal active 'management' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/management">Management</a></li>
         {% if user.is_superuser %}
             {% ifequal active 'admin' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/admin">Admin</a></li>
         {% endif %}
