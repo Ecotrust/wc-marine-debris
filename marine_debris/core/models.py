@@ -440,15 +440,15 @@ class Event (models.Model):
         ('Accepted', 'Accepted'),
         ('Rejected', 'Rejected')
     )
-    transaction = models.ForeignKey(UserTransaction, null=True)
+    transaction = models.ForeignKey(UserTransaction)
     datasheet_id = models.ForeignKey(DataSheet)
     proj_id = models.ForeignKey(Project)
     cleanupdate = models.DateField(default=datetime.date.today())
-    site = models.ForeignKey(Site, null=True, blank=True, default= None)
+    site = models.ForeignKey(Site)
     dup = models.IntegerField(default=0)
     objects = models.GeoManager()
-    submitted_by = models.ForeignKey(User, null=True, blank=True, default=None)
-    status = models.CharField(max_length=30, choices=StatusChoices, default='New', blank=True)
+    # submitted_by = models.ForeignKey(User, null=True, blank=True, default=None)
+    # status = models.CharField(max_length=30, choices=StatusChoices, default='New', blank=True)
     
     def __unicode__(self):
         return "%s-%s-%s" % (self.proj_id.projname, self.site.sitename, self.cleanupdate.isoformat())
