@@ -104,7 +104,7 @@ class DataSheet (models.Model):
     year_started = models.IntegerField()
     # media_id = models.ForeignKey(Media, blank=True, null=True)
     field = models.ManyToManyField(Field, through='DataSheetField')
-    type_id = models.ForeignKey(EventType, null=True, blank=True)
+    type_id = models.ForeignKey(EventType, null=True, default=None)
     
     def __unicode__(self):
         return self.sheetname
@@ -206,7 +206,7 @@ class DataSheetField (models.Model):
     sheet_id = models.ForeignKey(DataSheet)
     field_name = models.TextField()
     print_name = models.TextField(blank=True, null=True)
-    unit_id = models.ForeignKey(Unit, blank=True, null=True)
+    unit_id = models.ForeignKey(Unit, null=True, default=None)
     grouping = models.ForeignKey(Grouping, null=True, blank=True)   #TODO: Name 'category' already claimed. Maybe 'group' or 'subgroup'?
     answer_options = models.ManyToManyField(AnswerOption, help_text='if a list question, multi-select valid responses', blank=True, null=True)
     required = models.BooleanField(default=False)
@@ -322,11 +322,25 @@ class State (models.Model):
             'type': 'state',
         }
         
+class UserTransaction (models.Model):
+    StatusChoices = (
+        ('New', 'New'),
+        ('Accepted', 'Accepted'),
+        ('Rejected', 'Rejected')
+    )
+    submitted_by = models.ForeignKey(User)
+    created_date = models.DateTimeField(auto_now_add = True, default=datetime.datetime.now())
+    status = models.CharField(max_length=30, choices=StatusChoices, default='New', blank=True)
+    
+    def __unicode__(self):
+        return "%s, %s" % (self.submitted_by, self.created_date.isoformat())
+                
 class Site (models.Model):
     sitename = models.TextField(blank=True, null=True)
-    state = models.ForeignKey(State, blank=True, null=True)
+    state = models.ForeignKey(State)
     county = models.TextField(blank=True, null=True)
     geometry = models.PointField(srid=settings.SERVER_SRID, null=True, blank=True)
+    transaction = models.ForeignKey(UserTransaction, null=True, default = None)
     objects = models.GeoManager()
     
     def __unicode__(self):
@@ -421,19 +435,6 @@ class Site (models.Model):
         
         super(Site, self).save(*args, **kwargs)
 
-class UserTransaction (models.Model):
-    StatusChoices = (
-        ('New', 'New'),
-        ('Accepted', 'Accepted'),
-        ('Rejected', 'Rejected')
-    )
-    submitted_by = models.ForeignKey(User, null=True, blank=True, default=None)
-    created_date = models.DateTimeField(auto_now_add = True, default=datetime.datetime.now())
-    status = models.CharField(max_length=30, choices=StatusChoices, default='New', blank=True)
-    
-    def __unicode__(self):
-        return "%s, %s" % (self.submitted_by, self.created_date.isoformat())
-        
 class Event (models.Model):
     StatusChoices = (
         ('New', 'New'),

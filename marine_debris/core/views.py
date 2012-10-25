@@ -400,17 +400,22 @@ def event_save(request):
             site = Site.objects.get_or_create(state = state, county = county, geometry = str(point), sitename = sitename)
         
         date = datetime.datetime.strptime(createEventForm.data['date'], '%m/%d/%Y')
-        event = Event(proj_id = project, datasheet_id = datasheet, cleanupdate = date, site = site[0], submitted_by = request.user)
-        event.save()
-        if event.id:
-            datasheetForm = DataSheetForm(event.datasheet_id, event, None, request.POST)
-        if event.id and datasheetForm.is_valid():
-            datasheetForm.save()
-            return HttpResponseRedirect('/events/%s' % event.id)
+        user_transaction = UserTransaction(submitted_by = request.user, status='New')
+        user_transaction.save()
+        if user_transaction.id:
+            event = Event(proj_id = project, datasheet_id = datasheet, cleanupdate = date, site = site[0], transaction = user_transaction)
+            event.save()
+            if event.id:
+                datasheetForm = DataSheetForm(event.datasheet_id, event, None, request.POST)
+            if event.id and datasheetForm.is_valid():
+                datasheetForm.save()
+                return HttpResponseRedirect('/events/%s' % event.id)
+            else:
+                Event.delete(event)
+                if site[1]:
+                    Site.delete(site[0])
         else:
-            Event.delete(event)
-            if site[1]:
-                Site.delete(site[0])
+            UserTransaction.delete(user_transaction)
             event = {}
             event['organization'] = createEventForm.data['organization']
             event['project'] = createEventForm.data['project']
@@ -733,133 +738,141 @@ def bulk_import(request):
             # loop through rows to create events and submit datasheet forms
             events = []
             dups = 0
-            with transaction.commit_on_success():
-                for i, row in enumerate(rows):
-                    site_key = get_site_key(ds, row)
-                    site = Site.objects.filter(**site_key)[0]
-                    date_string = get_required_val(ds,'date', row)
-                    date = parse_date(date_string)
+            user_transaction = UserTransaction(submitted_by = request.user, status = 'New')
+            user_transaction.save()
+            if user_transaction.id:
+                with transaction.commit_on_success():
+                    for i, row in enumerate(rows):
+                        site_key = get_site_key(ds, row)
+                        site = Site.objects.filter(**site_key)[0]
+                        date_string = get_required_val(ds,'date', row)
+                        date = parse_date(date_string)
 
-                    project = get_object_or_404(Project, id=int(form.cleaned_data['project_id']))
-                    event = Event(
-                        datasheet_id = ds,
-                        proj_id = project, # get this at the row level? or the bulk import level?
-                        cleanupdate = date,
-                        site = site,
-                        submitted_by = request.user,
-                        status = 'New' 
-                    )
-                    events.append(event)
-                    try:
-                        sid = transaction.savepoint()
-                        event.save()
-                    except IntegrityError as e:
-                        if e.message.startswith('duplicate key value violates unique constraint "core_event'):
-                            transaction.savepoint_rollback(sid)
-
-                            # check against ALL events that match
-                            existing_events = Event.objects.filter(datasheet_id = ds, proj_id = project, cleanupdate = date, site = site)
-
-                            # compare existing values to the current row's values 
-                            # i.e. determine if it is indeed a new event or a true duplicate
-                            new_event = False
-                            for e in existing_events:
-                                existing = e.field_values
-
-                                for k, v in existing.items():
-                                    existing_val_raw = v[0]
-                                    dtype = v[1]
-
-                                    try:
-                                        row_val_raw = row[k]
-                                    except KeyError:
-                                        row_val_raw = None
-
-                                    if existing_val_raw in [u'None', u'', None]:
-                                        if row_val_raw is not None and row_val_raw != '':
-                                            new_event = True
-                                            break
-                                        else: 
-                                            continue
-
-                                    if dtype in ['Area', 'Distance', 'Duration', 'Number', 'Volume', 'Weight']: 
-                                        try:
-                                            if float(existing_val_raw) != float(row_val_raw):
-                                                new_event = True
-                                                break
-                                        except ValueError:
-                                            if existing_val_raw != row_val_raw:
-                                                new_event = True
-                                                break
-                                    elif dtype == 'Date':
-                                        try:
-                                            extdate = parse_date(existing_val_raw)
-                                            rowdate = parse_date(row_val_raw)
-                                            if extdate != rowdate:
-                                                new_event = True
-                                                break
-                                        except ValueError:
-                                            if existing_val_raw != row_val_raw:
-                                                new_event = True
-                                                break
-                                    else: #text
-                                        if existing_val_raw != row_val_raw:
-                                            new_event = True
-                                            break
-
-                            if new_event: 
-                                # increment the event dup id
-                                try:
-                                    maxdup = max([x.dup for x in existing_events])
-                                except ValueError:
-                                    maxdup = 0
-
-                                # and try again to create the event
-                                event = Event(
-                                    datasheet_id = ds,
-                                    proj_id = project,
-                                    cleanupdate = date,
-                                    site = site,
-                                    submitted_by = request.user,
-                                    dup = maxdup + 1,
-                                    status = 'New' 
-                                )
-                                try:
-                                    event.save()
-                                except IntegrityError as e:
-                                    if e.message.startswith('duplicate key value violates unique constraint "core_event'):
-                                        dups += 1
-                                        errors.append('Duplicate event already exists <br> (%s, %s, %s, %s)' % (project.projname,
-                                            ds.sheetname, site.sitename, date))
-                                        continue
-                            else:
-                                dups += 1
-                                errors.append('Duplicate Event <br/> (%s, %s, %s, %s)' % (project.projname,
-                                    ds.sheetname, site.sitename, date))
-                                continue
-                        else:
-                            raise e # something unexepected
-
-                    qd = get_querydict(ds, row)
-                    ds_final_form = DataSheetForm(ds, event, None, qd)
-                    if ds_final_form.is_valid():
+                        project = get_object_or_404(Project, id=int(form.cleaned_data['project_id']))
+                        event = Event(
+                            datasheet_id = ds,
+                            proj_id = project, # get this at the row level? or the bulk import level?
+                            cleanupdate = date,
+                            site = site,
+                            transaction = user_transaction
+                        )
+                        events.append(event)
                         try:
-                            ds_final_form.save()
-                        except Exception as e:
-                            logger.error(unicode(e)) 
-                            errors.append("An internal error occured while saving the form. Please contact the database administrator.")
-                    else:
-                        raise Exception("""Somehow the datasheetform is now invalid 
-                          (despite just validating it previously without event)... errors are '%s'""" % str(ds_final_form.errors))
+                            sid = transaction.savepoint()
+                            event.save()
+                        except IntegrityError as e:
+                            if e.message.startswith('duplicate key value violates unique constraint "core_event'):
+                                transaction.savepoint_rollback(sid)
 
-                if len(errors) > 0:
-                    transaction.rollback()
-                    if len(events) > 0 and dups > 0:
-                        errors.insert(0, "%d events were found but not loaded due to %d duplicate events." % (len(events), dups))
-                    return bulk_bad_request(form, request, errors)
+                                # check against ALL events that match
+                                existing_events = Event.objects.filter(datasheet_id = ds, proj_id = project, cleanupdate = date, site = site)
 
-            return render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(), 
-                'sites': sites, 'events': events, 'success': True, 'active':'events'}))
+                                # compare existing values to the current row's values 
+                                # i.e. determine if it is indeed a new event or a true duplicate
+                                new_event = False
+                                for e in existing_events:
+                                    existing = e.field_values
+
+                                    for k, v in existing.items():
+                                        existing_val_raw = v[0]
+                                        dtype = v[1]
+
+                                        try:
+                                            row_val_raw = row[k]
+                                        except KeyError:
+                                            row_val_raw = None
+
+                                        if existing_val_raw in [u'None', u'', None]:
+                                            if row_val_raw is not None and row_val_raw != '':
+                                                new_event = True
+                                                break
+                                            else: 
+                                                continue
+
+                                        if dtype in ['Area', 'Distance', 'Duration', 'Number', 'Volume', 'Weight']: 
+                                            try:
+                                                if float(existing_val_raw) != float(row_val_raw):
+                                                    new_event = True
+                                                    break
+                                            except ValueError:
+                                                if existing_val_raw != row_val_raw:
+                                                    new_event = True
+                                                    break
+                                        elif dtype == 'Date':
+                                            try:
+                                                extdate = parse_date(existing_val_raw)
+                                                rowdate = parse_date(row_val_raw)
+                                                if extdate != rowdate:
+                                                    new_event = True
+                                                    break
+                                            except ValueError:
+                                                if existing_val_raw != row_val_raw:
+                                                    new_event = True
+                                                    break
+                                        else: #text
+                                            if existing_val_raw != row_val_raw:
+                                                new_event = True
+                                                break
+
+                                if new_event: 
+                                    # increment the event dup id
+                                    try:
+                                        maxdup = max([x.dup for x in existing_events])
+                                    except ValueError:
+                                        maxdup = 0
+
+                                    # and try again to create the event
+                                    event = Event(
+                                        datasheet_id = ds,
+                                        proj_id = project,
+                                        cleanupdate = date,
+                                        site = site,
+                                        dup = maxdup + 1,
+                                        transaction = user_transaction
+                                    )
+                                    try:
+                                        event.save()
+                                    except IntegrityError as e:
+                                        if e.message.startswith('duplicate key value violates unique constraint "core_event'):
+                                            dups += 1
+                                            errors.append('Duplicate event already exists <br> (%s, %s, %s, %s)' % (project.projname,
+                                                ds.sheetname, site.sitename, date))
+                                            continue
+                                else:
+                                    dups += 1
+                                    errors.append('Duplicate Event <br/> (%s, %s, %s, %s)' % (project.projname,
+                                        ds.sheetname, site.sitename, date))
+                                    continue
+                            else:
+                                raise e # something unexepected
+
+                        qd = get_querydict(ds, row)
+                        ds_final_form = DataSheetForm(ds, event, None, qd)
+                        if ds_final_form.is_valid():
+                            try:
+                                ds_final_form.save()
+                            except Exception as e:
+                                logger.error(unicode(e)) 
+                                errors.append("An internal error occured while saving the form. Please contact the database administrator.")
+                        else:
+                            raise Exception("""Somehow the datasheetform is now invalid 
+                              (despite just validating it previously without event)... errors are '%s'""" % str(ds_final_form.errors))
+
+                    if len(errors) > 0:
+                        transaction.rollback()
+                        if len(events) > 0 and dups > 0:
+                            errors.insert(0, "%d events were found but not loaded due to %d duplicate events." % (len(events), dups))
+                        return bulk_bad_request(form, request, errors)
+
+                return render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(), 
+                    'sites': sites, 'events': events, 'success': True, 'active':'events'}))
+            else:
+                UserTransaction.delete(user_transaction)
+                res = render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(), 
+                    'errors':['Could not complete the transaction at this time.',], 'active':'events'}))
+                res.status_code = 400
+                return res
+                        
         else:
             res = render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(), 
                 'errors':['Form is not valid, please review.',], 'active':'events'}))
