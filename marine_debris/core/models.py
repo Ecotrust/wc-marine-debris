@@ -582,7 +582,7 @@ class Event (models.Model):
             reportkey = 'reportcache_%s' % self.datasheet_id.type_id.type
             cache.delete(reportkey)
             
-            geokey = 'geocache_%s' % seld.id
+            geokey = 'geocache_%s' % self.id
             cache.delete(geokey)
             
             # typekey = 'reportcache_event_type_%s' % self.datasheet_id.type_id.type
