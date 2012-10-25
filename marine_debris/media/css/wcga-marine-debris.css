@@ -77,7 +77,8 @@ i { margin-right: 5px; }
 	bottom: 15px;
 
 }
-.wcga.table tr.active td {
+.wcga.table tr.active td,
+.events-table tr.active td {
 	font-weight: bold;
 }
 
@@ -355,6 +356,11 @@ img.olTileImage {
 .map-buttons {
     margin-top: 20px;
 }
+
+.manage-transactions table.table {
+	margin-bottom: 20px;
+}
+
 @media (max-width: 768px) {
 	.container-masthead .masthead {
 		height: 90px;
