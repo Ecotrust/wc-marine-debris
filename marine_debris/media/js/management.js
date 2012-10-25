@@ -18,8 +18,8 @@ function viewModel () {
 	];
 
 	self.dataTableOptions = {
-		"iDisplayLength": 8,
-    	"sPaginationType": "full_numbers"
+		"iDisplayLength": 8
+    	//"sPaginationType": "full_numbers"
     };
 
 	self.transactions = {
