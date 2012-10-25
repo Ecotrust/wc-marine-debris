@@ -361,6 +361,10 @@ img.olTileImage {
 	margin-bottom: 20px;
 }
 
+.manage-transactions  {
+	height: 600px;
+}
+
 @media (max-width: 768px) {
 	.container-masthead .masthead {
 		height: 90px;
