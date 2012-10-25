@@ -385,25 +385,29 @@ def event_save(request):
         state = State.objects.get(initials=createEventForm.data['state'])
         point = Point(float(createEventForm.data['longitude']), float(createEventForm.data['latitude']))
         
-        if datasheet.type_id.display_sites:        
-            sitename = createEventForm.data['sitename']
-        else:
-            sitename = "%s, %s" % (createEventForm.data['longitude'], createEventForm.data['latitude'])
-
-        if createEventForm.data['county'] == '':
-            site = Site.objects.get_or_create(state = state, geometry = str(point), sitename = sitename)
-        else:
-            county = createEventForm.data['county']
-            if Site.objects.filter(state=state, county=county, geometry = str(point), sitename = sitename).count() == 0:
-                if Site.objects.filter(state=state, county=county+' County', geometry = str(point), sitename = sitename).count() > 0:
-                    county = county + ' County'
-            site = Site.objects.get_or_create(state = state, county = county, geometry = str(point), sitename = sitename)
-        
-        date = datetime.datetime.strptime(createEventForm.data['date'], '%m/%d/%Y')
         user_transaction = UserTransaction(submitted_by = request.user, status='New')
         user_transaction.save()
         if user_transaction.id:
-            event = Event(proj_id = project, datasheet_id = datasheet, cleanupdate = date, site = site[0], transaction = user_transaction)
+            if datasheet.type_id.display_sites:        
+                sitename = createEventForm.data['sitename']
+            else:
+                sitename = "%s, %s" % (createEventForm.data['longitude'], createEventForm.data['latitude'])
+
+            if createEventForm.data['county'] == '':
+                site, created = Site.objects.get_or_create(state = state, geometry = str(point), sitename = sitename)
+            else:
+                county = createEventForm.data['county']
+                if Site.objects.filter(state=state, county=county, geometry = str(point), sitename = sitename).count() == 0:
+                    if Site.objects.filter(state=state, county=county+' County', geometry = str(point), sitename = sitename).count() > 0:
+                        county = county + ' County'
+                site, created = Site.objects.get_or_create(state = state, county = county, geometry = str(point), sitename = sitename)
+            
+            if created:
+                site.transaction = user_transaction
+                site.save()
+            
+            date = datetime.datetime.strptime(createEventForm.data['date'], '%m/%d/%Y')
+            event = Event(proj_id = project, datasheet_id = datasheet, cleanupdate = date, site = site, transaction = user_transaction)
             event.save()
             if event.id:
                 datasheetForm = DataSheetForm(event.datasheet_id, event, None, request.POST)
@@ -412,8 +416,8 @@ def event_save(request):
                 return HttpResponseRedirect('/events/%s' % event.id)
             else:
                 Event.delete(event)
-                if site[1]:
-                    Site.delete(site[0])
+                if created:
+                    Site.delete(site)
         else:
             UserTransaction.delete(user_transaction)
             event = {}
@@ -709,38 +713,40 @@ def bulk_import(request):
                     errors.append("Row %d, Invalid Latitude/Longitude. Use decimal degrees." % (i+2, ))
             
             sites = []
-            for site_key in unique_site_keys:
-                site_text = ', '.join([str(x) for x in site_key.values()])
-                try:
-                    site = Site.objects.filter(**site_key)[0] # silent fail and grab first if not unique
-                    sites.append({'name':site_text, 'site':site})
-                except IndexError:
-                    if ds.site_type == 'coord-based':
-                        # just insert it 
-                        site, created = Site.objects.get_or_create(**site_key)
-                        site.save()
-                        sites.append({'name':site_text, 'site':site})
-                    else:
-                        urlargs = urlencode(site_key) 
-                        if urlargs:
-                            urlargs = "?" + urlargs
-
-                        errors.append("""Site <em>'%s'</em> is not in the database. <br/>
-                        <a href="/site/create%s" class="btn btn-mini"> Create new site record </a>
-                        <a href="/site/list" class="btn btn-mini"> Match to existing site record </a>
-                        """ % (site_text, urlargs ))
-                        sites.append({'name':site_text, 'site':None})
-
-            if len(errors) > 0:
-                return bulk_bad_request(form, request, errors)
-
-            # valid!
-            # loop through rows to create events and submit datasheet forms
-            events = []
-            dups = 0
             user_transaction = UserTransaction(submitted_by = request.user, status = 'New')
             user_transaction.save()
             if user_transaction.id:
+                for site_key in unique_site_keys:
+                    site_text = ', '.join([str(x) for x in site_key.values()])
+                    try:
+                        site = Site.objects.filter(**site_key)[0] # silent fail and grab first if not unique
+                        sites.append({'name':site_text, 'site':site})
+                    except IndexError:
+                        if ds.site_type == 'coord-based':
+                            # just insert it 
+                            site, created = Site.objects.get_or_create(**site_key)
+                            if created:
+                                site.transaction = user_transaction
+                            site.save()
+                            sites.append({'name':site_text, 'site':site})
+                        else:
+                            urlargs = urlencode(site_key) 
+                            if urlargs:
+                                urlargs = "?" + urlargs
+
+                            errors.append("""Site <em>'%s'</em> is not in the database. <br/>
+                            <a href="/site/create%s" class="btn btn-mini"> Create new site record </a>
+                            <a href="/site/list" class="btn btn-mini"> Match to existing site record </a>
+                            """ % (site_text, urlargs ))
+                            sites.append({'name':site_text, 'site':None})
+
+                if len(errors) > 0:
+                    return bulk_bad_request(form, request, errors)
+
+                # valid!
+                # loop through rows to create events and submit datasheet forms
+                events = []
+                dups = 0
                 with transaction.commit_on_success():
                     for i, row in enumerate(rows):
                         site_key = get_site_key(ds, row)
