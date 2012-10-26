@@ -57,6 +57,7 @@
             {% ifequal active 'admin' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/admin">Admin</a></li>
         {% endif %}
       </ul>
+      
       <div class="navbar-text pull-right">
       {% if user.is_authenticated %}
           <a href="{% url django.contrib.auth.views.logout_then_login %}">Sign out</a>

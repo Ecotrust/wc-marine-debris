@@ -8,8 +8,7 @@
 
 {% block includes %}
     <script src="/site-media/third-party/OpenLayers-2.12/OpenLayers.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/site-media/third-party/OpenLayers-2.12/AnimatedCluster.js" type="text/javascript" charset="utf-8"></script>
-
+    
     <script type="text/javascript" charset="utf-8">
         // Hack to support IE. See http://trac.openlayers.org/wiki/FrequentlyAskedQuestions#WhywontmyvectorlayerworkinIEbeforemypageisdoneloading
         document.namespaces;
@@ -124,7 +123,6 @@
                     <dl class="dl-horizontal">
                       <dt>location</dt>
                       <dd><span data-bind="text: site.county"></span>, <span data-bind="text: site.state"></span></dd>
-                      
                       <dt>project</dt>
                       <dd><span data-bind="text: project.name"></span></dd>
                       <dt>date</dt>
