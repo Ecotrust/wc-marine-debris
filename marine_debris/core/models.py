@@ -78,6 +78,7 @@ class Field (models.Model):
     minvalue = models.IntegerField(blank=True, null=True)
     maxvalue = models.IntegerField(blank=True, null=True)
     default_value = models.TextField(blank=True, null=True)  #TODO: What type should this be? Should it be part of Unit? FieldValue?
+    description = models.TextField(blank=True, null=True, default=None)
     
     def __unicode__(self):
         return self.internal_name
@@ -105,6 +106,8 @@ class DataSheet (models.Model):
     # media_id = models.ForeignKey(Media, blank=True, null=True)
     field = models.ManyToManyField(Field, through='DataSheetField')
     type_id = models.ForeignKey(EventType, null=True, default=None)
+    sheet_description = models.TextField(blank=True, null=True, default=None)
+    protocol_description = models.TextField(blank=True, null=True, default=None)
     
     def __unicode__(self):
         return self.sheetname
