@@ -108,6 +108,24 @@ i { margin-right: 5px; }
 	height: 600px;
 	margin-bottom: 20px;
 }
+
+#bulk-site-map {
+	height: 350px;
+}
+
+.site-form input, .bulk-form input {
+	width: 98%;
+}
+.site-form select, .bulk-form select {
+	width: 100%;
+}
+ul.errorlist {
+    max-height: 85%;
+    overflow: auto;
+}
+#site-form {
+	margin-top: 10px;
+}
 #report-values-content {
 	min-height: 450px
 }
@@ -132,8 +150,8 @@ i { margin-right: 5px; }
 img.olTileImage {
     max-width: 256px !important;
 }
-#map .olControlAttribution {
-	bottom: 0px;
+.olControlAttribution {
+	bottom: 0px !important;
 }
 .clearfix {
 	clear: both;

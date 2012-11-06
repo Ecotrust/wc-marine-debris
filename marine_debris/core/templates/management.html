@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+ {% block content %}
+ {% endblock %}    
+{% block leftcontent %}
+<div class="manage-transactions">
+	<div data-bind="if: selectedTransaction">
+		<div data-bind="visible: showTransactionSpinner">
+		  <img src="/site-media/img/ajax-loader.gif" />
+		</div>
+		<h2>Transaction Details</h2>
+		<div class="btn-group">
+			<button class="btn btn" data-bind="click: returnToTransaction"><i class="icon-arrow-left"></i> return to transactions</button>
+			<button class="btn" data-bind="click: rejectTransaction, visible: selectedTransaction().status() !== 'rejected'">reject</button>
+			<button class="btn btn-primary" data-bind="click: acceptTransaction, visible: selectedTransaction().status() !== 'accepted'">accept</button>
+		</div>
+
+		<div data-bind="with: selectedTransaction">
+			<dl class="dl-horizontal">
+				<dt>transaction status</dt>
+				<dd><span class="label" data-bind="text: status, css: { 'label-important': status === 'rejected', 'label-success': status() === 'accepted', 'label-warning': status() === 'new' }"></span></dd>
+				<dt>organization</dt>
+				<dd data-bind="text: organization"></dd>
+				<dt>username</dt>
+				<dd data-bind="text: username"></dd>
+				<dt>timestamp</dt>
+				<dd data-bind="text: timestamp"></dd>
+			</dl>
+		  	<table class="table table-striped" data-bind="dataTable: { dataSource: events, rowTemplate: 'eventRowTemplate',  columns: [
+	                { mDataProp: 'datasheet.event_type', sTitle: 'Event Type', 'sWidth': '25%'},
+	                { mDataProp: 'site.name', sTitle: 'Site', 'sWidth': '35%'},
+	                { mDataProp: 'site.county', sTitle: 'County', 'sWidth': '15%'},
+	                { mDataProp: 'site.st_initials', sTitle: 'State', 'sWidth': '5%'},
+	                { mDataProp: 'date', sTitle: 'Date', 'sWidth': '10%' }
+	              ] }">
+			</table>
+		</div>
+	</div>
+	<div data-bind="visible: ! selectedTransaction()">
+		<div>
+			<ul class="nav nav-pills">
+				<h2>Manage Transactions</h2>
+			  <li class="active">
+			    <a href="#new" data-toggle="pill">New (<span data-bind="text: transactions.new().length"></span>)</a>
+			  </li>
+			  <li><a href="#accepted" data-toggle="pill">Accepted (<span data-bind="text: transactions.accepted().length"></span>)</a></li>
+			  <li><a href="#rejected" data-toggle="pill">Rejected (<span data-bind="text: transactions.rejected().length"></span>)</a></li>
+			</ul>
+			<div class="tab-content">
+			  <div class="tab-pane active" id="new">
+			  	<table class="table table-striped" data-bind="dataTable: { dataSource: transactions.new, columns: dataTableColumns, options: dataTableOptions, rowTemplate: 'rowTemplate' }">
+			  		
+				</table>
+			  </div>
+			  <div class="tab-pane" id="accepted">
+			  	<table class="table table-striped" data-bind="dataTable: { dataSource: transactions.accepted, columns: dataTableColumns, options: dataTableOptions, rowTemplate: 'rowTemplate' }">
+			  		
+				</table>
+			  </div>
+			  <div class="tab-pane" id="rejected">
+			  	<table class="table table-striped" data-bind="dataTable: { dataSource: transactions.rejected, columns: dataTableColumns, options: dataTableOptions, rowTemplate: 'rowTemplate' }">  		
+				</table>
+			  </div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block rightcontent %}
+<div data-bind="if: showError">
+ <div class="alert alert-error">
+  <button type="button" class="close" data-dismiss="alert">×</button>
+  <strong>Error!</strong> <span data-bind="text: showError"></span>
+</div>
+</div>
+<div data-bind="visible: ! selectedEvent()">
+	Here is some help content.
+</div>
+<div class="management" data-bind="if: selectedEvent">
+	<div class="tab-pane" id="event-details-content">
+	    <div data-bind="with: selectedEvent">
+	    	<div class="row-fluid">
+	    		<div class="span6">
+			      <h4><span data-bind="text: site.name"></span><img data-bind="visible: $root.showDetailsSpinner" src="/site-media/img/ajax-loader.gif" class="pull-right"/></h4>
+			      <dl class="dl-horizontal">
+			        <dt>location</dt>
+			        <dd><span data-bind="text: site.county"></span>, <span data-bind="text: site.state"></span></dd>
+			        
+			        <dt>project</dt>
+			        <dd><span data-bind="text: project.name"></span></dd>
+			        <dt>date</dt>
+			        <dd><span data-bind="text: date"></span></dd>
+			      </dl>
+			  </div>
+			  <div class="span6">
+			  	<div id="map" style="height: 200px">
+			  	</div>
+		  </div>
+	      <div class="filter"></div>
+	      <div data-bind="if: data" class="table-container">
+	        <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { dataSource: data, options: $root.reportTableOptions, columns: [{mDataProp: 'text', sTitle: 'Text'}, {mDataProp:'value', sTitle: 'Value'}, { bSortable: false, mDataProp: 'unit' }] }">
+	          <tbody>
+	            <tr data-bind="visible: value">
+	              <td data-bind="text: text"></td>
+	              <td><span data-bind="text: value"></span> <span data-bind="text: unit"></span></td>
+	            </tr>
+	          </tbody>
+	        </table>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+</div>
+{% endblock %}
+{% block styles %}
+    <link href="/site-media/third-party/jquery/css/jquery.dataTables.css" rel="stylesheet" />
+    <script src="/site-media/third-party/OpenLayers-2.12/OpenLayers.js" type="text/javascript" charset="utf-8"></script>
+    
+{% endblock %}
+
+{% block scripts %}
+<script type="text/html" id="rowTemplate">
+	<td data-bind="text: username, click: $root.selectTransaction"></td>
+	<td data-bind="text: organization, click: $root.selectTransaction"></td>
+	<td data-bind="text: timestamp, click: $root.selectTransaction"></td>
+	<td><span class="label" data-bind="text: status(), click: $root.selectTransaction, css: { 'label-important': status === 'rejected', 'label-success': status() === 'accepted', 'label-warning': status() === 'new' }"></span></td>
+</script>
+<script type="text/html" id="eventRowTemplate">
+  <td data-bind="text: datasheet.event_type, click: $root.selectEvent"></td>
+  <td data-bind="text: site.name, click: $root.selectEvent"></td>
+  <td data-bind="text: site.county, click: $root.selectEvent"></td>
+  <td data-bind="text: site.st_initials, click: $root.selectEvent"></td>
+  <td data-bind="text: date, click: $root.selectEvent"></td>
+</script>
+<script src="/site-media/js/management.js"></script>
+{% endblock %}
+{% block js %}
+
+
+
+{% endblock %}

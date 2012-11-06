@@ -4,7 +4,7 @@
 .smallmap {
     border: 1px solid #CCCCCC;
     height: 256px;
-    width: 512px;
+    width: 100%;
 }
 #tags {
     display: none;

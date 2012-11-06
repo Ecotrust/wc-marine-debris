@@ -40,7 +40,6 @@ class BulkImportForm(forms.Form):
         choices = ds_choices,
         widget = forms.Select()
     )
-    
     csvfile = forms.FileField()
         
 class CreateEventForm(forms.Form):
@@ -127,6 +126,7 @@ class CreateEventForm(forms.Form):
         )
     )
     longitude = forms.CharField(
+        label="Longitude (or click on map)",
         required=False,
         widget = forms.TextInput(
             attrs={
@@ -135,6 +135,7 @@ class CreateEventForm(forms.Form):
         )
     )
     latitude = forms.CharField(
+        label="Latitude (or click on map)",
         required=False,
         widget = forms.TextInput(
             attrs={

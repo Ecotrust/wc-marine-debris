@@ -1,9 +1,16 @@
 var layerExtent = new OpenLayers.Bounds( -14050000, 3800000, -13000000 , 6280000);
 
-var map = new OpenLayers.Map("map", {'restrictedExtent': layerExtent});
+var map = new OpenLayers.Map(null, {'restrictedExtent': layerExtent});
 
 var map_extent = new OpenLayers.Bounds(-20037508, -20037508, 20037508, 20037508.34);	
     
+function updateCoordVals(lon, lat) {
+    $( "#id_latitude" ).val(lat.toFixed(6)).change();
+    $( "#id_longitude" ).val(lon.toFixed(6)).change();
+    $("#id_geometry").val("POINT(" + lon + " " + lat + ")");
+    pointSelected(lat, lon)
+}
+
 //Map base options
 var map_options = {
     controls: [],
@@ -18,13 +25,12 @@ var map_options = {
     }
 };       
 
-esriOcean = new OpenLayers.Layer.XYZ("ESRI Ocean", "http://services.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/${z}/${y}/${x}", {
-    sphericalMercator: true,
-    projection: map_options.displayProjection,
-    numZoomLevels: map_options.numZoomLevels,
-    isBaseLayer: true,
-    maxExtent: map_extent,
+var hybrid = new OpenLayers.Layer.Bing({
+  name: "Hybrid",
+  key: 'AiEF9gzhYiOfxnplJmKcY768T9GhG071ww0DizfaPFi7AnAKpBAJQ_UrHadSgDX4',
+  type: "AerialWithLabels"
 });
+
 
 var pointLayer = new OpenLayers.Layer.Vector("Point Layer");
 
@@ -54,17 +60,17 @@ function clearOldPoints(point){
 }
 
 function pointSelected(lat, lon){
+    var zoom = map.zoom < 12 ? map.zoom + 2: 12;
     point = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(lon, lat));
     point.geometry.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
     pointLayer.addFeatures(point);
     pointLayer.drawFeature(point);
     clearOldPoints(point);
-    map.setCenter([pointLayer.features[0].geometry.x, pointLayer.features[0].geometry.y], 11, true);
+    map.setCenter([pointLayer.features[0].geometry.x, pointLayer.features[0].geometry.y], zoom);
     pointLayer.redraw()
 }
 
-map.addLayers([esriOcean, pointLayer]);
-map.zoomToExtent(map.restrictedExtent);
+map.addLayers([hybrid, pointLayer]);
 
 map.addControl(point);
 point.activate();
