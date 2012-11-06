@@ -77,9 +77,9 @@ i { margin-right: 5px; }
 	bottom: 15px;
 
 }
-.wcga.table tr.active td,
-.events-table tr.active td {
-	font-weight: bold;
+.even.active td, .odd.active td, tr:hover td {
+	background-color: #344770!important;
+	color: white;
 }
 
 .events-table .dataTables_paginate {
@@ -271,6 +271,9 @@ img.olTileImage {
 	height: 400px;
 	overflow: auto;
 	clear:both;
+}
+.wcga-database-right .management .wrapper {
+	height: 330px;
 }
 .wcga-database {
 	margin: 10px 0px; padding: 10px;
