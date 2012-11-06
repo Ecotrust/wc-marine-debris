@@ -561,11 +561,11 @@ def bulk_csv_header(request, datasheet_id):
     response['Content-Disposition'] = 'attachment; filename=%s' % filename
     return response
 
-def bulk_bad_request(form, request, errors=None):
+def bulk_bad_request(form, request, errors=None, site_form=None):
     if not errors:
         errors = []
     res = render_to_response('bulk_import.html', 
-            RequestContext(request,{'form':form.as_p(), 
+            RequestContext(request,{'form':form.as_p(), 'site_form': site_form, 
                 'errors':errors, 'active':'events'}))
     res.status_code = 400
     return res
@@ -735,13 +735,14 @@ def bulk_import(request):
                                 urlargs = "?" + urlargs
 
                             errors.append("""Site <em>'%s'</em> is not in the database. <br/>
-                            <a href="/site/create%s" class="btn btn-mini"> Create new site record </a>
-                            <a href="/site/list" class="btn btn-mini"> Match to existing site record </a>
+                            <a href="/site/create%s" class="btn btn-mini create-site"> Create new site record </a>
+                            <!--<a href="/site/list" class="btn btn-mini"> Match to existing site record </a>-->
                             """ % (site_text, urlargs ))
                             sites.append({'name':site_text, 'site':None})
 
                 if len(errors) > 0:
-                    return bulk_bad_request(form, request, errors)
+                    site_form = CreateSiteForm()
+                    return bulk_bad_request(form, request, errors, site_form=site_form)
 
                 # valid!
                 # loop through rows to create events and submit datasheet forms
@@ -870,7 +871,7 @@ def bulk_import(request):
                             errors.insert(0, "%d events were found but not loaded due to %d duplicate events." % (len(events), dups))
                         return bulk_bad_request(form, request, errors)
 
-                return render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(), 
+                return render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(),
                     'sites': sites, 'events': events, 'success': True, 'active':'events'}))
             else:
                 UserTransaction.delete(user_transaction)
