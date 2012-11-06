@@ -59,6 +59,7 @@
     <div class="row-fluid">
       <div class="span6">
         {{ site_form.as_p }}
+        {% csrf_token %}
         <button class="btn btn-large cancel form-buttons">cancel</button>
         <button class="btn btn-large submit-site-btn form-buttons" disabled>create site</button>
         <p class="row-fluid">
