@@ -8,7 +8,7 @@ function updateCoordVals(lon, lat) {
     $( "#id_latitude" ).val(lat.toFixed(6)).change();
     $( "#id_longitude" ).val(lon.toFixed(6)).change();
     $("#id_geometry").val("POINT(" + lon + " " + lat + ")");
-    pointSelected(lat, lon)
+    pointSelected(lat, lon);
 }
 
 //Map base options
@@ -61,7 +61,7 @@ function clearOldPoints(point){
 
 function pointSelected(lat, lon){
     var zoom = map.zoom < 12 ? map.zoom + 2: 12;
-    point = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(lon, lat));
+    point = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(parseFloat(lon), parseFloat(lat)));
     point.geometry.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
     pointLayer.addFeatures(point);
     pointLayer.drawFeature(point);
