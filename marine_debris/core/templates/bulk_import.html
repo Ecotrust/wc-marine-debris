@@ -83,5 +83,12 @@
 {% endblock %}
 
 {% block js %}
+var onResizeMap = function () {
+  setTimeout( function() { map.updateSize();}, 200);
+};
+
+$(document).ready(function () {
+  $(window).on('resize', onResizeMap).resize();
+});
 
 {% endblock %}
