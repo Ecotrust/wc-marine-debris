@@ -1,19 +1,27 @@
 var app = {
   resetForm: function ($form, options) {
-    $("#id_latitude").on('change', function () {
-      if ($form.find("#id_latitude").val() && $form.find("#id_longitude").val()) {
+  
+  
+    var update = function(lat, lon) {
+    
+      if (lat && lon) {
+        $("#id_geometry").val("POINT(" + lon + " " + lat + ")");
+        pointSelected(lat, lon);
         $form.find(".submit-site-btn").removeAttr('disabled');
       }
+    };
+  
+    $form.find("#id_latitude").on('change', function () {
+      update($form.find("#id_latitude").val(), $form.find("#id_longitude").val());
     });
 
     $form.find("#id_longitude").on('change', function () {
-      if ($form.find("#id_latitude").val() && $form.find("#id_longitude").val()) {
-        $form.find(".submit-site-btn").removeAttr('disabled');
-      }
+      update($form.find("#id_latitude").val(), $form.find("#id_longitude").val());
     });
     $form.find('.problem').on('click', function (e) {
       app.resetForm($form, options);
     });
+    $form.find('.submit-site-btn').attr('disabled', true);
     $form.find('.form-buttons').show();
     $form.find('.alert').hide();
     $form.find('#id_sitename').val(options.sitename).closest('p').hide();
@@ -21,11 +29,16 @@ var app = {
     $form.find("#id_state").closest('p').hide()
     $form.find("#id_state").val($form.find('option:contains("' + options.state + '")').attr('value'));
     $form.find("#id_transaction").closest('p').hide();
+    $form.find("#id_latitude").removeAttr('disabled');
+    $form.find("#id_longitude").removeAttr('disabled');
     $form.find("#id_latitude").val(null);
     $form.find("#id_longitude").val(null);
+    $form.find("#id_geometry").val(null);
     pointLayer.removeAllFeatures()
   },
   submitSite: function (data, success, error) {
+    $("#id_latitude").attr('disabled', true);
+    $("#id_longitude").attr('disabled', true);
     $.ajax({
       url: '/site/create',
       data: data,
@@ -38,6 +51,8 @@ var app = {
 
 
 $(function() {
+
+      $('.errorlist').find(".create-site").removeAttr('disabled');
 
       $('.errorlist').scroll(function () {
         map.updateSize();

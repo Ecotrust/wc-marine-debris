@@ -735,7 +735,7 @@ def bulk_import(request):
                                 urlargs = "?" + urlargs
 
                             errors.append("""Site <em>'%s'</em> is not in the database. <br/>
-                            <a href="/site/create%s" class="btn btn-mini create-site"> Create new site record </a>
+                            <button href="/site/create%s" class="btn btn-mini create-site" disabled> Create new site record </button>
                             <!--<a href="/site/list" class="btn btn-mini"> Match to existing site record </a>-->
                             """ % (site_text, urlargs ))
                             sites.append({'name':site_text, 'site':None})
