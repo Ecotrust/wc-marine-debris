@@ -19,6 +19,10 @@ h6 { font-weight: normal; }
 
 i { margin-right: 5px; }
 
+.narrow-carousel img {
+	max-height: 100%;
+}
+
 .carousel .item > img {
 	width: 100%;
 }

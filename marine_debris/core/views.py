@@ -534,10 +534,18 @@ def edit_datasheet(request, event_id):
 def organizations(request): 
     qs = Organization.objects.filter()
     result = []
-    for organization in qs.all(): 
-        result.append({'organization':organization})
+    for organization in qs.all().order_by('orgname'): 
+        organization.projects = Project.objects.filter(organization = organization)
+        result.append({
+            'organization':organization
+        })
             
-    return render_to_response( 'organizations.html', RequestContext(request,{'result':result, 'active':'organizations'}))
+
+    if settings.SERVER == 'Dev':
+        static_media_url = settings.MEDIA_URL
+    else:
+        static_media_url = settings.STATIC_URL
+    return render_to_response( 'organizations.html', RequestContext(request,{'result':result, 'active':'organizations', 'STATIC_URL':static_media_url}))
 
 # @login_required
 def projects(request): 

@@ -52,6 +52,8 @@
       <ul class="nav">
         {% ifequal active 'home' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/">Home</a></li>
         {% ifequal active 'events' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/events">Data</a></li>
+        {% ifequal active 'organizations' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/organizations">Organizations</a></li>
+        {% ifequal active 'projects' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/projects">Projects</a></li>
         {% ifequal active 'management' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/management">Management</a></li>
         {% if user.is_superuser %}
             {% ifequal active 'admin' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/admin">Admin</a></li>
@@ -112,7 +114,7 @@ var onResize = function () {
   var height = Math.max($(".wcga-database-left").height(), $(".wcga-database-right").height());
   $(".wcga-database").height(height);
   $('#site-map').height(height);
-  setTimeout( function() { map.updateSize();}, 200);
+  setTimeout( function() { if (typeof map !== 'undefined') { map.updateSize(); } }, 200);
 };
 
 $(document).ready(function () {
