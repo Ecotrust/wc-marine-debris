@@ -22,3 +22,5 @@ htmlcov
 stat*.out
 errors.log
 *.pyc
+
+marine_debris/media/img/.DS_Store

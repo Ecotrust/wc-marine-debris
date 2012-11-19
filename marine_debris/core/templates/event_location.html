@@ -53,8 +53,13 @@
 {% endblock %}
 
 {% block js %}
+
+    var onResizeMap = function () {
+      setTimeout( function() { map.updateSize();}, 200);
+    };
     
     $(document).ready(function () {
+        $(window).on('resize', onResizeMap).resize();
         $(".county-select").chosen();
         $(".state-select").on("change", function (){
             $(".county-select").trigger("liszt:updated");

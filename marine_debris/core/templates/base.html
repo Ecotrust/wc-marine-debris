@@ -114,7 +114,9 @@ var onResize = function () {
   var height = Math.max($(".wcga-database-left").height(), $(".wcga-database-right").height());
   $(".wcga-database").height(height);
   $('#site-map').height(height);
+
   setTimeout( function() { if (typeof map !== 'undefined') { map.updateSize(); } }, 200);
+
 };
 
 $(document).ready(function () {
