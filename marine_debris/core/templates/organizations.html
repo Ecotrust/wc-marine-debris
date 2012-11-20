@@ -1,66 +1,25 @@
-{% extends "base.html" %}
+{% extends "carousel-right-base.html" %}
 
-{% block content %}
-{% endblock %}    
 {% block leftcontent %}
-{% for r in result %}
-    <p>{{r.organization}} {{r.organization.projects}}</p>
-{% endfor %}    
-{% endblock %}    
-{% block rightcontent %}
-<div id="myCarousel" class="carousel slide carousel-fade">
-    <!-- Carousel items -->
-    <div class="carousel-inner">
-        <div class="item active">
-            <img src="{{STATIC_URL}}img/misc/Clean_up.jpg"/>
-        </div>
-        <div class="item">
-            <img src="{{STATIC_URL}}img/misc/Clean_up2.jpg"/>
-        </div>
-        <div class="item">
-            <img src="{{STATIC_URL}}img/misc/ICC_Image_Credit_CA_Coastal_Commission.jpg"/>
-        </div>
-        <div class="item">
-            <img src="{{STATIC_URL}}img/misc/ICC_Image_credit_Port_of_Oakland2.jpg"/>
-        </div>
-        <div class="item">
-            <img src="{{STATIC_URL}}img/misc/ICC_image_credit_Port_of_Oakland.jpg"/>
-        </div>
-        <div class="item">
-            <img src="{{STATIC_URL}}img/misc/Litter_LA_River.jpg"/>
-        </div>
-        <div class="item">
-            <img src="{{STATIC_URL}}img/misc/cleanup.jpg"/>
-        </div>
-        <div class="item">
-            <img src="{{STATIC_URL}}img/misc/crab_pot.jpg"/>
-        </div>
-        <div class="item">
-            <img src="{{STATIC_URL}}img/misc/gillnet.jpg"/>
-        </div>
-        <div class="item">
-            <img src="{{STATIC_URL}}img/misc/international-coastal-cleanup-2005-seattle-nir-heart-debris_noaa.jpg"/>
-        </div>
-        <div class="item">
-            <img src="{{STATIC_URL}}img/misc/intnl-coastal-cleanup-day_ocean_conservancy.jpg"/>
-        </div>
-    </div>
+
+<h2>Organizations</h2>
 
 
-
-
-
-
-
-
-
-    <!-- Carousel nav -->
-    <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
-    <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+<div class="clearfix">
+    <form class="form-search pull-right">
+      <input type="text" class="input-large search-query" name="search-term">
+      <button type="submit" class="btn">Search</button>
+    </form>
 </div>
-{% endblock %}
-{% block js %}
-  var items = $('#myCarousel').find('.item').removeClass('active');
-    $(items).eq(Math.round(Math.random()*items.length-1)).addClass('active');
-    $(".carousel").carousel({ interval: 8000 });
- {% endblock %}
+<div class="table-wrapper">
+    <table class="table table-condensed table-hover organization-table">
+    {% for organization in organizations %}
+        <tr>
+            <td><strong><a href="{{ organization.get_absolute_url }}">{{organization.orgname}} <i class="icon-circle-arrow-right"></i></a></strong></td>
+            <td>
+                
+        </tr>
+    {% endfor %}    
+    </table>
+</div>
+{% endblock %}    

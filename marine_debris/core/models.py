@@ -10,6 +10,7 @@ from south.modelsinspector import add_introspection_rules
 add_introspection_rules([], ["^django\.contrib\.gis\.db\.models\.fields\.PointField"])
 from django.core.cache import cache
 from django.contrib.gis.geos import Polygon
+from django.template.defaultfilters import slugify
 
 # Create your models here.
 class DataType (models.Model):
@@ -32,17 +33,26 @@ class Unit (models.Model):
         
 class Organization (models.Model):
     orgname = models.TextField()
-    contact = models.TextField()
+    contact = models.TextField()    
     phone = models.TextField()
     address = models.TextField()
     users = models.ManyToManyField(User)
+    slug = models.TextField(blank=True, null=True)
     
     def __unicode__(self):
         return self.orgname
         
     class Meta:
         ordering = ['orgname']
-        
+
+    
+    def get_absolute_url(self):
+        return "/organization/%s/" % self.slug
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.projname)
+        super(Site, self).save(*args, **kwargs)
+
     @property
     def toDict(self):
         projects = [project.toDict for project in Project.objects.filter(organization = self)]
@@ -108,13 +118,22 @@ class DataSheet (models.Model):
     type_id = models.ForeignKey(EventType, null=True, default=None)
     sheet_description = models.TextField(blank=True, null=True, default=None)
     protocol_description = models.TextField(blank=True, null=True, default=None)
-    
+    slug = models.TextField(null=True, blank=True)
+
     def __unicode__(self):
         return self.sheetname
         
     class Meta:
         ordering = ['sheetname']
-        
+    
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.sheetname)
+        super(DataSheet, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return "/datasheet/%s/" % self.slug
+
     @property
     def fieldnames(self):
         return [f.field_name for f in self.datasheetfield_set.all()]
@@ -228,13 +247,20 @@ class Project (models.Model):
     contact_email = models.TextField(blank=True, null=True)
     contact_phone = models.TextField(blank=True, null=True)
     active_sheets = models.ManyToManyField(DataSheet, through='ProjectDataSheet')
+    slug = models.TextField(blank=True, null=True)
     
     def __unicode__(self):
         return self.projname
         
     class Meta:
         ordering = ['projname']
-        
+    def get_absolute_url(self):
+        return "/project/%s/" % self.slug
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.projname)
+        super(Project, self).save(*args, **kwargs)
+
     @property
     def toDict(self):
         datasheets = [datasheet.toDict for datasheet in self.active_sheets.all()]

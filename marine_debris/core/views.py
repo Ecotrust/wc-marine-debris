@@ -483,12 +483,12 @@ def delete_event(request, event_id):
 
 # @login_required
 def datasheets(request):
-    qs = DataSheet.objects.filter()
-    result = []
-    for datasheet in qs.all():
-        result.append({'datasheet': datasheet})
-        
-    return render_to_response('datasheets.html', RequestContext(request, {'result':result, 'active':'datasheets'}))
+    sheets = DataSheet.objects.all()
+    if settings.SERVER == 'Dev':
+        static_media_url = settings.MEDIA_URL
+    else:
+        static_media_url = settings.STATIC_URL
+    return render_to_response('datasheets.html', RequestContext(request, {'sheets':sheets, 'active':'datasheets', 'STATIC_URL': static_media_url}))
     
 @login_required
 def edit_datasheet(request, event_id):
@@ -529,32 +529,60 @@ def edit_datasheet(request, event_id):
             event_details['sitename'] = event.site.sitename
         return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'eventForm': None, 'event': event_details, 'action': '/datasheet/edit/'+str(event.event_id), 'active': 'events', 'error':'Some answers were invalid. Please review them.'}))
     
-    
+
+def  view_datasheet(request, sheet_slug):
+    sheet = DataSheet.objects.get(slug=sheet_slug)
+    sheet.fields = sheet.datasheetfield_set.all()
+    if settings.SERVER == 'Dev':
+        static_media_url = settings.MEDIA_URL
+    else:
+        static_media_url = settings.STATIC_URL
+    return render_to_response('sheet-detail.html', RequestContext(request, {'sheet': sheet, 'STATIC_URL':static_media_url}))
+
 # @login_required
 def organizations(request): 
-    qs = Organization.objects.filter()
-    result = []
-    for organization in qs.all().order_by('orgname'): 
+    organizations = []
+    for organization in Organization.objects.all().order_by('orgname'): 
         organization.projects = Project.objects.filter(organization = organization)
-        result.append({
-            'organization':organization
-        })
+        organizations.append(organization)
             
 
     if settings.SERVER == 'Dev':
         static_media_url = settings.MEDIA_URL
     else:
         static_media_url = settings.STATIC_URL
-    return render_to_response( 'organizations.html', RequestContext(request,{'result':result, 'active':'organizations', 'STATIC_URL':static_media_url}))
+    return render_to_response( 'organizations.html', RequestContext(request,{'organizations':organizations, 'active':'organizations', 'STATIC_URL':static_media_url}))
+
+
+def  view_organization(request, organization_slug):
+    organization = Organization.objects.get(slug=organization_slug)
+    organization.projects = Project.objects.filter(organization = organization)
+    if settings.SERVER == 'Dev':
+        static_media_url = settings.MEDIA_URL
+    else:
+        static_media_url = settings.STATIC_URL
+    return render_to_response('organization-detail.html', RequestContext(request, {'organization': organization, 'STATIC_URL':static_media_url}))
+
+
+
+
+def  view_project(request, project_slug):
+    project = Project.objects.get(slug=project_slug)
+    project.organizations = project.organization.all()
+    project.data_sheets = project.active_sheets.all()
+    print project
+    if settings.SERVER == 'Dev':
+        static_media_url = settings.MEDIA_URL
+    else:
+        static_media_url = settings.STATIC_URL
+    return render_to_response('project-detail.html', RequestContext(request, {'project': project, 'STATIC_URL':static_media_url}))
 
 # @login_required
 def projects(request): 
-    qs = Project.objects.filter()
-    result = []
-    for project in qs.all(): 
-        result.append({'project':project})
-            
-    return render_to_response( 'projects.html', RequestContext(request,{'result':result, 'active':'projects'}))    
+    projects = Project.objects.all()       
+    return render_to_response( 'projects.html', RequestContext(request,{'projects': projects, 'active':'projects'}))    
+
+
 
 def map_test(request):
     return render_to_response('map-test.html', RequestContext(request, {}))

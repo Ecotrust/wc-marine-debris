@@ -1,13 +1,11 @@
-marine_debris/*.pyc
+marine_debris/staticroot/
+*.pyc
 marine_debris/install-media/*
 marine_debris/*.bat
 marine_debris/settings_local.py
 marine_debris/*.sh
 marine_debris/datasheets
 marine_debris/core/fixtures/*
-marine_debris/core/*.pyc
-marine_debris/core/migrations/*.pyc
-marine_debris/registration_custom/*.pyc
 marine_debris/django-cache/*
 cdb.bat
 ddb.bat
@@ -21,6 +19,4 @@ tmp/
 htmlcov
 stat*.out
 errors.log
-*.pyc
-
-marine_debris/media/img/.DS_Store
+.DS_Store
