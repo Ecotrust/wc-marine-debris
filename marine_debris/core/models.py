@@ -51,7 +51,7 @@ class Organization (models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.orgname)
-        super(Site, self).save(*args, **kwargs)
+        super(Organization, self).save(*args, **kwargs)
 
     @property
     def toDict(self):
