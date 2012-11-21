@@ -59,6 +59,9 @@ def events(request, submit=False):
 def get_filters(request):
     states = []
     locations = {}
+    organizations = []
+    projects = []
+
     for state in State.objects.all().order_by('name'):
         states.append(state.toSimpleDict)
         counties = []
@@ -72,9 +75,22 @@ def get_filters(request):
             'counties' : counties,
             'state' : state.name,
         }
+    for organization in Organization.objects.all():
+        organizations.append({
+            "name": organization.orgname,
+            "id": organization.id
+        })
+    for project in Project.objects.all():
+        projects.append({
+            "name": project.projname,
+            "id": project.id
+        })
+
     return HttpResponse(simplejson.dumps({
         'states': states,
         'locations': locations,
+        "projects": projects,
+        "organizations": organizations
     }))
 
 sort_cols = {

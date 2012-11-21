@@ -491,6 +491,8 @@ class Event (models.Model):
         event_types = []
         site_filters = []
         date_filters = []
+        org_filters = []
+        proj_filters = []
         # bbox_filter = False
         if filters == None:
             filters = []
@@ -503,8 +505,11 @@ class Event (models.Model):
                 # bbox_filter = True  
             #datepicker sends 1969 as null date              
             elif filter['type'] == 'date':
-                if filter['value'] != "1969-12-31":
-                    date_filters.append(filter)
+                date_filters.append(filter)
+            elif filter['type'] == 'organization':
+                org_filters.append(filter)
+            elif filter['type'] == 'project':
+                proj_filters.append(filter)
             else:
                 site_filters.append(filter)
                 
@@ -530,6 +535,10 @@ class Event (models.Model):
                     filtered_events = filtered_events | res
                 else:
                     filtered_events = res
+            for filter in proj_filters:
+                filtered_events = filtered_events.filter(proj_id=filter['value'])
+            for filter in org_filters:
+                filtered_events = filtered_events.filter(proj_id__organization=filter['value'])
             for filter in date_filters:
                 if filter['name'] == 'toDate':
                     filtered_events = filtered_events.filter(cleanupdate__gte=filter['value'])

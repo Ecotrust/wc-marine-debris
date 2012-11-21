@@ -354,6 +354,7 @@ img.olTileImage {
 	height: 330px;
 }
 .wcga-database {
+	overflow: auto;
 	margin: 10px 0px; padding: 10px;
 	background: #fff;
 	border: 1px solid #eee;

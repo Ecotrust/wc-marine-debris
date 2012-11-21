@@ -23,7 +23,7 @@
    <div class="span12 ">
       <div class="tabbable wcga">
         <ul class="nav nav-tabs">
-          <li>
+          <li class="active">
             <a href="#search-database-tab-content-location" data-toggle="tab">Location
               <i class="icon-check" data-bind="visible: $.inArray('county', activeFilterTypes()) !== -1 || $.inArray('state', activeFilterTypes()) !== -1"></i>
             </a>
@@ -35,16 +35,18 @@
             </a>
           </li>
           <li>
-            <a href="#search-database-tab-content-organization" data-toggle="tab">Organization</a>
+            <a href="#search-database-tab-content-organization" data-toggle="tab">Organization/Project
+              <i class="icon-check" data-bind="visible: $.inArray('organization', activeFilterTypes()) !== -1 || $.inArray('project', activeFilterTypes()) !== -1"></i>
+            </a>
           </li>
-          <li class="active">
+          <li>
             <a href="#search-database-tab-content-date" data-toggle="tab">Date
               <i class="icon-check" data-bind="visible: $.inArray('date', activeFilterTypes()) !== -1"></i>
             </a>
           </li>
         </ul>
         <div class="tab-content">
-          <div class="tab-pane" id="search-database-tab-content-location">
+          <div class="tab-pane active" id="search-database-tab-content-location">
             <h4>Filter by State and County</h4>
             <select class="location" data-placeholder="Filter by location(s)..." data-bind="foreach: states" multiple style="width: 350px">
                 <optgroup data-bind="foreach: $root.locations[$data.name].counties, attr: {label: $data.name}">
@@ -62,9 +64,19 @@
               <option value="Site Cleanup">Site Cleanup</option>
             </select>
           </div>
-          <div class="tab-pane" id="ssearch-database-tab-content-organization">
+          <div class="tab-pane" id="search-database-tab-content-organization">
+            <div class="row-fluid">
+              <div class="span6">
+                <h4>Filter by Organization</h4>
+                <select class="organization" data-placeholder="Filter by organizations(s)..." data-bind="options: organizations, optionsText: 'name', optionsValue: 'id'" multiple=true></select>
+              </div>
+              <div class="span6">
+                <h4>Filter by Project</h4>
+                <select class="project" data-placeholder="Filter by project(s)..." data-bind="options: projects, optionsText: 'name', optionsValue: 'id'" multiple=true></select>
+              </div>
+            </div>
           </div>
-          <div class="tab-pane  active" id="search-database-tab-content-date">
+          <div class="tab-pane" id="search-database-tab-content-date">
             <h4>Filter by Date Range</h4>
             <div class="row-fluid">
               <div class="span6">

@@ -41,8 +41,11 @@ function viewModel(options) {
   var self = this;
 
   self.events = ko.observableArray();
-  self.states = options.locations.states;
-  self.locations = options.locations.locations;
+  self.states = options.filters.states;
+  self.locations = options.filters.locations;
+
+  self.organizations = options.filters.organizations;
+  self.projects = options.filters.projects;
 
   self.queryFilter = ko.observableArray();
   self.fromDate = ko.observable();
@@ -306,9 +309,9 @@ $.ajax({
     url: "/events/get_filters",
     type: 'GET',
     dataType: 'json'
-  }).done(function (locations) {
+  }).done(function (filters) {
     app.viewModel = new viewModel({
-      locations: locations
+      filters: filters
     });
     // bind the viewmodel
     ko.applyBindings(app.viewModel);
@@ -318,10 +321,38 @@ $.ajax({
     $("select.location").chosen();
     $("select.type").val([]);
     $("select.type").chosen();
+    $("select.organization").chosen();
+    $("select.project").chosen();
     $(".filters").removeClass('hide');
     $(document).ready(function() {
       $("select.type").val([]);
 
+      $("select.organization").chosen().change(function (event, option) {
+        if (option.selected) {
+          app.viewModel.queryFilter.push({
+            type: "organization",
+            value: option.selected
+          });
+        } else if (option.deselected) {
+          app.viewModel.queryFilter.remove(function (filter) {
+            return filter.type === 'organization' && filter.value === option.deselected;
+          });
+        }
+      });
+
+      $("select.project").chosen().change(function (event, option) {
+        if (option.selected) {
+          app.viewModel.queryFilter.push({
+            type: "project",
+            value: option.selected
+          });
+        } else if (option.deselected) {
+          app.viewModel.queryFilter.remove(function (filter) {
+            return filter.type === 'project' && filter.value === option.deselected;
+          });
+        }
+      });
+      
 
       $("select.type").chosen().change(function (event, option ) {
         if (option.selected) {
