@@ -580,7 +580,11 @@ def  view_project(request, project_slug):
 # @login_required
 def projects(request): 
     projects = Project.objects.all()       
-    return render_to_response( 'projects.html', RequestContext(request,{'projects': projects, 'active':'projects'}))    
+    if settings.SERVER == 'Dev':
+        static_media_url = settings.MEDIA_URL
+    else:
+        static_media_url = settings.STATIC_URL
+    return render_to_response( 'projects.html', RequestContext(request,{'projects': projects, 'active':'projects', 'STATIC_URL':static_media_url}))    
 
 
 
