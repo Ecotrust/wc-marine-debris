@@ -53,11 +53,14 @@ function viewModel(options) {
     self.queryFilter.remove(function (item) {
       return item.name === 'toDate';
     });
-    self.queryFilter.push({
-      type: 'date',
-      name: 'toDate',
-      value: new Date(date).toString('yyyy-MM-dd')
-    });
+    if (date) {
+      self.queryFilter.push({
+        type: 'date',
+        name: 'toDate',
+        value: new Date(date).toString('yyyy-MM-dd')
+      });
+    }
+    
   });
 
   self.toDate.subscribe(function (date) {
@@ -65,11 +68,14 @@ function viewModel(options) {
     self.queryFilter.remove(function (item) {
       return item.name === 'fromDate';
     });
-    self.queryFilter.push({
-      type: 'date',
-      name: 'fromDate',
-      value: new Date(date).toString('yyyy-MM-dd')
-    });
+    if (date) {
+      self.queryFilter.push({
+        type: 'date',
+        name: 'fromDate',
+        value: new Date(date).toString('yyyy-MM-dd')
+      });  
+    }
+    
   });
 
   self.removeDate = function (self, event) {
