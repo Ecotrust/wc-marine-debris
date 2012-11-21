@@ -1,0 +1,50 @@
+{% extends "carousel-right-base.html" %}
+
+{% block leftcontent %}
+<div class="row-fluid">
+    {% if organization.logo %}
+    <div class="span4">
+        <img src="http://www.placehold.it/200x200"/>
+    </div>
+    <div class="span8">
+    {% else %}
+    <div class="span12">
+    {% endif %}
+        <h2>{{ project.projname }}</h2>
+        <ul class="unstyled">
+            {% if project.contact_name %}
+            <li><i class="icon-user"></i> {{project.contact_name}}</li>
+            {% endif %}
+            {% if project.contact_phone %}
+            <li><i class="icon-phone"></i> {{project.contact_phone}}</li>
+            {% endif %}
+            {% if project.contact_email %}
+            <li><i class="icon-envelope-alt"></i> {{project.contact_email}}</li>
+            {% endif %}
+        </ul>
+        {% if project.data_sheets %}
+        <h3>Data Sheets</h3>
+        <table class="table table-condensed table-hover organization-table">
+        {% for sheet in project.data_sheets %}
+            <tr>
+                <td><strong><a href="{{sheet.get_absolute_url}}">{{sheet.sheetname}} <i class="icon-circle-arrow-right"></i></a></strong></td>
+                
+            </tr>
+        {% endfor %}    
+        </table>
+        {% endif %}
+        {% if project.organizations %}
+        <h3>Organizations</h3>
+        <table class="table table-condensed table-hover organization-table">
+        {% for organization in project.organizations %}
+            <tr>
+                <td><strong><a href="/organization/{{organization.slug}}">{{organization.orgname}} <i class="icon-circle-arrow-right"></i></a></strong></td>
+              
+            </tr>
+        {% endfor %}    
+        </table>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}    

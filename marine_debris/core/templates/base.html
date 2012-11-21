@@ -15,6 +15,8 @@
 
     </style>
     <link href="/site-media/third-party/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/site-media/third-party/bootstrap/css/font-awesome.css" rel="stylesheet">
+
     <link href="/site-media/css/wcga-marine-debris.css" rel="stylesheet">
 
     {% block includes %}
@@ -52,6 +54,9 @@
       <ul class="nav">
         {% ifequal active 'home' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/">Home</a></li>
         {% ifequal active 'events' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/events">Data</a></li>
+        {% if request.path|slice:":4" == '/org' %}<li class="active">{% else %}<li>{% endif %}<a href="/organizations">Organizations</a></li>
+        {% if request.path|slice:":4" == '/pro' %}<li class="active">{% else %}<li>{% endif %}<a href="/projects">Projects</a></li>
+        {% if request.path|slice:":4" == '/dat' %}<li class="active">{% else %}<li>{% endif %}<a href="/datasheets">Data Sheets</a></li>
         {% ifequal active 'management' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/management">Management</a></li>
         {% if user.is_superuser %}
             {% ifequal active 'admin' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/admin">Admin</a></li>
@@ -109,9 +114,13 @@
 
 <script>
 var onResize = function () {
+  //$(".wcga-database").css('height', 'inherit');
   var height = Math.max($(".wcga-database-left").height(), $(".wcga-database-right").height());
   $(".wcga-database").height(height);
   $('#site-map').height(height);
+
+  setTimeout( function() { if (typeof map !== 'undefined') { map.updateSize(); } }, 200);
+
 };
 
 $(document).ready(function () {
