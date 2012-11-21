@@ -175,7 +175,6 @@ def get_event_geojson(request):
     timeout=60*60*24*7*52*10
     loop_count = 0
     for event in qs:
-        print loop_count
         loop_count = loop_count + 1
         key = 'geocache_%s' % event.id
         geo_string = cache.get(key)
@@ -193,7 +192,7 @@ def get_event_geojson(request):
                 pass
             
             geo_string = get_feature_json(gj, properties)
-            cache.set(key, geo_string, timeout)
+            cached = cache.set(key, geo_string, timeout)
         feature_jsons.append(geo_string)
         
     geojson = """{
