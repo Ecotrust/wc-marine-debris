@@ -262,7 +262,7 @@ app.get_events = function () {
 // $(document).on('resize', onResize);
 
 $.ajax({
-    url: "/events/get_locations",
+    url: "/events/get_filters",
     type: 'GET',
     dataType: 'json'
   }).done(function (locations) {
@@ -460,6 +460,13 @@ app.points.events.on({
   "featuresadded": function () {
     app.viewModel.mapIsLoading(false);
   },
+  "featuresremoved": function () {
+    app.viewModel.mapIsLoading(false);
+  },
+  "refresh": function () {
+    app.viewModel.mapIsLoading(false);
+  },
+
   "featureselected": function(e) {
     var bounds;
 

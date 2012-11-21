@@ -56,7 +56,7 @@ def events(request, submit=False):
     else:
         return render_to_response( 'events.html', RequestContext(request,{'submit':submit, 'added_site':None, 'active':'events'}))
         
-def get_locations(request):
+def get_filters(request):
     states = []
     locations = {}
     for state in State.objects.all().order_by('name'):
@@ -175,7 +175,6 @@ def get_event_geojson(request):
     timeout=60*60*24*7*52*10
     loop_count = 0
     for event in qs:
-        print loop_count
         loop_count = loop_count + 1
         key = 'geocache_%s' % event.id
         geo_string = cache.get(key)
