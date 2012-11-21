@@ -77,6 +77,10 @@ function viewModel(options) {
 
   };
 
+  self.activeFilterTypes = ko.computed(function (type) {
+    return $.map(self.queryFilter(), function (filter) { return filter.type });
+  });
+
   // optikons for the right hand tables
   self.reportTableOptions = {
     'iDisplayLength': -1,

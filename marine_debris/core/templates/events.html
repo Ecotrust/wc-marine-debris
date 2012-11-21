@@ -23,16 +23,16 @@
    <div class="span12 ">
       <div class="tabbable wcga">
         <ul class="nav nav-tabs">
-          <li>
+          <li data-bind="css: {'active-filter': $.inArray('county', activeFilterTypes()) !== -1 || $.inArray('state', activeFilterTypes()) !== -1 }">
             <a href="#search-database-tab-content-location" data-toggle="tab">Location</a>
           </li>
-          <li>
+          <li data-bind="css: {'active-filter': $.inArray('event_type', activeFilterTypes()) !== -1 }">
             <a href="#search-database-tab-content-type-of-debris" data-toggle="tab">Type of debris</a>
           </li>
           <li>
             <a href="#search-database-tab-content-organization" data-toggle="tab">Organization</a>
           </li>
-          <li class="active">
+          <li class="active" data-bind="css: {'active-filter': $.inArray('date', activeFilterTypes()) !== -1 }">
             <a href="#search-database-tab-content-date" data-toggle="tab">Date</a>
           </li>
         </ul>

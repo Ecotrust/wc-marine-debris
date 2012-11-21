@@ -93,7 +93,9 @@ h6 { font-weight: normal; }
 	color: white;
 }
 
-
+.nav-tabs li.active-filter {
+	font-weight: bold;
+}
 .organization-table a {
 	display: block;
 	height: 100%;
