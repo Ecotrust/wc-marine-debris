@@ -44,7 +44,38 @@ function viewModel(options) {
   self.states = options.locations.states;
   self.locations = options.locations.locations;
 
-  self.locationFilter = ko.observableArray();
+  self.queryFilter = ko.observableArray();
+  self.fromDate = ko.observable();
+  self.toDate = ko.observable();
+  
+  self.fromDate.subscribe(function (date) {
+    $( "#to" ).datepicker( "option", "minDate", date );
+    self.queryFilter.remove(function (item) {
+      return item.name === 'toDate';
+    });
+    self.queryFilter.push({
+      type: 'date',
+      name: 'toDate',
+      value: new Date(date).toString('yyyy-MM-dd')
+    });
+  });
+
+  self.toDate.subscribe(function (date) {
+    $( "#from" ).datepicker( "option", "maxDate", date );
+    self.queryFilter.remove(function (item) {
+      return item.name === 'fromDate';
+    });
+    self.queryFilter.push({
+      type: 'date',
+      name: 'fromDate',
+      value: new Date(date).toString('yyyy-MM-dd')
+    });
+  });
+
+  self.removeDate = function (self, event) {
+  $(event.target).closest('.input-append').find('input').datepicker( "setDate", null ).trigger('change');
+
+  };
 
   // optikons for the right hand tables
   self.reportTableOptions = {
@@ -61,7 +92,7 @@ function viewModel(options) {
     "sAjaxSource": "/events/get",
     "iDisplayStart": 0,
     "fnServerParams": function ( aoData ) {
-      var filters = self.locationFilter();
+      var filters = self.queryFilter();
       if (self.startID) {
         console.log(self.startID);
         aoData.push({ "name": "startID", "value": self.startID });
@@ -88,7 +119,7 @@ function viewModel(options) {
       point.geometry.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
       self.events().push(event);
     });
-  }
+  };
 
   // store mapextent here
   self.mapExtent = ko.observable();
@@ -135,20 +166,20 @@ function viewModel(options) {
     });
   };
   $("#report-tab").on('shown', function(event) {
-    self.getReport(self.locationFilter());
+    self.getReport(self.queryFilter());
   });
 
-  self.locationFilter.subscribe(function () {
+  self.queryFilter.subscribe(function () {
     self.mapIsLoading(true);
     $('#events-table').dataTable().fnReloadAjax();
     app.points.refresh({ 
         params: {
-            'filter': JSON.stringify(self.locationFilter())
+            'filter': JSON.stringify(self.queryFilter())
         }
     });
     
     if ($("#report").is(":visible")){
-        self.getReport(self.locationFilter());
+        self.getReport(self.queryFilter());
     }
   });
 
@@ -179,7 +210,7 @@ function viewModel(options) {
     $row.addClass('active');
     self.zoomTo(null, event);
     app.map.setCenter(pos, app.map.getZoom() + 2);
-  }
+  };
 
   self.zoomTo = function(feature, event) {
     var $table = $('#events-table').dataTable(), row;
@@ -212,7 +243,7 @@ function viewModel(options) {
 
   self.report = ko.observable();
 
-};
+}
 
 
 app.get_event_points = function(filters) {
@@ -284,12 +315,12 @@ $.ajax({
 
       $("select.type").chosen().change(function (event, option ) {
         if (option.selected) {
-          app.viewModel.locationFilter.push({
+          app.viewModel.queryFilter.push({
             type: "event_type",
             name: option.selected
           });
         } else if (option.deselected) {
-          app.viewModel.locationFilter.remove(function (filter) {
+          app.viewModel.queryFilter.remove(function (filter) {
             return filter.type === 'event_type' && filter.name === option.deselected;
           });
         }
@@ -305,7 +336,7 @@ $.ajax({
             name = option.deselected.split(':')[1];
             $select.find('[value="' + name + '"]').attr('disabled', 'disabled');
               
-            app.viewModel.locationFilter.remove(function(filter) {
+            app.viewModel.queryFilter.remove(function(filter) {
               if (filter.type === 'county') {
                 return (filter.name === name && filter.state === state);
               } else {
@@ -315,7 +346,7 @@ $.ajax({
               
             $select.trigger("liszt:updated");
           } else {
-            app.viewModel.locationFilter.push({
+            app.viewModel.queryFilter.push({
               name: option.selected.split(':')[1],
               type: 'county',
               state: option.selected.split(':')[0]
@@ -339,7 +370,7 @@ $.ajax({
           index = -1,
           selected = $select.val() || [];
 
-        $.each(app.viewModel.locationFilter(), function(i, filter) {
+        $.each(app.viewModel.queryFilter(), function(i, filter) {
           if(filter.name === name) {
             index = i;
           }
@@ -348,14 +379,14 @@ $.ajax({
           // $optgroup.append($option);
           $select.trigger("liszt:updated");
           selected.push('state:'+name);
-          app.viewModel.locationFilter.push({
+          app.viewModel.queryFilter.push({
             name: name,
             type: 'state'
           });
         } else {
           // $optgroup.remove($option);
           selected.splice($.inArray('state:'+name, selected), 1);
-          app.viewModel.locationFilter.splice(index, 1);
+          app.viewModel.queryFilter.splice(index, 1);
 
         }
         $select.val(selected);
@@ -373,7 +404,7 @@ $.ajax({
 
 app.addPoints = function(events) {
   app.points.removeAllFeatures();
-  app.points.addFeatures($.map(events, function (event) { return event.feature; }))  
+  app.points.addFeatures($.map(events, function (event) { return event.feature; }))  ;
 };
 
 // esriOcean = new OpenLayers.Layer.XYZ("ESRI Ocean", "http://services.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/${z}/${y}/${x}", {

@@ -490,6 +490,7 @@ class Event (models.Model):
     def filter(cls, filters):
         event_types = []
         site_filters = []
+        date_filters = []
         # bbox_filter = False
         if filters == None:
             filters = []
@@ -499,7 +500,11 @@ class Event (models.Model):
             # if filter['type'] == 'bbox':
                 # bbox = tuple(filter['bbox'].split(','))
                 # geom = Polygon.from_bbox(bbox)
-                # bbox_filter = True                
+                # bbox_filter = True  
+            #datepicker sends 1969 as null date              
+            elif filter['type'] == 'date':
+                if filter['value'] != "1969-12-31":
+                    date_filters.append(filter)
             else:
                 site_filters.append(filter)
                 
@@ -525,6 +530,11 @@ class Event (models.Model):
                     filtered_events = filtered_events | res
                 else:
                     filtered_events = res
+            for filter in date_filters:
+                if filter['name'] == 'toDate':
+                    filtered_events = filtered_events.filter(cleanupdate__gte=filter['value'])
+                if filter['name'] == 'fromDate':
+                    filtered_events = filtered_events.filter(cleanupdate__lte=filter['value'])
         # if bbox_filter:
             # filtered_events = filtered_events.filter(site__geometry__contained=geom)
         return filtered_events
