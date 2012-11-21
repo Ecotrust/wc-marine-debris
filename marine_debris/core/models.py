@@ -50,7 +50,7 @@ class Organization (models.Model):
         return "/organization/%s/" % self.slug
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.projname)
+        self.slug = slugify(self.orgname)
         super(Site, self).save(*args, **kwargs)
 
     @property

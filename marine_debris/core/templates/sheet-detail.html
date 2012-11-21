@@ -10,6 +10,10 @@
     {% else %}
     <div class="span12">
     {% endif %}
+        <div class="btn-group pull-right">
+            <a class="btn" href="{% url sheet-list %}"><i class="icon-circle-arrow-left"></i> Back</a>
+            <a class="btn" href="{% url events-filter %}"><i class="icon-bar-chart"></i> Data</a>
+        </div>
         <h2>{{ sheet.sheetname }}</h2>
         <dl>
             <dt>Protocol Description</dt>            
@@ -20,12 +24,12 @@
             <dd><a href="{{sheet.created_by.get_absolute_url}}">{{sheet.created_by.orgname}}</a></dd>
         </dl>
         {% if sheet.fieldnames %}
-        <h3>Data Sheet Fields</h3>
+        <h3>Fields</h3>
         <div class="table-wrapper-short">
             <table class="table table-condensed table-hover organization-table">
             {% for field in sheet.fields %}
                 <tr>
-                    <td>{{ field.field_id }}
+                    <td>
                         {% if field.print_name %}
                         {{ field.print_name }}
                         {% else %}
