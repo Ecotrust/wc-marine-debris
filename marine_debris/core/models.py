@@ -360,7 +360,9 @@ class UserTransaction (models.Model):
     submitted_by = models.ForeignKey(User)
     created_date = models.DateTimeField(auto_now_add = True, default=datetime.datetime.now())
     status = models.CharField(max_length=30, choices=StatusChoices, default='New', blank=True)
-    
+    organization = models.ForeignKey(Organization, blank=True, null=True)
+    project = models.ForeignKey(Project, blank=True, null=True)
+
     def __unicode__(self):
         return "%s, %s" % (self.submitted_by, self.created_date.isoformat())
                 

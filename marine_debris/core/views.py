@@ -380,12 +380,13 @@ def event_location(request):
 def event_save(request):
     createEventForm = CreateEventForm(request.POST)
     if createEventForm.is_valid():
+        organization = Organization.objects.get(orgname=createEventForm.data['organization'])
         project = Project.objects.get(projname=createEventForm.data['project'])
         datasheet = DataSheet.objects.get(id=createEventForm.data['data_sheet'])
         state = State.objects.get(initials=createEventForm.data['state'])
         point = Point(float(createEventForm.data['longitude']), float(createEventForm.data['latitude']))
         
-        user_transaction = UserTransaction(submitted_by = request.user, status='New')
+        user_transaction = UserTransaction(submitted_by = request.user, status='New', organization=organization, project=project)
         user_transaction.save()
         if user_transaction.id:
             if datasheet.type_id.display_sites:        
@@ -530,7 +531,7 @@ def edit_datasheet(request, event_id):
         return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'eventForm': None, 'event': event_details, 'action': '/datasheet/edit/'+str(event.event_id), 'active': 'events', 'error':'Some answers were invalid. Please review them.'}))
     
 
-def  view_datasheet(request, sheet_slug):
+def view_datasheet(request, sheet_slug):
     sheet = DataSheet.objects.get(slug=sheet_slug)
     sheet.fields = sheet.datasheetfield_set.all()
     if settings.SERVER == 'Dev':
@@ -753,7 +754,10 @@ def bulk_import(request):
                     errors.append("Row %d, Invalid Latitude/Longitude. Use decimal degrees." % (i+2, ))
             
             sites = []
-            user_transaction = UserTransaction(submitted_by = request.user, status = 'New')
+
+            project = Project.objects.get(id=form.data['project_id'])
+            organization = Organization.objects.get(orgname=form.data['organization'])
+            user_transaction = UserTransaction(submitted_by = request.user, status = 'New', organization=organization, project=project)
             user_transaction.save()
             if user_transaction.id:
                 for site_key in unique_site_keys:
