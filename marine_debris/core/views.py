@@ -47,7 +47,16 @@ def index(request):
     return render_to_response( 'index.html', RequestContext(request,{'STATIC_URL':static_media_url, 'thankyou': False, 'active':'home', 'event_count': event_count}))
 
 def management(request):
-    return render_to_response( 'management.html', RequestContext(request) )
+
+    trans_dict = {
+        'new' : [trans.toDict for trans in UserTransaction.objects.filter(status='New')],
+        'accepted' : [trans.toDict for trans in UserTransaction.objects.filter(status='Accepted')],
+        'rejected' : [trans.toDict for trans in UserTransaction.objects.filter(status='Rejected')]
+    }
+    
+    transaction_json = simplejson.dumps(trans_dict)
+
+    return render_to_response( 'management.html', RequestContext(request, {'transactions':transaction_json}))
 
 def events(request, submit=False): 
 

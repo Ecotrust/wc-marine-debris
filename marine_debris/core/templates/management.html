@@ -118,6 +118,9 @@
 {% endblock %}
 
 {% block scripts %}
+<script type="text/javascript">
+    var transactionsFixture = {{transactions|safe}};
+</script>
 <script type="text/html" id="rowTemplate">
 	<td data-bind="text: username, click: $root.selectTransaction"></td>
 	<td data-bind="text: organization, click: $root.selectTransaction"></td>

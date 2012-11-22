@@ -362,7 +362,21 @@ class UserTransaction (models.Model):
     status = models.CharField(max_length=30, choices=StatusChoices, default='New', blank=True)
     organization = models.ForeignKey(Organization, blank=True, null=True)
     project = models.ForeignKey(Project, blank=True, null=True)
-
+    
+    @property
+    def toDict(self):
+        events = [x.toEventsDict for x in Event.objects.filter(transaction=self)]
+        res = {
+            'username': self.submitted_by,
+			'organization': self.organization,
+            'project': self.project,
+			'timestamp': self.created_date,
+			'status': self.status,
+			'id': self.id,
+			'events': events
+        }
+        return res
+    
     def __unicode__(self):
         return "%s, %s" % (self.submitted_by, self.created_date.isoformat())
                 
