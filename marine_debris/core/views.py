@@ -53,7 +53,7 @@ def management(request):
         'accepted' : [trans.toDict for trans in UserTransaction.objects.filter(status='Accepted')],
         'rejected' : [trans.toDict for trans in UserTransaction.objects.filter(status='Rejected')]
     }
-    
+
     transaction_json = simplejson.dumps(trans_dict)
 
     return render_to_response( 'management.html', RequestContext(request, {'transactions':transaction_json}))
