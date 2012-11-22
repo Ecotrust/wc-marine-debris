@@ -498,13 +498,13 @@ class Event (models.Model):
             filters = []
         for filter in filters:
             if filter['type'] == 'event_type':
-                event_types.append(filter['name'])
+                event_types.append(filter['value'])
             # if filter['type'] == 'bbox':
                 # bbox = tuple(filter['bbox'].split(','))
                 # geom = Polygon.from_bbox(bbox)
                 # bbox_filter = True  
             #datepicker sends 1969 as null date              
-            elif filter['type'] == 'date':
+            elif filter['type'] == 'toDate' or filter['type'] == 'fromDate':
                 date_filters.append(filter)
             elif filter['type'] == 'organization':
                 org_filters.append(filter)
@@ -526,23 +526,23 @@ class Event (models.Model):
                 filtered_events = None
             for filter in site_filters:
                 if filter['type'] == "county":
-                    res = events.filter(site__county=filter['name'], site__state__name=filter['state'])
-                    res_county = events.filter(site__county=filter['name'] + ' County', site__state__name=filter['state'])
+                    res = events.filter(site__county=filter['value'], site__state__name=filter['state'])
+                    res_county = events.filter(site__county=filter['value'] + ' County', site__state__name=filter['state'])
                     res = res | res_county
                 if filter['type'] == "state":
-                    res = events.filter(site__state__name=filter['name'])
+                    res = events.filter(site__state__name=filter['value'])
                 if filtered_events:
                     filtered_events = filtered_events | res
                 else:
                     filtered_events = res
             for filter in proj_filters:
-                filtered_events = filtered_events.filter(proj_id=filter['value'])
+                filtered_events = filtered_events.filter(proj_id__projname=filter['value'])
             for filter in org_filters:
-                filtered_events = filtered_events.filter(proj_id__organization=filter['value'])
+                filtered_events = filtered_events.filter(proj_id__organization__orgname=filter['value'])
             for filter in date_filters:
-                if filter['name'] == 'toDate':
+                if filter['type'] == 'toDate':
                     filtered_events = filtered_events.filter(cleanupdate__gte=filter['value'])
-                if filter['name'] == 'fromDate':
+                if filter['type'] == 'fromDate':
                     filtered_events = filtered_events.filter(cleanupdate__lte=filter['value'])
         # if bbox_filter:
             # filtered_events = filtered_events.filter(site__geometry__contained=geom)
