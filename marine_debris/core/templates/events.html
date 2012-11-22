@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
 {% block styles %}
-    <link href="/site-media/third-party/chosen/chosen.css" rel="stylesheet" />
-    <link href="/site-media/third-party/jquery/css/jquery.dataTables.css" rel="stylesheet" />
+    <link href="{{STATIC_URL}}third-party/chosen/chosen.css" rel="stylesheet" />
+    <link href="{{STATIC_URL}}third-party/jquery/css/jquery.dataTables.css" rel="stylesheet" />
 
 {% endblock %}
 
 {% block includes %}
-    <script src="/site-media/third-party/OpenLayers-2.12/OpenLayers.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{{STATIC_URL}}third-party/OpenLayers-2.12/OpenLayers.js" type="text/javascript" charset="utf-8"></script>
     
     <script type="text/javascript" charset="utf-8">
         // Hack to support IE. See http://trac.openlayers.org/wiki/FrequentlyAskedQuestions#WhywontmyvectorlayerworkinIEbeforemypageisdoneloading
@@ -18,7 +18,7 @@
  {% block content %}{% endblock %}    
 {% block leftcontent %}
 <!-- If a site was added, {{submit}} = True, {{added_site}} is your event.id -->
-<h2>Query Database <img src="/site-media/img/ajax-loader.gif" data-bind="visible: showSpinner"/></h2>
+<h2>Query Database <img src="{{MEDIA_URL}}img/ajax-loader.gif" data-bind="visible: showSpinner"/></h2>
  <div class="row-fluid filters hide">
    <div class="span12 ">
       <div class="tabbable wcga">
@@ -150,7 +150,7 @@
                   <div id="map"></div>
                   <div class="loader" data-bind="visible: mapIsLoading">
                     <p>Map is loading.</p>
-                    <img src="/site-media/img/ajax-loader.gif" />
+                    <img src="{{MEDIA_URL}}img/ajax-loader.gif" />
                   </div>
                 </div>
                <!-- <div class="clearfix filter-box">
@@ -163,7 +163,7 @@
               </div>
               <div class="tab-pane" id="event-details-content">
                 <div class="pull-right" data-bind="visible: showDetailsSpinner">
-                  <img src="/site-media/img/ajax-loader.gif" />
+                  <img src="{{MEDIA_URL}}img/ajax-loader.gif" />
                 </div>
                 <div data-bind="if: clusteredEvents().length > 0">
                   <select data-bind="options: clusteredEvents, optionsText: 'displayName',  optionsCaption: 'Choose event from cluster...', value: selectedClusterEvent">
@@ -200,7 +200,7 @@
               </div>
               
               <div class="tab-pane" id="report-values-content">
-                <h4>Report <img src="/site-media/img/ajax-loader.gif" data-bind="visible: showReportSpinner"/></h4>
+                <h4>Report <img src="{{MEDIA_URL}}img/ajax-loader.gif" data-bind="visible: showReportSpinner"/></h4>
                 <div data-bind="if: report" id="report">
                   <dl data-bind="foreach: report().event_values" class="dl-horizontal">
                     <dt data-bind="text:$data.field.display_name"></dt>
@@ -223,8 +223,8 @@
 
 {% block scripts %}
 
-<script src="/site-media/third-party/chosen/chosen.jquery.js"></script>
-<script src="/site-media/third-party/jquery/js/jquery.ba-bbq.min.js"></script>
+<script src="{{STATIC_URL}}third-party/chosen/chosen.jquery.js"></script>
+<script src="{{STATIC_URL}}third-party/jquery/js/jquery.ba-bbq.min.js"></script>
 <script type="text/html" id="reportRowTemplate">
   <td data-bind="text: field.name.replace(/_/g,' ')"></td>
   <td data-bind="text: field.value"></td>
@@ -238,7 +238,7 @@
   <td data-bind="text: date, click: $root.handleTableClick"></td>
 </script>
 
-<script src="/site-media/js/events.js"></script>
+<script src="{{STATIC_URL}}js/events.js"></script>
 {% endblock %}
 
 {% block js %}

@@ -39,12 +39,8 @@ def index(request):
         }
     ]
     
-    if settings.SERVER == 'Dev':
-        static_media_url = settings.MEDIA_URL
-    else:
-        static_media_url = settings.STATIC_URL
 
-    return render_to_response( 'index.html', RequestContext(request,{'STATIC_URL':static_media_url, 'thankyou': False, 'active':'home', 'event_count': event_count}))
+    return render_to_response( 'index.html', RequestContext(request,{'thankyou': False, 'active':'home', 'event_count': event_count}))
 
 def management(request):
     return render_to_response( 'management.html', RequestContext(request) )
@@ -499,11 +495,7 @@ def delete_event(request, event_id):
 # @login_required
 def datasheets(request):
     sheets = DataSheet.objects.all()
-    if settings.SERVER == 'Dev':
-        static_media_url = settings.MEDIA_URL
-    else:
-        static_media_url = settings.STATIC_URL
-    return render_to_response('datasheets.html', RequestContext(request, {'sheets':sheets, 'active':'datasheets', 'STATIC_URL': static_media_url}))
+    return render_to_response('datasheets.html', RequestContext(request, {'sheets':sheets, 'active':'datasheets'}))
     
 @login_required
 def edit_datasheet(request, event_id):
@@ -548,11 +540,8 @@ def edit_datasheet(request, event_id):
 def  view_datasheet(request, sheet_slug):
     sheet = DataSheet.objects.get(slug=sheet_slug)
     sheet.fields = sheet.datasheetfield_set.all()
-    if settings.SERVER == 'Dev':
-        static_media_url = settings.MEDIA_URL
-    else:
-        static_media_url = settings.STATIC_URL
-    return render_to_response('sheet-detail.html', RequestContext(request, {'sheet': sheet, 'STATIC_URL':static_media_url}))
+    
+    return render_to_response('sheet-detail.html', RequestContext(request, {'sheet': sheet}))
 
 # @login_required
 def organizations(request): 
@@ -560,23 +549,16 @@ def organizations(request):
     for organization in Organization.objects.all().order_by('orgname'): 
         organization.projects = Project.objects.filter(organization = organization)
         organizations.append(organization)
-            
 
-    if settings.SERVER == 'Dev':
-        static_media_url = settings.MEDIA_URL
-    else:
-        static_media_url = settings.STATIC_URL
-    return render_to_response( 'organizations.html', RequestContext(request,{'organizations':organizations, 'active':'organizations', 'STATIC_URL':static_media_url}))
+        
+    return render_to_response( 'organizations.html', RequestContext(request,{'organizations':organizations, 'active':'organizations'}))
 
 
 def  view_organization(request, organization_slug):
     organization = Organization.objects.get(slug=organization_slug)
     organization.projects = Project.objects.filter(organization = organization)
-    if settings.SERVER == 'Dev':
-        static_media_url = settings.MEDIA_URL
-    else:
-        static_media_url = settings.STATIC_URL
-    return render_to_response('organization-detail.html', RequestContext(request, {'organization': organization, 'STATIC_URL':static_media_url}))
+    
+    return render_to_response('organization-detail.html', RequestContext(request, {'organization': organization}))
 
 
 
@@ -586,11 +568,8 @@ def  view_project(request, project_slug):
     project.organizations = project.organization.all()
     project.data_sheets = project.active_sheets.all()
     print project
-    if settings.SERVER == 'Dev':
-        static_media_url = settings.MEDIA_URL
-    else:
-        static_media_url = settings.STATIC_URL
-    return render_to_response('project-detail.html', RequestContext(request, {'project': project, 'STATIC_URL':static_media_url}))
+    
+    return render_to_response('project-detail.html', RequestContext(request, {'project': project}))
 
 # @login_required
 def projects(request): 
