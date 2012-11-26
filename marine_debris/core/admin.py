@@ -137,7 +137,7 @@ class MediaAdmin(admin.ModelAdmin):
     }
  
 class OrganizationAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'orgname', 'contact', 'phone', 'address')
+    list_display = ('__unicode__', 'orgname', 'address')
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
