@@ -33,7 +33,12 @@ class Unit (models.Model):
         
 class Organization (models.Model):
     orgname = models.TextField()
+    url = models.TextField(blank=True, null=True)
     address = models.TextField()
+    city = models.TextField(blank=True, null=True)
+    state = models.TextField(blank=True, null=True)
+    zip = models.TextField(blank=True, null=True)
+    scope = models.TextField(blank=True, null=True)
     users = models.ManyToManyField(User)
     slug = models.TextField(blank=True, null=True)
     
@@ -242,6 +247,7 @@ class Project (models.Model):
     organization = models.ManyToManyField(Organization, through='ProjectOrganization')
     website = models.TextField(blank=True, null=True)
     contact_name = models.TextField(blank=True, null=True)
+    contact_title = models.TextField(blank=True, null=True)
     contact_email = models.TextField(blank=True, null=True)
     contact_phone = models.TextField(blank=True, null=True)
     active_sheets = models.ManyToManyField(DataSheet, through='ProjectDataSheet')
