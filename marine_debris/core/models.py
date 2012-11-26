@@ -261,8 +261,13 @@ class Project (models.Model):
         
     class Meta:
         ordering = ['projname']
+
     def get_absolute_url(self):
         return "/project/%s/" % self.slug
+
+    def get_data_url(self):
+        return "/events#project=%s" % self.slug
+
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.projname)
