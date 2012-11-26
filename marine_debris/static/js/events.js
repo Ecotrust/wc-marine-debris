@@ -206,12 +206,15 @@ function viewModel(options) {
   self.queryFilter.subscribe(function () {
     self.mapIsLoading(true);
     $('#events-table').dataTable().fnReloadAjax();
-    app.points.refresh({ 
-        params: {
-            'filter': JSON.stringify(self.queryFilter())
-        }
-    });
     
+    // points not exist at first
+    if (app.points) {
+      app.points.refresh({ 
+          params: {
+              'filter': JSON.stringify(self.queryFilter())
+          }
+      });  
+    }
     if ($("#report").is(":visible")){
         self.getReport(self.queryFilter());
     }
@@ -329,8 +332,35 @@ app.get_events = function () {
 app.loadHash = function (hash) {
   var filters = {}, filterList = [];
   if (hash) {
-    filterList = hash.split()
+    filterList = hash.split("&");
   }
+  $.each(filterList, function (i, filter) {
+    var parts = filter.split('='),
+        type = parts[0],
+        values = parts[1].replace(/\+/, ' ').split(',');
+        
+        // update the select fields
+        $('select.' + type).val(values);
+
+        // unpack the query filter
+        $.each(values, function (i, value) {
+          var valueParts = value.split(':')
+
+          // counties are a special case
+          if (type === 'county') {
+            app.viewModel.queryFilter.push({
+              type: type,
+              value: valueParts[1],
+              state: valueParts[0]
+            });    
+          } else {
+            app.viewModel.queryFilter.push({
+              type: type,
+              value: value
+            });    
+          }
+        });
+  });
 };
 
 $.ajax({
@@ -344,16 +374,15 @@ $.ajax({
     // bind the viewmodel
     ko.applyBindings(app.viewModel);
 
+    // load app state from url
+    app.loadHash(window.location.hash.replace('#', ''));
+
+  
     app.viewModel.mapExtent(map.getExtent());
 
-    $("select.location").chosen();
-    $("select.type").val([]);
-    $("select.type").chosen();
-    $("select.organization").chosen();
-    $("select.project").chosen();
+    
     $(".filters").removeClass('hide');
     $(document).ready(function() {
-      $("select.type").val([]);
 
       $("select.organization").chosen().change(function (event, option) {
         if (option.selected) {
@@ -382,7 +411,7 @@ $.ajax({
       });
       
 
-      $("select.type").chosen().change(function (event, option ) {
+      $("select.event_type").chosen().change(function (event, option ) {
         if (option.selected) {
           app.viewModel.queryFilter.push({
             type: "event_type",
@@ -395,77 +424,43 @@ $.ajax({
         }
         
       });
-      $(".location").chosen().change(function(event, option) {
-        var $select = $(event.target),
-          state,
-          value;
-        if(option){
-          if (option.deselected) {
-            state = option.deselected.split(':')[0];
-            value = option.deselected.split(':')[1];
-            $select.find('[value="' + value + '"]').attr('disabled', 'disabled');
-              
-            app.viewModel.queryFilter.remove(function(filter) {
-              if (filter.type === 'county') {
-                return (filter.value === value && filter.state === state);
-              } else {
-                return (filter.value === value);
-              }
-            });
-              
-            $select.trigger("liszt:updated");
-          } else {
-            app.viewModel.queryFilter.push({
-              value: option.selected.split(':')[1],
-              type: 'county',
-              state: option.selected.split(':')[0]
-            });
-          }
-        }
-      });
 
-      $(".location").find("optgroup").each(function () {
-        var $optgroup = $(this), name = $optgroup.attr('label');
-        $option = $("<option>", { "value": "state:" + name, "text": name, "class": "dummy-state" });
-        $optgroup.append($option.hide());
-      });
-      $(".location").trigger("liszt:updated");
-      //When a state name is selected from filter box
-      $('.chzn-results').on('click', '.group-result', function(event) {
-        var $optgroup = $(event.target),
-          name = $optgroup.text(),
-          $select = $('.location'),
-          $option = $select.find('[value="' + 'state:'+name + '"]'),
-          index = -1,
-          selected = $select.val() || [];
-
-        $.each(app.viewModel.queryFilter(), function(i, filter) {
-          if(filter.value === name) {
-            index = i;
-          }
-        });
-        if(index === -1) {
-          // $optgroup.append($option);
-          $select.trigger("liszt:updated");
-          selected.push('state:'+name);
+      $("select.state").chosen().change(function (event, option ) {
+        if (option.selected) {
           app.viewModel.queryFilter.push({
-            value: name,
-            type: 'state'
+            type: "state",
+            value: option.selected
           });
-        } else {
-          // $optgroup.remove($option);
-          selected.splice($.inArray('state:'+name, selected), 1);
-          app.viewModel.queryFilter.splice(index, 1);
-
+        } else if (option.deselected) {
+          app.viewModel.queryFilter.remove(function (filter) {
+            return filter.type === 'state' && filter.value === option.deselected;
+          });
         }
-        $select.val(selected);
-        $select.trigger('change');
-        $select.trigger("liszt:updated");
+        
       });
-      
+      $("select.county").chosen().change(function (event, option ) {
+        var state, county;
+        if (option.selected) {
+          state = option.selected.split(':')[0];
+          county = option.selected.split(':')[1];
+          app.viewModel.queryFilter.push({
+            type: "county",
+            value: county,
+            state: state
+          });
+        } else if (option.deselected) {
+          state = option.deselected.split(':')[0];
+          county = option.deselected.split(':')[1];
+          app.viewModel.queryFilter.remove(function (filter) {
+            return filter.type === 'county' && filter.value === option.deselected;
+          });
+        }
+      });
     });
+
   }).then(function () {
     //Do nothing for now
+  app.initMap();
   app.map.addLayer(app.points);
   app.map.raiseLayer(app.points, 2);
 
@@ -476,120 +471,120 @@ app.addPoints = function(events) {
   app.points.addFeatures($.map(events, function (event) { return event.feature; }))  ;
 };
 
-// esriOcean = new OpenLayers.Layer.XYZ("ESRI Ocean", "http://services.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/${z}/${y}/${x}", {
-//   sphericalMercator: true,
-//   isBaseLayer: true,
-//   numZoomLevels: app.maxZoom+1,
-//   attribution: "Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri"
-// });
-app.points = new OpenLayers.Layer.Vector("Events", {
-  renderers: OpenLayers.Layer.Vector.prototype.renderers,
-  projection: "EPSG:4326",
-  strategies:[
-    new OpenLayers.Strategy.Fixed(),
-    new OpenLayers.Strategy.AttributeCluster({
-      attribute:'event_type'
-    })
-  ],
-  protocol: new OpenLayers.Protocol.HTTP({
-    url: "/events/get_geojson",
-    format: new OpenLayers.Format.GeoJSON()
 
-  }),
-  styleMap: new OpenLayers.StyleMap({
-    "default": new OpenLayers.Style({
-      pointRadius: "${radius}",
-      fillColor: "${getColor}",
-      fillOpacity: 0.8,
-      strokeColor: "${getStrokeColor}",
-      strokeWidth: 2,
-      strokeOpacity: 0.8,
-      label: "${clusterCount}",
-      fontColor: "#333"
-    },{ 
-      // Rules go here.
-      context: {
-        radius: function(feature) {
-          return Math.min(feature.attributes.count, 7) + 5;
-        },
-        clusterCount: function (feature) {
-          return feature.attributes.count > 1 ? feature.attributes.count: "";
-        },
-        getColor: function(feature) {
-          var type = feature.cluster[0].attributes.event_type;
-          return type === "Site Cleanup" ? "#ffcc66" : "#ccc";
-        },
-        getStrokeColor: function(feature) {
-            var type = feature.cluster[0].attributes.event_type;
-            return type === "Site Cleanup" ? "#cc6633" : "#333";
-
-         }
-      }
+app.initMap = function () {
+  app.points = new OpenLayers.Layer.Vector("Events", {
+    renderers: OpenLayers.Layer.Vector.prototype.renderers,
+    projection: "EPSG:4326",
+    strategies:[
+      new OpenLayers.Strategy.Fixed(),
+      new OpenLayers.Strategy.AttributeCluster({
+        attribute:'event_type'
+      })
+    ],
+    protocol: new OpenLayers.Protocol.HTTP({
+      url: "/events/get_geojson",
+      format: new OpenLayers.Format.GeoJSON(),
+      params: {
+          'filter': JSON.stringify(app.viewModel.queryFilter())
+        }
     }),
-    "select": {
-      fillColor: "#8aeeef",
-      strokeColor: "#32a8a9"
-    }
-  })
-});
+    styleMap: new OpenLayers.StyleMap({
+      "default": new OpenLayers.Style({
+        pointRadius: "${radius}",
+        fillColor: "${getColor}",
+        fillOpacity: 0.8,
+        strokeColor: "${getStrokeColor}",
+        strokeWidth: 2,
+        strokeOpacity: 0.8,
+        label: "${clusterCount}",
+        fontColor: "#333"
+      },{ 
+        // Rules go here.
+        context: {
+          radius: function(feature) {
+            return Math.min(feature.attributes.count, 7) + 5;
+          },
+          clusterCount: function (feature) {
+            return feature.attributes.count > 1 ? feature.attributes.count: "";
+          },
+          getColor: function(feature) {
+            var type = feature.cluster[0].attributes.event_type;
+            return type === "Site Cleanup" ? "#ffcc66" : "#ccc";
+          },
+          getStrokeColor: function(feature) {
+              var type = feature.cluster[0].attributes.event_type;
+              return type === "Site Cleanup" ? "#cc6633" : "#333";
 
-var hybrid = new OpenLayers.Layer.Bing({
-              name: "Hybrid",
-              key: 'AiEF9gzhYiOfxnplJmKcY768T9GhG071ww0DizfaPFi7AnAKpBAJQ_UrHadSgDX4',
-              type: "AerialWithLabels"
-          });
+           }
+        }
+      }),
+      "select": {
+        fillColor: "#8aeeef",
+        strokeColor: "#32a8a9"
+      }
+    })
+  });
+
+  var hybrid = new OpenLayers.Layer.Bing({
+                name: "Hybrid",
+                key: 'AiEF9gzhYiOfxnplJmKcY768T9GhG071ww0DizfaPFi7AnAKpBAJQ_UrHadSgDX4',
+                type: "AerialWithLabels"
+            });
 
 
-map.addLayers([hybrid]);
-map.setCenter(new OpenLayers.LonLat(-122.5, 41).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")), 5);
+  map.addLayers([hybrid]);
+  map.setCenter(new OpenLayers.LonLat(-122.5, 41).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")), 5);
 
-app.selectControl = new OpenLayers.Control.SelectFeature(
-            [app.points],
-    {
-        clickout: true, toggle: false,
-        multiple: false, hover: false,
-        toggleKey: "ctrlKey", // ctrl key removes from selection
-        multipleKey: "shiftKey" // shift key adds to selection
-    }
-);
+  app.selectControl = new OpenLayers.Control.SelectFeature(
+              [app.points],
+      {
+          clickout: true, toggle: false,
+          multiple: false, hover: false,
+          toggleKey: "ctrlKey", // ctrl key removes from selection
+          multipleKey: "shiftKey" // shift key adds to selection
+      }
+  );
 
-app.map.addControl(app.selectControl);
-app.selectControl.activate();
+  app.map.addControl(app.selectControl);
+  app.selectControl.activate();
 
-app.points.events.on({
-  "featuresadded": function () {
-    app.viewModel.mapIsLoading(false);
-  },
-  "featuresremoved": function () {
-    app.viewModel.mapIsLoading(false);
-  },
-  "refresh": function () {
-    app.viewModel.mapIsLoading(false);
-  },
+  app.points.events.on({
+    "featuresadded": function () {
+      app.viewModel.mapIsLoading(false);
+    },
+    "featuresremoved": function () {
+      app.viewModel.mapIsLoading(false);
+    },
+    "refresh": function () {
+      app.viewModel.mapIsLoading(false);
+    },
 
-  "featureselected": function(e) {
-    var bounds;
+    "featureselected": function(e) {
+      var bounds;
 
-    $("#events-table").find('tr.active').removeClass('active');
+      $("#events-table").find('tr.active').removeClass('active');
 
-    if ( e.feature.attributes.count === 1){
-        app.viewModel.clusteredEvents.removeAll();
-        app.viewModel.zoomTo(e.feature);
-    } else {
-        app.viewModel.activeEvent(false);
-        app.viewModel.clusteredEvents($.map(e.feature.cluster, function (f) {
-          return f.attributes;
-        }));
-        
-        app.map.setCenter(e.feature.geometry.bounds.centerLonLat, app.map.getZoom() + 2);
-        
-        
-    }
- },
- "featureunselected": function(e) {
-   //showStatus("unselected feature " + e.feature.id + " on Vector Layer 1");
- }
- });
+      if ( e.feature.attributes.count === 1){
+          app.viewModel.clusteredEvents.removeAll();
+          app.viewModel.zoomTo(e.feature);
+      } else {
+          app.viewModel.activeEvent(false);
+          app.viewModel.clusteredEvents($.map(e.feature.cluster, function (f) {
+            return f.attributes;
+          }));
+          
+          app.map.setCenter(e.feature.geometry.bounds.centerLonLat, app.map.getZoom() + 2);
+          
+          
+      }
+   },
+   "featureunselected": function(e) {
+     //showStatus("unselected feature " + e.feature.id + " on Vector Layer 1");
+   }
+   });  
+}
+
 $(document).resize(function () {
   var $table = $('#events-table');
   $table.css({ width: $(oTable).parent().width() });

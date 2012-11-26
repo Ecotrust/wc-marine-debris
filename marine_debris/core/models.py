@@ -47,7 +47,10 @@ class Organization (models.Model):
 
     
     def get_absolute_url(self):
-        return "/organization/%s/" % self.slug
+        return "/organization/%s" % self.slug
+
+    def get_data_url(self):
+        return "/events#organization=%s" % self.slug
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.orgname)

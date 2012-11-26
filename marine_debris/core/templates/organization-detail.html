@@ -12,7 +12,7 @@
     {% endif %}
     <div class="btn-group pull-right">
         <a class="btn" href="{% url org-list %}"><i class="icon-circle-arrow-left"></i> Back</a>
-        <a class="btn" href="{% url events-filter %}"><i class="icon-bar-chart"></i> Data</a>
+        <a class="btn" href="{{ organization.get_data_url }}"><i class="icon-bar-chart"></i> Data</a>
     </div>
         <h2>{{ organization.orgname }}</h2>
 
