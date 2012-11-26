@@ -33,9 +33,12 @@ class Unit (models.Model):
         
 class Organization (models.Model):
     orgname = models.TextField()
-    contact = models.TextField()    
-    phone = models.TextField()
+    url = models.TextField(blank=True, null=True)
     address = models.TextField()
+    city = models.TextField(blank=True, null=True)
+    state = models.TextField(blank=True, null=True)
+    zip = models.TextField(blank=True, null=True)
+    scope = models.TextField(blank=True, null=True)
     users = models.ManyToManyField(User)
     slug = models.TextField(blank=True, null=True)
     
@@ -247,6 +250,7 @@ class Project (models.Model):
     organization = models.ManyToManyField(Organization, through='ProjectOrganization')
     website = models.TextField(blank=True, null=True)
     contact_name = models.TextField(blank=True, null=True)
+    contact_title = models.TextField(blank=True, null=True)
     contact_email = models.TextField(blank=True, null=True)
     contact_phone = models.TextField(blank=True, null=True)
     active_sheets = models.ManyToManyField(DataSheet, through='ProjectDataSheet')
@@ -363,6 +367,38 @@ class UserTransaction (models.Model):
     submitted_by = models.ForeignKey(User)
     created_date = models.DateTimeField(auto_now_add = True, default=datetime.datetime.now())
     status = models.CharField(max_length=30, choices=StatusChoices, default='New', blank=True)
+    organization = models.ForeignKey(Organization, blank=True, null=True)
+    project = models.ForeignKey(Project, blank=True, null=True)
+    
+    @property
+    def toDict(self):
+        timeout=60*60*24*7
+        key = 'transcache_%s' % self.id
+        res = cache.get(key)
+        if res == None:
+            print "cache missed: %s" % key
+            events = [x.toEventsDict for x in Event.objects.filter(transaction=self)]
+            
+            if self.organization:
+                orgname = self.organization.orgname
+            else:
+                orgname = ''
+            if self.project:
+                projname = self.project.projname
+            else:
+                projname = ''
+            
+            res = {
+                'username': self.submitted_by.username,
+                'organization': orgname,
+                'project': projname,
+                'timestamp': self.created_date.strftime('%m/%d/%Y %H:%M'),
+                'status': self.status,
+                'id': self.id,
+                'events': events
+            }
+            cache.set(key, res, timeout)
+        return res
     
     def __unicode__(self):
         return "%s, %s" % (self.submitted_by, self.created_date.isoformat())

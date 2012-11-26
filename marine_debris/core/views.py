@@ -43,8 +43,23 @@ def index(request):
     return render_to_response( 'index.html', RequestContext(request,{'thankyou': False, 'active':'home', 'event_count': event_count}))
 
 def management(request):
-    return render_to_response( 'management.html', RequestContext(request) )
 
+    trans_dict = {
+        'new' : [trans.toDict for trans in UserTransaction.objects.filter(status='New')],
+        'accepted' : [trans.toDict for trans in UserTransaction.objects.filter(status='Accepted')],
+        'rejected' : [trans.toDict for trans in UserTransaction.objects.filter(status='Rejected')]
+    }
+
+    transaction_json = simplejson.dumps(trans_dict)
+
+    return render_to_response( 'management.html', RequestContext(request, {'transactions':transaction_json}))
+
+def update_transaction(request, arg1 = None, arg2 = None):
+    # import pdb
+    # pdb.set_trace()
+    if request.method == 'POST':
+        qwe = 'qwe'
+    
 def events(request, submit=False): 
 
     if submit:
@@ -206,7 +221,7 @@ def get_event_geojson(request):
                 pass
             
             geo_string = get_feature_json(gj, properties)
-            cache.set(key, geo_string, timeout)
+            cached = cache.set(key, geo_string, timeout)
         feature_jsons.append(geo_string)
         
     geojson = """{
@@ -393,12 +408,13 @@ def event_location(request):
 def event_save(request):
     createEventForm = CreateEventForm(request.POST)
     if createEventForm.is_valid():
+        organization = Organization.objects.get(orgname=createEventForm.data['organization'])
         project = Project.objects.get(projname=createEventForm.data['project'])
         datasheet = DataSheet.objects.get(id=createEventForm.data['data_sheet'])
         state = State.objects.get(initials=createEventForm.data['state'])
         point = Point(float(createEventForm.data['longitude']), float(createEventForm.data['latitude']))
         
-        user_transaction = UserTransaction(submitted_by = request.user, status='New')
+        user_transaction = UserTransaction(submitted_by = request.user, status='New', organization=organization, project=project)
         user_transaction.save()
         if user_transaction.id:
             if datasheet.type_id.display_sites:        
@@ -539,7 +555,7 @@ def edit_datasheet(request, event_id):
         return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'eventForm': None, 'event': event_details, 'action': '/datasheet/edit/'+str(event.event_id), 'active': 'events', 'error':'Some answers were invalid. Please review them.'}))
     
 
-def  view_datasheet(request, sheet_slug):
+def view_datasheet(request, sheet_slug):
     sheet = DataSheet.objects.get(slug=sheet_slug)
     sheet.fields = sheet.datasheetfield_set.all()
     
@@ -576,7 +592,11 @@ def  view_project(request, project_slug):
 # @login_required
 def projects(request): 
     projects = Project.objects.all()       
-    return render_to_response( 'projects.html', RequestContext(request,{'projects': projects, 'active':'projects'}))    
+    if settings.SERVER == 'Dev':
+        static_media_url = settings.MEDIA_URL
+    else:
+        static_media_url = settings.STATIC_URL
+    return render_to_response( 'projects.html', RequestContext(request,{'projects': projects, 'active':'projects', 'STATIC_URL':static_media_url}))    
 
 
 
@@ -745,7 +765,10 @@ def bulk_import(request):
                     errors.append("Row %d, Invalid Latitude/Longitude. Use decimal degrees." % (i+2, ))
             
             sites = []
-            user_transaction = UserTransaction(submitted_by = request.user, status = 'New')
+
+            project = Project.objects.get(id=form.data['project_id'])
+            organization = Organization.objects.get(orgname=form.data['organization'])
+            user_transaction = UserTransaction(submitted_by = request.user, status = 'New', organization=organization, project=project)
             user_transaction.save()
             if user_transaction.id:
                 for site_key in unique_site_keys:

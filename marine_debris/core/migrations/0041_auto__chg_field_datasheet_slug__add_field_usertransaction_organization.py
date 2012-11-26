@@ -5,19 +5,42 @@ from south.v2 import SchemaMigration
 from django.db import models
 from core.models import DataSheet
 
+
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'DataSheet.slug'
-        db.add_column('core_datasheet', 'slug',
-                    self.gf('django.db.models.fields.SlugField')(null=True, blank=True),
-                    keep_default=False)
-        # for d in DataSheet.objects.all():
-            # d.save()
+
+        # Changing field 'DataSheet.slug'
+        db.alter_column('core_datasheet', 'slug', self.gf('django.db.models.fields.TextField')(null=True))
+        # Removing index on 'DataSheet', fields ['slug']
+        db.delete_index('core_datasheet', ['slug'])
+
+        # Adding field 'UserTransaction.organization'
+        db.add_column('core_usertransaction', 'organization',
+                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.Organization'], null=True, blank=True),
+                      keep_default=False)
+
+        # Adding field 'UserTransaction.project'
+        db.add_column('core_usertransaction', 'project',
+                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.Project'], null=True, blank=True),
+                      keep_default=False)
+                      
+        for d in DataSheet.objects.all():
+            d.save()
+
 
     def backwards(self, orm):
-        # Deleting field 'DataSheet.slug'
-        db.delete_column('core_datasheet', 'slug')
+        # Adding index on 'DataSheet', fields ['slug']
+        db.create_index('core_datasheet', ['slug'])
+
+
+        # Changing field 'DataSheet.slug'
+        db.alter_column('core_datasheet', 'slug', self.gf('django.db.models.fields.SlugField')(max_length=50, null=True))
+        # Deleting field 'UserTransaction.organization'
+        db.delete_column('core_usertransaction', 'organization_id')
+
+        # Deleting field 'UserTransaction.project'
+        db.delete_column('core_usertransaction', 'project_id')
 
 
     models = {
@@ -80,7 +103,7 @@ class Migration(SchemaMigration):
             'protocol_description': ('django.db.models.fields.TextField', [], {'default': 'None', 'null': 'True', 'blank': 'True'}),
             'sheet_description': ('django.db.models.fields.TextField', [], {'default': 'None', 'null': 'True', 'blank': 'True'}),
             'sheetname': ('django.db.models.fields.TextField', [], {}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'slug': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'type_id': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'to': "orm['core.EventType']", 'null': 'True'}),
             'year_started': ('django.db.models.fields.IntegerField', [], {})
         },
@@ -104,7 +127,7 @@ class Migration(SchemaMigration):
         },
         'core.event': {
             'Meta': {'ordering': "['proj_id__projname', 'site', 'cleanupdate']", 'unique_together': "(('datasheet_id', 'proj_id', 'cleanupdate', 'site', 'dup'),)", 'object_name': 'Event'},
-            'cleanupdate': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2012, 11, 19, 0, 0)'}),
+            'cleanupdate': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2012, 11, 21, 0, 0)'}),
             'datasheet_id': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['core.DataSheet']"}),
             'dup': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -208,8 +231,10 @@ class Migration(SchemaMigration):
         },
         'core.usertransaction': {
             'Meta': {'object_name': 'UserTransaction'},
-            'created_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2012, 11, 19, 0, 0)', 'auto_now_add': 'True', 'blank': 'True'}),
+            'created_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2012, 11, 21, 0, 0)', 'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'organization': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['core.Organization']", 'null': 'True', 'blank': 'True'}),
+            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['core.Project']", 'null': 'True', 'blank': 'True'}),
             'status': ('django.db.models.fields.CharField', [], {'default': "'New'", 'max_length': '30', 'blank': 'True'}),
             'submitted_by': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
         }

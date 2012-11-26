@@ -18,115 +18,6 @@ var hybrid = new OpenLayers.Layer.Bing({
 
 app.map.addLayers([hybrid]);
 
-
-
-var transactionsFixture = {
-	new: [
-		{
-			username: "Data Wrangler",
-			organization: "Surfrider",
-			timestamp: "09/14/2007 10:05",
-			status: 'new',
-			id: 1,
-			events: [{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.582183, 47.573483","lon":-122.582183,"county":"Kitsap","state":"Washington","st_initials":"WA","lat":47.573483},"project":{"name":"Derelict Gear"},"date":"11/16/2010","organization":{"name":"Northwest Straits"},"id":8860},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.7153, 48.458517","lon":-122.7153,"county":"Skagit","state":"Washington","st_initials":"WA","lat":48.458517},"project":{"name":"Derelict Gear"},"date":"07/03/2010","organization":{"name":"Northwest Straits"},"id":2820},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.50355, 48.731983","lon":-122.50355,"county":"Whatcom","state":"Washington","st_initials":"WA","lat":48.731983},"project":{"name":"Derelict Gear"},"date":"05/04/2010","organization":{"name":"Northwest Straits"},"id":2817},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.582183, 47.573483","lon":-122.582183,"county":"Kitsap","state":"Washington","st_initials":"WA","lat":47.573483},"project":{"name":"Derelict Gear"},"date":"11/16/2010","organization":{"name":"Northwest Straits"},"id":8858},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.582183, 47.573483","lon":-122.582183,"county":"Kitsap","state":"Washington","st_initials":"WA","lat":47.573483},"project":{"name":"Derelict Gear"},"date":"11/16/2010","organization":{"name":"Northwest Straits"},"id":2818},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.712583, 48.463183","lon":-122.712583,"county":"Skagit","state":"Washington","st_initials":"WA","lat":48.463183},"project":{"name":"Derelict Gear"},"date":"09/06/2010","organization":{"name":"Northwest Straits"},"id":2819},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.4226, 47.673833","lon":-122.4226,"county":"King","state":"Washington","st_initials":"WA","lat":47.673833},"project":{"name":"Derelict Gear"},"date":"05/28/2010","organization":{"name":"Northwest Straits"},"id":2822},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.4487, 48.107667","lon":-122.4487,"county":"Island","state":"Washington","st_initials":"WA","lat":48.107667},"project":{"name":"Derelict Gear"},"date":"05/13/2012","organization":{"name":"Northwest Straits"},"id":2821}]
-		},
-		{
-			username: "Goat Man",
-			organization: "Save Our Shores",
-			timestamp: "09/14/2007 10:05",
-			status: 'new',
-			id: 2,
-			events: [{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.582183, 47.573483","lon":-122.582183,"county":"Kitsap","state":"Washington","st_initials":"WA","lat":47.573483},"project":{"name":"Derelict Gear"},"date":"11/16/2010","organization":{"name":"Northwest Straits"},"id":8860},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.7153, 48.458517","lon":-122.7153,"county":"Skagit","state":"Washington","st_initials":"WA","lat":48.458517},"project":{"name":"Derelict Gear"},"date":"07/03/2010","organization":{"name":"Northwest Straits"},"id":2820},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.50355, 48.731983","lon":-122.50355,"county":"Whatcom","state":"Washington","st_initials":"WA","lat":48.731983},"project":{"name":"Derelict Gear"},"date":"05/04/2010","organization":{"name":"Northwest Straits"},"id":2817},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.582183, 47.573483","lon":-122.582183,"county":"Kitsap","state":"Washington","st_initials":"WA","lat":47.573483},"project":{"name":"Derelict Gear"},"date":"11/16/2010","organization":{"name":"Northwest Straits"},"id":8858},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.582183, 47.573483","lon":-122.582183,"county":"Kitsap","state":"Washington","st_initials":"WA","lat":47.573483},"project":{"name":"Derelict Gear"},"date":"11/16/2010","organization":{"name":"Northwest Straits"},"id":2818},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.712583, 48.463183","lon":-122.712583,"county":"Skagit","state":"Washington","st_initials":"WA","lat":48.463183},"project":{"name":"Derelict Gear"},"date":"09/06/2010","organization":{"name":"Northwest Straits"},"id":2819},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.4226, 47.673833","lon":-122.4226,"county":"King","state":"Washington","st_initials":"WA","lat":47.673833},"project":{"name":"Derelict Gear"},"date":"05/28/2010","organization":{"name":"Northwest Straits"},"id":2822},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.4487, 48.107667","lon":-122.4487,"county":"Island","state":"Washington","st_initials":"WA","lat":48.107667},"project":{"name":"Derelict Gear"},"date":"05/13/2012","organization":{"name":"Northwest Straits"},"id":2821}]
-
-		},
-		{
-			username: "Data Wrangler",
-			organization: "Georgia Straits",
-			timestamp: "09/14/2007 10:05",
-			status: 'new',
-			id: 3,
-			events: [{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.582183, 47.573483","lon":-122.582183,"county":"Kitsap","state":"Washington","st_initials":"WA","lat":47.573483},"project":{"name":"Derelict Gear"},"date":"11/16/2010","organization":{"name":"Northwest Straits"},"id":8860},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.7153, 48.458517","lon":-122.7153,"county":"Skagit","state":"Washington","st_initials":"WA","lat":48.458517},"project":{"name":"Derelict Gear"},"date":"07/03/2010","organization":{"name":"Northwest Straits"},"id":2820},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.50355, 48.731983","lon":-122.50355,"county":"Whatcom","state":"Washington","st_initials":"WA","lat":48.731983},"project":{"name":"Derelict Gear"},"date":"05/04/2010","organization":{"name":"Northwest Straits"},"id":2817},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.582183, 47.573483","lon":-122.582183,"county":"Kitsap","state":"Washington","st_initials":"WA","lat":47.573483},"project":{"name":"Derelict Gear"},"date":"11/16/2010","organization":{"name":"Northwest Straits"},"id":8858},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.582183, 47.573483","lon":-122.582183,"county":"Kitsap","state":"Washington","st_initials":"WA","lat":47.573483},"project":{"name":"Derelict Gear"},"date":"11/16/2010","organization":{"name":"Northwest Straits"},"id":2818},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.712583, 48.463183","lon":-122.712583,"county":"Skagit","state":"Washington","st_initials":"WA","lat":48.463183},"project":{"name":"Derelict Gear"},"date":"09/06/2010","organization":{"name":"Northwest Straits"},"id":2819},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.4226, 47.673833","lon":-122.4226,"county":"King","state":"Washington","st_initials":"WA","lat":47.673833},"project":{"name":"Derelict Gear"},"date":"05/28/2010","organization":{"name":"Northwest Straits"},"id":2822},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.4487, 48.107667","lon":-122.4487,"county":"Island","state":"Washington","st_initials":"WA","lat":48.107667},"project":{"name":"Derelict Gear"},"date":"05/13/2012","organization":{"name":"Northwest Straits"},"id":2821}]
-
-		},
-		{
-			username: "Data Wrangler",
-			organization: "Surfrider",
-			timestamp: "09/14/2007 10:05",
-			status: 'new',
-			id: 4,
-			events: [{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.582183, 47.573483","lon":-122.582183,"county":"Kitsap","state":"Washington","st_initials":"WA","lat":47.573483},"project":{"name":"Derelict Gear"},"date":"11/16/2010","organization":{"name":"Northwest Straits"},"id":8860},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.7153, 48.458517","lon":-122.7153,"county":"Skagit","state":"Washington","st_initials":"WA","lat":48.458517},"project":{"name":"Derelict Gear"},"date":"07/03/2010","organization":{"name":"Northwest Straits"},"id":2820},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.50355, 48.731983","lon":-122.50355,"county":"Whatcom","state":"Washington","st_initials":"WA","lat":48.731983},"project":{"name":"Derelict Gear"},"date":"05/04/2010","organization":{"name":"Northwest Straits"},"id":2817},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.582183, 47.573483","lon":-122.582183,"county":"Kitsap","state":"Washington","st_initials":"WA","lat":47.573483},"project":{"name":"Derelict Gear"},"date":"11/16/2010","organization":{"name":"Northwest Straits"},"id":8858},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.582183, 47.573483","lon":-122.582183,"county":"Kitsap","state":"Washington","st_initials":"WA","lat":47.573483},"project":{"name":"Derelict Gear"},"date":"11/16/2010","organization":{"name":"Northwest Straits"},"id":2818},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.712583, 48.463183","lon":-122.712583,"county":"Skagit","state":"Washington","st_initials":"WA","lat":48.463183},"project":{"name":"Derelict Gear"},"date":"09/06/2010","organization":{"name":"Northwest Straits"},"id":2819},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.4226, 47.673833","lon":-122.4226,"county":"King","state":"Washington","st_initials":"WA","lat":47.673833},"project":{"name":"Derelict Gear"},"date":"05/28/2010","organization":{"name":"Northwest Straits"},"id":2822},{"datasheet":{"id":19,"name":"Northwest Straits Derelict Gear Data","event_type":"Derelict Gear Report","start_date":2002},"site":{"name":"-122.4487, 48.107667","lon":-122.4487,"county":"Island","state":"Washington","st_initials":"WA","lat":48.107667},"project":{"name":"Derelict Gear"},"date":"05/13/2012","organization":{"name":"Northwest Straits"},"id":2821}]
-
-		}
-	],
-	accepted: [
-		{
-			username: "Data Wrangler",
-			organization: "Surfrider",
-			timestamp: "09/14/2007 10:05",
-			status: 'accepted',
-			id: 5,
-			events: []
-		},
-		{
-			username: "Goat Man",
-			organization: "Save Our Shores",
-			timestamp: "09/14/2007 10:05",
-			status: 'accepted',
-			id: 6,
-			events: []
-		},
-		{
-			username: "Data Wrangler",
-			organization: "Georgia Straits",
-			timestamp: "09/14/2007 10:05",
-			status: 'accepted',
-			id: 7,
-			events: []
-		},
-		{
-			username: "Data Wrangler",
-			organization: "Surfrider",
-			timestamp: "09/14/2007 10:05",
-			status: 'accepted',
-			id: 8,
-			events: []
-		}
-	],
-	rejected: [
-		{
-			username: "Data Wrangler",
-			organization: "Surfrider",
-			timestamp: "09/14/2007 10:05",
-			status: 'rejected',
-			id: 9,
-			events: []
-		},
-		{
-			username: "Goat Man",
-			organization: "Save Our Shores",
-			timestamp: "09/14/2007 10:05",
-			status: 'rejected',
-			id: 10,
-			events: []
-		},
-		{
-			username: "Data Wrangler",
-			organization: "Georgia Straits",
-			timestamp: "09/14/2007 10:05",
-			status: 'rejected',
-			id: 11,
-			events: []
-		},
-		{
-			username: "Data Wrangler",
-			organization: "Surfrider",
-			timestamp: "09/14/2007 10:05",
-			status: 'rejected',
-			id: 12,
-			events: []
-		}
-	]
-};
 function viewModel (fixture) {
 	var self = this;
 
@@ -159,7 +50,7 @@ function viewModel (fixture) {
 		self.showTransactionSpinner(true);
 		$.ajax({
 			url: '/transaction/update',
-			method: 'POST',
+			type: 'POST',
 			data: {
 				transaction_id: transaction.id(),
 				status: status,
