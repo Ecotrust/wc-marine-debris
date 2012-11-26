@@ -45,6 +45,12 @@ def index(request):
 def management(request):
     return render_to_response( 'management.html', RequestContext(request) )
 
+def update_transaction(request, arg1 = None, arg2 = None):
+    import pdb
+    pdb.set_trace()
+    if request.method == 'POST':
+        qwe = 'qwe'
+    
 def events(request, submit=False): 
 
     if submit:
