@@ -18,7 +18,9 @@
         
         <ul class="unstyled">
             {% if project.contact_name %}
-            <li><i class="icon-user"></i> {{project.contact_name}}</li>
+            <li><i class="icon-user"></i> {{project.contact_name}}
+                {% if project.contact_title %}, {{ project.contact_title}}{% endif %}
+            </li>
             {% endif %}
             {% if project.contact_phone %}
             <li><i class="icon-phone"></i> {{project.contact_phone}}</li>
@@ -26,6 +28,10 @@
             {% if project.contact_email %}
             <li><i class="icon-envelope-alt"></i> {{project.contact_email}}</li>
             {% endif %}
+            {% if project.website %}
+            <li><i class="icon-home"></i> <a href="{{project.website}}" target="_blank">{{project.website}}</a></li>
+            {% endif %}
+
         </ul>
         {% if project.data_sheets %}
         <h3>Data Sheets</h3>

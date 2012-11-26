@@ -18,10 +18,12 @@
 
 
         <ul class="unstyled">
-            <li><i class="icon-user"></i> {{organization.contact}}</li>
-            <li><i class="icon-phone"></i> {{organization.phone}}</li>
-            <li><i class="icon-envelope-alt"></i> {{organization.address}}</li>
             
+            <li><i class="icon-home"></i> <a target="_blank" href="{{organization.url}}">{{organization.url}}</a>
+            <li><i class="icon-envelope-alt"></i>
+                {{organization.address}}
+                {{organization.city}}, {{organization.state}}, {{organization.zip}}
+            </li> 
         </ul>
         {% if organization.projects %}
         <h3>Projects</h3>

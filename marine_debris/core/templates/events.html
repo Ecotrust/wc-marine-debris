@@ -112,7 +112,8 @@
                 { mDataProp: 'site.name', sTitle: 'Site', 'sWidth': '35%'},
                 { mDataProp: 'site.county', sTitle: 'County', 'sWidth': '15%'},
                 { mDataProp: 'site.st_initials', sTitle: 'State', 'sWidth': '5%'},
-                { mDataProp: 'date', sTitle: 'Date', 'sWidth': '10%' }
+                { mDataProp: 'date', sTitle: 'Date', 'sWidth': '5%' },
+                { mDataProp: null, sTitle: 'Action', 'sWidth': '5%' }
               ]
         }">    
     </table>
@@ -243,6 +244,12 @@
   <td data-bind="text: site.county, click: $root.handleTableClick"></td>
   <td data-bind="text: site.st_initials, click: $root.handleTableClick"></td>
   <td data-bind="text: date, click: $root.handleTableClick"></td>
+  <td style="text-align: center">
+    <div class="btn-group">
+      <button class="btn btn-mini"><i class="icon-map-marker"></i></button>
+      <button class="btn btn-mini"><i class="icon-info-sign"></i></button>
+    </div>
+  </td>
 </script>
 
 <script src="{{STATIC_URL}}js/events.js"></script>
