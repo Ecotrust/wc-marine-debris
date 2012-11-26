@@ -33,8 +33,6 @@ class Unit (models.Model):
         
 class Organization (models.Model):
     orgname = models.TextField()
-    contact = models.TextField(blank=True, null=True, default=None)
-    phone = models.TextField(blank=True, null=True, default=None)
     address = models.TextField()
     users = models.ManyToManyField(User)
     slug = models.TextField(blank=True, null=True)
