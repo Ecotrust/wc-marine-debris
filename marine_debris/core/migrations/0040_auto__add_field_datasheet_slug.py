@@ -10,10 +10,10 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'DataSheet.slug'
         db.add_column('core_datasheet', 'slug',
-                    self.gf('django.db.models.fields.TextField')(null=True, blank=True),
+                    self.gf('django.db.models.fields.SlugField')(null=True, blank=True),
                     keep_default=False)
-        for d in DataSheet.objects.all():
-            d.save()
+        # for d in DataSheet.objects.all():
+            # d.save()
 
     def backwards(self, orm):
         # Deleting field 'DataSheet.slug'

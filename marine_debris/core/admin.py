@@ -189,7 +189,7 @@ class UnitAdmin(admin.ModelAdmin):
     }
       
 class UserTransactionAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'submitted_by', 'created_date', 'status')
+    list_display = ('__unicode__', 'submitted_by', 'organization', 'project', 'created_date', 'status')
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
