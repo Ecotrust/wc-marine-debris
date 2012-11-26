@@ -327,7 +327,10 @@ app.get_events = function () {
 // $(document).on('resize', onResize);
 
 app.loadHash = function (hash) {
-
+  var filters = {}, filterList = [];
+  if (hash) {
+    filterList = hash.split()
+  }
 };
 
 $.ajax({

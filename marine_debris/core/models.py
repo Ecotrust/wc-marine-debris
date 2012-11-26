@@ -536,9 +536,9 @@ class Event (models.Model):
                 else:
                     filtered_events = res
             for filter in proj_filters:
-                filtered_events = filtered_events.filter(proj_id__projname=filter['value'])
+                filtered_events = filtered_events.filter(proj_id__slug=filter['value'])
             for filter in org_filters:
-                filtered_events = filtered_events.filter(proj_id__organization__orgname=filter['value'])
+                filtered_events = filtered_events.filter(proj_id__organization__slug=filter['value'])
             for filter in date_filters:
                 if filter['type'] == 'toDate':
                     filtered_events = filtered_events.filter(cleanupdate__gte=filter['value'])

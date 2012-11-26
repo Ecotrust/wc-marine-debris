@@ -74,12 +74,14 @@ def get_filters(request):
     for organization in Organization.objects.all():
         organizations.append({
             "name": organization.orgname,
-            "id": organization.id
+            "id": organization.id,
+            "slug": organization.slug
         })
     for project in Project.objects.all():
         projects.append({
             "name": project.projname,
-            "id": project.id
+            "id": project.id,
+            "slug": project.slug
         })
 
     return HttpResponse(simplejson.dumps({
