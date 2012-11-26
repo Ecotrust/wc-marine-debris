@@ -159,7 +159,7 @@ function viewModel (fixture) {
 		self.showTransactionSpinner(true);
 		$.ajax({
 			url: '/transaction/update',
-			method: 'POST',
+			type: 'POST',
 			data: {
 				transaction_id: transaction.id(),
 				status: status,
