@@ -360,6 +360,38 @@ class UserTransaction (models.Model):
     submitted_by = models.ForeignKey(User)
     created_date = models.DateTimeField(auto_now_add = True, default=datetime.datetime.now())
     status = models.CharField(max_length=30, choices=StatusChoices, default='New', blank=True)
+    organization = models.ForeignKey(Organization, blank=True, null=True)
+    project = models.ForeignKey(Project, blank=True, null=True)
+    
+    @property
+    def toDict(self):
+        timeout=60*60*24*7
+        key = 'transcache_%s' % self.id
+        res = cache.get(key)
+        if res == None:
+            print "cache missed: %s" % key
+            events = [x.toEventsDict for x in Event.objects.filter(transaction=self)]
+            
+            if self.organization:
+                orgname = self.organization.orgname
+            else:
+                orgname = ''
+            if self.project:
+                projname = self.project.projname
+            else:
+                projname = ''
+            
+            res = {
+                'username': self.submitted_by.username,
+                'organization': orgname,
+                'project': projname,
+                'timestamp': self.created_date.strftime('%m/%d/%Y %H:%M'),
+                'status': self.status,
+                'id': self.id,
+                'events': events
+            }
+            cache.set(key, res, timeout)
+        return res
     
     def __unicode__(self):
         return "%s, %s" % (self.submitted_by, self.created_date.isoformat())
