@@ -113,25 +113,38 @@
                 { mDataProp: 'site.county', sTitle: 'County', 'sWidth': '15%'},
                 { mDataProp: 'site.st_initials', sTitle: 'State', 'sWidth': '5%'},
                 { mDataProp: 'date', sTitle: 'Date', 'sWidth': '5%' },
-                { mDataProp: null, sTitle: 'Action', 'sWidth': '5%' }
+                { 'bSortable': false, mDataProp: null, sTitle: 'Action', 'sWidth': '5%' }
               ]
         }">    
     </table>
     
   </div>
-  {% if user.is_authenticated %}
+  
   <div class="row-fluid buttons">
   <p class="pull-right">
-    <a href="/datasheet/bulk_import" class="btn">
-      <i class="icon-share-alt"></i> Import Events
-    </a>
-    <a href="/event/create" class="btn">
-      <i class="icon-plus"></i> Create Event 
-    </a>
+    <button class="btn" data-bind="click: showReport">
+      <i class="icon-bar-chart"></i> View Report
+    </button>
+    {% if user.is_authenticated %}
+      <a href="/datasheet/bulk_import" class="btn">
+        <i class="icon-share-alt"></i> Import Events
+      </a>
+      <a href="/event/create" class="btn">
+        <i class="icon-plus"></i> Create Event 
+      </a>
+    {% endif %}
+
   </p>
 </div>
 
-{% endif %}
+<div class="popover top" id="event-popover">
+  <div class="arrow"></div>
+  <h3 class="popover-title">Popover top</h3>
+  <div class="popover-content">
+    <p>Sed posuere consectetur est at lobortis. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum.</p>
+  </div>
+</div>
+
 {% endblock %}    
 {% block rightcontent %}
     {%if data %}
@@ -192,7 +205,11 @@
                         <button class="btn btn-mini" data-bind="click: $root.zoomTo" rel="tooltip" title="zoom to event"><i class="icon-search"></i></button>
                       </dd>
                       <dt>project</dt>
-                      <dd><span data-bind="text: project.name"></span></dd>
+                      <dd>
+                        <a data-bind="attr: { href: project.url }" target="_blank">
+                          <span data-bind="text: project.name"></span>
+                        </a>
+                      </dd>
                       <dt>date</dt>
                       <dd><span data-bind="text: date"></span></dd>
                     </dl>

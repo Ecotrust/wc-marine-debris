@@ -145,6 +145,11 @@ function viewModel(options) {
     return self.events();
   });
   
+  self.showReport = function () {
+    $("#report-tab").tab('show');  
+    //self.getReport(self.queryFilter());
+  }
+
   self.getReport = function (filters) {
     self.showReportSpinner(true);
     $('#report').hide();
@@ -256,7 +261,6 @@ function viewModel(options) {
     if (typeof event.site !== 'undefined') {
       app.map.setCenter(new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")), 12);  
     } else {
-      
       app.map.setCenter(event.geometry.x, event.geometry.y);
     }
   };
@@ -558,23 +562,20 @@ app.initMap = function () {
     },
 
     "featureselected": function(e) {
-      var bounds;
-
-      $("#events-table").find('tr.active').removeClass('active');
-
       if ( e.feature.attributes.count === 1){
-          app.viewModel.clusteredEvents.removeAll();
-          app.viewModel.zoomTo(e.feature);
+         app.viewModel.clusteredEvents.removeAll();
+         app.viewModel.zoomTo(e.feature);
       } else {
-          app.viewModel.activeEvent(false);
-          app.viewModel.clusteredEvents($.map(e.feature.cluster, function (f) {
-            return f.attributes;
-          }));
-          
-          app.map.setCenter(e.feature.geometry.bounds.centerLonLat, app.map.getZoom() + 2);
-          
-          
+         app.viewModel.activeEvent(false);
+         app.viewModel.clusteredEvents($.map(e.feature.cluster, function (f) {
+           return f.attributes;
+         }));
+         
+         app.map.setCenter(e.feature.geometry.bounds.centerLonLat, app.map.getZoom() + 2);
+         
+         
       }
+      
    },
    "featureunselected": function(e) {
      //showStatus("unselected feature " + e.feature.id + " on Vector Layer 1");

@@ -279,6 +279,7 @@ class Project (models.Model):
         proj_dict = {
             'name': self.projname,
             'datasheets': datasheets,
+            'get_absolute_url': self.get_absolute_url()
         }
         return proj_dict
     
@@ -655,7 +656,8 @@ class Event (models.Model):
         return {
             "site": self.site.toDict,
             "project": {
-                "name": proj.projname
+                "name": proj.projname,
+                "url": proj.get_absolute_url()
             },
             "id": self.id,
             "datasheet": self.datasheet_id.toDict,
