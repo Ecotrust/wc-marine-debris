@@ -5,7 +5,7 @@
 <div class="manage-transactions">
 	<div data-bind="if: selectedTransaction">
 		<div data-bind="visible: showTransactionSpinner">
-		  <img src="/site-media/img/ajax-loader.gif" />
+		  <img src="{{MEDIA_URL}}img/ajax-loader.gif" />
 		</div>
 		<h2>Transaction Details</h2>
 		<div class="btn-group">
@@ -80,7 +80,7 @@
 	    <div data-bind="with: selectedEvent">
 	    	<div class="row-fluid">
 	    		<div class="span6">
-			      <h4><span data-bind="text: site.name"></span><img data-bind="visible: $root.showDetailsSpinner" src="/site-media/img/ajax-loader.gif" class="pull-right"/></h4>
+			      <h4><span data-bind="text: site.name"></span><img data-bind="visible: $root.showDetailsSpinner" src="{{MEDIA_URL}}img/ajax-loader.gif" class="pull-right"/></h4>
 			      <dl class="dl-horizontal">
 			        <dt>location</dt>
 			        <dd><span data-bind="text: site.county"></span>, <span data-bind="text: site.state"></span></dd>
@@ -112,8 +112,8 @@
 </div>
 {% endblock %}
 {% block styles %}
-    <link href="/site-media/third-party/jquery/css/jquery.dataTables.css" rel="stylesheet" />
-    <script src="/site-media/third-party/OpenLayers-2.12/OpenLayers.js" type="text/javascript" charset="utf-8"></script>
+    <link href="{{STATIC_URL}}third-party/jquery/css/jquery.dataTables.css" rel="stylesheet" />
+    <script src="{{STATIC_URL}}third-party/OpenLayers-2.12/OpenLayers.js" type="text/javascript" charset="utf-8"></script>
     
 {% endblock %}
 
@@ -134,7 +134,7 @@
   <td data-bind="text: site.st_initials, click: $root.selectEvent"></td>
   <td data-bind="text: date, click: $root.selectEvent"></td>
 </script>
-<script src="/site-media/js/management.js"></script>
+<script src="{{STATIC_URL}}js/management.js"></script>
 {% endblock %}
 {% block js %}
 

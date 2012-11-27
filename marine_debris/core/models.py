@@ -33,9 +33,12 @@ class Unit (models.Model):
         
 class Organization (models.Model):
     orgname = models.TextField()
-    contact = models.TextField()    
-    phone = models.TextField()
+    url = models.TextField(blank=True, null=True)
     address = models.TextField()
+    city = models.TextField(blank=True, null=True)
+    state = models.TextField(blank=True, null=True)
+    zip = models.TextField(blank=True, null=True)
+    scope = models.TextField(blank=True, null=True)
     users = models.ManyToManyField(User)
     slug = models.TextField(blank=True, null=True)
     
@@ -47,7 +50,10 @@ class Organization (models.Model):
 
     
     def get_absolute_url(self):
-        return "/organization/%s/" % self.slug
+        return "/organization/%s" % self.slug
+
+    def get_data_url(self):
+        return "/events#organization=%s" % self.slug
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.orgname)
@@ -244,6 +250,7 @@ class Project (models.Model):
     organization = models.ManyToManyField(Organization, through='ProjectOrganization')
     website = models.TextField(blank=True, null=True)
     contact_name = models.TextField(blank=True, null=True)
+    contact_title = models.TextField(blank=True, null=True)
     contact_email = models.TextField(blank=True, null=True)
     contact_phone = models.TextField(blank=True, null=True)
     active_sheets = models.ManyToManyField(DataSheet, through='ProjectDataSheet')
@@ -254,8 +261,13 @@ class Project (models.Model):
         
     class Meta:
         ordering = ['projname']
+
     def get_absolute_url(self):
         return "/project/%s/" % self.slug
+
+    def get_data_url(self):
+        return "/events#project=%s" % self.slug
+
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.projname)
@@ -267,6 +279,7 @@ class Project (models.Model):
         proj_dict = {
             'name': self.projname,
             'datasheets': datasheets,
+            'get_absolute_url': self.get_absolute_url()
         }
         return proj_dict
     
@@ -522,16 +535,26 @@ class Event (models.Model):
     def filter(cls, filters):
         event_types = []
         site_filters = []
+        date_filters = []
+        org_filters = []
+        proj_filters = []
         # bbox_filter = False
         if filters == None:
             filters = []
         for filter in filters:
             if filter['type'] == 'event_type':
-                event_types.append(filter['name'])
+                event_types.append(filter['value'])
             # if filter['type'] == 'bbox':
                 # bbox = tuple(filter['bbox'].split(','))
                 # geom = Polygon.from_bbox(bbox)
-                # bbox_filter = True                
+                # bbox_filter = True  
+            #datepicker sends 1969 as null date              
+            elif filter['type'] == 'toDate' or filter['type'] == 'fromDate':
+                date_filters.append(filter)
+            elif filter['type'] == 'organization':
+                org_filters.append(filter)
+            elif filter['type'] == 'project':
+                proj_filters.append(filter)
             else:
                 site_filters.append(filter)
                 
@@ -548,15 +571,24 @@ class Event (models.Model):
                 filtered_events = None
             for filter in site_filters:
                 if filter['type'] == "county":
-                    res = events.filter(site__county=filter['name'], site__state__name=filter['state'])
-                    res_county = events.filter(site__county=filter['name'] + ' County', site__state__name=filter['state'])
+                    res = events.filter(site__county=filter['value'], site__state__name=filter['state'])
+                    res_county = events.filter(site__county=filter['value'] + ' County', site__state__name=filter['state'])
                     res = res | res_county
                 if filter['type'] == "state":
-                    res = events.filter(site__state__name=filter['name'])
+                    res = events.filter(site__state__name=filter['value'])
                 if filtered_events:
                     filtered_events = filtered_events | res
                 else:
                     filtered_events = res
+            for filter in proj_filters:
+                filtered_events = filtered_events.filter(proj_id__slug=filter['value'])
+            for filter in org_filters:
+                filtered_events = filtered_events.filter(proj_id__organization__slug=filter['value'])
+            for filter in date_filters:
+                if filter['type'] == 'toDate':
+                    filtered_events = filtered_events.filter(cleanupdate__gte=filter['value'])
+                if filter['type'] == 'fromDate':
+                    filtered_events = filtered_events.filter(cleanupdate__lte=filter['value'])
         # if bbox_filter:
             # filtered_events = filtered_events.filter(site__geometry__contained=geom)
         return filtered_events
@@ -624,7 +656,8 @@ class Event (models.Model):
         return {
             "site": self.site.toDict,
             "project": {
-                "name": proj.projname
+                "name": proj.projname,
+                "url": proj.get_absolute_url()
             },
             "id": self.id,
             "datasheet": self.datasheet_id.toDict,

@@ -76,10 +76,10 @@
 {% endif %}
 {% endblock %}
 {% block scripts %}
-<script src="/site-media/third-party/js/jquery.ba-bbq.min.js"></script>
-   <script src="/site-media/third-party/OpenLayers-2.12/OpenLayers.js"></script>
-   <script src="/site-media/js/widgets/map.js"></script>
-   <script src="/site-media/js/bulk_import.js"></script>
+<script src="{{STATIC_URL}}third-party/js/jquery.ba-bbq.min.js"></script>
+   <script src="{{STATIC_URL}}third-party/OpenLayers-2.12/OpenLayers.js"></script>
+   <script src="{{STATIC_URL}}js/widgets/map.js"></script>
+   <script src="{{STATIC_URL}}js/bulk_import.js"></script>
 {% endblock %}
 
 {% block js %}

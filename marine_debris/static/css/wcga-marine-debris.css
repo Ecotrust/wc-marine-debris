@@ -93,7 +93,9 @@ h6 { font-weight: normal; }
 	color: white;
 }
 
-
+.nav-tabs li.active-filter {
+	font-weight: bold;
+}
 .organization-table a {
 	display: block;
 	height: 100%;
@@ -102,6 +104,34 @@ h6 { font-weight: normal; }
 
 .organization-table a:link {
 	text-decoration: none;
+}
+
+.add-on:hover {
+
+	color: #333333;
+  text-decoration: none;
+  background-color: #e6e6e6;
+  *background-color: #d9d9d9;
+  /* Buttons in IE7 don't get borders, so darken on hover */
+
+  background-position: 0 -15px;
+  -webkit-transition: background-position 0.1s linear;
+  -moz-transition: background-position 0.1s linear;
+  -o-transition: background-position 0.1s linear;
+  transition: background-position 0.1s linear;
+}
+.add-on:active {
+
+	background-color: #e6e6e6;
+  background-color: #d9d9d9 \9;
+  background-image: none;
+  outline: 0;
+  -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.icon-remove-sign {
+	font-size: 20px;
 }
 
 tr td a .icon-circle-arrow-right {
@@ -221,6 +251,7 @@ img.olTileImage {
 	padding: 10px;
 	background: #f8f8f8;
 	border: 1px solid #e8e8e8;
+
 	}
 
 .dataTables_length {
@@ -323,6 +354,7 @@ img.olTileImage {
 	height: 330px;
 }
 .wcga-database {
+	overflow: auto;
 	margin: 10px 0px; padding: 10px;
 	background: #fff;
 	border: 1px solid #eee;

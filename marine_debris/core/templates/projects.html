@@ -5,21 +5,18 @@
 <h2>Projects</h2>
 
 
-<div class="clearfix">
+<!--<div class="clearfix">
     <form class="form-search pull-right">
       <input type="text" class="input-large search-query" name="search-term">
       <button type="submit" class="btn">Search</button>
     </form>
-</div>
+</div>-->
 <div class="table-wrapper">
     <table class="table table-condensed table-hover organization-table">
     {% for project in projects %}
         <tr>
             <td><strong><a href="{{project.get_absolute_url}}">{{project.projname}} <i class="icon-circle-arrow-right"></i></a></strong></td>
             <td>
-                <div class="btn-group pull-right">
-                    <button class="btn"><i class="icon-file"></i> Data</button></td>
-                </div>
         </tr>
     {% endfor %}    
     </table>
