@@ -134,7 +134,7 @@ class DataSheet (models.Model):
     
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.sheetname)
+        self.slug = slugify(self.created_by.orgname + '_' + str(self.year_started) + '_' + self.sheetname)
         super(DataSheet, self).save(*args, **kwargs)
 
     def get_absolute_url(self):

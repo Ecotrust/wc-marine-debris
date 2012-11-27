@@ -64,7 +64,7 @@ class CountyAdmin(admin.ModelAdmin):
     }
     
 class DataSheetAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'type_id', 'created_by', 'year_started')
+    list_display = ('slug', '__unicode__', 'type_id', 'created_by', 'year_started')
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
