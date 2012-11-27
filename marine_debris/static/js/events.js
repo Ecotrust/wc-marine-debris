@@ -80,8 +80,10 @@ function viewModel(options) {
   });
 
   self.removeDate = function (self, event) {
-  $(event.target).closest('.input-append').find('input').datepicker( "setDate", null ).trigger('change');
-
+    $(event.target).closest('.input-append')
+      .find('input')
+      .datepicker( "setDate", null )
+      .trigger('change');
   };
 
   self.activeFilterTypes = ko.computed(function (type) {
@@ -116,22 +118,6 @@ function viewModel(options) {
     }
   };
 
-  // populate points
-  self.addEvents = function (events) {
-    self.events([]);
-    $.each(events, function(i, event) {
-      var state = event.site.state,
-        pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")),
-        point = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(event.site.lon, event.site.lat));
-      event.feature = point;
-      point.event = event;
-      point.attributes = event;
-      point.attributes.event_type = event.datasheet.event_type;
-      point.geometry.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
-      self.events().push(event);
-    });
-  };
-
   // store mapextent here
   self.mapExtent = ko.observable();
   self.filterByExtent = ko.observable(false);
@@ -148,6 +134,10 @@ function viewModel(options) {
   self.showReport = function () {
     $("#report-tab").tab('show');  
     //self.getReport(self.queryFilter());
+  }
+  self.showMap = function () {
+    self.showDetailsSpinner(true);
+    $("#map-tab").tab('show');  
   }
 
   self.getReport = function (filters) {
@@ -266,7 +256,6 @@ function viewModel(options) {
   };
 
   self.showDetail = function(event) {
-  
     event.data = ko.observable(false);
     self.showDetailsSpinner(true);
     $.get('/event/view/' + event.id, function(data) {
@@ -284,51 +273,6 @@ function viewModel(options) {
 }
 
 
-app.get_event_points = function(filters) {
-  if ( $.browser.msie === undefined || $.browser.version >= 9) {
-    $('#map').addClass('fade');
-    app.viewModel.mapIsLoading(true);
-    $.ajax({
-          url: "/events/get",
-          type: 'GET',
-          data: {
-              "filter" : JSON.stringify(filters)
-          },
-          dataType: 'json'
-    }).done(function(res) { 
-      app.viewModel.addEvents(res.aaData);
-      app.addPoints(app.viewModel.events());
-      $('#map').removeClass('fade');
-      app.viewModel.mapIsLoading(false);
-
-    });  
-  }
-};
-
-app.get_events = function () {
-  if ( $.browser.msie === undefined || $.browser.version >= 9) {
-    $('#map').addClass('fade');
-    app.viewModel.mapIsLoading(true);
-    $.ajax({
-          url: "/events/get",
-          type: 'GET',
-          dataType: 'json'
-    }).done(function(res) { 
-      app.viewModel.addEvents(res.aaData);
-      app.addPoints(app.viewModel.events());
-      $('#map').removeClass('fade');
-      app.viewModel.mapIsLoading(false);
-
-    });    
-  }
-
-};
-// var onResize = function () {
-//   $(".wcga-database").height(Math.max($(".wcga-database-left").height(), $(".wcga-database-right").height()));
-
-// };
-// onResize();
-// $(document).on('resize', onResize);
 
 app.loadHash = function (hash) {
   var filters = {}, filterList = [];
@@ -347,8 +291,15 @@ app.loadHash = function (hash) {
         $.each(values, function (i, value) {
           var valueParts = value.split(':')
 
+          if (type === 'toDate' || type === 'fromDate') {
+             $(document.getElementById(type)).datepicker( "setDate", value );
+             app.viewModel.queryFilter.push({
+               type: type,
+               value: value
+             });
+          }
           // counties are a special case
-          if (type === 'county') {
+          else if (type === 'county') {
             app.viewModel.queryFilter.push({
               type: type,
               value: valueParts[1],
@@ -384,6 +335,10 @@ $.ajax({
     
     $(".filters").removeClass('hide');
     $(document).ready(function() {
+
+      $('#map-tab').on('shown', function (e) {
+        app.viewModel.showDetailsSpinner(false);
+      })
 
       $("select.organization").chosen().change(function (event, option) {
         if (option.selected) {
@@ -467,10 +422,6 @@ $.ajax({
 
   });
 
-app.addPoints = function(events) {
-  app.points.removeAllFeatures();
-  app.points.addFeatures($.map(events, function (event) { return event.feature; }))  ;
-};
 
 
 app.initMap = function () {
@@ -564,17 +515,18 @@ app.initMap = function () {
     "featureselected": function(e) {
       if ( e.feature.attributes.count === 1){
          app.viewModel.clusteredEvents.removeAll();
-         app.viewModel.zoomTo(e.feature);
+         
+         app.viewModel.showDetail(e.feature.cluster[0].attributes);
       } else {
          app.viewModel.activeEvent(false);
          
          app.map.setCenter(e.feature.geometry.bounds.centerLonLat, app.map.getZoom() + 2);
-         
+         app.viewModel.clusteredEvents($.map(e.feature.cluster, function (f) {
+           return f.attributes;
+         }));
          
       }
-      app.viewModel.clusteredEvents($.map(e.feature.cluster, function (f) {
-        return f.attributes;
-      }));
+     
       
       
    },
