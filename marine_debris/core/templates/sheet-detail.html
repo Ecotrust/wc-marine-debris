@@ -1,0 +1,50 @@
+{% extends "carousel-right-base.html" %}
+
+{% block leftcontent %}
+<div class="row-fluid">
+    {% if organization.logo %}
+    <div class="span4">
+        <img src="http://www.placehold.it/200x200"/>
+    </div>
+    <div class="span8">
+    {% else %}
+    <div class="span12">
+    {% endif %}
+        <div class="btn-group pull-right">
+            <a class="btn" href="{% url sheet-list %}"><i class="icon-circle-arrow-left"></i> Back</a>
+            <!--<a class="btn" href="{% url events-filter %}"><i class="icon-bar-chart"></i> Data</a>-->
+        </div>
+        <h2>{{ sheet.sheetname }}</h2>
+        <dl>
+            <dt>Protocol Description</dt>            
+            <dd>{{sheet.protocol_description}}</dd>
+            <dt>Year Started</dt>            
+            <dd>{{sheet.year_started}}</dd>
+            <dt>Created By</dt>
+            <dd><a href="{{sheet.created_by.get_absolute_url}}">{{sheet.created_by.orgname}}</a></dd>
+        </dl>
+        {% if sheet.fieldnames %}
+        <h3>Fields</h3>
+        <div class="table-wrapper-short">
+            <table class="table table-condensed table-hover organization-table">
+            {% for field in sheet.fields %}
+                <tr>
+                    <td>
+                        {% if field.print_name %}
+                        {{ field.print_name }}
+                        {% else %}
+                        {{ field.field_name }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ field.unit_id.long_name }}
+                    </td>
+                </tr>
+            {% endfor %}    
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}    

@@ -1,0 +1,42 @@
+{% extends "carousel-right-base.html" %}
+
+{% block leftcontent %}
+<div class="row-fluid">
+    {% if organization.logo %}
+    <div class="span4">
+        <img src="http://www.placehold.it/200x200"/>
+    </div>
+    <div class="span8">
+    {% else %}
+    <div class="span12">
+    {% endif %}
+    <div class="btn-group pull-right">
+        <a class="btn" href="{% url org-list %}"><i class="icon-circle-arrow-left"></i> Back</a>
+        <a class="btn" href="{{ organization.get_data_url }}"><i class="icon-bar-chart"></i> Data</a>
+    </div>
+        <h2>{{ organization.orgname }}</h2>
+
+
+        <ul class="unstyled">
+            
+            <li><i class="icon-home"></i> <a target="_blank" href="{{organization.url}}">{{organization.url}}</a>
+            <li><i class="icon-envelope-alt"></i>
+                {{organization.address}}
+                {{organization.city}}, {{organization.state}}, {{organization.zip}}
+            </li> 
+        </ul>
+        {% if organization.projects %}
+        <h3>Projects</h3>
+        <table class="table table-condensed table-hover organization-table">
+        {% for project in organization.projects %}
+            <tr>
+                <td><strong><a href="/project/{{project.slug}}">{{project.projname}} <i class="icon-circle-arrow-right"></i></a></strong></td>
+               
+            </tr>
+        {% endfor %}    
+        </table>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}    

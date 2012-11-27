@@ -39,23 +39,54 @@ def index(request):
         }
     ]
     
+
+    return render_to_response( 'index.html', RequestContext(request,{'thankyou': False, 'active':'home', 'event_count': event_count}))
+
+def management(request):
+
+    trans_dict = {
+        'new' : [trans.toDict for trans in UserTransaction.objects.filter(status='New')],
+        'accepted' : [trans.toDict for trans in UserTransaction.objects.filter(status='Accepted')],
+        'rejected' : [trans.toDict for trans in UserTransaction.objects.filter(status='Rejected')]
+    }
+
+    transaction_json = simplejson.dumps(trans_dict)
+
+    return render_to_response( 'management.html', RequestContext(request, {'transactions':transaction_json}))
+
+def update_transaction(request, arg1 = None, arg2 = None):
+    # import pdb
+    # pdb.set_trace()
+    if request.method == 'POST':
+        res = management(request)
+        res.status_code = 200
+        return res
+    else:
+        res = management(request)
+        res.error = 'request was not a POST'
+        res.status_code = 400
+        return res
+    
+    
+    
+def events(request, submit=False): 
+    
     if settings.SERVER == 'Dev':
         static_media_url = settings.MEDIA_URL
     else:
         static_media_url = settings.STATIC_URL
 
-    return render_to_response( 'index.html', RequestContext(request,{'STATIC_URL':static_media_url, 'thankyou': False, 'active':'home', 'event_count': event_count}))
-
-def events(request, submit=False): 
-
     if submit:
-        return render_to_response( 'events.html', RequestContext(request,{'submit':True, 'added_site':submit, 'active':'events'}))
+        return render_to_response( 'events.html', RequestContext(request,{'submit':True, 'added_site':submit, 'active':'events', 'STATIC_URL':static_media_url}))
     else:
-        return render_to_response( 'events.html', RequestContext(request,{'submit':submit, 'added_site':None, 'active':'events'}))
+        return render_to_response( 'events.html', RequestContext(request,{'submit':submit, 'added_site':None, 'active':'events', 'STATIC_URL':static_media_url}))
         
-def get_locations(request):
+def get_filters(request):
     states = []
     locations = {}
+    organizations = []
+    projects = []
+
     for state in State.objects.all().order_by('name'):
         states.append(state.toSimpleDict)
         counties = []
@@ -69,9 +100,24 @@ def get_locations(request):
             'counties' : counties,
             'state' : state.name,
         }
+    for organization in Organization.objects.all():
+        organizations.append({
+            "name": organization.orgname,
+            "id": organization.id,
+            "slug": organization.slug
+        })
+    for project in Project.objects.all():
+        projects.append({
+            "name": project.projname,
+            "id": project.id,
+            "slug": project.slug
+        })
+
     return HttpResponse(simplejson.dumps({
         'states': states,
         'locations': locations,
+        "projects": projects,
+        "organizations": organizations
     }))
 
 sort_cols = {
@@ -172,7 +218,6 @@ def get_event_geojson(request):
     timeout=60*60*24*7*52*10
     loop_count = 0
     for event in qs:
-        print loop_count
         loop_count = loop_count + 1
         key = 'geocache_%s' % event.id
         geo_string = cache.get(key)
@@ -190,7 +235,7 @@ def get_event_geojson(request):
                 pass
             
             geo_string = get_feature_json(gj, properties)
-            cache.set(key, geo_string, timeout)
+            cached = cache.set(key, geo_string, timeout)
         feature_jsons.append(geo_string)
         
     geojson = """{
@@ -377,37 +422,47 @@ def event_location(request):
 def event_save(request):
     createEventForm = CreateEventForm(request.POST)
     if createEventForm.is_valid():
+        organization = Organization.objects.get(orgname=createEventForm.data['organization'])
         project = Project.objects.get(projname=createEventForm.data['project'])
         datasheet = DataSheet.objects.get(id=createEventForm.data['data_sheet'])
         state = State.objects.get(initials=createEventForm.data['state'])
         point = Point(float(createEventForm.data['longitude']), float(createEventForm.data['latitude']))
         
-        if datasheet.type_id.display_sites:        
-            sitename = createEventForm.data['sitename']
-        else:
-            sitename = "%s, %s" % (createEventForm.data['longitude'], createEventForm.data['latitude'])
+        user_transaction = UserTransaction(submitted_by = request.user, status='New', organization=organization, project=project)
+        user_transaction.save()
+        if user_transaction.id:
+            if datasheet.type_id.display_sites:        
+                sitename = createEventForm.data['sitename']
+            else:
+                sitename = "%s, %s" % (createEventForm.data['longitude'], createEventForm.data['latitude'])
 
-        if createEventForm.data['county'] == '':
-            site = Site.objects.get_or_create(state = state, geometry = str(point), sitename = sitename)
+            if createEventForm.data['county'] == '':
+                site, created = Site.objects.get_or_create(state = state, geometry = str(point), sitename = sitename)
+            else:
+                county = createEventForm.data['county']
+                if Site.objects.filter(state=state, county=county, geometry = str(point), sitename = sitename).count() == 0:
+                    if Site.objects.filter(state=state, county=county+' County', geometry = str(point), sitename = sitename).count() > 0:
+                        county = county + ' County'
+                site, created = Site.objects.get_or_create(state = state, county = county, geometry = str(point), sitename = sitename)
+            
+            if created:
+                site.transaction = user_transaction
+                site.save()
+            
+            date = datetime.datetime.strptime(createEventForm.data['date'], '%m/%d/%Y')
+            event = Event(proj_id = project, datasheet_id = datasheet, cleanupdate = date, site = site, transaction = user_transaction)
+            event.save()
+            if event.id:
+                datasheetForm = DataSheetForm(event.datasheet_id, event, None, request.POST)
+            if event.id and datasheetForm.is_valid():
+                datasheetForm.save()
+                return HttpResponseRedirect('/events/%s' % event.id)
+            else:
+                Event.delete(event)
+                if created:
+                    Site.delete(site)
         else:
-            county = createEventForm.data['county']
-            if Site.objects.filter(state=state, county=county, geometry = str(point), sitename = sitename).count() == 0:
-                if Site.objects.filter(state=state, county=county+' County', geometry = str(point), sitename = sitename).count() > 0:
-                    county = county + ' County'
-            site = Site.objects.get_or_create(state = state, county = county, geometry = str(point), sitename = sitename)
-        
-        date = datetime.datetime.strptime(createEventForm.data['date'], '%m/%d/%Y')
-        event = Event(proj_id = project, datasheet_id = datasheet, cleanupdate = date, site = site[0], submitted_by = request.user)
-        event.save()
-        if event.id:
-            datasheetForm = DataSheetForm(event.datasheet_id, event, None, request.POST)
-        if event.id and datasheetForm.is_valid():
-            datasheetForm.save()
-            return HttpResponseRedirect('/events/%s' % event.id)
-        else:
-            Event.delete(event)
-            if site[1]:
-                Site.delete(site[0])
+            UserTransaction.delete(user_transaction)
             event = {}
             event['organization'] = createEventForm.data['organization']
             event['project'] = createEventForm.data['project']
@@ -471,12 +526,8 @@ def delete_event(request, event_id):
 
 # @login_required
 def datasheets(request):
-    qs = DataSheet.objects.filter()
-    result = []
-    for datasheet in qs.all():
-        result.append({'datasheet': datasheet})
-        
-    return render_to_response('datasheets.html', RequestContext(request, {'result':result, 'active':'datasheets'}))
+    sheets = DataSheet.objects.all()
+    return render_to_response('datasheets.html', RequestContext(request, {'sheets':sheets, 'active':'datasheets'}))
     
 @login_required
 def edit_datasheet(request, event_id):
@@ -517,24 +568,51 @@ def edit_datasheet(request, event_id):
             event_details['sitename'] = event.site.sitename
         return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'eventForm': None, 'event': event_details, 'action': '/datasheet/edit/'+str(event.event_id), 'active': 'events', 'error':'Some answers were invalid. Please review them.'}))
     
+
+def view_datasheet(request, sheet_slug):
+    sheet = DataSheet.objects.get(slug=sheet_slug)
+    sheet.fields = sheet.datasheetfield_set.all()
     
+    return render_to_response('sheet-detail.html', RequestContext(request, {'sheet': sheet}))
+
 # @login_required
 def organizations(request): 
-    qs = Organization.objects.filter()
-    result = []
-    for organization in qs.all(): 
-        result.append({'organization':organization})
-            
-    return render_to_response( 'organizations.html', RequestContext(request,{'result':result, 'active':'organizations'}))
+    organizations = []
+    for organization in Organization.objects.all().order_by('orgname'): 
+        organization.projects = Project.objects.filter(organization = organization)
+        organizations.append(organization)
+
+        
+    return render_to_response( 'organizations.html', RequestContext(request,{'organizations':organizations, 'active':'organizations'}))
+
+
+def  view_organization(request, organization_slug):
+    organization = Organization.objects.get(slug=organization_slug)
+    organization.projects = Project.objects.filter(organization = organization)
+    
+    return render_to_response('organization-detail.html', RequestContext(request, {'organization': organization}))
+
+
+
+
+def  view_project(request, project_slug):
+    project = Project.objects.get(slug=project_slug)
+    project.organizations = project.organization.all()
+    project.data_sheets = project.active_sheets.all()
+    print project
+    
+    return render_to_response('project-detail.html', RequestContext(request, {'project': project}))
 
 # @login_required
 def projects(request): 
-    qs = Project.objects.filter()
-    result = []
-    for project in qs.all(): 
-        result.append({'project':project})
-            
-    return render_to_response( 'projects.html', RequestContext(request,{'result':result, 'active':'projects'}))    
+    projects = Project.objects.all()       
+    if settings.SERVER == 'Dev':
+        static_media_url = settings.MEDIA_URL
+    else:
+        static_media_url = settings.STATIC_URL
+    return render_to_response( 'projects.html', RequestContext(request,{'projects': projects, 'active':'projects', 'STATIC_URL':static_media_url}))    
+
+
 
 def map_test(request):
     return render_to_response('map-test.html', RequestContext(request, {}))
@@ -549,11 +627,11 @@ def bulk_csv_header(request, datasheet_id):
     response['Content-Disposition'] = 'attachment; filename=%s' % filename
     return response
 
-def bulk_bad_request(form, request, errors=None):
+def bulk_bad_request(form, request, errors=None, site_form=None):
     if not errors:
         errors = []
     res = render_to_response('bulk_import.html', 
-            RequestContext(request,{'form':form.as_p(), 
+            RequestContext(request,{'form':form.as_p(), 'site_form': site_form, 
                 'errors':errors, 'active':'events'}))
     res.status_code = 400
     return res
@@ -701,162 +779,176 @@ def bulk_import(request):
                     errors.append("Row %d, Invalid Latitude/Longitude. Use decimal degrees." % (i+2, ))
             
             sites = []
-            for site_key in unique_site_keys:
-                site_text = ', '.join([str(x) for x in site_key.values()])
-                try:
-                    site = Site.objects.filter(**site_key)[0] # silent fail and grab first if not unique
-                    sites.append({'name':site_text, 'site':site})
-                except IndexError:
-                    if ds.site_type == 'coord-based':
-                        # just insert it 
-                        site, created = Site.objects.get_or_create(**site_key)
-                        site.save()
-                        sites.append({'name':site_text, 'site':site})
-                    else:
-                        urlargs = urlencode(site_key) 
-                        if urlargs:
-                            urlargs = "?" + urlargs
 
-                        errors.append("""Site <em>'%s'</em> is not in the database. <br/>
-                        <a href="/site/create%s" class="btn btn-mini"> Create new site record </a>
-                        <a href="/site/list" class="btn btn-mini"> Match to existing site record </a>
-                        """ % (site_text, urlargs ))
-                        sites.append({'name':site_text, 'site':None})
-
-            if len(errors) > 0:
-                return bulk_bad_request(form, request, errors)
-
-            # valid!
-            # loop through rows to create events and submit datasheet forms
-            events = []
-            dups = 0
-            with transaction.commit_on_success():
-                for i, row in enumerate(rows):
-                    site_key = get_site_key(ds, row)
-                    site = Site.objects.filter(**site_key)[0]
-                    date_string = get_required_val(ds,'date', row)
-                    date = parse_date(date_string)
-
-                    project = get_object_or_404(Project, id=int(form.cleaned_data['project_id']))
-                    event = Event(
-                        datasheet_id = ds,
-                        proj_id = project, # get this at the row level? or the bulk import level?
-                        cleanupdate = date,
-                        site = site,
-                        submitted_by = request.user,
-                        status = 'New' 
-                    )
-                    events.append(event)
+            project = Project.objects.get(id=form.data['project_id'])
+            organization = Organization.objects.get(orgname=form.data['organization'])
+            user_transaction = UserTransaction(submitted_by = request.user, status = 'New', organization=organization, project=project)
+            user_transaction.save()
+            if user_transaction.id:
+                for site_key in unique_site_keys:
+                    site_text = ', '.join([str(x) for x in site_key.values()])
                     try:
-                        sid = transaction.savepoint()
-                        event.save()
-                    except IntegrityError as e:
-                        if e.message.startswith('duplicate key value violates unique constraint "core_event'):
-                            transaction.savepoint_rollback(sid)
-
-                            # check against ALL events that match
-                            existing_events = Event.objects.filter(datasheet_id = ds, proj_id = project, cleanupdate = date, site = site)
-
-                            # compare existing values to the current row's values 
-                            # i.e. determine if it is indeed a new event or a true duplicate
-                            new_event = False
-                            for e in existing_events:
-                                existing = e.field_values
-
-                                for k, v in existing.items():
-                                    existing_val_raw = v[0]
-                                    dtype = v[1]
-
-                                    try:
-                                        row_val_raw = row[k]
-                                    except KeyError:
-                                        row_val_raw = None
-
-                                    if existing_val_raw in [u'None', u'', None]:
-                                        if row_val_raw is not None and row_val_raw != '':
-                                            new_event = True
-                                            break
-                                        else: 
-                                            continue
-
-                                    if dtype in ['Area', 'Distance', 'Duration', 'Number', 'Volume', 'Weight']: 
-                                        try:
-                                            if float(existing_val_raw) != float(row_val_raw):
-                                                new_event = True
-                                                break
-                                        except ValueError:
-                                            if existing_val_raw != row_val_raw:
-                                                new_event = True
-                                                break
-                                    elif dtype == 'Date':
-                                        try:
-                                            extdate = parse_date(existing_val_raw)
-                                            rowdate = parse_date(row_val_raw)
-                                            if extdate != rowdate:
-                                                new_event = True
-                                                break
-                                        except ValueError:
-                                            if existing_val_raw != row_val_raw:
-                                                new_event = True
-                                                break
-                                    else: #text
-                                        if existing_val_raw != row_val_raw:
-                                            new_event = True
-                                            break
-
-                            if new_event: 
-                                # increment the event dup id
-                                try:
-                                    maxdup = max([x.dup for x in existing_events])
-                                except ValueError:
-                                    maxdup = 0
-
-                                # and try again to create the event
-                                event = Event(
-                                    datasheet_id = ds,
-                                    proj_id = project,
-                                    cleanupdate = date,
-                                    site = site,
-                                    submitted_by = request.user,
-                                    dup = maxdup + 1,
-                                    status = 'New' 
-                                )
-                                try:
-                                    event.save()
-                                except IntegrityError as e:
-                                    if e.message.startswith('duplicate key value violates unique constraint "core_event'):
-                                        dups += 1
-                                        errors.append('Duplicate event already exists <br> (%s, %s, %s, %s)' % (project.projname,
-                                            ds.sheetname, site.sitename, date))
-                                        continue
-                            else:
-                                dups += 1
-                                errors.append('Duplicate Event <br/> (%s, %s, %s, %s)' % (project.projname,
-                                    ds.sheetname, site.sitename, date))
-                                continue
+                        site = Site.objects.filter(**site_key)[0] # silent fail and grab first if not unique
+                        sites.append({'name':site_text, 'site':site})
+                    except IndexError:
+                        if ds.site_type == 'coord-based':
+                            # just insert it 
+                            site, created = Site.objects.get_or_create(**site_key)
+                            if created:
+                                site.transaction = user_transaction
+                            site.save()
+                            sites.append({'name':site_text, 'site':site})
                         else:
-                            raise e # something unexepected
+                            urlargs = urlencode(site_key) 
+                            if urlargs:
+                                urlargs = "?" + urlargs
 
-                    qd = get_querydict(ds, row)
-                    ds_final_form = DataSheetForm(ds, event, None, qd)
-                    if ds_final_form.is_valid():
-                        try:
-                            ds_final_form.save()
-                        except Exception as e:
-                            logger.error(unicode(e)) 
-                            errors.append("An internal error occured while saving the form. Please contact the database administrator.")
-                    else:
-                        raise Exception("""Somehow the datasheetform is now invalid 
-                          (despite just validating it previously without event)... errors are '%s'""" % str(ds_final_form.errors))
+                            errors.append("""Site <em>'%s'</em> is not in the database. <br/>
+                            <button href="/site/create%s" class="btn btn-mini create-site" disabled> Create new site record </button>
+                            <!--<a href="/site/list" class="btn btn-mini"> Match to existing site record </a>-->
+                            """ % (site_text, urlargs ))
+                            sites.append({'name':site_text, 'site':None})
 
                 if len(errors) > 0:
-                    transaction.rollback()
-                    if len(events) > 0 and dups > 0:
-                        errors.insert(0, "%d events were found but not loaded due to %d duplicate events." % (len(events), dups))
-                    return bulk_bad_request(form, request, errors)
+                    site_form = CreateSiteForm()
+                    return bulk_bad_request(form, request, errors, site_form=site_form)
 
-            return render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(), 
-                'sites': sites, 'events': events, 'success': True, 'active':'events'}))
+                # valid!
+                # loop through rows to create events and submit datasheet forms
+                events = []
+                dups = 0
+                with transaction.commit_on_success():
+                    for i, row in enumerate(rows):
+                        site_key = get_site_key(ds, row)
+                        site = Site.objects.filter(**site_key)[0]
+                        date_string = get_required_val(ds,'date', row)
+                        date = parse_date(date_string)
+
+                        project = get_object_or_404(Project, id=int(form.cleaned_data['project_id']))
+                        event = Event(
+                            datasheet_id = ds,
+                            proj_id = project, # get this at the row level? or the bulk import level?
+                            cleanupdate = date,
+                            site = site,
+                            transaction = user_transaction
+                        )
+                        events.append(event)
+                        try:
+                            sid = transaction.savepoint()
+                            event.save()
+                        except IntegrityError as e:
+                            if e.message.startswith('duplicate key value violates unique constraint "core_event'):
+                                transaction.savepoint_rollback(sid)
+
+                                # check against ALL events that match
+                                existing_events = Event.objects.filter(datasheet_id = ds, proj_id = project, cleanupdate = date, site = site)
+
+                                # compare existing values to the current row's values 
+                                # i.e. determine if it is indeed a new event or a true duplicate
+                                new_event = False
+                                for e in existing_events:
+                                    existing = e.field_values
+
+                                    for k, v in existing.items():
+                                        existing_val_raw = v[0]
+                                        dtype = v[1]
+
+                                        try:
+                                            row_val_raw = row[k]
+                                        except KeyError:
+                                            row_val_raw = None
+
+                                        if existing_val_raw in [u'None', u'', None]:
+                                            if row_val_raw is not None and row_val_raw != '':
+                                                new_event = True
+                                                break
+                                            else: 
+                                                continue
+
+                                        if dtype in ['Area', 'Distance', 'Duration', 'Number', 'Volume', 'Weight']: 
+                                            try:
+                                                if float(existing_val_raw) != float(row_val_raw):
+                                                    new_event = True
+                                                    break
+                                            except ValueError:
+                                                if existing_val_raw != row_val_raw:
+                                                    new_event = True
+                                                    break
+                                        elif dtype == 'Date':
+                                            try:
+                                                extdate = parse_date(existing_val_raw)
+                                                rowdate = parse_date(row_val_raw)
+                                                if extdate != rowdate:
+                                                    new_event = True
+                                                    break
+                                            except ValueError:
+                                                if existing_val_raw != row_val_raw:
+                                                    new_event = True
+                                                    break
+                                        else: #text
+                                            if existing_val_raw != row_val_raw:
+                                                new_event = True
+                                                break
+
+                                if new_event: 
+                                    # increment the event dup id
+                                    try:
+                                        maxdup = max([x.dup for x in existing_events])
+                                    except ValueError:
+                                        maxdup = 0
+
+                                    # and try again to create the event
+                                    event = Event(
+                                        datasheet_id = ds,
+                                        proj_id = project,
+                                        cleanupdate = date,
+                                        site = site,
+                                        dup = maxdup + 1,
+                                        transaction = user_transaction
+                                    )
+                                    try:
+                                        event.save()
+                                    except IntegrityError as e:
+                                        if e.message.startswith('duplicate key value violates unique constraint "core_event'):
+                                            dups += 1
+                                            errors.append('Duplicate event already exists <br> (%s, %s, %s, %s)' % (project.projname,
+                                                ds.sheetname, site.sitename, date))
+                                            continue
+                                else:
+                                    dups += 1
+                                    errors.append('Duplicate Event <br/> (%s, %s, %s, %s)' % (project.projname,
+                                        ds.sheetname, site.sitename, date))
+                                    continue
+                            else:
+                                raise e # something unexepected
+
+                        qd = get_querydict(ds, row)
+                        ds_final_form = DataSheetForm(ds, event, None, qd)
+                        if ds_final_form.is_valid():
+                            try:
+                                ds_final_form.save()
+                            except Exception as e:
+                                logger.error(unicode(e)) 
+                                errors.append("An internal error occured while saving the form. Please contact the database administrator.")
+                        else:
+                            raise Exception("""Somehow the datasheetform is now invalid 
+                              (despite just validating it previously without event)... errors are '%s'""" % str(ds_final_form.errors))
+
+                    if len(errors) > 0:
+                        transaction.rollback()
+                        if len(events) > 0 and dups > 0:
+                            errors.insert(0, "%d events were found but not loaded due to %d duplicate events." % (len(events), dups))
+                        return bulk_bad_request(form, request, errors)
+
+                return render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(),
+                    'sites': sites, 'events': events, 'success': True, 'active':'events'}))
+            else:
+                UserTransaction.delete(user_transaction)
+                res = render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(), 
+                    'errors':['Could not complete the transaction at this time.',], 'active':'events'}))
+                res.status_code = 400
+                return res
+                        
         else:
             res = render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(), 
                 'errors':['Form is not valid, please review.',], 'active':'events'}))

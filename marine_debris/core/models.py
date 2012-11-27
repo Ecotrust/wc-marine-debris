@@ -10,6 +10,7 @@ from south.modelsinspector import add_introspection_rules
 add_introspection_rules([], ["^django\.contrib\.gis\.db\.models\.fields\.PointField"])
 from django.core.cache import cache
 from django.contrib.gis.geos import Polygon
+from django.template.defaultfilters import slugify
 
 # Create your models here.
 class DataType (models.Model):
@@ -32,17 +33,32 @@ class Unit (models.Model):
         
 class Organization (models.Model):
     orgname = models.TextField()
-    contact = models.TextField()
-    phone = models.TextField()
+    url = models.TextField(blank=True, null=True)
     address = models.TextField()
+    city = models.TextField(blank=True, null=True)
+    state = models.TextField(blank=True, null=True)
+    zip = models.TextField(blank=True, null=True)
+    scope = models.TextField(blank=True, null=True)
     users = models.ManyToManyField(User)
+    slug = models.TextField(blank=True, null=True)
     
     def __unicode__(self):
         return self.orgname
         
     class Meta:
         ordering = ['orgname']
-        
+
+    
+    def get_absolute_url(self):
+        return "/organization/%s" % self.slug
+
+    def get_data_url(self):
+        return "/events#organization=%s" % self.slug
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.orgname)
+        super(Organization, self).save(*args, **kwargs)
+
     @property
     def toDict(self):
         projects = [project.toDict for project in Project.objects.filter(organization = self)]
@@ -78,6 +94,7 @@ class Field (models.Model):
     minvalue = models.IntegerField(blank=True, null=True)
     maxvalue = models.IntegerField(blank=True, null=True)
     default_value = models.TextField(blank=True, null=True)  #TODO: What type should this be? Should it be part of Unit? FieldValue?
+    description = models.TextField(blank=True, null=True, default=None)
     
     def __unicode__(self):
         return self.internal_name
@@ -104,14 +121,25 @@ class DataSheet (models.Model):
     year_started = models.IntegerField()
     # media_id = models.ForeignKey(Media, blank=True, null=True)
     field = models.ManyToManyField(Field, through='DataSheetField')
-    type_id = models.ForeignKey(EventType, null=True, blank=True)
-    
+    type_id = models.ForeignKey(EventType, null=True, default=None)
+    sheet_description = models.TextField(blank=True, null=True, default=None)
+    protocol_description = models.TextField(blank=True, null=True, default=None)
+    slug = models.TextField(null=True, blank=True)
+
     def __unicode__(self):
         return self.sheetname
         
     class Meta:
         ordering = ['sheetname']
-        
+    
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.created_by.orgname + '_' + str(self.year_started) + '_' + self.sheetname)
+        super(DataSheet, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return "/datasheet/%s/" % self.slug
+
     @property
     def fieldnames(self):
         return [f.field_name for f in self.datasheetfield_set.all()]
@@ -206,7 +234,7 @@ class DataSheetField (models.Model):
     sheet_id = models.ForeignKey(DataSheet)
     field_name = models.TextField()
     print_name = models.TextField(blank=True, null=True)
-    unit_id = models.ForeignKey(Unit, blank=True, null=True)
+    unit_id = models.ForeignKey(Unit, null=True, default=None)
     grouping = models.ForeignKey(Grouping, null=True, blank=True)   #TODO: Name 'category' already claimed. Maybe 'group' or 'subgroup'?
     answer_options = models.ManyToManyField(AnswerOption, help_text='if a list question, multi-select valid responses', blank=True, null=True)
     required = models.BooleanField(default=False)
@@ -222,22 +250,36 @@ class Project (models.Model):
     organization = models.ManyToManyField(Organization, through='ProjectOrganization')
     website = models.TextField(blank=True, null=True)
     contact_name = models.TextField(blank=True, null=True)
+    contact_title = models.TextField(blank=True, null=True)
     contact_email = models.TextField(blank=True, null=True)
     contact_phone = models.TextField(blank=True, null=True)
     active_sheets = models.ManyToManyField(DataSheet, through='ProjectDataSheet')
+    slug = models.TextField(blank=True, null=True)
     
     def __unicode__(self):
         return self.projname
         
     class Meta:
         ordering = ['projname']
-        
+
+    def get_absolute_url(self):
+        return "/project/%s/" % self.slug
+
+    def get_data_url(self):
+        return "/events#project=%s" % self.slug
+
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.projname)
+        super(Project, self).save(*args, **kwargs)
+
     @property
     def toDict(self):
         datasheets = [datasheet.toDict for datasheet in self.active_sheets.all()]
         proj_dict = {
             'name': self.projname,
             'datasheets': datasheets,
+            'get_absolute_url': self.get_absolute_url()
         }
         return proj_dict
     
@@ -322,11 +364,57 @@ class State (models.Model):
             'type': 'state',
         }
         
+class UserTransaction (models.Model):
+    StatusChoices = (
+        ('New', 'New'),
+        ('Accepted', 'Accepted'),
+        ('Rejected', 'Rejected')
+    )
+    submitted_by = models.ForeignKey(User)
+    created_date = models.DateTimeField(auto_now_add = True, default=datetime.datetime.now())
+    status = models.CharField(max_length=30, choices=StatusChoices, default='New', blank=True)
+    organization = models.ForeignKey(Organization, blank=True, null=True)
+    project = models.ForeignKey(Project, blank=True, null=True)
+    
+    @property
+    def toDict(self):
+        timeout=60*60*24*7
+        key = 'transcache_%s' % self.id
+        res = cache.get(key)
+        if res == None:
+            print "cache missed: %s" % key
+            events = [x.toEventsDict for x in Event.objects.filter(transaction=self)]
+            
+            if self.organization:
+                orgname = self.organization.orgname
+            else:
+                orgname = ''
+            if self.project:
+                projname = self.project.projname
+            else:
+                projname = ''
+            
+            res = {
+                'username': self.submitted_by.username,
+                'organization': orgname,
+                'project': projname,
+                'timestamp': self.created_date.strftime('%m/%d/%Y %H:%M'),
+                'status': self.status,
+                'id': self.id,
+                'events': events
+            }
+            cache.set(key, res, timeout)
+        return res
+    
+    def __unicode__(self):
+        return "%s, %s" % (self.submitted_by, self.created_date.isoformat())
+                
 class Site (models.Model):
     sitename = models.TextField(blank=True, null=True)
-    state = models.ForeignKey(State, blank=True, null=True)
+    state = models.ForeignKey(State)
     county = models.TextField(blank=True, null=True)
     geometry = models.PointField(srid=settings.SERVER_SRID, null=True, blank=True)
+    transaction = models.ForeignKey(UserTransaction, null=True, default = None)
     objects = models.GeoManager()
     
     def __unicode__(self):
@@ -422,20 +510,20 @@ class Site (models.Model):
         super(Site, self).save(*args, **kwargs)
 
 class Event (models.Model):
-    
     StatusChoices = (
         ('New', 'New'),
         ('Accepted', 'Accepted'),
         ('Rejected', 'Rejected')
     )
+    transaction = models.ForeignKey(UserTransaction)
     datasheet_id = models.ForeignKey(DataSheet)
     proj_id = models.ForeignKey(Project)
     cleanupdate = models.DateField(default=datetime.date.today())
-    site = models.ForeignKey(Site, null=True, blank=True, default= None)
+    site = models.ForeignKey(Site)
     dup = models.IntegerField(default=0)
-    submitted_by = models.ForeignKey(User, null=True, blank=True, default=None)
-    status = models.CharField(max_length=30, choices=StatusChoices, default='New', blank=True)
     objects = models.GeoManager()
+    # submitted_by = models.ForeignKey(User, null=True, blank=True, default=None)
+    # status = models.CharField(max_length=30, choices=StatusChoices, default='New', blank=True)
     
     def __unicode__(self):
         return "%s-%s-%s" % (self.proj_id.projname, self.site.sitename, self.cleanupdate.isoformat())
@@ -447,16 +535,26 @@ class Event (models.Model):
     def filter(cls, filters):
         event_types = []
         site_filters = []
+        date_filters = []
+        org_filters = []
+        proj_filters = []
         # bbox_filter = False
         if filters == None:
             filters = []
         for filter in filters:
             if filter['type'] == 'event_type':
-                event_types.append(filter['name'])
+                event_types.append(filter['value'])
             # if filter['type'] == 'bbox':
                 # bbox = tuple(filter['bbox'].split(','))
                 # geom = Polygon.from_bbox(bbox)
-                # bbox_filter = True                
+                # bbox_filter = True  
+            #datepicker sends 1969 as null date              
+            elif filter['type'] == 'toDate' or filter['type'] == 'fromDate':
+                date_filters.append(filter)
+            elif filter['type'] == 'organization':
+                org_filters.append(filter)
+            elif filter['type'] == 'project':
+                proj_filters.append(filter)
             else:
                 site_filters.append(filter)
                 
@@ -473,15 +571,24 @@ class Event (models.Model):
                 filtered_events = None
             for filter in site_filters:
                 if filter['type'] == "county":
-                    res = events.filter(site__county=filter['name'], site__state__name=filter['state'])
-                    res_county = events.filter(site__county=filter['name'] + ' County', site__state__name=filter['state'])
+                    res = events.filter(site__county=filter['value'], site__state__name=filter['state'])
+                    res_county = events.filter(site__county=filter['value'] + ' County', site__state__name=filter['state'])
                     res = res | res_county
                 if filter['type'] == "state":
-                    res = events.filter(site__state__name=filter['name'])
+                    res = events.filter(site__state__name=filter['value'])
                 if filtered_events:
                     filtered_events = filtered_events | res
                 else:
                     filtered_events = res
+            for filter in proj_filters:
+                filtered_events = filtered_events.filter(proj_id__slug=filter['value'])
+            for filter in org_filters:
+                filtered_events = filtered_events.filter(proj_id__organization__slug=filter['value'])
+            for filter in date_filters:
+                if filter['type'] == 'toDate':
+                    filtered_events = filtered_events.filter(cleanupdate__gte=filter['value'])
+                if filter['type'] == 'fromDate':
+                    filtered_events = filtered_events.filter(cleanupdate__lte=filter['value'])
         # if bbox_filter:
             # filtered_events = filtered_events.filter(site__geometry__contained=geom)
         return filtered_events
@@ -549,7 +656,8 @@ class Event (models.Model):
         return {
             "site": self.site.toDict,
             "project": {
-                "name": proj.projname
+                "name": proj.projname,
+                "url": proj.get_absolute_url()
             },
             "id": self.id,
             "datasheet": self.datasheet_id.toDict,
@@ -569,7 +677,7 @@ class Event (models.Model):
             reportkey = 'reportcache_%s' % self.datasheet_id.type_id.type
             cache.delete(reportkey)
             
-            geokey = 'geocache_%s' % seld.id
+            geokey = 'geocache_%s' % self.id
             cache.delete(geokey)
             
             # typekey = 'reportcache_event_type_%s' % self.datasheet_id.type_id.type

@@ -9,13 +9,15 @@
 
     <!-- Le styles -->
 
-    <link href="/site-media/third-party/bootstrap/css/bootstrap.css" rel="stylesheet">
-    <link href="/site-media/third-party/jquery/css/ui-lightness/jquery-ui-1.8.23.custom.css" rel="stylesheet">
+    <link href="{{STATIC_URL}}third-party/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="{{STATIC_URL}}third-party/jquery/css/bootstrap/jquery-ui-1.8.16.custom.css" rel="stylesheet">
     <style>
 
     </style>
-    <link href="/site-media/third-party/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
-    <link href="/site-media/css/wcga-marine-debris.css" rel="stylesheet">
+    <link href="{{STATIC_URL}}third-party/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="{{STATIC_URL}}third-party/bootstrap/css/font-awesome.css" rel="stylesheet">
+
+    <link href="{{STATIC_URL}}css/wcga-marine-debris.css" rel="stylesheet">
 
     {% block includes %}
     
@@ -52,10 +54,15 @@
       <ul class="nav">
         {% ifequal active 'home' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/">Home</a></li>
         {% ifequal active 'events' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/events">Data</a></li>
+        {% if request.path|slice:":4" == '/org' %}<li class="active">{% else %}<li>{% endif %}<a href="/organizations">Organizations</a></li>
+        {% if request.path|slice:":4" == '/pro' %}<li class="active">{% else %}<li>{% endif %}<a href="/projects">Projects</a></li>
+        {% if request.path|slice:":4" == '/dat' %}<li class="active">{% else %}<li>{% endif %}<a href="/datasheets">Data Sheets</a></li>
+        {% ifequal active 'management' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/management">Management</a></li>
         {% if user.is_superuser %}
             {% ifequal active 'admin' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/admin">Admin</a></li>
         {% endif %}
       </ul>
+      
       <div class="navbar-text pull-right">
       {% if user.is_authenticated %}
           <a href="{% url django.contrib.auth.views.logout_then_login %}">Sign out</a>
@@ -88,25 +95,37 @@
       </div>
   </div>
 </div>
-<SCRIPT src="/site-media/third-party/jquery/js/jquery-1.8.0.min.js" ></SCRIPT>
-<SCRIPT src="/site-media/third-party/jquery/js/jquery-ui-1.8.23.custom.min.js" ></SCRIPT>
-<SCRIPT src="/site-media/third-party/filamentgroup/jQuery.equalHeights.js" ></SCRIPT>
-<SCRIPT src="/site-media/third-party/Knockout/knockout-2.1.js" ></SCRIPT>
-<SCRIPT src="/site-media/third-party/Knockout/knockout-mapping.js" ></SCRIPT>
-<SCRIPT src="/site-media/third-party/bootstrap/js/bootstrap.min.js" ></SCRIPT>
-<SCRIPT src="/site-media/third-party/jquery/js/jquery.dataTables.js" ></SCRIPT>
-<SCRIPT src="/site-media/third-party/datejs/date.js" ></SCRIPT>
+<SCRIPT src="{{STATIC_URL}}third-party/jquery/js/jquery-1.8.0.min.js" ></SCRIPT>
+<SCRIPT src="{{STATIC_URL}}third-party/jquery/js/jquery-ui-1.8.23.custom.min.js" ></SCRIPT>
+<SCRIPT src="{{STATIC_URL}}third-party/filamentgroup/jQuery.equalHeights.js" ></SCRIPT>
+<SCRIPT src="{{STATIC_URL}}third-party/Knockout/knockout-2.1.js" ></SCRIPT>
+<SCRIPT src="{{STATIC_URL}}third-party/Knockout/knockout-mapping.js" ></SCRIPT>
+<SCRIPT src="{{STATIC_URL}}third-party/bootstrap/js/bootstrap.min.js" ></SCRIPT>
+<SCRIPT src="{{STATIC_URL}}third-party/jquery/js/jquery.dataTables.js" ></SCRIPT>
+<script src="{{STATIC_URL}}js/ko-bindings.js"></script>
+<SCRIPT src="{{STATIC_URL}}third-party/datejs/date.js" ></SCRIPT>
 
   <!--[if lt IE 8]>
-<SCRIPT src="/site-media/third-party/js/json2.js" ></SCRIPT>
+<SCRIPT src="{{STATIC_URL}}third-party/js/json2.js" ></SCRIPT>
 <![endif]-->
-<SCRIPT src="/site-media/js/ko-bindings.js" ></SCRIPT>
+
 {% block scripts %}
 {% endblock %}
 
+
 <script>
+var onResize = function () {
+  //$(".wcga-database").css('height', 'inherit');
+  var height = Math.max($(".wcga-database-left").height(), $(".wcga-database-right").height());
+  $(".wcga-database").height(height);
+  $('#site-map').height(height);
+
+  setTimeout( function() { if (typeof map !== 'undefined') { map.updateSize(); } }, 200);
+
+};
+
 $(document).ready(function () {
-  $(".wcga-database").height(Math.max($(".wcga-database-left").height(), $(".wcga-database-right").height()));  
+  $(window).on('resize', onResize).resize();
 });
 {% block js %}
 

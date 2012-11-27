@@ -1,15 +1,14 @@
 {% extends "base.html" %}
 
 {% block styles %}
-    <link href="/site-media/third-party/chosen/chosen.css" rel="stylesheet" />
-    <link href="/site-media/third-party/jquery/css/jquery.dataTables.css" rel="stylesheet" />
+    <link href="{{STATIC_URL}}third-party/chosen/chosen.css" rel="stylesheet" />
+    <link href="{{STATIC_URL}}third-party/jquery/css/jquery.dataTables.css" rel="stylesheet" />
 
 {% endblock %}
 
 {% block includes %}
-    <script src="/site-media/third-party/OpenLayers-2.12/OpenLayers.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/site-media/third-party/OpenLayers-2.12/AnimatedCluster.js" type="text/javascript" charset="utf-8"></script>
-
+    <script src="{{STATIC_URL}}third-party/OpenLayers-2.12/OpenLayers.js" type="text/javascript" charset="utf-8"></script>
+    
     <script type="text/javascript" charset="utf-8">
         // Hack to support IE. See http://trac.openlayers.org/wiki/FrequentlyAskedQuestions#WhywontmyvectorlayerworkinIEbeforemypageisdoneloading
         document.namespaces;
@@ -19,29 +18,92 @@
  {% block content %}{% endblock %}    
 {% block leftcontent %}
 <!-- If a site was added, {{submit}} = True, {{added_site}} is your event.id -->
-<h2>Query Database <img src="/site-media/img/ajax-loader.gif" data-bind="visible: showSpinner"/></h2>
+<h2>Query Database <img src="{{MEDIA_URL}}img/ajax-loader.gif" data-bind="visible: showSpinner"/></h2>
  <div class="row-fluid filters hide">
    <div class="span12 ">
-     <div class="filter-container">
-     <h4>Filter by Report Type</h4>
-      <select class="type" multiple="true" data-placeholder="Filter by event type(s)..." style="width: 350px">
-        <option value="Gear Removal">Gear Removal</option>
-        <option value="Site Cleanup">Site Cleanup</option>
-      </select>
-     </div>
-     <div class="filter-container">
-       <h4>Filter by State and County</h4>
-       <select class="location" data-placeholder="Filter by location(s)..." data-bind="foreach: states" multiple style="width: 350px">
-           <optgroup data-bind="foreach: $root.locations[$data.name].counties, attr: {label: $data.name}">
-             {# <option data-bind="text: $data.name, value: 'state:'+$data.name" disabled></option> #}
-           <!--  foreach: $root.locations[$data.name].counties -->
-             <option data-bind="text: $data.name + ', ' + $parent.initials, value: $data.state+':'+$data.name"></option>
-           <!-- -->
-           </optgroup>
-       </select>
-     </div>
-   </div>
- </div>
+      <div class="tabbable wcga">
+        <ul class="nav nav-tabs">
+          <li class="active">
+            <a href="#search-database-tab-content-location" data-toggle="tab">Location
+              <i class="icon-check" data-bind="visible: $.inArray('county', activeFilterTypes()) !== -1 || $.inArray('state', activeFilterTypes()) !== -1"></i>
+            </a>
+
+          </li>
+          <li>
+            <a href="#search-database-tab-content-type-of-debris" data-toggle="tab">Type of debris
+              <i class="icon-check" data-bind="visible: $.inArray('event_type', activeFilterTypes()) !== -1"></i>
+            </a>
+          </li>
+          <li>
+            <a href="#search-database-tab-content-organization" data-toggle="tab">Organization/Project
+              <i class="icon-check" data-bind="visible: $.inArray('organization', activeFilterTypes()) !== -1 || $.inArray('project', activeFilterTypes()) !== -1"></i>
+            </a>
+          </li>
+          <li>
+            <a href="#search-database-tab-content-date" data-toggle="tab">Date
+              <i class="icon-check" data-bind="visible: $.inArray('date', activeFilterTypes()) !== -1"></i>
+            </a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="search-database-tab-content-location">
+            <div class="row-fluid">
+              <div class="span6">
+                <h4>Filter by State</h4>
+                <select class="state" data-placeholder="Filter by states(s)..." data-bind="foreach: states" multiple>
+                  <option data-bind="text: $data.name, value: $data.name"></option>
+                </select>
+              </div>
+              <div class="span6">
+                <h4>Filter by County</h4>
+                <select class="county" data-placeholder="Filter by county(s)..." data-bind="foreach: states" multiple>
+                    <optgroup data-bind="foreach: $root.locations[$data.name].counties, attr: {label: $data.name}">
+                      <option data-bind="text: $data.name + ', ' + $parent.initials, value: $data.state+':'+$data.name"></option>
+                    </optgroup>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane" id="search-database-tab-content-type-of-debris">
+            <h4>Filter by Report Type</h4>
+            <select class="event_type" multiple="true" data-placeholder="Filter by event type(s)..." style="width: 350px">
+              <option value="Gear Removal">Gear Removal</option>
+              <option value="Site Cleanup">Site Cleanup</option>
+            </select>
+          </div>
+          <div class="tab-pane" id="search-database-tab-content-organization">
+            <div class="row-fluid">
+              <div class="span6">
+                <h4>Filter by Organization</h4>
+                <select class="organization" data-placeholder="Filter by organizations(s)..." data-bind="options: organizations, optionsText: 'name', optionsValue: 'slug'" multiple=true></select>
+              </div>
+              <div class="span6">
+                <h4>Filter by Project</h4>
+                <select class="project" data-placeholder="Filter by project(s)..." data-bind="options: projects, optionsText: 'name', optionsValue: 'slug'" multiple=true></select>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane" id="search-database-tab-content-date">
+            <h4>Filter by Date Range</h4>
+            <div class="row-fluid">
+              <div class="span6">
+                <div class="input-append">
+                  <input type="text" id="from" name="from" placeholder="Start Date" data-bind="datepicker: fromDate, datepickerOptions: {changeMonth: true,changeYear: true}"/>
+                  <span class="add-on"><i class="icon-remove-sign" data-bind="click: removeDate"></i></span>
+                </div>
+              </div>
+              <div class="span6">
+                <div class="input-append">
+                  <input type="text" id="to" name="to" placeholder="End Date" data-bind="datepicker: toDate, datepickerOptions: {changeMonth: true,changeYear: true}"/>
+                  <span class="add-on"><i class="icon-remove-sign" data-bind="click: removeDate"></i></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="events-table">
         <table class="table wcga table-striped table-hover table-condensed" id="events-table" data-bind="dataTable: { 
             rowTemplate: 'rowTemplate', options: dataTablesOptions, 
@@ -50,25 +112,39 @@
                 { mDataProp: 'site.name', sTitle: 'Site', 'sWidth': '35%'},
                 { mDataProp: 'site.county', sTitle: 'County', 'sWidth': '15%'},
                 { mDataProp: 'site.st_initials', sTitle: 'State', 'sWidth': '5%'},
-                { mDataProp: 'date', sTitle: 'Date', 'sWidth': '10%' }
+                { mDataProp: 'date', sTitle: 'Date', 'sWidth': '5%' },
+                { 'bSortable': false, mDataProp: null, sTitle: 'Action', 'sWidth': '5%' }
               ]
         }">    
     </table>
     
   </div>
-  {% if user.is_authenticated %}
+  
   <div class="row-fluid buttons">
   <p class="pull-right">
-    <a href="/datasheet/bulk_import" class="btn" disabled>
-      <i class="icon-share-alt"></i> Import Events
-    </a>
-    <a href="/event/create" class="btn">
-      <i class="icon-plus"></i> Create Event 
-    </a>
+    <button class="btn" data-bind="click: showReport">
+      <i class="icon-bar-chart"></i> View Report
+    </button>
+    {% if user.is_authenticated %}
+      <a href="/datasheet/bulk_import" class="btn">
+        <i class="icon-share-alt"></i> Import Events
+      </a>
+      <a href="/event/create" class="btn">
+        <i class="icon-plus"></i> Create Event 
+      </a>
+    {% endif %}
+
   </p>
 </div>
 
-{% endif %}
+<div class="popover top" id="event-popover">
+  <div class="arrow"></div>
+  <h3 class="popover-title">Popover top</h3>
+  <div class="popover-content">
+    <p>Sed posuere consectetur est at lobortis. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum.</p>
+  </div>
+</div>
+
 {% endblock %}    
 {% block rightcontent %}
     {%if data %}
@@ -79,23 +155,25 @@
         {% else %}
           <div class="tabbable wcga">
             <ul class="nav nav-tabs">
-                <li class="active">
-                  <a href="#map-content" data-toggle="tab">Map</a>
-                </li>
-                <li>
-                  <a href="#event-details-content" data-toggle="tab">Event Details</a>
-                </li>
-                <li> 
-                  <a href="#report-values-content" id="report-tab" data-toggle="tab">Report</a>
-                </li>                
-              </ul>
+              <li class="active">
+                <a href="#map-content" data-toggle="tab">Map</a>
+              </li>
+              <li>
+                <a href="#event-details-content" data-toggle="tab">Event Details 
+                  <span data-bind="visible: clusteredEvents().length > 0">(<span data-bind="text: clusteredEvents().length"></span>)</span>
+                </a>
+              </li>
+              <li> 
+                <a href="#report-values-content" id="report-tab" data-toggle="tab">Report</a>
+              </li>                
+            </ul>
             <div class="tab-content">
               <div class="tab-pane active" id="map-content">
                 <div id="map_wrapper">
                   <div id="map"></div>
                   <div class="loader" data-bind="visible: mapIsLoading">
                     <p>Map is loading.</p>
-                    <img src="/site-media/img/ajax-loader.gif" />
+                    <img src="{{MEDIA_URL}}img/ajax-loader.gif" />
                   </div>
                 </div>
                <!-- <div class="clearfix filter-box">
@@ -108,7 +186,7 @@
               </div>
               <div class="tab-pane" id="event-details-content">
                 <div class="pull-right" data-bind="visible: showDetailsSpinner">
-                  <img src="/site-media/img/ajax-loader.gif" />
+                  <img src="{{MEDIA_URL}}img/ajax-loader.gif" />
                 </div>
                 <div data-bind="if: clusteredEvents().length > 0">
                   <select data-bind="options: clusteredEvents, optionsText: 'displayName',  optionsCaption: 'Choose event from cluster...', value: selectedClusterEvent">
@@ -123,10 +201,15 @@
                     <h4><span data-bind="text: site.name"></span></h4>
                     <dl class="dl-horizontal">
                       <dt>location</dt>
-                      <dd><span data-bind="text: site.county"></span>, <span data-bind="text: site.state"></span></dd>
-                      
+                      <dd><span data-bind="text: site.county"></span>, <span data-bind="text: site.state"></span>
+                        <button class="btn btn-mini" data-bind="click: $root.zoomTo" rel="tooltip" title="zoom to event"><i class="icon-search"></i></button>
+                      </dd>
                       <dt>project</dt>
-                      <dd><span data-bind="text: project.name"></span></dd>
+                      <dd>
+                        <a data-bind="attr: { href: project.url }" target="_blank">
+                          <span data-bind="text: project.name"></span>
+                        </a>
+                      </dd>
                       <dt>date</dt>
                       <dd><span data-bind="text: date"></span></dd>
                     </dl>
@@ -146,13 +229,7 @@
               </div>
               
               <div class="tab-pane" id="report-values-content">
-            
-                <!-- ACTIONS:
-                    Get spinner up when loading report.
-                    On page load, load cached report for all cleanups.
-                    On filter, get report for filtered cleanups.
-                -->
-                <h4>Report <img src="/site-media/img/ajax-loader.gif" data-bind="visible: showReportSpinner"/></h4>
+                <h4>Report <img src="{{MEDIA_URL}}img/ajax-loader.gif" data-bind="visible: showReportSpinner"/></h4>
                 <div data-bind="if: report" id="report">
                   <dl data-bind="foreach: report().event_values" class="dl-horizontal">
                     <dt data-bind="text:$data.field.display_name"></dt>
@@ -175,7 +252,8 @@
 
 {% block scripts %}
 
-<script src="/site-media/third-party/chosen/chosen.jquery.js"></script>
+<script src="{{STATIC_URL}}third-party/chosen/chosen.jquery.js"></script>
+<script src="{{STATIC_URL}}third-party/jquery/js/jquery.ba-bbq.min.js"></script>
 <script type="text/html" id="reportRowTemplate">
   <td data-bind="text: field.name.replace(/_/g,' ')"></td>
   <td data-bind="text: field.value"></td>
@@ -187,9 +265,15 @@
   <td data-bind="text: site.county, click: $root.handleTableClick"></td>
   <td data-bind="text: site.st_initials, click: $root.handleTableClick"></td>
   <td data-bind="text: date, click: $root.handleTableClick"></td>
+  <td style="text-align: center">
+    <div class="btn-group">
+      <button class="btn btn-mini" data-bind="click: $root.zoomTo" rel="tooltip" title="zoom to event"><i class="icon-search"></i></button>
+      <button class="btn btn-mini" data-bind="click: $root.showDetail" rel="tooltip" title="show event details"><i class="icon-info-sign"></i></button>
+    </div>
+  </td>
 </script>
 
-<script src="/site-media/js/events.js"></script>
+<script src="{{STATIC_URL}}js/events.js"></script>
 {% endblock %}
 
 {% block js %}

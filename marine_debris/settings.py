@@ -52,7 +52,7 @@ MEDIA_ROOT = os.path.abspath(os.path.dirname(sys.argv[0])) + '/media'
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = '/site-media/'
+MEDIA_URL = '/media/'
 # ADMIN_MEDIA_PREFIX = '/install-media/admin/'
 
 # Absolute path to the directory static files should be collected to.
@@ -67,6 +67,7 @@ STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
+    os.path.abspath(os.path.dirname(sys.argv[0])) + '/static', 
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -102,6 +103,8 @@ MIDDLEWARE_CLASSES = (
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
     )
 
 

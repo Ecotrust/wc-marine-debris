@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% endblock %}    
+{% block leftcontent %}
+
+{% endblock %}    
+{% block rightcontent %}
+<div id="myCarousel" class="carousel slide carousel-fade">
+    <!-- Carousel items -->
+    <div class="carousel-inner">
+        <div class="item active">
+            <img src="{{MEDIA_URL}}img/misc/thumb-Clean_up.jpg"/>
+        </div>
+        <div class="item">
+            <img src="{{MEDIA_URL}}img/misc/thumb-Clean_up2.jpg"/>
+        </div>
+        <div class="item">
+            <img src="{{MEDIA_URL}}img/misc/thumb-ICC_Image_Credit_CA_Coastal_Commission.jpg"/>
+        </div>
+       
+        <div class="item">
+            <img src="{{MEDIA_URL}}img/misc/thumb-ICC_image_credit_Port_of_Oakland.jpg"/>
+        </div>
+        <div class="item">
+            <img src="{{MEDIA_URL}}img/misc/thumb-Litter_LA_River.jpg"/>
+        </div>
+        <div class="item">
+            <img src="{{MEDIA_URL}}img/misc/thumb-cleanup.jpg"/>
+        </div>
+        <div class="item">
+            <img src="{{MEDIA_URL}}img/misc/thumb-crab_pot.jpg"/>
+        </div>
+       
+        <div class="item">
+            <img src="{{MEDIA_URL}}img/misc/thumb-international-coastal-cleanup-2005-seattle-nir-heart-debris_noaa.jpg"/>
+        </div>
+        <div class="item">
+            <img src="{{MEDIA_URL}}img/misc/thumb-intnl-coastal-cleanup-day_ocean_conservancy.jpg"/>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- Carousel nav -->
+    <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+    <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+</div>
+{% endblock %}
+{% block js %}
+  var items = $('#myCarousel').find('.item').removeClass('active');
+    $(items).eq(Math.round(Math.random()*items.length-1)).addClass('active');
+    $(".carousel").carousel({ interval: 8000 });
+
+
+//    $('.form-search').find('input').typeahead({
+//        source: function () {
+//            return $('td:first-child').map(function (td.text()
+//        }
+//    });
+
+ {% endblock %}

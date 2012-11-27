@@ -7,7 +7,7 @@
     <form class="bulk-form" method="post" enctype="multipart/form-data" action="{% if action %}{{ action }}{% else %}{{event.id}}{% endif %}">
     {% csrf_token %}
     {{form}}
-    <p><input id="bulk_submit" type="submit" value="Upload File" style="margin:15px"/>
+    <p><button id="bulk_submit" type="submit" class="btn btn-large" value="Upload File" style="margin:15px"/>Upload File</button>
     {% if action %}<button type="button" class="event_cancel btn" id="cancel" value="Cancel">Cancel</button>{% endif %}
     </p>
     </form>
@@ -16,6 +16,7 @@
 {% endblock %}
 
 {% block rightcontent %}
+  <p>Help goes here.</p>
   {% if errors %}
   <h4>The following errors were encountered</h4>
   <ul class="errorlist unstyled">
@@ -52,20 +53,42 @@
         MAP
     </div>
   {% endif %}
-
+{% if site_form %}
+<div id="site-form" style="display:none">
+  <div class="well">
+    <div class="row-fluid">
+      <div class="span6">
+        {{ site_form.as_p }}
+        {% csrf_token %}
+        <button class="btn btn-large cancel form-buttons">cancel</button>
+        <button class="btn btn-large submit-site-btn form-buttons" disabled>create site</button>
+        <p class="row-fluid">
+            <div class="alert alert-info problem"> Problem creating site. <button class="btn btn-mini" id="reset-form">try again</button></div>
+        </p>
+      </div>
+      <div class="span6">
+        <div id="bulk-site-map" style="height: 200px; width: 100%"></div> 
+      </div>
+    </div>
+    
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+<script src="{{STATIC_URL}}third-party/js/jquery.ba-bbq.min.js"></script>
+   <script src="{{STATIC_URL}}third-party/OpenLayers-2.12/OpenLayers.js"></script>
+   <script src="{{STATIC_URL}}js/widgets/map.js"></script>
+   <script src="{{STATIC_URL}}js/bulk_import.js"></script>
 {% endblock %}
 
 {% block js %}
+var onResizeMap = function () {
+  setTimeout( function() { map.updateSize();}, 200);
+};
 
-	$(function() {
-        $( "#bulk_submit" ).click( function(e) {
-            $(".wcga-database-right").html('<div class="alert alert-info">Loading...</div>');
-        });
-        $( "#download-csv-template" ).click( function(e) {
-            e.preventDefault();
-            selected = $("#id_datasheet_id").val();
-            window.open("/datasheet/csv_header/" + selected);
-        });
-	});
-    
+$(document).ready(function () {
+  $(window).on('resize', onResizeMap).resize();
+});
+
 {% endblock %}

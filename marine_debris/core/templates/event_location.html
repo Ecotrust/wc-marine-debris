@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
 {% block styles %}
-<link rel="stylesheet" href="/site-media/third-party/OpenLayers-2.12/theme/default/style.css" type="text/css">
-<link rel="stylesheet" href="/site-media/css/map_style.css" type="text/css">
-<link href="/site-media/third-party/chosen/chosen.css" rel="stylesheet" />
+<link rel="stylesheet" href="{{STATIC_URL}}third-party/OpenLayers-2.12/theme/default/style.css" type="text/css">
+<link rel="stylesheet" href="{{STATIC_URL}}css/map_style.css" type="text/css">
+<link href="{{STATIC_URL}}third-party/chosen/chosen.css" rel="stylesheet" />
 {% endblock %}
 
 {% block content %}
@@ -47,14 +47,19 @@
                 app.viewModel.longitude(lon.toFixed(6));
             }
         </script>
-        <script src="/site-media/third-party/OpenLayers-2.12/OpenLayers.js"></script>
-        <script src="/site-media/js/widgets/map.js"></script>
-        <script src="/site-media/third-party/chosen/chosen.jquery.js"></script>
+        <script src="{{STATIC_URL}}third-party/OpenLayers-2.12/OpenLayers.js"></script>
+        <script src="{{STATIC_URL}}js/widgets/map.js"></script>
+        <script src="{{STATIC_URL}}third-party/chosen/chosen.jquery.js"></script>
 {% endblock %}
 
 {% block js %}
+
+    var onResizeMap = function () {
+      setTimeout( function() { map.updateSize();}, 200);
+    };
     
     $(document).ready(function () {
+        $(window).on('resize', onResizeMap).resize();
         $(".county-select").chosen();
         $(".state-select").on("change", function (){
             $(".county-select").trigger("liszt:updated");
