@@ -526,7 +526,7 @@ def delete_event(request, event_id):
 
 # @login_required
 def datasheets(request):
-    sheets1 = DataSheet.objects.all().order_by('sheetname').order_by('created_by').order_by('-year_started')
+    sheets1 = DataSheet.objects.all().order_by('-year_started', 'created_by', 'sheetname')
     sheets = []
     sheets_null = []
     for sheet in sheets1:
