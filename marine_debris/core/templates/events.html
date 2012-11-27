@@ -191,7 +191,7 @@
               <div class="tab-pane" id="event-details-content">
                 <div class="btn-group pull-right">
                   
-                  <button class="btn" data-bind="click: showMap"><i class="icon-arrow-left"></i> return to map</button>
+                  <button class="btn" data-bind="click: showMap"><i class="icon-globe"></i> return to map</button>
                 </div>
                 <div data-bind="if: clusteredEvents().length > 0">
                   <select data-bind="options: clusteredEvents, optionsText: 'displayName',  optionsCaption: 'Choose event from cluster...', value: selectedClusterEvent">
@@ -235,7 +235,7 @@
               
               <div class="tab-pane" id="report-values-content">
                 <div class="pull-right">
-                  <button class="btn" data-bind="click: showMap"><i class="icon-arrow-left"></i> return to map</button>
+                  <button class="btn" data-bind="click: showMap"><i class="icon-globe"></i> return to map</button>
                 </div>
                 <h4>Report <img src="{{MEDIA_URL}}img/ajax-loader.gif" data-bind="visible: showReportSpinner"/></h4>
                 <div data-bind="if: report" id="report">
