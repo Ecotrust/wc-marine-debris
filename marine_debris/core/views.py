@@ -526,7 +526,7 @@ def delete_event(request, event_id):
 
 # @login_required
 def datasheets(request):
-    sheets = DataSheet.objects.all()
+    sheets = DataSheet.objects.all().order_by('slug')
     return render_to_response('datasheets.html', RequestContext(request, {'sheets':sheets, 'active':'datasheets'}))
     
 @login_required
