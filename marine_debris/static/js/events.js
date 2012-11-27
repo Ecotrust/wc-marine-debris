@@ -453,7 +453,7 @@ $.ajax({
           state = option.deselected.split(':')[0];
           county = option.deselected.split(':')[1];
           app.viewModel.queryFilter.remove(function (filter) {
-            return filter.type === 'county' && filter.value === county && filter.state === state;
+            return filter.type === 'county' && filter.value === county && filter.state === state  ;
           });
         }
       });
@@ -567,14 +567,15 @@ app.initMap = function () {
          app.viewModel.zoomTo(e.feature);
       } else {
          app.viewModel.activeEvent(false);
-         app.viewModel.clusteredEvents($.map(e.feature.cluster, function (f) {
-           return f.attributes;
-         }));
          
          app.map.setCenter(e.feature.geometry.bounds.centerLonLat, app.map.getZoom() + 2);
          
          
       }
+      app.viewModel.clusteredEvents($.map(e.feature.cluster, function (f) {
+        return f.attributes;
+      }));
+      
       
    },
    "featureunselected": function(e) {
