@@ -70,11 +70,16 @@ def update_transaction(request, arg1 = None, arg2 = None):
     
     
 def events(request, submit=False): 
+    
+    if settings.SERVER == 'Dev':
+        static_media_url = settings.MEDIA_URL
+    else:
+        static_media_url = settings.STATIC_URL
 
     if submit:
-        return render_to_response( 'events.html', RequestContext(request,{'submit':True, 'added_site':submit, 'active':'events'}))
+        return render_to_response( 'events.html', RequestContext(request,{'submit':True, 'added_site':submit, 'active':'events', 'STATIC_URL':static_media_url}))
     else:
-        return render_to_response( 'events.html', RequestContext(request,{'submit':submit, 'added_site':None, 'active':'events'}))
+        return render_to_response( 'events.html', RequestContext(request,{'submit':submit, 'added_site':None, 'active':'events', 'STATIC_URL':static_media_url}))
         
 def get_filters(request):
     states = []
