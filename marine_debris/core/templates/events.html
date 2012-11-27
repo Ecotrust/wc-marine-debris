@@ -146,7 +146,9 @@
                 <a href="#map-content" data-toggle="tab">Map</a>
               </li>
               <li>
-                <a href="#event-details-content" data-toggle="tab">Event Details</a>
+                <a href="#event-details-content" data-toggle="tab">Event Details 
+                  <span data-bind="visible: clusteredEvents().length > 0">(<span data-bind="text: clusteredEvents().length"></span>)</span>
+                </a>
               </li>
               <li> 
                 <a href="#report-values-content" id="report-tab" data-toggle="tab">Report</a>
@@ -186,7 +188,9 @@
                     <h4><span data-bind="text: site.name"></span></h4>
                     <dl class="dl-horizontal">
                       <dt>location</dt>
-                      <dd><span data-bind="text: site.county"></span>, <span data-bind="text: site.state"></span></dd>
+                      <dd><span data-bind="text: site.county"></span>, <span data-bind="text: site.state"></span>
+                        <button class="btn btn-mini" data-bind="click: $root.zoomTo" rel="tooltip" title="zoom to event"><i class="icon-search"></i></button>
+                      </dd>
                       <dt>project</dt>
                       <dd><span data-bind="text: project.name"></span></dd>
                       <dt>date</dt>
@@ -246,8 +250,8 @@
   <td data-bind="text: date, click: $root.handleTableClick"></td>
   <td style="text-align: center">
     <div class="btn-group">
-      <button class="btn btn-mini"><i class="icon-map-marker"></i></button>
-      <button class="btn btn-mini"><i class="icon-info-sign"></i></button>
+      <button class="btn btn-mini" data-bind="click: $root.zoomTo" rel="tooltip" title="zoom to event"><i class="icon-search"></i></button>
+      <button class="btn btn-mini" data-bind="click: $root.showDetail" rel="tooltip" title="show event details"><i class="icon-info-sign"></i></button>
     </div>
   </td>
 </script>

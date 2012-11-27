@@ -232,9 +232,11 @@ function viewModel(options) {
   self.clusteredEvents = ko.observableArray();
   self.selectedClusterEvent = ko.observable();
 
+  self.report = ko.observable();
+
   self.selectedClusterEvent.subscribe(function (event) {
     if (event) {
-        self.zoomTo(null, event);      
+        self.showDetail(event);      
     } else {
       self.activeEvent(false);
     }
@@ -249,22 +251,19 @@ function viewModel(options) {
     app.map.setCenter(pos, app.map.getZoom() + 2);
   };
 
-  self.zoomTo = function(feature, event) {
-    var $table = $('#events-table').dataTable(), row;
-
-    if (! event) {
-      event = {
-        id: feature.cluster[0].attributes.id,
-        data: false
-      };
-    }
+  self.zoomTo = function (event) {
     
-      // feature = app.points.getFeaturesByAttribute('id', event.id)[0],
-      // pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
-    // if (! self.mapIsLoading() && $.inArray(feature, app.points.selectedFeatures) === -1 &&  ( $.browser.msie === undefined || $.browser.version >= 9)) {
-      // app.selectControl.unselectAll();
-      // app.selectControl.select(feature);
-    // } 
+    $('a[href=#map-content]').tab('show');
+    if (typeof event.site !== 'undefined') {
+      app.map.setCenter(new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")), 12);  
+    } else {
+      
+      app.map.setCenter(event.geometry.x, event.geometry.y);
+    }
+  };
+
+  self.showDetail = function(event) {
+  
     event.data = ko.observable(false);
     self.showDetailsSpinner(true);
     $.get('/event/view/' + event.id, function(data) {
@@ -272,13 +271,12 @@ function viewModel(options) {
       event_details.data = data.fields;
       self.activeEvent(event_details);
       self.showDetailsSpinner(false);
+      $('a[href=#event-details-content]').tab('show');
     });
       
-    $(row).addClass('active');
-    $(row).siblings().removeClass('active');
   };
 
-  self.report = ko.observable();
+  
 
 }
 
