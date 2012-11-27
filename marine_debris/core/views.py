@@ -58,7 +58,16 @@ def update_transaction(request, arg1 = None, arg2 = None):
     # import pdb
     # pdb.set_trace()
     if request.method == 'POST':
-        qwe = 'qwe'
+        res = management(request)
+        res.status_code = 200
+        return res
+    else:
+        res = management(request)
+        res.error = 'request was not a POST'
+        res.status_code = 400
+        return res
+    
+    
     
 def events(request, submit=False): 
 
