@@ -526,7 +526,16 @@ def delete_event(request, event_id):
 
 # @login_required
 def datasheets(request):
-    sheets = DataSheet.objects.all().order_by('slug')
+    sheets1 = DataSheet.objects.all().order_by('-year_started', 'created_by', 'sheetname')
+    sheets = []
+    sheets_null = []
+    for sheet in sheets1:
+        if sheet.year_started:
+            sheets.append(sheet)
+        else:
+            sheets_null.append(sheet)
+        
+    sheets = sheets + sheets_null
     return render_to_response('datasheets.html', RequestContext(request, {'sheets':sheets, 'active':'datasheets'}))
     
 @login_required

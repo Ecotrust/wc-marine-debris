@@ -118,7 +118,7 @@ class DataSheetError(Exception):
 class DataSheet (models.Model):
     sheetname = models.TextField()
     created_by = models.ForeignKey(Organization)
-    year_started = models.IntegerField()
+    year_started = models.IntegerField(null=True, blank=True, default=None)
     # media_id = models.ForeignKey(Media, blank=True, null=True)
     field = models.ManyToManyField(Field, through='DataSheetField')
     type_id = models.ForeignKey(EventType, null=True, default=None)
