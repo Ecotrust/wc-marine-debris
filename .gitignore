@@ -20,3 +20,4 @@ htmlcov
 stat*.out
 errors.log
 .DS_Store
+.vagrant
