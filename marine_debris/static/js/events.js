@@ -453,7 +453,7 @@ $.ajax({
           state = option.deselected.split(':')[0];
           county = option.deselected.split(':')[1];
           app.viewModel.queryFilter.remove(function (filter) {
-            return filter.type === 'county' && filter.value === option.deselected;
+            return filter.type === 'county' && filter.value === county && filter.state === state;
           });
         }
       });
