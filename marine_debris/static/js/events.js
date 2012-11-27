@@ -247,12 +247,11 @@ function viewModel(options) {
        pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
     $row.siblings().removeClass('active');
     $row.addClass('active');
-    self.zoomTo(null, event);
     app.map.setCenter(pos, app.map.getZoom() + 2);
   };
 
   self.zoomTo = function (event) {
-    
+
     $('a[href=#map-content]').tab('show');
     if (typeof event.site !== 'undefined') {
       app.map.setCenter(new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")), 12);  
