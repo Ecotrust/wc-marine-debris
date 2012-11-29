@@ -284,6 +284,11 @@ app.loadHash = function (hash) {
         type = parts[0],
         values = parts[1].replace(/\+/, ' ').split(',');
         
+        // open the first tab
+        if (i===0) {
+          $('.' + type).tab('show');
+        }
+
         // update the select fields
         $('select.' + type).val(values);
 
