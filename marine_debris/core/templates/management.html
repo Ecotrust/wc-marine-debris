@@ -4,7 +4,7 @@
 {% block leftcontent %}
 <div class="manage-transactions">
 	<div data-bind="if: selectedTransaction">
-		<div data-bind="visible: showTransactionSpinner">
+		<div data-bind="visible: showTransactionSpinner" class="pull-right">
 		  <img src="{{MEDIA_URL}}img/ajax-loader.gif" />
 		</div>
 		<h2>Transaction Details</h2>
@@ -17,7 +17,7 @@
 		<div data-bind="with: selectedTransaction">
 			<dl class="dl-horizontal">
 				<dt>transaction status</dt>
-				<dd><span class="label" data-bind="text: status, css: { 'label-important': status === 'rejected', 'label-success': status() === 'accepted', 'label-warning': status() === 'new' }"></span></dd>
+				<dd><span class="label" data-bind="text: status, css: { 'label-important': status === 'Rejected', 'label-success': status() === 'accepted', 'label-warning': status() === 'new' }"></span></dd>
 				<dt>organization</dt>
 				<dd data-bind="text: organization"></dd>
 				<dt>username</dt>
@@ -25,7 +25,7 @@
 				<dt>timestamp</dt>
 				<dd data-bind="text: timestamp"></dd>
 			</dl>
-		  	<table class="table table-striped" data-bind="dataTable: { dataSource: events, rowTemplate: 'eventRowTemplate',  columns: [
+		  	<table class="table table-striped" data-bind="dataTable: {  options: $root.eventTableOptions, rowTemplate: 'eventRowTemplate',  columns: [
 	                { mDataProp: 'datasheet.event_type', sTitle: 'Event Type', 'sWidth': '25%'},
 	                { mDataProp: 'site.name', sTitle: 'Site', 'sWidth': '35%'},
 	                { mDataProp: 'site.county', sTitle: 'County', 'sWidth': '15%'},
@@ -118,14 +118,13 @@
 {% endblock %}
 
 {% block scripts %}
-<script type="text/javascript">
-    var transactionsFixture = {{transactions|safe}};
-</script>
+
 <script type="text/html" id="rowTemplate">
 	<td data-bind="text: username, click: $root.selectTransaction"></td>
 	<td data-bind="text: organization, click: $root.selectTransaction"></td>
 	<td data-bind="text: timestamp, click: $root.selectTransaction"></td>
-	<td><span class="label" data-bind="text: status(), click: $root.selectTransaction, css: { 'label-important': status === 'rejected', 'label-success': status() === 'accepted', 'label-warning': status() === 'new' }"></span></td>
+	<td data-bind="text: events, click: $root.selectTransaction"></td>
+	<td><span class="label" data-bind="text: status(), click: $root.selectTransaction, css: { 'label-important': status === 'Rejected', 'label-success': status() === 'Accepted', 'label-warning': status() === 'New' }"></span></td>
 </script>
 <script type="text/html" id="eventRowTemplate">
   <td data-bind="text: datasheet.event_type, click: $root.selectEvent"></td>

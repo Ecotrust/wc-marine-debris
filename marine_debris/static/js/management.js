@@ -20,9 +20,9 @@ app.map.addLayers([hybrid]);
 
 function viewModel (fixture) {
 	var self = this;
-
+	
 	self.transactions = ko.mapping.fromJS(fixture);
-
+	
 	self.showError = ko.observable(false);
 
 	self.selectEvent = function (event, e) {
@@ -35,12 +35,12 @@ function viewModel (fixture) {
 			self.selectedEvent(event);
 			self.showDetailsSpinner(false);
 		} else {
-			$.get('/event/view/' + event.id(), function(data) {
+			$.get('/event/view/' + event.id, function(data) {
 			  	event.data = data.fields;
 			  	self.selectedEvent(event);
+			  	console.log('selected event');
 			  	self.showDetailsSpinner(false);
 			});
-
 		}
 		  
 	};
@@ -100,14 +100,20 @@ function viewModel (fixture) {
 	self.showTransactionSpinner = ko.observable(false);
 
 	self.selectedEvent.subscribe(function (event) {
-		var pos = new OpenLayers.LonLat(event.site.lon(), event.site.lat()).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
-		setTimeout(function () {
-			app.map.render('map');			
-			app.mapIsRendered = true;	
-			app.map.setCenter(pos, 9);
-			app.markers.clearMarkers();
-			app.markers.addMarker(new OpenLayers.Marker(pos, new OpenLayers.Icon('http://www.openlayers.org/dev/img/marker.png')));
-		}, 0);
+		if (event) {
+			var pos = new OpenLayers.LonLat(
+				event.site.lon, 
+				event.site.lat).transform(
+					new OpenLayers.Projection("EPSG:4326"),
+					new OpenLayers.Projection("EPSG:900913"));
+			setTimeout(function () {
+				app.map.render('map');			
+				app.mapIsRendered = true;	
+				app.map.setCenter(pos, 9);
+				app.markers.clearMarkers();
+				app.markers.addMarker(new OpenLayers.Marker(pos, new OpenLayers.Icon('http://www.openlayers.org/dev/img/marker.png')));
+			}, 0);	
+		}
 	});
 
 	self.reportTableOptions = {
@@ -118,17 +124,43 @@ function viewModel (fixture) {
 	self.dataTableColumns = [
 		{mDataProp: 'username', sTitle: 'Username'},
 		{mDataProp: 'organization', sTitle: 'Organization'},
-
 		{mDataProp:'timestamp', sTitle: 'Timestamp'},
+		{mDataProp:'events', sTitle: 'Events Count'},
 		{mDataProp:'status', sTitle: 'Status', bSortable: false}
 	];
 
+	self.eventTableOptions = {
+		"iDisplayLength": 8,
+		"bProcessing": true,
+		"bServerSide": true,
+		"sPaginationType": "full_numbers",
+		"sAjaxSource": "/events/get",
+		"iDisplayStart": 0,
+		"fnServerParams": function ( aoData ) {
+			aoData.push({
+				name: "filter",
+				value: JSON.stringify([{
+					type: "transaction", 
+					value: self.selectedTransaction().id()
+				}])
+			});
+		}
+    	
+	};
+
 	self.dataTableOptions = {
-		"iDisplayLength": 8
-    	//"sPaginationType": "full_numbers"
+    	"sPaginationType": "full_numbers"
     };
 
 	
 };
 
-ko.applyBindings(new viewModel(transactionsFixture));
+$.ajax({
+	url: '/get_transactions',
+	dataType: 'json',
+	success: function (transactions) {
+		ko.applyBindings(new viewModel(transactions));		
+	}
+})
+
+

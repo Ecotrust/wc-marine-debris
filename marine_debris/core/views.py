@@ -42,17 +42,19 @@ def index(request):
 
     return render_to_response( 'index.html', RequestContext(request,{'thankyou': False, 'active':'home', 'event_count': event_count}))
 
-def management(request):
-
+def get_transactions(request):
     trans_dict = {
         'new' : [trans.toDict for trans in UserTransaction.objects.filter(status='New')],
         'accepted' : [trans.toDict for trans in UserTransaction.objects.filter(status='Accepted')],
         'rejected' : [trans.toDict for trans in UserTransaction.objects.filter(status='Rejected')]
     }
 
-    transaction_json = simplejson.dumps(trans_dict)
+    return HttpResponse(simplejson.dumps(trans_dict))
+def management(request):
 
-    return render_to_response( 'management.html', RequestContext(request, {'transactions':transaction_json}))
+    
+
+    return render_to_response( 'management.html', RequestContext(request))
 
 def update_transaction(request, arg1 = None, arg2 = None):
     # import pdb

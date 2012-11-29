@@ -382,8 +382,7 @@ class UserTransaction (models.Model):
         key = 'transcache_%s' % self.id
         res = cache.get(key)
         if res == None:
-            print "cache missed: %s" % key
-            events = [x.toEventsDict for x in Event.objects.filter(transaction=self)]
+            events = Event.objects.filter(transaction=self).count()
             
             if self.organization:
                 orgname = self.organization.orgname
@@ -538,6 +537,7 @@ class Event (models.Model):
         date_filters = []
         org_filters = []
         proj_filters = []
+        transaction_filters = []
         # bbox_filter = False
         if filters == None:
             filters = []
@@ -555,6 +555,8 @@ class Event (models.Model):
                 org_filters.append(filter)
             elif filter['type'] == 'project':
                 proj_filters.append(filter)
+            elif filter['type'] == 'transaction':
+                transaction_filters.append(filter)
             else:
                 site_filters.append(filter)
                 
@@ -589,6 +591,8 @@ class Event (models.Model):
                     filtered_events = filtered_events.filter(cleanupdate__gte=filter['value'])
                 if filter['type'] == 'fromDate':
                     filtered_events = filtered_events.filter(cleanupdate__lte=filter['value'])
+            for filter in transaction_filters:
+                filtered_events = filtered_events.filter(transaction=filter['value'])
         # if bbox_filter:
             # filtered_events = filtered_events.filter(site__geometry__contained=geom)
         return filtered_events
