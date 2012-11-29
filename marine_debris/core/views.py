@@ -606,7 +606,7 @@ def  view_organization(request, organization_slug):
 
 def  view_project(request, project_slug):
     project = Project.objects.get(slug=project_slug)
-    project.organizations = project.organization.all()
+    project.organizations = project.organization.filter(projectorganization__is_lead=True)
     project.data_sheets = project.active_sheets.all()
     print project
     
@@ -615,11 +615,8 @@ def  view_project(request, project_slug):
 # @login_required
 def projects(request): 
     projects = Project.objects.all()       
-    if settings.SERVER == 'Dev':
-        static_media_url = settings.MEDIA_URL
-    else:
-        static_media_url = settings.STATIC_URL
-    return render_to_response( 'projects.html', RequestContext(request,{'projects': projects, 'active':'projects', 'STATIC_URL':static_media_url}))    
+    
+    return render_to_response( 'projects.html', RequestContext(request,{'projects': projects, 'active':'projects'}))    
 
 
 
