@@ -5,7 +5,7 @@ app.map = new OpenLayers.Map({
 		displayProjection: new OpenLayers.Projection("EPSG:4326"),
 		projection: "EPSG:3857"
 });
-
+map.updateSize = $.noop;
 app.markers = new OpenLayers.Layer.Markers( "Markers" );
 app.map.addLayer(app.markers);
 
