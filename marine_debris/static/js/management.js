@@ -62,6 +62,9 @@ function viewModel (fixture) {
 					return item.id() === transaction.id();
 				});
 				transaction.status(status);
+				if (reason) {
+					transaction.reason(reason);
+				}
 				self.transactions[status].unshift(transaction);
 				self.showTransactionSpinner(false);
 				self.selectedTransaction(false);
@@ -73,8 +76,14 @@ function viewModel (fixture) {
 		});
 	}
 
+	self.rejectTransactionModal = function () {
+		self.reason(null);
+		$('#reason-modal').modal('show');
+		
+	};
 	self.rejectTransaction = function () {
-		self.updateTransaction(self.selectedTransaction(), 'rejected', self.reason);
+		self.updateTransaction(self.selectedTransaction(), 'rejected', self.reason());
+		$('#reason-modal').modal('hide');
 	};
 
 	self.acceptTransaction = function () {
@@ -99,6 +108,9 @@ function viewModel (fixture) {
 	self.selectedTransaction =  ko.observable(false);
 	self.showDetailsSpinner = ko.observable(false);
 	self.showTransactionSpinner = ko.observable(false);
+
+	// observable to hold reason for rejecting
+	self.reason = ko.observable();
 
 	self.selectedEvent.subscribe(function (event) {
 		if (event) {
@@ -155,6 +167,10 @@ function viewModel (fixture) {
 
 	
 };
+
+$('#reason-modal').on('shown', function () {
+  $(this).find('textarea').focus();
+});
 
 $.ajax({
 	url: '/get_transactions',

@@ -58,10 +58,13 @@ def update_transaction(request):
     if request.method == 'POST':
         transaction_id = request.POST.get('transaction_id', None)
         status = request.POST.get('status', None)
+        reason = request.POST.get('reason', None)
         if transaction_id is not None:
             transaction = UserTransaction.objects.get(id=transaction_id)
             if status is not None:
                 transaction.status = status
+                if status == 'rejected' and reason is not None:
+                    transaction.reason = reason
                 transaction.save()
                 res = {'status': 'success', 'transaction_id': transaction_id}
 

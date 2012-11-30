@@ -375,7 +375,9 @@ class UserTransaction (models.Model):
     status = models.CharField(max_length=30, choices=StatusChoices, default='new', blank=True)
     organization = models.ForeignKey(Organization, blank=True, null=True)
     project = models.ForeignKey(Project, blank=True, null=True)
-    
+    reason = models.TextField(blank=True, null=True)
+
+
     @property
     def toDict(self):    
         events_count = Event.objects.filter(transaction=self).count()
@@ -383,11 +385,11 @@ class UserTransaction (models.Model):
         if self.organization:
             orgname = self.organization.orgname
         else:
-            orgname = ''
+            orgname = None
         if self.project:
             projname = self.project.projname
         else:
-            projname = ''
+            projname = None
         
         res = {
             'username': self.submitted_by.username,
@@ -396,7 +398,8 @@ class UserTransaction (models.Model):
             'timestamp': self.created_date.strftime('%m/%d/%Y %H:%M'),
             'status': self.status,
             'id': self.id,
-            'events_count': events_count
+            'events_count': events_count,
+            'reason': self.reason
         }
     
         return res

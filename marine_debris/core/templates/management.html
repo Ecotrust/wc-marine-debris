@@ -3,6 +3,7 @@
  {% endblock %}    
 {% block leftcontent %}
 {% csrf_token %} 
+
 <div class="manage-transactions">
 	<div data-bind="visible: showTransactionSpinner">
 		<h2>Loading Transactions. <img src="{{MEDIA_URL}}img/ajax-loader.gif" /></h2>
@@ -14,7 +15,7 @@
 		<h2>Transaction Details</h2>
 		<div class="btn-group">
 			<button class="btn btn" data-bind="click: returnToTransaction"><i class="icon-arrow-left"></i> return to transactions</button>
-			<button class="btn" data-bind="click: rejectTransaction, visible: selectedTransaction().status() !== 'rejected'">reject</button>
+			<button class="btn" data-bind="click: rejectTransactionModal, visible: selectedTransaction().status() !== 'rejected'">reject</button>
 			<button class="btn btn-primary" data-bind="click: acceptTransaction, visible: selectedTransaction().status() !== 'accepted'">accept</button>
 		</div>
 
@@ -23,11 +24,15 @@
 				<dt>transaction status</dt>
 				<dd><span class="label" data-bind="text: status, css: { 'label-important': status === 'Rejected', 'label-success': status() === 'accepted', 'label-warning': status() === 'new' }"></span></dd>
 				<dt>organization</dt>
-				<dd data-bind="text: organization"></dd>
+				<dd>
+					<span data-bind="text: organization() || 'Unknown'"></span>
+				</dd>
 				<dt>username</dt>
-				<dd data-bind="text: username"></dd>
+				<dd><span data-bind="text: username() || 'Unknown'"></span></dd>
 				<dt>timestamp</dt>
 				<dd data-bind="text: timestamp"></dd>
+				<dt data-bind="visible: reason">reason for rejection</dt>
+				<dd data-bind="text: reason, visible: reason"></dd>
 			</dl>
 		  	<table class="table table-striped" data-bind="dataTable: {  options: $root.eventTableOptions, rowTemplate: 'eventRowTemplate',  columns: [
 	                { mDataProp: 'datasheet.event_type', sTitle: 'Event Type', 'sWidth': '25%'},
@@ -114,6 +119,22 @@
 	  </div>
 	</div>
 </div>
+
+<div id="reason-modal" class="modal  fade">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Reason for Rejecting</h3>
+  </div>
+  <div class="modal-body">
+    <p>Enter a reason for rejecting transaction. This message will be sent to the submitter.</p>
+    <textarea class="span12" rows="4" autofocus data-bind="value: reason"></textarea>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Close</a>
+    <a href="#" class="btn btn-primary" data-bind="click: rejectTransaction">Save changes</a>
+  </div>
+</div>
+
 {% endblock %}
 {% block styles %}
     <link href="{{STATIC_URL}}third-party/jquery/css/jquery.dataTables.css" rel="stylesheet" />
