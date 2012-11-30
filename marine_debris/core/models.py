@@ -366,43 +366,39 @@ class State (models.Model):
         
 class UserTransaction (models.Model):
     StatusChoices = (
-        ('New', 'New'),
-        ('Accepted', 'Accepted'),
-        ('Rejected', 'Rejected')
+        ('new', 'new'),
+        ('accepted', 'accepted'),
+        ('rejected', 'rejected')
     )
     submitted_by = models.ForeignKey(User)
     created_date = models.DateTimeField(auto_now_add = True, default=datetime.datetime.now())
-    status = models.CharField(max_length=30, choices=StatusChoices, default='New', blank=True)
+    status = models.CharField(max_length=30, choices=StatusChoices, default='new', blank=True)
     organization = models.ForeignKey(Organization, blank=True, null=True)
     project = models.ForeignKey(Project, blank=True, null=True)
     
     @property
-    def toDict(self):
-        timeout=60*60*24*7
-        key = 'transcache_%s' % self.id
-        res = cache.get(key)
-        if res == None:
-            events = Event.objects.filter(transaction=self).count()
-            
-            if self.organization:
-                orgname = self.organization.orgname
-            else:
-                orgname = ''
-            if self.project:
-                projname = self.project.projname
-            else:
-                projname = ''
-            
-            res = {
-                'username': self.submitted_by.username,
-                'organization': orgname,
-                'project': projname,
-                'timestamp': self.created_date.strftime('%m/%d/%Y %H:%M'),
-                'status': self.status,
-                'id': self.id,
-                'events': events
-            }
-            cache.set(key, res, timeout)
+    def toDict(self):    
+        events_count = Event.objects.filter(transaction=self).count()
+        
+        if self.organization:
+            orgname = self.organization.orgname
+        else:
+            orgname = ''
+        if self.project:
+            projname = self.project.projname
+        else:
+            projname = ''
+        
+        res = {
+            'username': self.submitted_by.username,
+            'organization': orgname,
+            'project': projname,
+            'timestamp': self.created_date.strftime('%m/%d/%Y %H:%M'),
+            'status': self.status,
+            'id': self.id,
+            'events_count': events_count
+        }
+    
         return res
     
     def __unicode__(self):
@@ -510,9 +506,9 @@ class Site (models.Model):
 
 class Event (models.Model):
     StatusChoices = (
-        ('New', 'New'),
-        ('Accepted', 'Accepted'),
-        ('Rejected', 'Rejected')
+        ('new', 'new'),
+        ('accepted', 'accepted'),
+        ('rejected', 'rejected')
     )
     transaction = models.ForeignKey(UserTransaction)
     datasheet_id = models.ForeignKey(DataSheet)

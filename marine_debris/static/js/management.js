@@ -54,20 +54,21 @@ function viewModel (fixture) {
 			data: {
 				transaction_id: transaction.id(),
 				status: status,
-				reason: reason
+				reason: reason,
+				csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val()
 			},
 			success: function (res) {
-				self.showError(res.error);
-			},
-			error: function (res) {
 				self.transactions[transaction.status()].remove(function (item) {
-					console.log(item.id() === transaction.id());
 					return item.id() === transaction.id();
 				});
 				transaction.status(status);
 				self.transactions[status].unshift(transaction);
 				self.showTransactionSpinner(false);
 				self.selectedTransaction(false);
+
+			},
+			error: function (res) {
+				self.showError(res.error);
 			}
 		});
 	}
@@ -125,7 +126,7 @@ function viewModel (fixture) {
 		{mDataProp: 'username', sTitle: 'Username'},
 		{mDataProp: 'organization', sTitle: 'Organization'},
 		{mDataProp:'timestamp', sTitle: 'Timestamp'},
-		{mDataProp:'events', sTitle: 'Events Count'},
+		{mDataProp:'events_count', sTitle: 'Events Count'},
 		{mDataProp:'status', sTitle: 'Status', bSortable: false}
 	];
 

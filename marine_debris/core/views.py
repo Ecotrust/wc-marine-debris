@@ -44,30 +44,33 @@ def index(request):
 
 def get_transactions(request):
     trans_dict = {
-        'new' : [trans.toDict for trans in UserTransaction.objects.filter(status='New')],
-        'accepted' : [trans.toDict for trans in UserTransaction.objects.filter(status='Accepted')],
-        'rejected' : [trans.toDict for trans in UserTransaction.objects.filter(status='Rejected')]
+        'new' : [trans.toDict for trans in UserTransaction.objects.filter(status='new')],
+        'accepted' : [trans.toDict for trans in UserTransaction.objects.filter(status='accepted')],
+        'rejected' : [trans.toDict for trans in UserTransaction.objects.filter(status='rejected')]
     }
 
     return HttpResponse(simplejson.dumps(trans_dict))
+
 def management(request):
-
-    
-
     return render_to_response( 'management.html', RequestContext(request))
 
-def update_transaction(request, arg1 = None, arg2 = None):
-    # import pdb
-    # pdb.set_trace()
+def update_transaction(request):
     if request.method == 'POST':
-        res = management(request)
-        res.status_code = 200
-        return res
+        transaction_id = request.POST.get('transaction_id', None)
+        status = request.POST.get('status', None)
+        if transaction_id is not None:
+            transaction = UserTransaction.objects.get(id=transaction_id)
+            if status is not None:
+                transaction.status = status
+                transaction.save()
+                res = {'status': 'success', 'transaction_id': transaction_id}
+
     else:
-        res = management(request)
-        res.error = 'request was not a POST'
-        res.status_code = 400
-        return res
+        res = {
+            'status_code': 400,
+            'error':  'request was not a POST'
+        }
+    return HttpResponse(simplejson.dumps(res))
     
     
     
