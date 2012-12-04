@@ -20,6 +20,10 @@ class DataType (models.Model):
     def __unicode__(self):
         return self.name
 
+
+class ConversionError(Exception):
+    pass
+
 class Unit (models.Model):
     short_name = models.TextField()
     long_name = models.TextField()
@@ -28,6 +32,11 @@ class Unit (models.Model):
     def __unicode__(self):
         return self.long_name
         
+    def conversion_factor(self, to_unit):
+        # TODO return conversion factor
+
+        raise ConversionError()
+
     class Meta:
         ordering = ['long_name']
         
@@ -98,6 +107,12 @@ class Field (models.Model):
     
     def __unicode__(self):
         return self.internal_name
+
+    @property
+    def label(self):
+        # Placeholder!
+        # TODO add human-readable label to data model
+        return self.internal_name.replace("_"," ").title()
         
     class Meta:
         ordering = ['internal_name']
@@ -677,23 +692,38 @@ class Event (models.Model):
 
         return d
 
-    @property
-    def toValuesDict(self):
+    def toValuesDict(self, convert_units=True):
         """
         Returns a dict of field values. 
         Handles unit conversions between datasheet and internal field.
         Handles converting string to appropriate values (float/int/date/etc)
+        TODO Tuples are keys    
+        TODO option to convert units or not
         {
-          'internal_field_name': value_with_converted_units,
+          ('internal_field_name','label', 'units'): value_with_converted_units,
         }
         """
-        key = 'event_%s_valuedict' % self.id
+        if convert_units:  
+            unit_handler = "convert"
+        else:
+            unit_handler = "raw"
+
+        key = 'event_%s_valuedict_%s' % (self.id, unit_handler)
         d = cache.get(key)
         if not d:
             qs = FieldValue.objects.filter(event_id = self) 
             d = {}
             for fv in qs:
-                d[fv.field_id.internal_name] = fv.converted_value
+                iname = fv.field_id.internal_name
+                label = fv.field_id.label
+                if convert_units:  
+                    units = fv.to_unit_name
+                    val = fv.converted_value
+                else:
+                    units = fv.from_unit_name
+                    val = fv.field_value
+                d[(iname,label,units)] = val
+
             cache.set(key, d)
         return d
         
@@ -704,7 +734,8 @@ class Event (models.Model):
             # invalidate/clear all cached data associated with this event
             keys = [
                 'event_%s_eventdict' % self.id,
-                'event_%s_valuedict' % self.id,
+                'event_%s_valuedict_convert' % self.id,
+                'event_%s_valuedict_raw' % self.id,
                 'event_%s_geocache' % self.id,
             ]
             for key in keys:
@@ -730,13 +761,54 @@ class FieldValue (models.Model):
         return readable_name
         
     @property
+    def to_unit_name(self):
+        try:
+            x = self.to_unit.short_name
+        except AttributeError:
+            x = None
+        return x
+
+    @property
+    def from_unit_name(self):
+        try:
+            x = self.from_unit.short_name
+        except AttributeError:
+            x = None
+        return x
+
+    @property
+    def from_unit(self):
+        return self.field_id.unit_id
+
+    @property
+    def to_unit(self):
+        return self.field_id.datasheetfield_set.get(sheet_id=self.event_id.datasheet_id).unit_id
+
+    @property
     def converted_value(self):
         ''' TODO use some thing like
            converted_value = datasheet_units.factor(desired_units)
         where the factor method of a unit will return the multiplier required to go from it to the desired units
         '''
+        try:
+            orig_val = float(self.field_value)
+        except ValueError:
+            # unless its numeric, just pass it along
+            return self.field_value
 
-        return self.field_value
+        try:
+            factor = self.from_unit.conversion_factor(self.to_unit) 
+        except (AttributeError, #from_unit is None
+                ConversionError): # conversion_failed
+            factor = 1  # TODO maybe we don't want to fail silently here! 
+
+        converted_value = factor * orig_val
+
+        # cast to int if needed
+        if orig_val % 1 == 0 and factor == 1:
+            converted_value = int(converted_value)
+
+        return converted_value
 
     class Meta:
         ordering = ['event_id', 'field_id__internal_name']

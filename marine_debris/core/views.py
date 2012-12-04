@@ -139,6 +139,8 @@ sort_cols = {
 
 def download_events(request):
     filter_json = request.GET.get('filter', False)
+    pretty_headers = request.GET.get('pprint', False)
+
     if filter_json:
         filters = simplejson.loads(filter_json)
         qs = Event.filter(filters)
@@ -150,7 +152,7 @@ def download_events(request):
     all_fieldnames = Set([])
     for event in qs: 
         d = event.toEventsDict
-        evd = event.toValuesDict
+        evd = event.toValuesDict()
         d['field_values'] = evd
         all_fieldnames = Set(evd.keys()) | all_fieldnames
         data.append(d)
@@ -170,7 +172,15 @@ def download_events(request):
             'datasheet',
             'organization',
     ]
-    header.extend(ordered_fieldnames)
+
+    if pretty_headers:
+        for x in ordered_fieldnames:
+            if x[2]: # if units are defined
+                header.append("%s (%s)" % (x[1], x[2]))
+            else:
+                header.append("%s" % x[1])
+    else:
+        header.extend([x[0] for x in ordered_fieldnames])
     rows = [','.join(header)] 
 
     for d in data:
