@@ -37,6 +37,9 @@ class Unit(models.Model):
         if self == to_unit:
             # "No conversion needed, %s and %s are the same units" % (self, to_unit)
             return 1
+        if to_unit is None:
+            # to_unit is None, Field has no units defined! assume no conversion possible
+            return 1
         try:
             uc = UnitConversion.objects.get(from_unit=self, to_unit=to_unit)
         except UnitConversion.DoesNotExist:
@@ -791,11 +794,11 @@ class FieldValue (models.Model):
         return x
 
     @property
-    def from_unit(self):
+    def to_unit(self):
         return self.field_id.unit_id
 
     @property
-    def to_unit(self):
+    def from_unit(self):
         return self.field_id.datasheetfield_set.get(sheet_id=self.event_id.datasheet_id).unit_id
 
     @property
