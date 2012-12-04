@@ -230,13 +230,8 @@ def get_events(request):
     data = []
     found_records = 0
 
-    timeout=60*60*24*7*52*10
     for event in qs: 
-        key = 'eventcache_%s' % event.id
-        dict = cache.get(key)
-        if not dict:
-            dict = event.toEventsDict
-            cache.set(key, dict, timeout)
+        dict = event.toEventsDict
         if not start_id:
             data.append(dict)
         else:
@@ -288,11 +283,10 @@ def get_event_geojson(request):
     else:
         qs = Event.objects.all()
     
-    timeout=60*60*24*7*52*10
     loop_count = 0
     for event in qs:
         loop_count = loop_count + 1
-        key = 'geocache_%s' % event.id
+        key = 'event_%s_geocache' % event.id
         geo_string = cache.get(key)
         if not geo_string:
             gj = None
@@ -308,7 +302,7 @@ def get_event_geojson(request):
                 pass
             
             geo_string = get_feature_json(gj, properties)
-            cached = cache.set(key, geo_string, timeout)
+            cached = cache.set(key, geo_string, settings.CACHE_TIMEOUT)
         feature_jsons.append(geo_string)
         
     geojson = """{
@@ -327,8 +321,10 @@ def get_event_geojson(request):
 def get_event_values_list(request, filters=None):
     '''
     TODO should be renamed to get_aggregate_values_list!
+    TODO use field_value.converted_value instead of field_value.field_value
+    TODO profile
+    TODO caching strategy 
     '''
-    
     # type = 'Site Cleanup'   #TODO: get this type name dynamically so we can show derelict and others
     # field_list = None
     # key = False
@@ -350,7 +346,6 @@ def get_event_values_list(request, filters=None):
             if not agg_fields.has_key(field_name):
                 agg_fields[field_name] = get_agg_template(field_value.field_id)
             field = agg_fields[field_name]
-            
             
             if not field['value']:
                 field['value'] = 0

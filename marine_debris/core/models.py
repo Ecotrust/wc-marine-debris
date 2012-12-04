@@ -701,9 +701,11 @@ class Event (models.Model):
     def save(self, *args, **kwargs):
         
         if self.id:
+            # invalidate/clear all cached data associated with this event
             keys = [
                 'event_%s_eventdict' % self.id,
                 'event_%s_valuedict' % self.id,
+                'event_%s_geocache' % self.id,
             ]
             for key in keys:
                 cache.delete(key)
@@ -712,21 +714,6 @@ class Event (models.Model):
             reportkey = 'reportcache_%s' % self.datasheet_id.type_id.type
             cache.delete(reportkey)
             
-            geokey = 'geocache_%s' % self.id
-            cache.delete(geokey)
-            
-            # typekey = 'reportcache_event_type_%s' % self.datasheet_id.type_id.type
-            # cache.delete(typekey)
-            #TODO: These are the same and will be consolidated - the second is handled through this class's filter method
-        
-        # if self.site and self.site.state:
-            # statekey = 'reportcache_state_%s' % self.site.state.name
-            # cache.delete(statekey)
-                
-            # countykey = 'reportcache_county_%s_%s' % (self.site.county, self.site.state.name)
-            # cache.delete(countykey)
-            
-        
         super(Event, self).save(*args, **kwargs)
     
     class Meta:
@@ -748,6 +735,7 @@ class FieldValue (models.Model):
            converted_value = datasheet_units.factor(desired_units)
         where the factor method of a unit will return the multiplier required to go from it to the desired units
         '''
+
         return self.field_value
 
     class Meta:
