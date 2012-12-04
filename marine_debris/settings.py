@@ -214,9 +214,10 @@ SERVER_SRID = 4326
 
 GEOJSON_SRID = 4326
 
+CACHE_TIMEOUT = 60*60*24*7*52*10
+
 try:
     from settings_local import *
 except ImportError, exp:
     pass
     
-

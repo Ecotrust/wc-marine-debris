@@ -655,26 +655,58 @@ class Event (models.Model):
         
     @property
     def toEventsDict(self):
-        proj = self.proj_id
-        return {
-            "site": self.site.toDict,
-            "project": {
-                "name": proj.projname,
-                "url": proj.get_absolute_url()
-            },
-            "id": self.id,
-            "datasheet": self.datasheet_id.toDict,
-            "organization": {
-                "name": proj.projectorganization_set.order_by('-is_lead')[0].organization_id.orgname
-            },
-            "date" : self.cleanupdate.strftime('%m/%d/%Y')
-        } 
+        key = 'event_%s_eventdict' % self.id
+        d = cache.get(key)
+
+        if not d:
+            proj = self.proj_id
+            d = {
+                "site": self.site.toDict,
+                "project": {
+                    "name": proj.projname,
+                    "url": proj.get_absolute_url()
+                },
+                "id": self.id,
+                "datasheet": self.datasheet_id.toDict,
+                "organization": {
+                    "name": proj.projectorganization_set.order_by('-is_lead')[0].organization_id.orgname
+                },
+                "date" : self.cleanupdate.strftime('%m/%d/%Y')
+            } 
+            cache.set(key, d)
+
+        return d
+
+    @property
+    def toValuesDict(self):
+        """
+        Returns a dict of field values. 
+        Handles unit conversions between datasheet and internal field.
+        Handles converting string to appropriate values (float/int/date/etc)
+        {
+          'internal_field_name': value_with_converted_units,
+        }
+        """
+        key = 'event_%s_valuedict' % self.id
+        d = cache.get(key)
+        if not d:
+            qs = FieldValue.objects.filter(event_id = self) 
+            d = {}
+            for fv in qs:
+                d[fv.field_id.internal_name] = fv.converted_value
+            cache.set(key, d)
+        return d
+        
         
     def save(self, *args, **kwargs):
         
         if self.id:
-            eventkey = 'eventcache_%s' % self.id
-            cache.delete(eventkey)
+            keys = [
+                'event_%s_eventdict' % self.id,
+                'event_%s_valuedict' % self.id,
+            ]
+            for key in keys:
+                cache.delete(key)
             
         if self.datasheet_id and self.datasheet_id.type_id and self.datasheet_id.type_id.type:
             reportkey = 'reportcache_%s' % self.datasheet_id.type_id.type
@@ -710,6 +742,14 @@ class FieldValue (models.Model):
         readable_name = str(self.event_id) + '-' + self.field_id.internal_name
         return readable_name
         
+    @property
+    def converted_value(self):
+        ''' TODO use some thing like
+           converted_value = datasheet_units.factor(desired_units)
+        where the factor method of a unit will return the multiplier required to go from it to the desired units
+        '''
+        return self.field_value
+
     class Meta:
         ordering = ['event_id', 'field_id__internal_name']
     

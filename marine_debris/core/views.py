@@ -24,6 +24,7 @@ import logging
 import csv
 from forms import *
 from models import *
+from sets import Set
 
 
 def index(request): 
@@ -135,6 +136,70 @@ sort_cols = {
     "site.county": "site__county",
     "date": "cleanupdate"
 }
+
+def download_events(request):
+    filter_json = request.GET.get('filter', False)
+    if filter_json:
+        filters = simplejson.loads(filter_json)
+        qs = Event.filter(filters)
+    else:
+        filters = None
+        qs = Event.objects.all()
+
+    data = []
+    all_fieldnames = Set([])
+    for event in qs: 
+        d = event.toEventsDict
+        evd = event.toValuesDict
+        d['field_values'] = evd
+        all_fieldnames = Set(evd.keys()) | all_fieldnames
+        data.append(d)
+
+    ordered_fieldnames = list(all_fieldnames)
+    ordered_fieldnames.sort()
+    header = [
+            'id', 
+            'date',
+            'project_name',
+            'site_name',
+            'site_state',
+            'site_county',
+            'site_lon',
+            'site_lat',
+            'event_type',
+            'datasheet',
+            'organization',
+    ]
+    header.extend(ordered_fieldnames)
+    rows = [','.join(header)] 
+
+    for d in data:
+        row_data = [
+                d['id'],
+                d['date'],
+                d['project']['name'],
+                d['site']['name'],
+                d['site']['state'],
+                d['site']['county'],
+                d['site']['lon'],
+                d['site']['lat'],
+                d['datasheet']['event_type'],
+                d['datasheet']['name'],
+                d['organization']['name'],
+        ]
+        for fname in ordered_fieldnames:
+            try:
+                v = d['field_values'][fname]
+            except KeyError:
+                v = ''
+            row_data.append(v)
+
+        row = ','.join(['"%s"' % x for x in row_data])
+        rows.append(row)
+
+    res = HttpResponse('\n'.join(rows), content_type="text/csv")
+    #res['Content-Disposition'] = 'attachment; filename="marine_debris_download.csv"'
+    return res
 
 def get_events(request):
     start_index = request.GET.get('iDisplayStart', 0)
@@ -260,6 +325,9 @@ def get_event_geojson(request):
     return response
         
 def get_event_values_list(request, filters=None):
+    '''
+    TODO should be renamed to get_aggregate_values_list!
+    '''
     
     # type = 'Site Cleanup'   #TODO: get this type name dynamically so we can show derelict and others
     # field_list = None
@@ -275,7 +343,7 @@ def get_event_values_list(request, filters=None):
     agg_fields = {}
 
     field_values = FieldValue.objects.filter(event_id__in = cleanup_events, field_id__datatype__aggregatable = True)
-    
+
     for field_value in field_values:
         field_name = field_value.field_id.internal_name
         if field_value.field_value and not field_value.field_value in ['', None, 'None']:

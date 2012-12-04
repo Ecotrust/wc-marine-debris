@@ -17,10 +17,11 @@ class Migration(SchemaMigration):
         db.add_column('core_organization', 'slug',
                       self.gf('django.db.models.fields.TextField')(null=True, blank=True),
                       keep_default=False)
-        for p in Project.objects.all():
-            p.save()
-        for o in Organization.objects.all():
-            o.save()
+
+        #for p in Project.objects.all():
+        #    p.save()
+        #for o in Organization.objects.all():
+        #    o.save()
 
     def backwards(self, orm):
         # Deleting field 'Project.slug'
