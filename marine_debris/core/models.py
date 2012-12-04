@@ -24,7 +24,8 @@ class DataType (models.Model):
 class ConversionError(Exception):
     pass
 
-class Unit (models.Model):
+
+class Unit(models.Model):
     short_name = models.TextField()
     long_name = models.TextField()
     data_type = models.ForeignKey(DataType, null=True, blank=True)
@@ -33,13 +34,26 @@ class Unit (models.Model):
         return self.long_name
         
     def conversion_factor(self, to_unit):
-        # TODO return conversion factor
+        if self == to_unit:
+            # "No conversion needed, %s and %s are the same units" % (self, to_unit)
+            return 1
+        try:
+            uc = UnitConversion.objects.get(from_unit=self, to_unit=to_unit)
+        except UnitConversion.DoesNotExist:
+            raise ConversionError("%s to %s ... conversion factor not specified in UnitConversion table" % (self, to_unit))
 
-        raise ConversionError()
+        return uc.factor
 
     class Meta:
         ordering = ['long_name']
         
+
+class UnitConversion(models.Model):
+    from_unit = models.ForeignKey(Unit, related_name="from_unit")
+    to_unit = models.ForeignKey(Unit, related_name="to_unit")
+    factor = models.FloatField()
+
+
 class Organization (models.Model):
     orgname = models.TextField()
     url = models.TextField(blank=True, null=True)
@@ -798,8 +812,7 @@ class FieldValue (models.Model):
 
         try:
             factor = self.from_unit.conversion_factor(self.to_unit) 
-        except (AttributeError, #from_unit is None
-                ConversionError): # conversion_failed
+        except (AttributeError): #from_unit is None
             factor = 1  # TODO maybe we don't want to fail silently here! 
 
         converted_value = factor * orig_val
