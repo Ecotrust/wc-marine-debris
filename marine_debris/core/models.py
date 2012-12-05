@@ -366,7 +366,6 @@ class State (models.Model):
         
     @property
     def toDict(self):
-        timeout=60*60*24*7
         key = 'statecache_%s' % self.id
         res = cache.get(key)
         if res == None:
@@ -385,7 +384,7 @@ class State (models.Model):
                 'initials': self.initials,
                 'counties': counties_list
             }
-            cache.set(key, res, timeout)
+            cache.set(key, res, settings.CACHE_TIMEOUT)
         return res
         
     @property
@@ -705,7 +704,7 @@ class Event (models.Model):
                 },
                 "date" : self.cleanupdate.strftime('%m/%d/%Y')
             } 
-            cache.set(key, d)
+            cache.set(key, d, settings.CACHE_TIMEOUT)
 
         return d
 
@@ -741,7 +740,7 @@ class Event (models.Model):
                     val = fv.field_value
                 d[(iname,label,units)] = val
 
-            cache.set(key, d)
+            cache.set(key, d, settings.CACHE_TIMEOUT)
         return d
         
         

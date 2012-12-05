@@ -339,7 +339,6 @@ def get_event_values_list(request, filters=None):
     # field_list = None
     # key = False
     # if not filters:    
-        # timeout = 60*60*24*7
         # key = "reportcache_%s" % type.replace(" ","_")
         # field_list = cache.get(key)
     # if not field_list:
@@ -376,7 +375,7 @@ def get_event_values_list(request, filters=None):
             'field': agg_fields[agg_field]
         })
     # if key:
-        # cache.set(key, field_list, timeout)
+        # cache.set(key, field_list, settings.CACHE_TIMEOUT)
             
     return field_list
     
