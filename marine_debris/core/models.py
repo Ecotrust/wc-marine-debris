@@ -798,7 +798,12 @@ class FieldValue (models.Model):
 
     @property
     def from_unit(self):
-        return self.field_id.datasheetfield_set.get(sheet_id=self.event_id.datasheet_id).unit_id
+        try:
+            unit = self.field_id.datasheetfield_set.get(sheet_id=self.event_id.datasheet_id).unit_id
+        except:
+            unit = None
+        return unit
+
 
     @property
     def converted_value(self):
