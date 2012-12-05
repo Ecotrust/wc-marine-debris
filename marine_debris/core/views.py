@@ -174,6 +174,7 @@ def download_events(request):
     ]
 
     if pretty_headers:
+        header = [x.replace('_',' ').title() for x in header]
         for x in ordered_fieldnames:
             if x[2]: # if units are defined
                 header.append("%s (%s)" % (x[1], x[2]))
@@ -201,6 +202,8 @@ def download_events(request):
             try:
                 v = d['field_values'][fname]
             except KeyError:
+                v = ''
+            if v is None:
                 v = ''
             row_data.append(v)
 

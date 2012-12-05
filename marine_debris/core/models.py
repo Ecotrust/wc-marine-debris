@@ -738,6 +738,8 @@ class Event (models.Model):
                 else:
                     units = fv.from_unit_name
                     val = fv.field_value
+                if val == 'None':
+                    val = None
                 d[(iname,label,units)] = val
 
             cache.set(key, d, settings.CACHE_TIMEOUT)
