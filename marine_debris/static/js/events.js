@@ -131,14 +131,21 @@ function viewModel(options) {
     return self.events();
   });
   
+  self.downloadData = function () {
+    var filters = self.queryFilter();
+    var url = "/events/download.csv?pprint=True&filter=" + JSON.stringify(filters || []);
+    window.location = url;
+  };
+
   self.showReport = function () {
     $("#report-tab").tab('show');  
     //self.getReport(self.queryFilter());
-  }
+  };
+
   self.showMap = function () {
     self.showDetailsSpinner(true);
     $("#map-tab").tab('show');  
-  }
+  };
 
   self.getReport = function (filters) {
     self.showReportSpinner(true);

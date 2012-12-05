@@ -208,7 +208,7 @@ def download_events(request):
         rows.append(row)
 
     res = HttpResponse('\n'.join(rows), content_type="text/csv")
-    #res['Content-Disposition'] = 'attachment; filename="marine_debris_download.csv"'
+    res['Content-Disposition'] = 'attachment; filename="marine_debris_download.csv"'
     return res
 
 def get_events(request):
