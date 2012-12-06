@@ -19,6 +19,7 @@ from django.core.cache import cache
 from django.contrib.gis.geos import Polygon
 
 import datetime
+import time
 import string
 import logging
 import csv
@@ -137,9 +138,9 @@ sort_cols = {
     "date": "cleanupdate"
 }
 
-def download_events(request):
+def download_stream_generator(request):
+    yield '' # yield something immediately to start the download
     filter_json = request.GET.get('filter', False)
-    filename = request.GET.get('filename', 'marine_debris_download')
     pretty_headers = request.GET.get('pprint', False)
 
     if filter_json:
@@ -183,7 +184,9 @@ def download_events(request):
                 header.append("%s" % x[1])
     else:
         header.extend([x[0] for x in ordered_fieldnames])
-    rows = [','.join(header)] 
+
+    row = ','.join(header)
+    yield row
 
     for d in data:
         row_data = [
@@ -209,9 +212,13 @@ def download_events(request):
             row_data.append(v)
 
         row = ','.join(['"%s"' % x for x in row_data])
-        rows.append(row)
+        row += "\n"
+        yield row
 
-    res = HttpResponse('\n'.join(rows), content_type="text/csv")
+def download_events(request):
+    timestamp = time.strftime("%Y%m%d_%H%M%S")
+    filename = request.GET.get('filename', 'WCGA_debris_%s' % timestamp )
+    res = HttpResponse(download_stream_generator(request), content_type="text/csv")
     res['Content-Disposition'] = 'attachment; filename="%s.csv"' % filename
     return res
 
