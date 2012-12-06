@@ -134,7 +134,7 @@ function viewModel(options) {
   self.downloadData = function () {
     var filters = self.queryFilter();
     var url = "/events/download.csv?pprint=True&filter=" + JSON.stringify(filters || []);
-    window.location = url;
+    $('iframe#download-frame').attr('src', url);
   };
 
   self.showReport = function () {
