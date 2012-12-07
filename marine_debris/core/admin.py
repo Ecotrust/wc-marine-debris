@@ -23,6 +23,7 @@ databrowse.site.register(Site)
 databrowse.site.register(State)
 databrowse.site.register(Unit)
 databrowse.site.register(UnitConversion)
+databrowse.site.register(Download)
 databrowse.site.register(UserTransaction)
   
 class DataSheetFieldInline(admin.TabularInline):
@@ -192,6 +193,9 @@ class UnitAdmin(admin.ModelAdmin):
 class UnitConversionAdmin(admin.ModelAdmin):
     list_display = ('from_unit', 'to_unit', 'factor')
 
+class DownloadAdmin(admin.ModelAdmin):
+    list_display = ('label', 'description', 'file_prefix', 'pretty_print', 'filter_string')
+
 class UserTransactionAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'submitted_by', 'organization', 'project', 'created_date', 'status')
     formfield_overrides = {
@@ -219,4 +223,5 @@ admin.site.register(Site,SiteAdmin)
 admin.site.register(State,StateAdmin)
 admin.site.register(Unit,UnitAdmin)
 admin.site.register(UnitConversion,UnitConversionAdmin)
+admin.site.register(Download,DownloadAdmin)
 admin.site.register(UserTransaction,UserTransactionAdmin)
