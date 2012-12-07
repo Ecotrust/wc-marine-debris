@@ -139,7 +139,7 @@ sort_cols = {
 }
 
 def download_stream_generator(request):
-    yield '' # yield something immediately to start the download
+    yield ' ' # yield something immediately to start the download
     filter_json = request.GET.get('filter', False)
     pretty_headers = request.GET.get('pprint', False)
 
