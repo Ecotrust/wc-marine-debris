@@ -12,6 +12,7 @@ from django.core.cache import cache
 from django.contrib.gis.geos import Polygon
 from django.template.defaultfilters import slugify
 import urllib
+import time
 
 # Create your models here.
 class DataType (models.Model):
@@ -73,7 +74,8 @@ class Download(models.Model):
 
     @property
     def filename(self):
-        return self.file_prefix + ".csv"
+        timestamp = time.strftime("%Y-%m-%d")
+        return "%s_%s.csv" % (self.file_prefix, timestamp)
 
     @property
     def url(self):
