@@ -1094,3 +1094,10 @@ def create_site(request):
                 'error':'Form is not valid, please review.', 'active':'events'}))
             res.status_code = 400
             return res
+
+def get_downloads(request):
+    ds = Download.objects.all().order_by('category')
+    return render_to_response('downloads.html', RequestContext(request,{'downloads': ds}))
+
+
+    

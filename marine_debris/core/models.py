@@ -11,6 +11,7 @@ add_introspection_rules([], ["^django\.contrib\.gis\.db\.models\.fields\.PointFi
 from django.core.cache import cache
 from django.contrib.gis.geos import Polygon
 from django.template.defaultfilters import slugify
+import urllib
 
 # Create your models here.
 class DataType (models.Model):
@@ -55,6 +56,34 @@ class UnitConversion(models.Model):
     from_unit = models.ForeignKey(Unit, related_name="from_unit")
     to_unit = models.ForeignKey(Unit, related_name="to_unit")
     factor = models.FloatField()
+
+
+class Download(models.Model):
+    label = models.CharField(max_length=100)
+    category = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    file_prefix = models.CharField(max_length=80)
+    filter_string = models.TextField()
+    pretty_print = models.BooleanField()
+    auto_generate = models.BooleanField(default=True)
+    thefile = models.FileField(upload_to="WCGA_downloads", null=True, blank=True)
+
+    def __unicode__(self):
+        return self.label
+
+    @property
+    def filename(self):
+        return self.file_prefix + ".csv"
+
+    @property
+    def url(self):
+        params = []
+        if self.pretty_print:
+            params.append("pprint=True")
+        params.append("filename=%s" % self.file_prefix)
+        params.append("filter=%s" % self.filter_string)
+        url = '/events/download.csv?' + "&".join(params)
+        return url
 
 
 class Organization (models.Model):
