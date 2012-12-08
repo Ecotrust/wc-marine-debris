@@ -186,6 +186,7 @@ def download_stream_generator(request):
         header.extend([x[0] for x in ordered_fieldnames])
 
     row = ','.join(header)
+    row += "\n"
     yield row
 
     for d in data:
