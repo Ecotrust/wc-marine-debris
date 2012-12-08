@@ -152,16 +152,11 @@ class Field (models.Model):
     maxvalue = models.IntegerField(blank=True, null=True)
     default_value = models.TextField(blank=True, null=True)  #TODO: What type should this be? Should it be part of Unit? FieldValue?
     description = models.TextField(blank=True, null=True, default=None)
+    label = models.TextField(blank=True, null=True, default=None)
     
     def __unicode__(self):
         return self.internal_name
 
-    @property
-    def label(self):
-        # Placeholder!
-        # TODO add human-readable label to data model
-        return self.internal_name.replace("_"," ").title()
-        
     class Meta:
         ordering = ['internal_name']
     

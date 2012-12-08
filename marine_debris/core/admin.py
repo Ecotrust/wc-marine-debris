@@ -108,7 +108,7 @@ class EventTypeAdmin(admin.ModelAdmin):
     }
    
 class FieldAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'description', 'datatype', 'unit_id', 'minvalue', 'maxvalue', 'default_value')
+    list_display = ('label', '__unicode__', 'description', 'datatype', 'unit_id', 'minvalue', 'maxvalue', 'default_value')
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
