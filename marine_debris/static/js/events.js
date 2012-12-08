@@ -131,14 +131,21 @@ function viewModel(options) {
     return self.events();
   });
   
+  self.downloadData = function () {
+    var filters = self.queryFilter();
+    var url = "/events/download.csv?pprint=True&filter=" + JSON.stringify(filters || []);
+    $('iframe#download-frame').attr('src', url);
+  };
+
   self.showReport = function () {
     $("#report-tab").tab('show');  
     //self.getReport(self.queryFilter());
-  }
+  };
+
   self.showMap = function () {
     self.showDetailsSpinner(true);
     $("#map-tab").tab('show');  
-  }
+  };
 
   self.getReport = function (filters) {
     self.showReportSpinner(true);
@@ -284,6 +291,11 @@ app.loadHash = function (hash) {
         type = parts[0],
         values = parts[1].replace(/\+/, ' ').split(',');
         
+        // open the first tab
+        if (i===0) {
+          $('.' + type).tab('show');
+        }
+
         // update the select fields
         $('select.' + type).val(values);
 

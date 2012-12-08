@@ -24,23 +24,23 @@
       <div class="tabbable wcga">
         <ul class="nav nav-tabs">
           <li class="active">
-            <a href="#search-database-tab-content-location" data-toggle="tab">Location
+            <a class="state county" href="#search-database-tab-content-location" data-toggle="tab">Location
               <i class="icon-check" data-bind="visible: $.inArray('county', activeFilterTypes()) !== -1 || $.inArray('state', activeFilterTypes()) !== -1"></i>
             </a>
 
           </li>
           <li>
-            <a href="#search-database-tab-content-type-of-debris" data-toggle="tab">Type of debris
+            <a class="event_type" href="#search-database-tab-content-type-of-debris" data-toggle="tab">Type of debris
               <i class="icon-check" data-bind="visible: $.inArray('event_type', activeFilterTypes()) !== -1"></i>
             </a>
           </li>
           <li>
-            <a href="#search-database-tab-content-organization" data-toggle="tab">Organization/Project
+            <a class="project organization" href="#search-database-tab-content-organization" data-toggle="tab">Organization/Project
               <i class="icon-check" data-bind="visible: $.inArray('organization', activeFilterTypes()) !== -1 || $.inArray('project', activeFilterTypes()) !== -1"></i>
             </a>
           </li>
           <li>
-            <a href="#search-database-tab-content-date" data-toggle="tab">Date
+            <a class="toDate fromDate" href="#search-database-tab-content-date" data-toggle="tab">Date
               <i class="icon-check" data-bind="visible: $.inArray('fromDate', activeFilterTypes()) !== -1 || $.inArray('toDate', activeFilterTypes()) !== -1"></i>
             </a>
           </li>
@@ -134,6 +134,10 @@
     <button class="btn" data-bind="click: showReport">
       <i class="icon-bar-chart"></i> View Report
     </button>
+    <button class="btn" data-bind="click: downloadData">
+        <i class="icon-download-alt"></i> Download Data
+    </button>
+    <iframe src="" style="display:none;" id="download-frame"></iframe>
   </div>
 
 </div>

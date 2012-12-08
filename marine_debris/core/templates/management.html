@@ -2,30 +2,39 @@
  {% block content %}
  {% endblock %}    
 {% block leftcontent %}
+{% csrf_token %} 
+
 <div class="manage-transactions">
-	<div data-bind="if: selectedTransaction">
-		<div data-bind="visible: showTransactionSpinner">
+	<div data-bind="visible: showTransactionSpinner">
+		<h2>Loading Transactions. <img src="{{MEDIA_URL}}img/ajax-loader.gif" /></h2>
+	</div>
+	<div data-bind="if: selectedTransaction, visible: selectedTransaction" style="display:none">
+		<div data-bind="visible: showTransactionSpinner" class="pull-right">
 		  <img src="{{MEDIA_URL}}img/ajax-loader.gif" />
 		</div>
 		<h2>Transaction Details</h2>
 		<div class="btn-group">
 			<button class="btn btn" data-bind="click: returnToTransaction"><i class="icon-arrow-left"></i> return to transactions</button>
-			<button class="btn" data-bind="click: rejectTransaction, visible: selectedTransaction().status() !== 'rejected'">reject</button>
+			<button class="btn" data-bind="click: rejectTransactionModal, visible: selectedTransaction().status() !== 'rejected'">reject</button>
 			<button class="btn btn-primary" data-bind="click: acceptTransaction, visible: selectedTransaction().status() !== 'accepted'">accept</button>
 		</div>
 
 		<div data-bind="with: selectedTransaction">
 			<dl class="dl-horizontal">
 				<dt>transaction status</dt>
-				<dd><span class="label" data-bind="text: status, css: { 'label-important': status === 'rejected', 'label-success': status() === 'accepted', 'label-warning': status() === 'new' }"></span></dd>
+				<dd><span class="label" data-bind="text: status, css: { 'label-important': status === 'Rejected', 'label-success': status() === 'accepted', 'label-warning': status() === 'new' }"></span></dd>
 				<dt>organization</dt>
-				<dd data-bind="text: organization"></dd>
+				<dd>
+					<span data-bind="text: organization() || 'Unknown'"></span>
+				</dd>
 				<dt>username</dt>
-				<dd data-bind="text: username"></dd>
+				<dd><span data-bind="text: username() || 'Unknown'"></span></dd>
 				<dt>timestamp</dt>
 				<dd data-bind="text: timestamp"></dd>
+				<dt data-bind="visible: reason">reason for rejection</dt>
+				<dd data-bind="text: reason, visible: reason"></dd>
 			</dl>
-		  	<table class="table table-striped" data-bind="dataTable: { dataSource: events, rowTemplate: 'eventRowTemplate',  columns: [
+		  	<table class="table table-striped" data-bind="dataTable: {  options: $root.eventTableOptions, rowTemplate: 'eventRowTemplate',  columns: [
 	                { mDataProp: 'datasheet.event_type', sTitle: 'Event Type', 'sWidth': '25%'},
 	                { mDataProp: 'site.name', sTitle: 'Site', 'sWidth': '35%'},
 	                { mDataProp: 'site.county', sTitle: 'County', 'sWidth': '15%'},
@@ -35,7 +44,7 @@
 			</table>
 		</div>
 	</div>
-	<div data-bind="visible: ! selectedTransaction()">
+	<div data-bind="visible: ! selectedTransaction()" style="display: none">
 		<div>
 			<ul class="nav nav-pills">
 				<h2>Manage Transactions</h2>
@@ -66,7 +75,7 @@
 </div>
 {% endblock %}
 {% block rightcontent %}
-<div data-bind="if: showError">
+<div data-bind="if: showError" style="display:none">
  <div class="alert alert-error">
   <button type="button" class="close" data-dismiss="alert">×</button>
   <strong>Error!</strong> <span data-bind="text: showError"></span>
@@ -75,7 +84,7 @@
 <div data-bind="visible: ! selectedEvent()">
 	Here is some help content.
 </div>
-<div class="management" data-bind="if: selectedEvent">
+<div class="management" data-bind="if: selectedEvent, visible: selectedEvent" style="display:none">
 	<div class="tab-pane" id="event-details-content">
 	    <div data-bind="with: selectedEvent">
 	    	<div class="row-fluid">
@@ -110,6 +119,22 @@
 	  </div>
 	</div>
 </div>
+
+<div id="reason-modal" class="modal  fade">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Reason for Rejecting</h3>
+  </div>
+  <div class="modal-body">
+    <p>Enter a reason for rejecting transaction. This message will be sent to the submitter.</p>
+    <textarea class="span12" rows="4" autofocus data-bind="value: reason"></textarea>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Close</a>
+    <a href="#" class="btn btn-primary" data-bind="click: rejectTransaction">Save changes</a>
+  </div>
+</div>
+
 {% endblock %}
 {% block styles %}
     <link href="{{STATIC_URL}}third-party/jquery/css/jquery.dataTables.css" rel="stylesheet" />
@@ -118,13 +143,12 @@
 {% endblock %}
 
 {% block scripts %}
-<script type="text/javascript">
-    var transactionsFixture = {{transactions|safe}};
-</script>
+
 <script type="text/html" id="rowTemplate">
 	<td data-bind="text: username, click: $root.selectTransaction"></td>
 	<td data-bind="text: organization, click: $root.selectTransaction"></td>
 	<td data-bind="text: timestamp, click: $root.selectTransaction"></td>
+	<td data-bind="text: events_count, click: $root.selectTransaction"></td>
 	<td><span class="label" data-bind="text: status(), click: $root.selectTransaction, css: { 'label-important': status === 'rejected', 'label-success': status() === 'accepted', 'label-warning': status() === 'new' }"></span></td>
 </script>
 <script type="text/html" id="eventRowTemplate">
