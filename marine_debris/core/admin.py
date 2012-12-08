@@ -22,6 +22,8 @@ databrowse.site.register(ProjectOrganization)
 databrowse.site.register(Site)
 databrowse.site.register(State)
 databrowse.site.register(Unit)
+databrowse.site.register(UnitConversion)
+databrowse.site.register(Download)
 databrowse.site.register(UserTransaction)
   
 class DataSheetFieldInline(admin.TabularInline):
@@ -49,6 +51,8 @@ class ProjectOrganizationInline(admin.TabularInline):
     }
      
 class AnswerOptionAdmin(admin.ModelAdmin):
+    list_display = ('eng_text', 'display_order')
+    search_fields = ['eng_text']
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -56,7 +60,8 @@ class AnswerOptionAdmin(admin.ModelAdmin):
     }
     
 class CountyAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'name', 'stateabr')
+    list_display = ('name', 'stateabr')
+    search_fields = ('name', 'stateabr')
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -65,6 +70,7 @@ class CountyAdmin(admin.ModelAdmin):
     
 class DataSheetAdmin(admin.ModelAdmin):
     list_display = ('slug', '__unicode__', 'type_id', 'created_by', 'year_started')
+    search_fields = ('slug', 'sheetname', 'type_id__type', 'created_by__orgname', 'year_started')
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -76,6 +82,7 @@ class DataSheetAdmin(admin.ModelAdmin):
     
 class DataSheetFieldAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'field_name', 'sheet_id', 'field_id', 'print_name', 'grouping', 'unit_id')
+    search_fields = ['field_name', 'sheet_id__sheetname', 'field_id__internal_name', 'sheet_id__id', 'field_id__id', 'print_name', 'grouping__name', 'unit_id__long_name']
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -84,6 +91,7 @@ class DataSheetFieldAdmin(admin.ModelAdmin):
 
 class DataTypeAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'name', 'aggregatable')
+    search_fields = ['name', 'aggregatable']
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -92,6 +100,7 @@ class DataTypeAdmin(admin.ModelAdmin):
   
 class EventAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'proj_id', 'cleanupdate', 'datasheet_id', 'site')
+    search_fields = ['proj_id__projname', 'site__sitename', 'cleanupdate', 'datasheet_id__sheetname', 'site__sitename']
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -106,7 +115,8 @@ class EventTypeAdmin(admin.ModelAdmin):
     }
    
 class FieldAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'description', 'datatype', 'unit_id', 'minvalue', 'maxvalue', 'default_value')
+    list_display = ('label', '__unicode__', 'description', 'datatype', 'unit_id', 'minvalue', 'maxvalue', 'default_value')
+    search_fields = ['label', 'internal_name', 'description', 'datatype__name', 'unit_id__long_name']
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -114,7 +124,8 @@ class FieldAdmin(admin.ModelAdmin):
     }
     
 class FieldValueAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'field_value', 'event_id', 'field_id', 'id')
+    list_display = ('__unicode__', 'field_value', 'event_id', 'field_id')
+    search_fields = ['field_value', 'event_id__proj_id__projname', 'event_id__site__sitename', 'field_id__internal_name', 'field_id__label']
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -130,6 +141,7 @@ class GroupingAdmin(admin.ModelAdmin):
  
 class MediaAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'filename', 'type', 'proj_id', 'published')
+    search_fields = ['filename', 'type', 'proj_id__projname', 'published']
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -137,7 +149,8 @@ class MediaAdmin(admin.ModelAdmin):
     }
  
 class OrganizationAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'orgname', 'address')
+    list_display = ('__unicode__', 'orgname', 'address', 'city', 'state', 'zip', 'scope', 'url')
+    search_fields = ['orgname', 'address', 'city', 'state', 'zip', 'scope', 'url']
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -145,7 +158,8 @@ class OrganizationAdmin(admin.ModelAdmin):
     }
     
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'projname', 'website', 'contact_name', 'contact_email', 'contact_phone')
+    list_display = ('projname', 'website', 'contact_name', 'contact_title', 'contact_email', 'contact_phone')
+    search_fields = ['projname', 'website', 'contact_name', 'contact_title', 'contact_email', 'contact_phone']
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -158,6 +172,7 @@ class ProjectAdmin(admin.ModelAdmin):
   
 class ProjectOrganizationAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'organization_id', 'project_id', 'is_lead')
+    search_fields = ['organization_id__orgname', 'project_id__projname', 'is_lead']
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -166,6 +181,7 @@ class ProjectOrganizationAdmin(admin.ModelAdmin):
  
 class SiteAdmin(admin.ModelAdmin):
     list_display = ('sitename', 'state', 'county', 'geometry')
+    search_fields = ['sitename', 'state__name', 'county']
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -174,6 +190,7 @@ class SiteAdmin(admin.ModelAdmin):
    
 class StateAdmin(admin.ModelAdmin):
     list_display = ('name', 'initials')
+    search_fields = ['name', 'initials']
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -181,15 +198,25 @@ class StateAdmin(admin.ModelAdmin):
     }
    
 class UnitAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'short_name')
+    list_display = ('__unicode__', 'short_name', 'data_type')
+    search_fields = ['long_name', 'short_name', 'data_type__name']
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
         },
     }
       
+class UnitConversionAdmin(admin.ModelAdmin):
+    list_display = ('from_unit', 'to_unit', 'factor')
+    search_fields = ['from_unit__long_name', 'to_unit__long_name', 'factor']
+
+class DownloadAdmin(admin.ModelAdmin):
+    list_display = ('label', 'description', 'file_prefix', 'category', 'pretty_print', 'auto_generate', 'filter_string')
+    search_fields = ['label', 'description', 'file_prefix', 'category', 'pretty_print', 'auto_generate', 'filter_string']
+
 class UserTransactionAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'submitted_by', 'organization', 'project', 'created_date', 'status')
+    list_display = ('__unicode__', 'submitted_by', 'organization', 'project', 'created_date', 'status', 'reason')
+    search_fields = ['submitted_by__username', 'organization__orgname', 'project__projname', 'created_date', 'status', 'reason']
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()
@@ -214,4 +241,6 @@ admin.site.register(ProjectOrganization,ProjectOrganizationAdmin)
 admin.site.register(Site,SiteAdmin)
 admin.site.register(State,StateAdmin)
 admin.site.register(Unit,UnitAdmin)
+admin.site.register(UnitConversion,UnitConversionAdmin)
+admin.site.register(Download,DownloadAdmin)
 admin.site.register(UserTransaction,UserTransactionAdmin)

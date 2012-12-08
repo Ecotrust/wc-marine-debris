@@ -11,6 +11,8 @@ add_introspection_rules([], ["^django\.contrib\.gis\.db\.models\.fields\.PointFi
 from django.core.cache import cache
 from django.contrib.gis.geos import Polygon
 from django.template.defaultfilters import slugify
+import urllib
+import time
 
 # Create your models here.
 class DataType (models.Model):
@@ -20,7 +22,12 @@ class DataType (models.Model):
     def __unicode__(self):
         return self.name
 
-class Unit (models.Model):
+
+class ConversionError(Exception):
+    pass
+
+
+class Unit(models.Model):
     short_name = models.TextField()
     long_name = models.TextField()
     data_type = models.ForeignKey(DataType, null=True, blank=True)
@@ -28,9 +35,59 @@ class Unit (models.Model):
     def __unicode__(self):
         return self.long_name
         
+    def conversion_factor(self, to_unit):
+        if self == to_unit:
+            # "No conversion needed, %s and %s are the same units" % (self, to_unit)
+            return 1
+        if to_unit is None:
+            # to_unit is None, Field has no units defined! assume no conversion possible
+            return 1
+        try:
+            uc = UnitConversion.objects.get(from_unit=self, to_unit=to_unit)
+        except UnitConversion.DoesNotExist:
+            raise ConversionError("%s to %s ... conversion factor not specified in UnitConversion table" % (self, to_unit))
+
+        return uc.factor
+
     class Meta:
         ordering = ['long_name']
         
+
+class UnitConversion(models.Model):
+    from_unit = models.ForeignKey(Unit, related_name="from_unit")
+    to_unit = models.ForeignKey(Unit, related_name="to_unit")
+    factor = models.FloatField()
+
+
+class Download(models.Model):
+    label = models.CharField(max_length=100)
+    category = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    file_prefix = models.CharField(max_length=80)
+    filter_string = models.TextField()
+    pretty_print = models.BooleanField()
+    auto_generate = models.BooleanField(default=True)
+    thefile = models.FileField(upload_to="WCGA_downloads", null=True, blank=True)
+
+    def __unicode__(self):
+        return self.label
+
+    @property
+    def filename(self):
+        timestamp = time.strftime("%Y-%m-%d")
+        return "%s_%s.csv" % (self.file_prefix, timestamp)
+
+    @property
+    def url(self):
+        params = []
+        if self.pretty_print:
+            params.append("pprint=True")
+        params.append("filename=%s" % self.file_prefix)
+        params.append("filter=%s" % self.filter_string)
+        url = '/events/download.csv?' + "&".join(params)
+        return url
+
+
 class Organization (models.Model):
     orgname = models.TextField()
     url = models.TextField(blank=True, null=True)
@@ -95,10 +152,11 @@ class Field (models.Model):
     maxvalue = models.IntegerField(blank=True, null=True)
     default_value = models.TextField(blank=True, null=True)  #TODO: What type should this be? Should it be part of Unit? FieldValue?
     description = models.TextField(blank=True, null=True, default=None)
+    label = models.TextField(blank=True, null=True, default=None)
     
     def __unicode__(self):
         return self.internal_name
-        
+
     class Meta:
         ordering = ['internal_name']
     
@@ -334,7 +392,6 @@ class State (models.Model):
         
     @property
     def toDict(self):
-        timeout=60*60*24*7
         key = 'statecache_%s' % self.id
         res = cache.get(key)
         if res == None:
@@ -353,7 +410,7 @@ class State (models.Model):
                 'initials': self.initials,
                 'counties': counties_list
             }
-            cache.set(key, res, timeout)
+            cache.set(key, res, settings.CACHE_TIMEOUT)
         return res
         
     @property
@@ -366,44 +423,42 @@ class State (models.Model):
         
 class UserTransaction (models.Model):
     StatusChoices = (
-        ('New', 'New'),
-        ('Accepted', 'Accepted'),
-        ('Rejected', 'Rejected')
+        ('new', 'new'),
+        ('accepted', 'accepted'),
+        ('rejected', 'rejected')
     )
     submitted_by = models.ForeignKey(User)
     created_date = models.DateTimeField(auto_now_add = True, default=datetime.datetime.now())
-    status = models.CharField(max_length=30, choices=StatusChoices, default='New', blank=True)
+    status = models.CharField(max_length=30, choices=StatusChoices, default='new', blank=True)
     organization = models.ForeignKey(Organization, blank=True, null=True)
     project = models.ForeignKey(Project, blank=True, null=True)
-    
+    reason = models.TextField(blank=True, null=True)
+
+
     @property
-    def toDict(self):
-        timeout=60*60*24*7
-        key = 'transcache_%s' % self.id
-        res = cache.get(key)
-        if res == None:
-            print "cache missed: %s" % key
-            events = [x.toEventsDict for x in Event.objects.filter(transaction=self)]
-            
-            if self.organization:
-                orgname = self.organization.orgname
-            else:
-                orgname = ''
-            if self.project:
-                projname = self.project.projname
-            else:
-                projname = ''
-            
-            res = {
-                'username': self.submitted_by.username,
-                'organization': orgname,
-                'project': projname,
-                'timestamp': self.created_date.strftime('%m/%d/%Y %H:%M'),
-                'status': self.status,
-                'id': self.id,
-                'events': events
-            }
-            cache.set(key, res, timeout)
+    def toDict(self):    
+        events_count = Event.objects.filter(transaction=self).count()
+        
+        if self.organization:
+            orgname = self.organization.orgname
+        else:
+            orgname = None
+        if self.project:
+            projname = self.project.projname
+        else:
+            projname = None
+        
+        res = {
+            'username': self.submitted_by.username,
+            'organization': orgname,
+            'project': projname,
+            'timestamp': self.created_date.strftime('%m/%d/%Y %H:%M'),
+            'status': self.status,
+            'id': self.id,
+            'events_count': events_count,
+            'reason': self.reason
+        }
+    
         return res
     
     def __unicode__(self):
@@ -511,9 +566,9 @@ class Site (models.Model):
 
 class Event (models.Model):
     StatusChoices = (
-        ('New', 'New'),
-        ('Accepted', 'Accepted'),
-        ('Rejected', 'Rejected')
+        ('new', 'new'),
+        ('accepted', 'accepted'),
+        ('rejected', 'rejected')
     )
     transaction = models.ForeignKey(UserTransaction)
     datasheet_id = models.ForeignKey(DataSheet)
@@ -538,6 +593,7 @@ class Event (models.Model):
         date_filters = []
         org_filters = []
         proj_filters = []
+        transaction_filters = []
         # bbox_filter = False
         if filters == None:
             filters = []
@@ -555,6 +611,8 @@ class Event (models.Model):
                 org_filters.append(filter)
             elif filter['type'] == 'project':
                 proj_filters.append(filter)
+            elif filter['type'] == 'transaction':
+                transaction_filters.append(filter)
             else:
                 site_filters.append(filter)
                 
@@ -589,6 +647,8 @@ class Event (models.Model):
                     filtered_events = filtered_events.filter(cleanupdate__gte=filter['value'])
                 if filter['type'] == 'fromDate':
                     filtered_events = filtered_events.filter(cleanupdate__lte=filter['value'])
+            for filter in transaction_filters:
+                filtered_events = filtered_events.filter(transaction=filter['value'])
         # if bbox_filter:
             # filtered_events = filtered_events.filter(site__geometry__contained=geom)
         return filtered_events
@@ -652,46 +712,83 @@ class Event (models.Model):
         
     @property
     def toEventsDict(self):
-        proj = self.proj_id
-        return {
-            "site": self.site.toDict,
-            "project": {
-                "name": proj.projname,
-                "url": proj.get_absolute_url()
-            },
-            "id": self.id,
-            "datasheet": self.datasheet_id.toDict,
-            "organization": {
-                "name": proj.projectorganization_set.order_by('-is_lead')[0].organization_id.orgname
-            },
-            "date" : self.cleanupdate.strftime('%m/%d/%Y')
-        } 
+        key = 'event_%s_eventdict' % self.id
+        d = cache.get(key)
+
+        if not d:
+            proj = self.proj_id
+            d = {
+                "site": self.site.toDict,
+                "project": {
+                    "name": proj.projname,
+                    "url": proj.get_absolute_url()
+                },
+                "id": self.id,
+                "datasheet": self.datasheet_id.toDict,
+                "organization": {
+                    "name": proj.projectorganization_set.order_by('-is_lead')[0].organization_id.orgname
+                },
+                "date" : self.cleanupdate.strftime('%m/%d/%Y')
+            } 
+            cache.set(key, d, settings.CACHE_TIMEOUT)
+
+        return d
+
+    def toValuesDict(self, convert_units=True):
+        """
+        Returns a dict of field values. 
+        Handles unit conversions between datasheet and internal field.
+        Handles converting string to appropriate values (float/int/date/etc)
+        TODO Tuples are keys    
+        TODO option to convert units or not
+        {
+          ('internal_field_name','label', 'units'): value_with_converted_units,
+        }
+        """
+        if convert_units:  
+            unit_handler = "convert"
+        else:
+            unit_handler = "raw"
+
+        key = 'event_%s_valuedict_%s' % (self.id, unit_handler)
+        d = cache.get(key)
+        if not d:
+            qs = FieldValue.objects.filter(event_id = self) 
+            d = {}
+            for fv in qs:
+                iname = fv.field_id.internal_name
+                label = fv.field_id.label
+                if convert_units:  
+                    units = fv.to_unit_name
+                    val = fv.converted_value
+                else:
+                    units = fv.from_unit_name
+                    val = fv.field_value
+                if val == 'None':
+                    val = None
+                d[(iname,label,units)] = val
+
+            cache.set(key, d, settings.CACHE_TIMEOUT)
+        return d
+        
         
     def save(self, *args, **kwargs):
         
         if self.id:
-            eventkey = 'eventcache_%s' % self.id
-            cache.delete(eventkey)
+            # invalidate/clear all cached data associated with this event
+            keys = [
+                'event_%s_eventdict' % self.id,
+                'event_%s_valuedict_convert' % self.id,
+                'event_%s_valuedict_raw' % self.id,
+                'event_%s_geocache' % self.id,
+            ]
+            for key in keys:
+                cache.delete(key)
             
         if self.datasheet_id and self.datasheet_id.type_id and self.datasheet_id.type_id.type:
             reportkey = 'reportcache_%s' % self.datasheet_id.type_id.type
             cache.delete(reportkey)
             
-            geokey = 'geocache_%s' % self.id
-            cache.delete(geokey)
-            
-            # typekey = 'reportcache_event_type_%s' % self.datasheet_id.type_id.type
-            # cache.delete(typekey)
-            #TODO: These are the same and will be consolidated - the second is handled through this class's filter method
-        
-        # if self.site and self.site.state:
-            # statekey = 'reportcache_state_%s' % self.site.state.name
-            # cache.delete(statekey)
-                
-            # countykey = 'reportcache_county_%s_%s' % (self.site.county, self.site.state.name)
-            # cache.delete(countykey)
-            
-        
         super(Event, self).save(*args, **kwargs)
     
     class Meta:
@@ -707,6 +804,60 @@ class FieldValue (models.Model):
         readable_name = str(self.event_id) + '-' + self.field_id.internal_name
         return readable_name
         
+    @property
+    def to_unit_name(self):
+        try:
+            x = self.to_unit.short_name
+        except AttributeError:
+            x = None
+        return x
+
+    @property
+    def from_unit_name(self):
+        try:
+            x = self.from_unit.short_name
+        except AttributeError:
+            x = None
+        return x
+
+    @property
+    def to_unit(self):
+        return self.field_id.unit_id
+
+    @property
+    def from_unit(self):
+        try:
+            unit = self.field_id.datasheetfield_set.get(sheet_id=self.event_id.datasheet_id).unit_id
+        except:
+            unit = None
+        return unit
+
+
+    @property
+    def converted_value(self):
+        ''' TODO use some thing like
+           converted_value = datasheet_units.factor(desired_units)
+        where the factor method of a unit will return the multiplier required to go from it to the desired units
+        '''
+        try:
+            orig_val = float(self.field_value)
+        except ValueError:
+            # unless its numeric, just pass it along
+            return self.field_value
+
+        try:
+            factor = self.from_unit.conversion_factor(self.to_unit) 
+        except (AttributeError): #from_unit is None
+            factor = 1  # TODO maybe we don't want to fail silently here! 
+
+        converted_value = factor * orig_val
+
+        # cast to int if needed
+        if orig_val % 1 == 0 and factor == 1:
+            converted_value = int(converted_value)
+
+        return converted_value
+
     class Meta:
         ordering = ['event_id', 'field_id__internal_name']
     

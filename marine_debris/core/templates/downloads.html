@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block rightcontent %}
+<div style="padding: 26px;">
+    <ul>
+    {% for d in downloads %}
+        {% if d.thefile %}
+        <li>
+            <a href="{{d.thefile.url}}">{{d.label}}</a> <span>{{d.description}}</span>     
+        </li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+</div>
+{% endblock %}    
+
+
+{% block leftcontent %}
+{% regroup downloads by category as category_list %}
+{% for cat in category_list %}
+    <h3>{{ cat.grouper }}</h3>
+    <ul>
+        {% for d in cat.list %}
+            <li>
+                {% if d.thefile %}
+                <a href="{{d.thefile.url}}">{{d.label}}</a> <p>{{d.description}}</p>     
+                {% else %}
+                {{d.label}} (<em>no download currently available</em>): <p>{{d.description}}</p>     
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endfor %}
+
+{% endblock %}    

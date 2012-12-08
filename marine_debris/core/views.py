@@ -19,11 +19,13 @@ from django.core.cache import cache
 from django.contrib.gis.geos import Polygon
 
 import datetime
+import time
 import string
 import logging
 import csv
 from forms import *
 from models import *
+from sets import Set
 
 
 def index(request): 
@@ -42,30 +44,38 @@ def index(request):
 
     return render_to_response( 'index.html', RequestContext(request,{'thankyou': False, 'active':'home', 'event_count': event_count}))
 
-def management(request):
-
+def get_transactions(request):
     trans_dict = {
-        'new' : [trans.toDict for trans in UserTransaction.objects.filter(status='New')],
-        'accepted' : [trans.toDict for trans in UserTransaction.objects.filter(status='Accepted')],
-        'rejected' : [trans.toDict for trans in UserTransaction.objects.filter(status='Rejected')]
+        'new' : [trans.toDict for trans in UserTransaction.objects.filter(status='new')],
+        'accepted' : [trans.toDict for trans in UserTransaction.objects.filter(status='accepted')],
+        'rejected' : [trans.toDict for trans in UserTransaction.objects.filter(status='rejected')]
     }
 
-    transaction_json = simplejson.dumps(trans_dict)
+    return HttpResponse(simplejson.dumps(trans_dict))
 
-    return render_to_response( 'management.html', RequestContext(request, {'transactions':transaction_json}))
+def management(request):
+    return render_to_response( 'management.html', RequestContext(request))
 
-def update_transaction(request, arg1 = None, arg2 = None):
-    # import pdb
-    # pdb.set_trace()
+def update_transaction(request):
     if request.method == 'POST':
-        res = management(request)
-        res.status_code = 200
-        return res
+        transaction_id = request.POST.get('transaction_id', None)
+        status = request.POST.get('status', None)
+        reason = request.POST.get('reason', None)
+        if transaction_id is not None:
+            transaction = UserTransaction.objects.get(id=transaction_id)
+            if status is not None:
+                transaction.status = status
+                if status == 'rejected' and reason is not None:
+                    transaction.reason = reason
+                transaction.save()
+                res = {'status': 'success', 'transaction_id': transaction_id}
+
     else:
-        res = management(request)
-        res.error = 'request was not a POST'
-        res.status_code = 400
-        return res
+        res = {
+            'status_code': 400,
+            'error':  'request was not a POST'
+        }
+    return HttpResponse(simplejson.dumps(res))
     
     
     
@@ -128,6 +138,91 @@ sort_cols = {
     "date": "cleanupdate"
 }
 
+def download_stream_generator(request):
+    yield ' ' # yield something immediately to start the download
+    filter_json = request.GET.get('filter', False)
+    pretty_headers = request.GET.get('pprint', False)
+
+    if filter_json:
+        filters = simplejson.loads(filter_json)
+        qs = Event.filter(filters)
+    else:
+        filters = None
+        qs = Event.objects.all()
+
+    data = []
+    all_fieldnames = Set([])
+    for event in qs: 
+        d = event.toEventsDict
+        evd = event.toValuesDict()
+        d['field_values'] = evd
+        all_fieldnames = Set(evd.keys()) | all_fieldnames
+        data.append(d)
+
+    ordered_fieldnames = list(all_fieldnames)
+    ordered_fieldnames.sort()
+    header = [
+            'id', 
+            'date',
+            'project_name',
+            'site_name',
+            'site_state',
+            'site_county',
+            'site_lon',
+            'site_lat',
+            'event_type',
+            'datasheet',
+            'organization',
+    ]
+
+    if pretty_headers:
+        header = [x.replace('_',' ').title() for x in header]
+        for x in ordered_fieldnames:
+            if x[2]: # if units are defined
+                header.append("%s (%s)" % (x[1], x[2]))
+            else:
+                header.append("%s" % x[1])
+    else:
+        header.extend([x[0] for x in ordered_fieldnames])
+
+    row = ','.join(header)
+    row += "\n"
+    yield row
+
+    for d in data:
+        row_data = [
+                d['id'],
+                d['date'],
+                d['project']['name'],
+                d['site']['name'],
+                d['site']['state'],
+                d['site']['county'],
+                d['site']['lon'],
+                d['site']['lat'],
+                d['datasheet']['event_type'],
+                d['datasheet']['name'],
+                d['organization']['name'],
+        ]
+        for fname in ordered_fieldnames:
+            try:
+                v = d['field_values'][fname]
+            except KeyError:
+                v = ''
+            if v is None:
+                v = ''
+            row_data.append(v)
+
+        row = ','.join(['"%s"' % x for x in row_data])
+        row += "\n"
+        yield row
+
+def download_events(request):
+    timestamp = time.strftime("%Y%m%d_%H%M%S")
+    filename = request.GET.get('filename', 'WCGA_debris_%s' % timestamp )
+    res = HttpResponse(download_stream_generator(request), content_type="text/csv")
+    res['Content-Disposition'] = 'attachment; filename="%s.csv"' % filename
+    return res
+
 def get_events(request):
     start_index = request.GET.get('iDisplayStart', 0)
     count = request.GET.get('iDisplayLength', False)
@@ -157,13 +252,8 @@ def get_events(request):
     data = []
     found_records = 0
 
-    timeout=60*60*24*7*52*10
     for event in qs: 
-        key = 'eventcache_%s' % event.id
-        dict = cache.get(key)
-        if not dict:
-            dict = event.toEventsDict
-            cache.set(key, dict, timeout)
+        dict = event.toEventsDict
         if not start_id:
             data.append(dict)
         else:
@@ -215,11 +305,10 @@ def get_event_geojson(request):
     else:
         qs = Event.objects.all()
     
-    timeout=60*60*24*7*52*10
     loop_count = 0
     for event in qs:
         loop_count = loop_count + 1
-        key = 'geocache_%s' % event.id
+        key = 'event_%s_geocache' % event.id
         geo_string = cache.get(key)
         if not geo_string:
             gj = None
@@ -235,7 +324,7 @@ def get_event_geojson(request):
                 pass
             
             geo_string = get_feature_json(gj, properties)
-            cached = cache.set(key, geo_string, timeout)
+            cached = cache.set(key, geo_string, settings.CACHE_TIMEOUT)
         feature_jsons.append(geo_string)
         
     geojson = """{
@@ -252,12 +341,16 @@ def get_event_geojson(request):
     return response
         
 def get_event_values_list(request, filters=None):
-    
+    '''
+    TODO should be renamed to get_aggregate_values_list!
+    TODO use field_value.converted_value instead of field_value.field_value
+    TODO profile
+    TODO caching strategy 
+    '''
     # type = 'Site Cleanup'   #TODO: get this type name dynamically so we can show derelict and others
     # field_list = None
     # key = False
     # if not filters:    
-        # timeout = 60*60*24*7
         # key = "reportcache_%s" % type.replace(" ","_")
         # field_list = cache.get(key)
     # if not field_list:
@@ -267,14 +360,13 @@ def get_event_values_list(request, filters=None):
     agg_fields = {}
 
     field_values = FieldValue.objects.filter(event_id__in = cleanup_events, field_id__datatype__aggregatable = True)
-    
+
     for field_value in field_values:
         field_name = field_value.field_id.internal_name
         if field_value.field_value and not field_value.field_value in ['', None, 'None']:
             if not agg_fields.has_key(field_name):
                 agg_fields[field_name] = get_agg_template(field_value.field_id)
             field = agg_fields[field_name]
-            
             
             if not field['value']:
                 field['value'] = 0
@@ -295,7 +387,7 @@ def get_event_values_list(request, filters=None):
             'field': agg_fields[agg_field]
         })
     # if key:
-        # cache.set(key, field_list, timeout)
+        # cache.set(key, field_list, settings.CACHE_TIMEOUT)
             
     return field_list
     
@@ -606,7 +698,7 @@ def  view_organization(request, organization_slug):
 
 def  view_project(request, project_slug):
     project = Project.objects.get(slug=project_slug)
-    project.organizations = project.organization.all()
+    project.organizations = project.organization.filter(projectorganization__is_lead=True)
     project.data_sheets = project.active_sheets.all()
     print project
     
@@ -615,11 +707,8 @@ def  view_project(request, project_slug):
 # @login_required
 def projects(request): 
     projects = Project.objects.all()       
-    if settings.SERVER == 'Dev':
-        static_media_url = settings.MEDIA_URL
-    else:
-        static_media_url = settings.STATIC_URL
-    return render_to_response( 'projects.html', RequestContext(request,{'projects': projects, 'active':'projects', 'STATIC_URL':static_media_url}))    
+    
+    return render_to_response( 'projects.html', RequestContext(request,{'projects': projects, 'active':'projects'}))    
 
 
 
@@ -1006,3 +1095,10 @@ def create_site(request):
                 'error':'Form is not valid, please review.', 'active':'events'}))
             res.status_code = 400
             return res
+
+def get_downloads(request):
+    ds = Download.objects.all().order_by('category')
+    return render_to_response('downloads.html', RequestContext(request,{'downloads': ds}))
+
+
+    
