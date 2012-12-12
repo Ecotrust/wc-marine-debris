@@ -10,7 +10,8 @@ app.maxZoom = 12;
 
 app.map = map;
 app.rowIndex = {};
-
+app.highlightedCluster = null;
+app.highlightedEvent = null;
 OpenLayers.Strategy.AttributeCluster = OpenLayers.Class(OpenLayers.Strategy.Cluster, {
     /**
      * the attribute to use for comparison
@@ -207,6 +208,8 @@ function viewModel(options) {
 
   self.queryFilter.subscribe(function (newFilter) {
     self.mapIsLoading(true);
+    app.highlightedEvent = null;
+    app.highlightedCluster = null;
     $('#events-table').dataTable().fnReloadAjax();
     
     // points not exist at first
@@ -245,22 +248,52 @@ function viewModel(options) {
     }
   });
 
+  self.highlightCluster = function (event) {
+
+    
+    for (var i = 0; i < app.points.features.length; i++) {
+      var cluster = app.points.features[i].cluster;
+      for (var j=0; j < cluster.length; j++) {
+        if (cluster[j].attributes.id === event.id) {
+          var selectedCluster = app.points.features[i];
+        }
+      }
+    }
+
+    if (app.highlightedCluster !== selectedCluster) {
+      // if (app.highlightedCluster) {
+      //   app.selectControl.unhighlight(app.highlightedCluster);  
+      // }
+      if (selectedCluster) {
+        app.selectControl.highlight(selectedCluster);
+        app.highlightedCluster = selectedCluster;
+        app.highlightedEvent = event;  
+      }  
+    }  
+  
+  };
+
   self.handleTableClick = function (event, e) {
-    var $row = $(e.target).closest('tr'),
+    var selectedCluster, $row = $(e.target).closest('tr'),
        pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
     $row.siblings().removeClass('active');
     $row.addClass('active');
-    app.map.setCenter(pos, app.map.getZoom() + 2);
+    self.highlightCluster(event);
+    //app.map.setCenter(pos, app.map.getZoom() + 2);
   };
 
   self.zoomTo = function (event) {
     var zoomLevel = Math.max(12, app.map.getZoom())
+    app.highlightedEvent = event;
+    
     $('a[href=#map-content]').tab('show');
     if (typeof event.site !== 'undefined') {
       app.map.setCenter(new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")), zoomLevel);  
     } else {
       app.map.setCenter(event.geometry.x, event.geometry.y);
     }
+    
+    
   };
 
   self.showDetail = function(event) {
@@ -516,17 +549,29 @@ app.initMap = function () {
   app.map.addControl(app.selectControl);
   app.selectControl.activate();
 
+  app.map.events.on({
+    "moveend": function () {
+    
+      if (app.highlightedEvent) {
+        app.viewModel.highlightCluster(app.highlightedEvent);
+        //app.highlightedEvent = null;
+      }
+    
+    }
+  })
+
   app.points.events.on({
     "featuresadded": function () {
       app.viewModel.mapIsLoading(false);
+
     },
     "featuresremoved": function () {
       app.viewModel.mapIsLoading(false);
     },
     "refresh": function () {
       app.viewModel.mapIsLoading(false);
+      app.viewModel.clusteredEvents(false);
     },
-
     "featureselected": function(e) {
       var centerLonLat = e.feature.geometry.bounds.centerLonLat,
           centroid = e.feature.geometry.transform(gProj, mProj).getCentroid();
@@ -548,12 +593,17 @@ app.initMap = function () {
          app.viewModel.activeEvent(false);
          
          app.map.setCenter(centerLonLat, app.map.getZoom() + 2);
-         app.viewModel.clusteredEvents($.map(e.feature.cluster, function (f) {
-           return f.attributes;
-         }));
+         if (e.feature.cluster.length < 100) {
+          app.viewModel.clusteredEvents($.map(e.feature.cluster, function (f) {
+            return f.attributes;
+          })); 
+         }
+         
          
       }
-
+      if (app.viewModel.highlightedCluster) {
+        app.selectControl.unhighlight(app.viewModel.highlightedCluster);
+      }
       
 
 
