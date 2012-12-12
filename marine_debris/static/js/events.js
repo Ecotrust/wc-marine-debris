@@ -98,7 +98,7 @@ function viewModel(options) {
 
   self.dataTablesOptions = {
     'bFilter': false, 
-    "iDisplayLength": 8,
+    "iDisplayLength": 5,
     "bProcessing": true,
     "bServerSide": true,
     "sPaginationType": "full_numbers",
@@ -205,12 +205,13 @@ function viewModel(options) {
     window.location.hash = url;
   });
 
-  self.queryFilter.subscribe(function () {
+  self.queryFilter.subscribe(function (newFilter) {
     self.mapIsLoading(true);
     $('#events-table').dataTable().fnReloadAjax();
     
     // points not exist at first
-    if (app.points) {
+
+    if (app.points && newFilter.type !== 'point') {
       app.points.refresh({ 
           params: {
               'filter': JSON.stringify(self.queryFilter())
@@ -253,10 +254,10 @@ function viewModel(options) {
   };
 
   self.zoomTo = function (event) {
-
+    var zoomLevel = Math.max(12, app.map.getZoom())
     $('a[href=#map-content]').tab('show');
     if (typeof event.site !== 'undefined') {
-      app.map.setCenter(new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")), 12);  
+      app.map.setCenter(new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")), zoomLevel);  
     } else {
       app.map.setCenter(event.geometry.x, event.geometry.y);
     }
@@ -496,9 +497,11 @@ app.initMap = function () {
                 type: "AerialWithLabels"
             });
 
+  var mProj = new OpenLayers.Projection("EPSG:4326"),
+      gProj = new OpenLayers.Projection("EPSG:900913");
 
   map.addLayers([hybrid]);
-  map.setCenter(new OpenLayers.LonLat(-122.5, 41).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")), 5);
+  map.setCenter(new OpenLayers.LonLat(-122.5, 41).transform(mProj, gProj), 5);
 
   app.selectControl = new OpenLayers.Control.SelectFeature(
               [app.points],
@@ -525,6 +528,18 @@ app.initMap = function () {
     },
 
     "featureselected": function(e) {
+      var centerLonLat = e.feature.geometry.bounds.centerLonLat,
+          centroid = e.feature.geometry.transform(gProj, mProj).getCentroid();
+
+      app.viewModel.queryFilter.remove(function (item) {
+        return item.type === 'point';
+      });
+      
+      app.viewModel.queryFilter.push({
+        type: 'point',
+        value: [centroid.x.toFixed(4), centroid.y.toFixed(4)].join(':')
+      });
+
       if ( e.feature.attributes.count === 1){
          app.viewModel.clusteredEvents.removeAll();
          
@@ -532,14 +547,16 @@ app.initMap = function () {
       } else {
          app.viewModel.activeEvent(false);
          
-         app.map.setCenter(e.feature.geometry.bounds.centerLonLat, app.map.getZoom() + 2);
+         app.map.setCenter(centerLonLat, app.map.getZoom() + 2);
          app.viewModel.clusteredEvents($.map(e.feature.cluster, function (f) {
            return f.attributes;
          }));
          
       }
-     
+
       
+
+
       
    },
    "featureunselected": function(e) {

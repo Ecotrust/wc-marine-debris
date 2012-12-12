@@ -16,7 +16,7 @@ from django.forms.models import modelformset_factory
 from django.contrib.gis.geos import Point
 from django.utils.http import urlencode
 from django.core.cache import cache
-from django.contrib.gis.geos import Polygon
+from django.contrib.gis.geos import Polygon, Point
 
 import datetime
 import time
@@ -245,6 +245,11 @@ def get_events(request):
             if sort_dir == 'desc':
                 sort_name = "-" + sort_name
             qs = qs.order_by(sort_name)
+    for filter in filters:
+        if filter['type'] == 'point':    
+            coords = filter['value'].split(':')
+            point = Point(float(coords[0]), float(coords[1]))
+            qs = qs.distance(point, field_name='site__geometry').order_by('distance')
     filtered_count = qs.count()
     if count and not start_id:
         qs = qs[int(start_index):int(start_index) + int(count)]
