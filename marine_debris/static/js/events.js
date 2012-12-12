@@ -44,6 +44,7 @@ function viewModel(options) {
   self.events = ko.observableArray();
   self.states = options.filters.states;
   self.locations = options.filters.locations;
+  self.fields = options.filters.fields;
 
   self.organizations = options.filters.organizations;
   self.projects = options.filters.projects;
@@ -395,6 +396,19 @@ $.ajax({
         } else if (option.deselected) {
           app.viewModel.queryFilter.remove(function (filter) {
             return filter.type === 'organization' && filter.value === option.deselected;
+          });
+        }
+      });
+
+      $("select.field").chosen().change(function (event, option) {
+        if (option.selected) {
+          app.viewModel.queryFilter.push({
+            type: "field",
+            value: option.selected
+          });
+        } else if (option.deselected) {
+          app.viewModel.queryFilter.remove(function (filter) {
+            return filter.type === 'field' && filter.value === option.deselected;
           });
         }
       });

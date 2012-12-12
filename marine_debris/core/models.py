@@ -594,6 +594,7 @@ class Event (models.Model):
         org_filters = []
         proj_filters = []
         transaction_filters = []
+        field_filters = []
         point = None
         # bbox_filter = False
         if filters == None:
@@ -614,6 +615,8 @@ class Event (models.Model):
                 proj_filters.append(filter)
             elif filter['type'] == 'transaction':
                 transaction_filters.append(filter)
+            elif filter['type'] == 'field':
+                field_filters.append(filter)
             elif filter['type'] == 'point':
                 pass
             else:
@@ -643,6 +646,8 @@ class Event (models.Model):
                     filtered_events = res
             for filter in proj_filters:
                 filtered_events = filtered_events.filter(proj_id__slug=filter['value'])
+            for filter in field_filters:
+                filtered_events = filtered_events.filter(datasheet_id__field__internal_name=filter['value'])
             for filter in org_filters:
                 filtered_events = filtered_events.filter(proj_id__organization__slug=filter['value'])
             for filter in date_filters:

@@ -96,7 +96,7 @@ def get_filters(request):
     locations = {}
     organizations = []
     projects = []
-
+    fields = []
     for state in State.objects.all().order_by('name'):
         states.append(state.toSimpleDict)
         counties = []
@@ -123,11 +123,19 @@ def get_filters(request):
             "slug": project.slug
         })
 
+    for field in Field.objects.all():
+        fields.append({
+            "name": field.label,
+            "slug": field.internal_name,
+            "id": field.id
+        })
+
     return HttpResponse(simplejson.dumps({
         'states': states,
         'locations': locations,
         "projects": projects,
-        "organizations": organizations
+        "organizations": organizations,
+        "fields": fields
     }))
 
 sort_cols = {

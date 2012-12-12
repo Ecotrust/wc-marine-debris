@@ -31,7 +31,7 @@
           </li>
           <li>
             <a class="event_type" href="#search-database-tab-content-type-of-debris" data-toggle="tab">Type of debris
-              <i class="icon-check" data-bind="visible: $.inArray('event_type', activeFilterTypes()) !== -1"></i>
+              <i class="icon-check" data-bind="visible: $.inArray('event_type', activeFilterTypes()) !== -1 || $.inArray('field', activeFilterTypes()) !== -1"></i>
             </a>
           </li>
           <li>
@@ -65,11 +65,21 @@
             </div>
           </div>
           <div class="tab-pane" id="search-database-tab-content-type-of-debris">
-            <h4>Filter by Report Type</h4>
-            <select class="event_type" multiple="true" data-placeholder="Filter by event type(s)..." style="width: 350px">
-              <option value="Gear Removal">Gear Removal</option>
-              <option value="Site Cleanup">Site Cleanup</option>
-            </select>
+            <div class="row-fluid">
+              <div class="span6">
+                <h4>Filter by Report Type</h4>
+                <select class="event_type" multiple="true" data-placeholder="Filter by event type(s)...">
+                  <option value="Gear Removal">Gear Removal</option>
+                  <option value="Site Cleanup">Site Cleanup</option>
+                </select>
+              </div>
+              <div class="span6">
+                <h4>Filter by Debris Type</h4>
+                <select class="field" data-placeholder="Filter by debris type(s)..." data-bind="foreach: fields" multiple>
+                  <option data-bind="text: $data.name, value: $data.slug"></option>
+                </select>
+              </div>
+            </div>
           </div>
           <div class="tab-pane" id="search-database-tab-content-organization">
             <div class="row-fluid">
