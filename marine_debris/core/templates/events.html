@@ -282,15 +282,15 @@
   <td data-bind="text: field.unit"></td>
 </script>
 <script type="text/html" id="rowTemplate">
-  <td data-bind="text: datasheet.event_type"></td>
-  <td data-bind="text: site.name"></td>
-  <td data-bind="text: site.county"></td>
-  <td data-bind="text: site.st_initials"></td>
-  <td data-bind="text: date"></td>
+  <td data-bind="text: datasheet.event_type, click: $root.zoomTo"></td>
+  <td data-bind="text: site.name, click: $root.zoomTo"></td>
+  <td data-bind="text: site.county, click: $root.zoomTo"></td>
+  <td data-bind="text: site.st_initials, click: $root.zoomTo"></td>
+  <td data-bind="text: date, click: $root.zoomTo"></td>
   <td style="text-align: center">
     <div class="btn-group">
-      <button class="btn btn-mini" data-bind="click: $root.zoomTo" rel="tooltip" title="zoom to event"><i class="icon-search"></i></button>
-      <button class="btn btn-mini" data-bind="click: $root.showDetail" rel="tooltip" title="show event details"><i class="icon-info-sign"></i></button>
+      
+      <button class="btn" data-bind="click: $root.showDetail" rel="tooltip" title="show event details"><i class="icon-info-sign"></i></button>
     </div>
   </td>
 </script>

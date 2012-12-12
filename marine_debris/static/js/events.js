@@ -590,23 +590,25 @@ app.initMap = function () {
       var centerLonLat = e.feature.geometry.bounds.centerLonLat,
           centroid = e.feature.geometry.transform(gProj, mProj).getCentroid();
 
-      app.viewModel.queryFilter.remove(function (item) {
-        return item.type === 'point';
-      });
       
-      app.viewModel.queryFilter.push({
-        type: 'point',
-        value: [centroid.x.toFixed(4), centroid.y.toFixed(4)].join(':')
-      });
 
       if ( e.feature.attributes.count === 1){
          app.viewModel.clusteredEvents.removeAll();
          
          app.viewModel.showDetail(e.feature.cluster[0].attributes);
       } else {
+        app.viewModel.queryFilter.remove(function (item) {
+          return item.type === 'point';
+        });
+        
+        app.viewModel.queryFilter.push({
+          type: 'point',
+          value: [centroid.x.toFixed(4), centroid.y.toFixed(4)].join(':')
+        });
          app.viewModel.activeEvent(false);
          
          app.map.setCenter(centerLonLat, app.map.getZoom() + 2);
+          
          if (e.feature.cluster.length < 100) {
           app.viewModel.clusteredEvents($.map(e.feature.cluster, function (f) {
             return f.attributes;
