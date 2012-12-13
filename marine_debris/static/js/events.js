@@ -241,6 +241,10 @@ function viewModel(options) {
 
   self.report = ko.observable();
 
+  self.clearFilters = function () {
+    self.queryFilter.removeAll();
+  };
+
   self.selectedClusterEvent.subscribe(function (event) {
     if (event) {
         self.showDetail(event);      
