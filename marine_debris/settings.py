@@ -141,7 +141,8 @@ INSTALLED_APPS = (
     'core',
     'south',
     'registration_custom',
-    'haystack'
+    'haystack',
+    'flatblocks'
 )
 
 # A sample logging configuration. The only tangible logging

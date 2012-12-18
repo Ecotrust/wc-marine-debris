@@ -57,8 +57,8 @@
         {% if request.path|slice:":4" == '/org' %}<li class="active">{% else %}<li>{% endif %}<a href="/organizations">Organizations</a></li>
         {% if request.path|slice:":4" == '/pro' %}<li class="active">{% else %}<li>{% endif %}<a href="/projects">Projects</a></li>
         {% if request.path|slice:":4" == '/dat' %}<li class="active">{% else %}<li>{% endif %}<a href="/datasheets">Data Sheets</a></li>
-        {% ifequal active 'management' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/management">Management</a></li>
         {% if user.is_superuser %}
+            {% ifequal active 'management' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/management">Management</a></li>
             {% ifequal active 'admin' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/admin">Admin</a></li>
         {% endif %}
       </ul>

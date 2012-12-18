@@ -16,7 +16,7 @@ from django.forms.models import modelformset_factory
 from django.contrib.gis.geos import Point
 from django.utils.http import urlencode
 from django.core.cache import cache
-from django.contrib.gis.geos import Polygon
+from django.contrib.gis.geos import Polygon, Point
 
 import datetime
 import time
@@ -44,6 +44,12 @@ def index(request):
 
     return render_to_response( 'index.html', RequestContext(request,{'thankyou': False, 'active':'home', 'event_count': event_count}))
 
+def about(request):
+    return render_to_response('about.html', RequestContext(request))
+    
+def resources(request):
+    return render_to_response('resources.html', RequestContext(request))
+    
 def get_transactions(request):
     trans_dict = {
         'new' : [trans.toDict for trans in UserTransaction.objects.filter(status='new')],
@@ -96,7 +102,7 @@ def get_filters(request):
     locations = {}
     organizations = []
     projects = []
-
+    fields = []
     for state in State.objects.all().order_by('name'):
         states.append(state.toSimpleDict)
         counties = []
@@ -123,11 +129,19 @@ def get_filters(request):
             "slug": project.slug
         })
 
+    for field in Field.objects.all():
+        fields.append({
+            "name": field.label,
+            "slug": field.internal_name,
+            "id": field.id
+        })
+
     return HttpResponse(simplejson.dumps({
         'states': states,
         'locations': locations,
         "projects": projects,
-        "organizations": organizations
+        "organizations": organizations,
+        "fields": fields
     }))
 
 sort_cols = {
@@ -245,6 +259,11 @@ def get_events(request):
             if sort_dir == 'desc':
                 sort_name = "-" + sort_name
             qs = qs.order_by(sort_name)
+    for filter in filters:
+        if filter['type'] == 'point':    
+            coords = filter['value'].split(':')
+            point = Point(float(coords[0]), float(coords[1]))
+            qs = qs.distance(point, field_name='site__geometry').order_by('distance')
     filtered_count = qs.count()
     if count and not start_id:
         qs = qs[int(start_index):int(start_index) + int(count)]

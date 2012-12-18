@@ -4,6 +4,7 @@ from django.contrib.auth.views import *
 from views import *
 
 urlpatterns = patterns('',
+    url(r'^about/$', about),
     url(r'^accounts/login/$', login, {'template_name': 'login.html'}),
     url(r'^accounts/logout/$', 'django.contrib.auth.views.logout_then_login', {'login_url': '/accounts/login/'}),
     url(r'^datasheets$', datasheets, name="sheet-list"),
@@ -33,6 +34,7 @@ urlpatterns = patterns('',
     url(r'^organization/([A-Za-z0-9_-]+)', view_organization),
     url(r'^projects$', projects, name="project-list"),
     url(r'^project/([A-Za-z0-9_-]+)', view_project),
+    url(r'^resources/$', resources),
     url(r'^search/', include('haystack.urls')),
     url(r'^site/create$', create_site),  
     url(r'^site-media/(?P<path>.*)$','django.views.static.serve',{'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
