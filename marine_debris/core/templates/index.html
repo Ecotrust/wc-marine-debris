@@ -34,13 +34,13 @@
 </div>
 {% endblock %} {% block leftcontent %}
 <h2>
-    Explore the Database
+    The Database
 </h2>
 <div class="row-fluid">
     <div class="span12">
         <p>
             This database provides comprehensive access to information on West Coast
-            marine debris including beach cleanups and derelict gear removal.
+            marine debris including beach cleanups and derelict gear removal. <a href='/about'>Learn more</a>.
         </p>
         <ul>
             <li>
@@ -84,9 +84,8 @@
     </div>
 </div>
 {% endblock %} {% block rightcontent %}
-{% flatblock "about-link" %}
 <h2>
-    About the Marine Debris Action Coordination Team
+    The Team
 </h2>
 <p>
     As part of the West Coast Governors Alliance (WCGA) on Ocean Health, the
@@ -104,21 +103,15 @@
     </li>
 </ul>
 <h2>
-    Impacts of marine debris
+    The Impact
 </h2>
 <p>
     Marine debris is a pervasive global problem that impacts human safety,
     commerce, wildlife, and the environment. Much of the debris generated along
     the West Coast ends up in the Pacific Ocean, and its impacts can cross
     jurisdictional lines. Therefore, working collaboratively on a regional
-    scale can increase the effectiveness of tackling this issue.
+    scale can increase the effectiveness of tackling this issue. <a href='/resources'>Learn more</a>.
 </p>
-<ul>
-    <li>
-        <!--<a href="http://marinedebris.noaa.gov/">Learn more about marine debris</a>-->
-        {% flatblock "resources-link" %}
-    </li>
-</ul>
 {% endblock %}
 {% block js %} 
     var items = $('#myCarousel').find('.item').removeClass('active');
