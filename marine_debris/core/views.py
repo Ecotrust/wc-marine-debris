@@ -44,6 +44,9 @@ def index(request):
 
     return render_to_response( 'index.html', RequestContext(request,{'thankyou': False, 'active':'home', 'event_count': event_count}))
 
+def about(request):
+    return render_to_response('about.html', RequestContext(request))
+    
 def get_transactions(request):
     trans_dict = {
         'new' : [trans.toDict for trans in UserTransaction.objects.filter(status='new')],

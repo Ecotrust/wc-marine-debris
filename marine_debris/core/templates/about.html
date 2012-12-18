@@ -1,0 +1,77 @@
+{% extends "base.html" %} {% block content %} {% load flatblock_tags %}
+<div id="myCarousel" class="carousel slide carousel-fade">
+    <!-- Carousel items -->
+    <div class="carousel-inner">
+        <div class="item active">
+            <img src="{{MEDIA_URL}}img/carousel/whale.png"/>
+        </div>
+        <div class="item">
+            <img src="{{MEDIA_URL}}img/carousel/marina.jpg"/>
+        </div>
+        <div class="item">
+            <img src="{{MEDIA_URL}}img/carousel/dunes.png"/>
+        </div>
+        <div class="item">
+            <img src="{{MEDIA_URL}}img/carousel/lighthouse.jpg"/>
+        </div>
+        <div class="item">
+            <img src="{{MEDIA_URL}}img/carousel/wayside.jpg"/>
+        </div>
+        <div class="item">
+            <img src="{{MEDIA_URL}}img/carousel/big_sur.jpg"/>
+        </div>
+        <div class="item">
+            <img src="{{MEDIA_URL}}img/carousel/beach.jpg"/>
+        </div>
+        <div class="item">
+            <img src="{{MEDIA_URL}}img/carousel/seals.jpg"/>
+        </div>
+    </div>
+  
+    <!-- Carousel nav -->
+    <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+    <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+</div>
+{% endblock %} {% block leftcontent %}
+    {% flatblock "about-page" %}
+{% endblock %} {% block rightcontent %}
+<h2>
+    About the Marine Debris Action Coordination Team
+</h2>
+<p>
+    As part of the West Coast Governors Alliance (WCGA) on Ocean Health, the
+    Marine Debris Action Coordination Team (ACT) brings together stakeholders
+    and experts representing state, federal, regional, tribal, and not-for-profit
+    organizations within Washington, Oregon, and California to create a framework
+    to identify, assess, prevent and reduce marine debris.
+</p>
+<ul>
+    <li>
+        <a href="http://westcoastoceans.org">Learn more about the WCGA</a>
+    </li>
+    <li>
+        <a>Learn more about the WCGA Marine Debris ACT</a>
+    </li>
+</ul>
+<h2>
+    Impacts of marine debris
+</h2>
+<p>
+    Marine debris is a pervasive global problem that impacts human safety,
+    commerce, wildlife, and the environment. Much of the debris generated along
+    the West Coast ends up in the Pacific Ocean, and its impacts can cross
+    jurisdictional lines. Therefore, working collaboratively on a regional
+    scale can increase the effectiveness of tackling this issue.
+</p>
+<ul>
+    <li>
+        <a href="http://marinedebris.noaa.gov/">Learn more about marine debris</a>
+    </li>
+</ul>
+{% endblock %}
+{% block js %} 
+    var items = $('#myCarousel').find('.item').removeClass('active');
+    $(items).eq(Math.round(Math.random()*items.length-1)).addClass('active');
+    $(".carousel").carousel({ interval: 8000
+}); 
+{% endblock %}

@@ -4,6 +4,7 @@ from django.contrib.auth.views import *
 from views import *
 
 urlpatterns = patterns('',
+    url(r'^about/$', about),
     url(r'^accounts/login/$', login, {'template_name': 'login.html'}),
     url(r'^accounts/logout/$', 'django.contrib.auth.views.logout_then_login', {'login_url': '/accounts/login/'}),
     url(r'^datasheets$', datasheets, name="sheet-list"),
