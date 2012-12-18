@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% block content %} {% load flatblock_tags %}
 <div id="myCarousel" class="carousel slide carousel-fade">
     <!-- Carousel items -->
     <div class="carousel-inner">
@@ -84,6 +84,7 @@
     </div>
 </div>
 {% endblock %} {% block rightcontent %}
+{% flatblock "about-link" %}
 <h2>
     About the Marine Debris Action Coordination Team
 </h2>
