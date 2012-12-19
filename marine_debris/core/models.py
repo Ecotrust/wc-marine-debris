@@ -628,7 +628,7 @@ class Event (models.Model):
                 transaction_filters.append(filter)
             elif filter['type'] == 'field':
                 field_filters.append(filter)
-            elif filter['type'] == 'point':
+            elif filter['type'] == 'point' or filter['type'] == 'report':
                 pass
             else:
                 site_filters.append(filter)
