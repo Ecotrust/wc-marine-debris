@@ -32,13 +32,9 @@ def index(request):
 
     event_count = [
         {
-            "type": "Site Cleanup",
-            "count": Event.objects.filter(datasheet_id__type_id__type = "Site Cleanup").count(),
-        },
-        {
-            "type" : "Gear Removal",
-            "count": Event.objects.filter(datasheet_id__type_id__type = "Gear Removal").count()
-        }
+            "type": x.type,
+            "count": Event.objects.filter(datasheet_id__type_id__type = x.type).count(),
+        } for x in EventType.objects.all()
     ]
     
 
