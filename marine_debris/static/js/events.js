@@ -239,21 +239,30 @@ function viewModel(options) {
 
 
   self.queryFilter.subscribe(function (newFilter) {
-    self.mapIsLoading(true);
+    var getPoints = false;
+    
     app.highlightedEvent = null;
     app.highlightedCluster = null;
     self.report(false);
     $('#events-table').dataTable().fnReloadAjax();
     
     // points not exist at first
-
-    if (app.points && newFilter.type !== 'point') {
+    $.each(newFilter, function (i, filter) {
+      if (filter.type !== 'point') {
+        getPoints = true;
+      }
+    });
+    if (app.points && getPoints) {
+      self.mapIsLoading(true);
       app.points.refresh({ 
           params: {
               'filter': JSON.stringify(self.queryFilter())
           }
-      });  
-    }
+      });
+      self.mapIsLoading(false);  
+    } 
+
+    
     if ($("#report").is(":visible")){
         self.getReport(self.queryFilter());
     }
@@ -638,21 +647,25 @@ app.initMap = function () {
       var centerLonLat = e.feature.geometry.bounds.centerLonLat,
           centroid = e.feature.geometry.transform(gProj, mProj).getCentroid();
 
+      app.viewModel.queryFilter.remove(function (item) {
+        return item.type === 'point';
+      });
       
-
+      app.viewModel.queryFilter.push({
+        type: 'point',
+        value: [centroid.x.toFixed(4), centroid.y.toFixed(4)].join(':')
+      });
       if ( e.feature.attributes.count === 1){
-         app.viewModel.clusteredEvents.removeAll();
+        if (app.viewModel.clusteredEvents()) {
+          app.viewModel.clusteredEvents.removeAll();
+        }
          app.viewModel.showDetail(e.feature.cluster[0].attributes);
+        setTimeout(function () {
+          $("#events-table").find('tbody tr:first').addClass('active');
+        }, 500);
 
       } else {
-        app.viewModel.queryFilter.remove(function (item) {
-          return item.type === 'point';
-        });
         
-        app.viewModel.queryFilter.push({
-          type: 'point',
-          value: [centroid.x.toFixed(4), centroid.y.toFixed(4)].join(':')
-        });
          app.viewModel.activeEvent(false);
          
          app.map.setCenter(centerLonLat, app.map.getZoom() + 2);
