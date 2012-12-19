@@ -331,11 +331,16 @@ app.loadHash = function (hash) {
   $.each(filterList, function (i, filter) {
     var parts = filter.split('='),
         type = parts[0],
-        values = parts[1].replace(/\+/, ' ').split(',');
+        values = parts[1].replace(/\+/, ' ').split(','), firstFilter=true;
         
         // open the first tab
-        if (i===0) {
+        if (firstFilter && type !== 'report' ) {
           $('.' + type).tab('show');
+          firstFilter = false;
+        }
+
+        if (type === 'report') {
+          $('#report-tab').tab('show');
         }
 
         // update the select fields
