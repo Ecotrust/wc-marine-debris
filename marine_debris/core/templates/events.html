@@ -253,19 +253,32 @@
                   <button class="btn" data-bind="click: showMap"><i class="icon-globe"></i> return to map</button>
                 </div>
                 <h4>Report <img src="{{MEDIA_URL}}img/ajax-loader.gif" data-bind="visible: showReportSpinner"/></h4>
-                <div><p>This report is a summary of all of the events from your search on the left.</p></div>
-                <div data-bind="if: report" id="report">
-                  <dl data-bind="foreach: report().event_values" class="dl-horizontal">
-                    <dt data-bind="text:$data.field.display_name"></dt>
-                    <dd data-bind="text:$data.field.value"></dd>
-                  </dl>
+                <p>This report is a summary of all of the events from your search on the left.</p>
+                <div class="row-fluid">
+                  <div class="span6">
+                    <div data-bind="visible: activeFilterTypes().length">                    
+                      <dl class="dl-horizontal" data-bind="foreach: activeFilterTypes">
+                        <dt data-bind="text: $data"></dt>
+                        <dd data-bind="text: $root.queryDisplay()[$data]"></dd>
+                      </dl>
+                    </div>
+                    <div data-bind="visible: activeFilterTypes().length === 0">
+                      <p>No filters.  Showing all data.</p>
+                    </div>
+                  </div>
+                  <div class="span6" data-bind="if: report" id="report">
+                    <dl data-bind="foreach: report().event_values" class="dl-horizontal">
+                      <dt data-bind="text:$data.field.display_name"></dt>
+                      <dd data-bind="text:$data.field.value"></dd>
+                    </dl>
+                  </div>
+                </div>
+                <div class="row-fluid" data-bind="if: report">
                   <div class="filter"></div>
                   <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { dataSource: report, options: $root.reportTableOptions, rowTemplate: 'reportRowTemplate', columns: [{mDataProp: 'field.name', sTitle: 'Field'}, {mDataProp:'field.value', sTitle: 'Value'}, {mDataProp:'field.unit', sTitle: ''}] }">
                   </table>
                 </div>
-
               </div>
-              
             </div>            
               
             </div>
