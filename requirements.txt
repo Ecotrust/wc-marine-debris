@@ -7,6 +7,7 @@ django
 simplejson
 django-redis-cache
 hiredis
+django-flatblocks
 # pyquery is required for unit testing
 # sudo apt-get install libxml2-dev libxslt1-dev
 # pip install pyquery
