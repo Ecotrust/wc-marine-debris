@@ -10,6 +10,7 @@ databrowse.site.register(County)
 databrowse.site.register(DataSheet)
 databrowse.site.register(DataSheetField)
 databrowse.site.register(DataType)
+databrowse.site.register(DisplayCategory)
 databrowse.site.register(Event)
 databrowse.site.register(EventType)
 databrowse.site.register(Field)
@@ -97,6 +98,15 @@ class DataTypeAdmin(admin.ModelAdmin):
             'widget': TextInput()
         },
     }
+    
+class DisplayCategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'display_order')
+    search_fields = ['name', 'display_order']
+    formfield_overrides = {
+        models.TextField: {
+            'widget': TextInput()
+        },
+    }
   
 class EventAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'proj_id', 'cleanupdate', 'datasheet_id', 'site')
@@ -115,7 +125,7 @@ class EventTypeAdmin(admin.ModelAdmin):
     }
    
 class FieldAdmin(admin.ModelAdmin):
-    list_display = ('label', '__unicode__', 'description', 'datatype', 'unit_id', 'minvalue', 'maxvalue', 'default_value')
+    list_display = ('label', '__unicode__', 'display_category', 'description', 'datatype', 'unit_id', 'minvalue', 'maxvalue', 'default_value')
     search_fields = ['label', 'internal_name', 'description', 'datatype__name', 'unit_id__long_name']
     formfield_overrides = {
         models.TextField: {
@@ -229,6 +239,7 @@ admin.site.register(County,CountyAdmin)
 admin.site.register(DataSheet,DataSheetAdmin)
 admin.site.register(DataSheetField,DataSheetFieldAdmin)
 admin.site.register(DataType,DataTypeAdmin)
+admin.site.register(DisplayCategory,DisplayCategoryAdmin)
 admin.site.register(Event,EventAdmin)
 admin.site.register(EventType,EventTypeAdmin)
 admin.site.register(Field,FieldAdmin)

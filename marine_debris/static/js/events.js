@@ -95,6 +95,7 @@ function viewModel(options) {
   // optikons for the right hand tables
   self.reportTableOptions = {
     'iDisplayLength': -1,
+    "bSort": false,
      "sDom": '<"filter"f><"wrapper"lipt>'
   };
 
