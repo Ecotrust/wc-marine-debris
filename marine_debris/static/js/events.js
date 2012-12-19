@@ -89,7 +89,19 @@ function viewModel(options) {
   };
 
   self.activeFilterTypes = ko.computed(function (type) {
-    return $.map(self.queryFilter(), function (filter) { return filter.type });
+    var filterSet={}, filterList=[];
+    if (self.queryFilter().length) {
+      $.each(self.queryFilter(), function (i, filter) { 
+        if (filter.type !== 'point') {
+          filterSet[filter.type] = true;
+        }
+      });
+      $.each(filterSet, function (key, x) {
+        filterList.push(key);
+      });  
+    }
+    
+    return filterList;
   });
 
   // optikons for the right hand tables
@@ -208,6 +220,24 @@ function viewModel(options) {
     window.location.hash = url;
   });
 
+  self.queryDisplay = ko.computed(function () {
+    var display = {};
+    $.each(self.queryFilter(), function (i, filter) {
+      var text = filter.value;
+      if (filter.state) {
+        text = text + ", " + filter.state;
+      }
+      if (display[filter.type]) { 
+        display[filter.type] = [display[filter.type], filter.value].join(", ");
+      } else {
+        display[filter.type] = text;
+      }
+    });
+    return display;
+  });
+
+
+
   self.queryFilter.subscribe(function (newFilter) {
     self.mapIsLoading(true);
     app.highlightedEvent = null;
@@ -287,14 +317,16 @@ function viewModel(options) {
     $row.siblings().removeClass('active');
     $row.addClass('active');
     self.highlightCluster(event);
+    
+    self.showDetail(event);
     //app.map.setCenter(pos, app.map.getZoom() + 2);
   };
 
   self.zoomTo = function (event) {
     var zoomLevel = Math.max(12, app.map.getZoom())
     app.highlightedEvent = event;
-    
-    $('a[href=#map-content]').tab('show');
+    self.showDetail(event);
+    //$('a[href=#map-content]').tab('show');
     if (typeof event.site !== 'undefined') {
       app.map.setCenter(new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")), zoomLevel);  
     } else {
@@ -312,7 +344,10 @@ function viewModel(options) {
       event_details.data = data.fields;
       self.activeEvent(event_details);
       self.showDetailsSpinner(false);
-      $('a[href=#event-details-content]').tab('show');
+      
+      //   $('a[href=#event-details-content]').tab('show');  
+      
+      
     });
       
   };
@@ -606,8 +641,8 @@ app.initMap = function () {
 
       if ( e.feature.attributes.count === 1){
          app.viewModel.clusteredEvents.removeAll();
-         
          app.viewModel.showDetail(e.feature.cluster[0].attributes);
+
       } else {
         app.viewModel.queryFilter.remove(function (item) {
           return item.type === 'point';
