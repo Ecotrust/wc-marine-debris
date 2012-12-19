@@ -237,9 +237,8 @@ function viewModel(options) {
   });
 
 
-
   self.queryFilter.subscribe(function (newFilter) {
-    var getPoints = false;
+    var getPoints = true;
     
     app.highlightedEvent = null;
     app.highlightedCluster = null;
@@ -247,11 +246,15 @@ function viewModel(options) {
     $('#events-table').dataTable().fnReloadAjax();
     
     // points not exist at first
-    $.each(newFilter, function (i, filter) {
-      if (filter.type !== 'point') {
-        getPoints = true;
-      }
-    });
+    // $.each(newFilter, function (i, filter) {
+    //   if (filter.type === 'point') {
+    //     getPoints = false;
+    //   }
+    // });
+    // if (newFilter.length === 0) {
+    //   getPoints = false;
+    // }
+
     if (app.points && getPoints) {
       self.mapIsLoading(true);
       app.points.refresh({ 
