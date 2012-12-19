@@ -322,6 +322,7 @@ function viewModel(options) {
   };
 
   self.handleTableClick = function (event, e) {
+    
     var selectedCluster, $row = $(e.target).closest('tr'),
        pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
     $row.siblings().removeClass('active');
@@ -332,8 +333,11 @@ function viewModel(options) {
     //app.map.setCenter(pos, app.map.getZoom() + 2);
   };
 
-  self.zoomTo = function (event) {
-    var zoomLevel = Math.max(12, app.map.getZoom())
+  self.zoomTo = function (event, e) {
+    
+    var zoomLevel = Math.max(12, app.map.getZoom()), $row = $(e.target).closest('tr');
+    $row.siblings().removeClass('active');
+    $row.addClass('active');
     app.highlightedEvent = event;
     self.showDetail(event);
     //$('a[href=#map-content]').tab('show');
