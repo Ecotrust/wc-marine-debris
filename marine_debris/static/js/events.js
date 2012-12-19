@@ -291,7 +291,7 @@ function viewModel(options) {
 
   self.selectedClusterEvent.subscribe(function (event) {
     if (event) {
-        self.showDetail(event);      
+        self.showDetail(event, false);      
     } else {
       self.activeEvent(false);
     }
@@ -332,7 +332,7 @@ function viewModel(options) {
     $row.addClass('active');
     self.highlightCluster(event);
     
-    self.showDetail(event);
+    self.showDetail(event, true);
     //app.map.setCenter(pos, app.map.getZoom() + 2);
   };
 
@@ -342,7 +342,7 @@ function viewModel(options) {
     $row.siblings().removeClass('active');
     $row.addClass('active');
     app.highlightedEvent = event;
-    self.showDetail(event);
+    //self.showDetail(event);
     //$('a[href=#map-content]').tab('show');
     if (typeof event.site !== 'undefined') {
       app.map.setCenter(new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")), zoomLevel);  
@@ -353,7 +353,7 @@ function viewModel(options) {
     
   };
 
-  self.showDetail = function(event) {
+  self.showDetail = function(event, showDetail) {
     event.data = ko.observable(false);
     self.showDetailsSpinner(true);
     $.get('/event/view/' + event.id, function(data) {
@@ -361,8 +361,10 @@ function viewModel(options) {
       event_details.data = data.fields;
       self.activeEvent(event_details);
       self.showDetailsSpinner(false);
+      if (showDetail) {
+        $('a[href=#event-details-content]').tab('show');    
+      }
       
-       $('a[href=#event-details-content]').tab('show');  
       
       
     });
@@ -666,7 +668,7 @@ app.initMap = function () {
         if (app.viewModel.clusteredEvents()) {
           app.viewModel.clusteredEvents.removeAll();
         }
-         app.viewModel.showDetail(e.feature.cluster[0].attributes);
+         app.viewModel.showDetail(e.feature.cluster[0].attributes, false);
         setTimeout(function () {
           $("#events-table").find('tbody tr:first').addClass('active');
         }, 500);
