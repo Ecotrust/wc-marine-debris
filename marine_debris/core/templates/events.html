@@ -256,9 +256,8 @@
                 <p>This report is a summary of all of the events from your search on the left.</p>
                 <div class="row-fluid">
                   <div class="span6">
-                    <strong>Current Filters</strong>
                     <div data-bind="visible: activeFilterTypes().length">                    
-                      <dl data-bind="foreach: activeFilterTypes">
+                      <dl class="dl-horizontal" data-bind="foreach: activeFilterTypes">
                         <dt data-bind="text: $data"></dt>
                         <dd data-bind="text: $root.queryDisplay()[$data]"></dd>
                       </dl>

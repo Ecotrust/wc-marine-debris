@@ -242,6 +242,7 @@ function viewModel(options) {
     self.mapIsLoading(true);
     app.highlightedEvent = null;
     app.highlightedCluster = null;
+    self.report(false);
     $('#events-table').dataTable().fnReloadAjax();
     
     // points not exist at first
