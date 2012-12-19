@@ -89,7 +89,19 @@ function viewModel(options) {
   };
 
   self.activeFilterTypes = ko.computed(function (type) {
-    return $.map(self.queryFilter(), function (filter) { return filter.type });
+    var filterSet={}, filterList=[];
+    if (self.queryFilter().length) {
+      $.each(self.queryFilter(), function (i, filter) { 
+        if (filter.type !== 'point') {
+          filterSet[filter.type] = true;
+        }
+      });
+      $.each(filterSet, function (key, x) {
+        filterList.push(key);
+      });  
+    }
+    
+    return filterList;
   });
 
   // optikons for the right hand tables
@@ -207,6 +219,24 @@ function viewModel(options) {
   self.url.subscribe(function (url) {
     window.location.hash = url;
   });
+
+  self.queryDisplay = ko.computed(function () {
+    var display = {};
+    $.each(self.queryFilter(), function (i, filter) {
+      var text = filter.value;
+      if (filter.state) {
+        text = text + ", " + filter.state;
+      }
+      if (display[filter.type]) { 
+        display[filter.type] = [display[filter.type], filter.value].join(", ");
+      } else {
+        display[filter.type] = text;
+      }
+    });
+    return display;
+  });
+
+
 
   self.queryFilter.subscribe(function (newFilter) {
     self.mapIsLoading(true);
