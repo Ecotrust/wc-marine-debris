@@ -79,8 +79,6 @@ def update_transaction(request):
         }
     return HttpResponse(simplejson.dumps(res))
     
-    
-    
 def events(request, submit=False): 
     
     if settings.SERVER == 'Dev':
@@ -608,11 +606,12 @@ def edit_event(request, event_id):
     
 def view_event(request, event_id):
     event = Event.objects.get(id=event_id)
+    field_list = event.field_values_list
     fields = simplejson.dumps({
-        "fields": event.field_values_list,
+        "fields": field_list,
         "details": event.toEventsDict
     })
-    
+
     return HttpResponse(fields, mimetype='application/json')
     
 @login_required

@@ -235,7 +235,7 @@
                     </dl>
                     <div class="filter"></div>
                     <div data-bind="if: data" class="table-container">
-                      <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { dataSource: data, options: $root.reportTableOptions, columns: [{mDataProp: 'text', sTitle: 'Text'}, {mDataProp:'value', sTitle: 'Value'}, { bSortable: false, mDataProp: 'unit' }] }">
+                      <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { dataSource: data, options: $root.reportTableOptions, columns: [{bSortable: false, mDataProp: 'text', sTitle: 'Text'}, {bSortable: false, mDataProp:'value', sTitle: 'Value'}, { bSortable: false, mDataProp: 'unit' }] }">
                         <tbody>
                           <tr data-bind="visible: value">
                             <td data-bind="text: text"></td>

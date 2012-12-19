@@ -144,6 +144,16 @@ class AnswerOption(models.Model):
     def __unicode__(self):
         return self.eng_text
         
+class DisplayCategory(models.Model):
+    name = models.TextField()
+    display_order = models.IntegerField()
+    
+    class Meta:
+        ordering = ['display_order']
+    
+    def __unicode__(self):
+        return self.name
+        
 class Field (models.Model):
     unit_id = models.ForeignKey(Unit, blank=True, null=True) 
     internal_name = models.TextField()
@@ -153,6 +163,7 @@ class Field (models.Model):
     default_value = models.TextField(blank=True, null=True)  #TODO: What type should this be? Should it be part of Unit? FieldValue?
     description = models.TextField(blank=True, null=True, default=None)
     label = models.TextField(blank=True, null=True, default=None)
+    display_category = models.ForeignKey(DisplayCategory, blank=True, null=True)
     
     def __unicode__(self):
         return self.internal_name
@@ -684,7 +695,11 @@ class Event (models.Model):
         name_lut = self.datasheet_id.internal_fieldname_lookup
         unit_lut = self.datasheet_id.unit_lookup
         rvals = []
-        for fval in fvals:
+        for fval in fvals.order_by('field_id__display_category__display_order'):
+            if fval.field_id.display_category:
+                print fval.field_id.display_category.display_order
+            else:
+                print 'None'
             text = unicode(name_lut[fval.field_id.internal_name])
             value = fval.field_value
             if fval.field_id.internal_name in unit_lut.keys():
@@ -708,6 +723,7 @@ class Event (models.Model):
                 'value': value, 
                 'unit': unit
             })
+
         return rvals
 
     @property
