@@ -267,11 +267,13 @@ function viewModel(options) {
     }
 
     if (app.highlightedCluster !== selectedCluster) {
-      // if (app.highlightedCluster) {
-      //   app.selectControl.unhighlight(app.highlightedCluster);  
-      // }
+      console.log('highlighting');
+      if (app.highlightedCluster) {
+        app.selectControl.unhighlight(app.highlightedCluster);  
+      }
       if (selectedCluster) {
         app.selectControl.highlight(selectedCluster);
+
         app.highlightedCluster = selectedCluster;
         app.highlightedEvent = event;  
       }  
