@@ -92,7 +92,7 @@ function viewModel(options) {
     var filterSet={}, filterList=[];
     if (self.queryFilter().length) {
       $.each(self.queryFilter(), function (i, filter) { 
-        if (filter.type !== 'point') {
+        if (filter.type !== 'point' && filter.type !== 'report') {
           filterSet[filter.type] = true;
         }
       });
