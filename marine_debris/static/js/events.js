@@ -362,7 +362,7 @@ function viewModel(options) {
       self.activeEvent(event_details);
       self.showDetailsSpinner(false);
       
-      //   $('a[href=#event-details-content]').tab('show');  
+       $('a[href=#event-details-content]').tab('show');  
       
       
     });
