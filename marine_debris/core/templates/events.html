@@ -69,7 +69,7 @@
               <div class="span6">
                 <h4>Filter by Report Type</h4>
                 <select class="event_type" multiple="true" data-placeholder="Filter by event type(s)...">
-                  <option value="Gear Removal">Gear Removal</option>
+                  <option value="Derelict Gear Removal">Derelict Gear Removal</option>
                   <option value="Site Cleanup">Site Cleanup</option>
                 </select>
               </div>
@@ -218,6 +218,7 @@
                 <div data-bind="if: activeEvent">
                   <div data-bind="with: activeEvent">
                     <h4><span data-bind="text: site.name"></span></h4>
+                    <div><p>These are the details of the highlighted event on the left.</p></div>
                     <dl class="dl-horizontal">
                       <dt>location</dt>
                       <dd><span data-bind="text: site.county"></span>, <span data-bind="text: site.state"></span>
@@ -252,6 +253,7 @@
                   <button class="btn" data-bind="click: showMap"><i class="icon-globe"></i> return to map</button>
                 </div>
                 <h4>Report <img src="{{MEDIA_URL}}img/ajax-loader.gif" data-bind="visible: showReportSpinner"/></h4>
+                <div><p>This report is a summary of all of the events from your search on the left.</p></div>
                 <div data-bind="if: report" id="report">
                   <dl data-bind="foreach: report().event_values" class="dl-horizontal">
                     <dt data-bind="text:$data.field.display_name"></dt>
