@@ -457,3 +457,7 @@ img.olTileImage {
 		height: 90px;
 	}
 }
+
+#pageGuideToggle {
+    top: 180px !important;
+}

@@ -15,7 +15,9 @@
     </script>
 {% endblock %}
 
- {% block content %}{% endblock %}    
+{% block content %}
+{% endblock %}    
+
 {% block leftcontent %}
 <!-- If a site was added, {{submit}} = True, {{added_site}} is your event.id -->
 <h2>Query Database <img src="{{MEDIA_URL}}img/ajax-loader.gif" data-bind="visible: showSpinner"/></h2>
@@ -24,23 +26,23 @@
       <div class="tabbable wcga">
         <ul class="nav nav-tabs">
           <li class="active">
-            <a class="state county" href="#search-database-tab-content-location" data-toggle="tab">Location
+            <a class="state county" id="location-tab" href="#search-database-tab-content-location" data-toggle="tab">Location
               <i class="icon-check" data-bind="visible: $.inArray('county', activeFilterTypes()) !== -1 || $.inArray('state', activeFilterTypes()) !== -1"></i>
             </a>
 
           </li>
           <li>
-            <a class="field event_type" href="#search-database-tab-content-type-of-debris" data-toggle="tab">Type of debris
+            <a class="field event_type" id="event-type-tab" href="#search-database-tab-content-type-of-debris" data-toggle="tab">Type of debris
               <i class="icon-check" data-bind="visible: $.inArray('event_type', activeFilterTypes()) !== -1 || $.inArray('field', activeFilterTypes()) !== -1"></i>
             </a>
           </li>
           <li>
-            <a class="project organization" href="#search-database-tab-content-organization" data-toggle="tab">Organization/Project
+            <a class="project organization" id="project-organization-tab" href="#search-database-tab-content-organization" data-toggle="tab">Organization/Project
               <i class="icon-check" data-bind="visible: $.inArray('organization', activeFilterTypes()) !== -1 || $.inArray('project', activeFilterTypes()) !== -1"></i>
             </a>
           </li>
           <li>
-            <a class="toDate fromDate" href="#search-database-tab-content-date" data-toggle="tab">Date
+            <a class="toDate fromDate" id="date-tab" href="#search-database-tab-content-date" data-toggle="tab">Date
               <i class="icon-check" data-bind="visible: $.inArray('fromDate', activeFilterTypes()) !== -1 || $.inArray('toDate', activeFilterTypes()) !== -1"></i>
             </a>
           </li>
@@ -141,10 +143,10 @@
         <i class="icon-plus"></i> Create Event 
       </a>
     {% endif %}
-    <button class="btn" data-bind="click: showReport">
+    <button id="view-report-button" class="btn" data-bind="click: showReport">
       <i class="icon-bar-chart"></i> View Report
     </button>
-    <button class="btn" data-bind="click: downloadData">
+    <button id="download-data-button" class="btn" data-bind="click: downloadData">
         <i class="icon-download-alt"></i> Download Data
     </button>
     <iframe src="" style="display:none;" id="download-frame"></iframe>
@@ -177,7 +179,7 @@
                 <a href="#map-content" id="map-tab" data-toggle="tab">Map</a>
               </li>
               <li>
-                <a href="#event-details-content" data-toggle="tab">Event Details 
+                <a id="details-tab" href="#event-details-content" data-toggle="tab">Event Details 
                   <span data-bind="visible: clusteredEvents().length > 0">(<span data-bind="text: clusteredEvents().length"></span>)</span>
                 </a>
               </li>
@@ -311,6 +313,7 @@
 </script>
 
 <script src="{{STATIC_URL}}js/events.js"></script>
+<script src="{{STATIC_URL}}js/pageguide.js" type="text/javascript" charset="utf-8"></script>
 {% endblock %}
 
 {% block js %}
