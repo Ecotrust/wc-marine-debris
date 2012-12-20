@@ -88,7 +88,7 @@ h6 { font-weight: normal; }
 	bottom: 15px;
 
 }
-.dataTables_wrapper .even.active td, .dataTables_wrapper .odd.active td, .dataTables_wrapper tr:hover td {
+.dataTables_wrapper tr.even.active td, .dataTables_wrapper tr.odd.active td, .dataTables_wrapper tr:hover td {
 	background-color: #344770!important;
 	color: white;
 }

@@ -237,23 +237,35 @@ function viewModel(options) {
   });
 
 
-
   self.queryFilter.subscribe(function (newFilter) {
-    self.mapIsLoading(true);
+    var getPoints = true;
+    
     app.highlightedEvent = null;
     app.highlightedCluster = null;
     self.report(false);
     $('#events-table').dataTable().fnReloadAjax();
     
     // points not exist at first
+    // $.each(newFilter, function (i, filter) {
+    //   if (filter.type === 'point') {
+    //     getPoints = false;
+    //   }
+    // });
+    // if (newFilter.length === 0) {
+    //   getPoints = false;
+    // }
 
-    if (app.points && newFilter.type !== 'point') {
+    if (app.points && getPoints) {
+      self.mapIsLoading(true);
       app.points.refresh({ 
           params: {
               'filter': JSON.stringify(self.queryFilter())
           }
-      });  
-    }
+      });
+      self.mapIsLoading(false);  
+    } 
+
+    
     if ($("#report").is(":visible")){
         self.getReport(self.queryFilter());
     }
@@ -279,7 +291,7 @@ function viewModel(options) {
 
   self.selectedClusterEvent.subscribe(function (event) {
     if (event) {
-        self.showDetail(event);      
+        self.showDetail(event, false);      
     } else {
       self.activeEvent(false);
     }
@@ -313,20 +325,24 @@ function viewModel(options) {
   };
 
   self.handleTableClick = function (event, e) {
+    
     var selectedCluster, $row = $(e.target).closest('tr'),
        pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
     $row.siblings().removeClass('active');
     $row.addClass('active');
     self.highlightCluster(event);
     
-    self.showDetail(event);
+    self.showDetail(event, true);
     //app.map.setCenter(pos, app.map.getZoom() + 2);
   };
 
-  self.zoomTo = function (event) {
-    var zoomLevel = Math.max(12, app.map.getZoom())
+  self.zoomTo = function (event, e) {
+    
+    var zoomLevel = Math.max(12, app.map.getZoom()), $row = $(e.target).closest('tr');
+    $row.siblings().removeClass('active');
+    $row.addClass('active');
     app.highlightedEvent = event;
-    self.showDetail(event);
+    //self.showDetail(event);
     //$('a[href=#map-content]').tab('show');
     if (typeof event.site !== 'undefined') {
       app.map.setCenter(new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913")), zoomLevel);  
@@ -337,7 +353,7 @@ function viewModel(options) {
     
   };
 
-  self.showDetail = function(event) {
+  self.showDetail = function(event, showDetail) {
     event.data = ko.observable(false);
     self.showDetailsSpinner(true);
     $.get('/event/view/' + event.id, function(data) {
@@ -345,8 +361,10 @@ function viewModel(options) {
       event_details.data = data.fields;
       self.activeEvent(event_details);
       self.showDetailsSpinner(false);
+      if (showDetail) {
+        $('a[href=#event-details-content]').tab('show');    
+      }
       
-      //   $('a[href=#event-details-content]').tab('show');  
       
       
     });
@@ -638,21 +656,25 @@ app.initMap = function () {
       var centerLonLat = e.feature.geometry.bounds.centerLonLat,
           centroid = e.feature.geometry.transform(gProj, mProj).getCentroid();
 
+      app.viewModel.queryFilter.remove(function (item) {
+        return item.type === 'point';
+      });
       
-
+      app.viewModel.queryFilter.push({
+        type: 'point',
+        value: [centroid.x.toFixed(4), centroid.y.toFixed(4)].join(':')
+      });
       if ( e.feature.attributes.count === 1){
-         app.viewModel.clusteredEvents.removeAll();
-         app.viewModel.showDetail(e.feature.cluster[0].attributes);
+        if (app.viewModel.clusteredEvents()) {
+          app.viewModel.clusteredEvents.removeAll();
+        }
+         app.viewModel.showDetail(e.feature.cluster[0].attributes, false);
+        setTimeout(function () {
+          $("#events-table").find('tbody tr:first').addClass('active');
+        }, 500);
 
       } else {
-        app.viewModel.queryFilter.remove(function (item) {
-          return item.type === 'point';
-        });
         
-        app.viewModel.queryFilter.push({
-          type: 'point',
-          value: [centroid.x.toFixed(4), centroid.y.toFixed(4)].join(':')
-        });
          app.viewModel.activeEvent(false);
          
          app.map.setCenter(centerLonLat, app.map.getZoom() + 2);
