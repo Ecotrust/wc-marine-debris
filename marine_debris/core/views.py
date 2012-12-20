@@ -46,6 +46,12 @@ def about(request):
 def resources(request):
     return render_to_response('resources.html', RequestContext(request))
     
+def guidelines(request):
+    return render_to_response('guidelines.html', RequestContext(request))
+
+def terms(request):
+    return render_to_response('terms.html', RequestContext(request))    
+    
 def get_transactions(request):
     trans_dict = {
         'new' : [trans.toDict for trans in UserTransaction.objects.filter(status='new')],
