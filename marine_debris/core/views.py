@@ -359,9 +359,8 @@ def get_event_geojson(request):
     response.write(geojson)
     return response
         
-def get_event_values_list(request, filters=None):
+def get_aggregate_values_list(request, filters=None):
     '''
-    TODO should be renamed to get_aggregate_values_list!
     TODO use field_value.converted_value instead of field_value.field_value
     TODO profile
     TODO caching strategy 
@@ -394,10 +393,8 @@ def get_event_values_list(request, filters=None):
             if field['unit'].__len__() == 0:
                 ds = field_value.event_id.datasheet_id
                 unit = DataSheetField.objects.get(sheet_id = ds, field_id = field_value.field_id).unit_id.short_name
-                if unit in ['dd', 'dd mm.mm', 'ft', 'kg', 'km', 'mi', 'mm', 'mm.000', '%', 'lbs', 'sq ft']:
-                    field['unit'] = [unit]
-                else:
-                    field['unit'] = [' ']
+                # if unit in ['dd', 'dd mm.mm', 'ft', 'kg', 'km', 'mi', 'mm', 'mm.000', '%', 'lbs', 'sq ft']:
+                field['unit'] = [unit]
             # else:     #TODO: get translators in here to handle converting unit types and feeding a whole selection of values
      
     field_list = []
@@ -422,7 +419,7 @@ def get_event_values(request):
     filters = request.GET.get('filters', None)
     if filters:
         filters = simplejson.loads(filters)
-    field_list = get_event_values_list(request, filters)
+    field_list = get_aggregate_values_list(request, filters)
     return HttpResponse(simplejson.dumps(field_list))
     
 @login_required

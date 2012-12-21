@@ -255,7 +255,7 @@
                   <button class="btn" data-bind="click: showMap"><i class="icon-globe"></i> return to map</button>
                 </div>
                 <h4>Report <img src="{{MEDIA_URL}}img/ajax-loader.gif" data-bind="visible: showReportSpinner"/></h4>
-                <p>This report is a summary of all of the events from your search on the left.</p>
+                <p>This report is a summary of all of the events from your query on the left.</p>
                 <div class="row-fluid">
                   <div class="span6">
                     <div data-bind="visible: activeFilterTypes().length">                    
@@ -265,7 +265,7 @@
                       </dl>
                     </div>
                     <div data-bind="visible: activeFilterTypes().length === 0">
-                      <p>No filters.  Showing all data.</p>
+                      <p>You have no filters.  Showing all data.</p>
                     </div>
                   </div>
                   <div class="span6" data-bind="if: report" id="report">
