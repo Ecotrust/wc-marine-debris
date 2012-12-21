@@ -17,16 +17,15 @@ from django.contrib.gis.geos import Point
 from django.utils.http import urlencode
 from django.core.cache import cache
 from django.contrib.gis.geos import Polygon, Point
+from forms import *
+from models import *
+from sets import Set
 
 import datetime
 import time
 import string
 import logging
 import csv
-from forms import *
-from models import *
-from sets import Set
-
 
 def index(request): 
 
@@ -685,7 +684,6 @@ def edit_datasheet(request, event_id):
             event_details['county'] = event.site.county
             event_details['sitename'] = event.site.sitename
         return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'eventForm': None, 'event': event_details, 'action': '/datasheet/edit/'+str(event.event_id), 'active': 'events', 'error':'Some answers were invalid. Please review them.'}))
-    
 
 def view_datasheet(request, sheet_slug):
     sheet = DataSheet.objects.get(slug=sheet_slug)
@@ -703,17 +701,13 @@ def organizations(request):
         
     return render_to_response( 'organizations.html', RequestContext(request,{'organizations':organizations, 'active':'organizations'}))
 
-
-def  view_organization(request, organization_slug):
+def view_organization(request, organization_slug):
     organization = Organization.objects.get(slug=organization_slug)
     organization.projects = Project.objects.filter(organization = organization)
     
     return render_to_response('organization-detail.html', RequestContext(request, {'organization': organization}))
 
-
-
-
-def  view_project(request, project_slug):
+def view_project(request, project_slug):
     project = Project.objects.get(slug=project_slug)
     project.organizations = project.organization.filter(projectorganization__is_lead=True)
     project.data_sheets = project.active_sheets.all()
@@ -726,8 +720,6 @@ def projects(request):
     projects = Project.objects.all()       
     
     return render_to_response( 'projects.html', RequestContext(request,{'projects': projects, 'active':'projects'}))    
-
-
 
 def map_test(request):
     return render_to_response('map-test.html', RequestContext(request, {}))
@@ -750,7 +742,6 @@ def bulk_bad_request(form, request, errors=None, site_form=None):
                 'errors':errors, 'active':'events'}))
     res.status_code = 400
     return res
-
 
 ################# Utilities
 class LatLonError(Exception):
