@@ -295,6 +295,8 @@ class DataSheet (models.Model):
             'start_date': self.year_started,
             'id': self.id,
             'event_type':type,
+            'slug': self.slug,
+            'url': '/datasheet/'+self.slug
         }
         return ds_dict
     
