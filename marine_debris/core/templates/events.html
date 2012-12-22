@@ -15,7 +15,9 @@
     </script>
 {% endblock %}
 
- {% block content %}{% endblock %}    
+{% block content %}
+{% endblock %}    
+
 {% block leftcontent %}
 <!-- If a site was added, {{submit}} = True, {{added_site}} is your event.id -->
 <h2>Query Database <img src="{{MEDIA_URL}}img/ajax-loader.gif" data-bind="visible: showSpinner"/></h2>
@@ -24,23 +26,23 @@
       <div class="tabbable wcga">
         <ul class="nav nav-tabs">
           <li class="active">
-            <a class="state county" href="#search-database-tab-content-location" data-toggle="tab">Location
+            <a class="state county" id="location-tab" href="#search-database-tab-content-location" data-toggle="tab">Location
               <i class="icon-check" data-bind="visible: $.inArray('county', activeFilterTypes()) !== -1 || $.inArray('state', activeFilterTypes()) !== -1"></i>
             </a>
 
           </li>
           <li>
-            <a class="field event_type" href="#search-database-tab-content-type-of-debris" data-toggle="tab">Type of debris
+            <a class="field event_type" id="event-type-tab" href="#search-database-tab-content-type-of-debris" data-toggle="tab">Type of debris
               <i class="icon-check" data-bind="visible: $.inArray('event_type', activeFilterTypes()) !== -1 || $.inArray('field', activeFilterTypes()) !== -1"></i>
             </a>
           </li>
           <li>
-            <a class="project organization" href="#search-database-tab-content-organization" data-toggle="tab">Organization/Project
+            <a class="project organization" id="project-organization-tab" href="#search-database-tab-content-organization" data-toggle="tab">Organization/Project
               <i class="icon-check" data-bind="visible: $.inArray('organization', activeFilterTypes()) !== -1 || $.inArray('project', activeFilterTypes()) !== -1"></i>
             </a>
           </li>
           <li>
-            <a class="toDate fromDate" href="#search-database-tab-content-date" data-toggle="tab">Date
+            <a class="toDate fromDate" id="date-tab" href="#search-database-tab-content-date" data-toggle="tab">Date
               <i class="icon-check" data-bind="visible: $.inArray('fromDate', activeFilterTypes()) !== -1 || $.inArray('toDate', activeFilterTypes()) !== -1"></i>
             </a>
           </li>
@@ -141,10 +143,10 @@
         <i class="icon-plus"></i> Create Event 
       </a>
     {% endif %}
-    <button class="btn" data-bind="click: showReport">
+    <button id="view-report-button" class="btn" data-bind="click: showReport">
       <i class="icon-bar-chart"></i> View Report
     </button>
-    <button class="btn" data-bind="click: downloadData">
+    <button id="download-data-button" class="btn" data-bind="click: downloadData">
         <i class="icon-download-alt"></i> Download Data
     </button>
     <iframe src="" style="display:none;" id="download-frame"></iframe>
@@ -177,7 +179,7 @@
                 <a href="#map-content" id="map-tab" data-toggle="tab">Map</a>
               </li>
               <li>
-                <a href="#event-details-content" data-toggle="tab">Event Details 
+                <a id="details-tab" href="#event-details-content" data-toggle="tab">Event Details 
                   <span data-bind="visible: clusteredEvents().length > 0">(<span data-bind="text: clusteredEvents().length"></span>)</span>
                 </a>
               </li>
@@ -230,6 +232,12 @@
                           <span data-bind="text: project.name"></span>
                         </a>
                       </dd>
+                      <dt>data sheet</dt>
+                      <dd>
+                        <a data-bind="attr: { href: datasheet.url }" target="_blank">
+                          <span data-bind="text: datasheet.name"></span>
+                        </a>
+                      </dd>
                       <dt>date</dt>
                       <dd><span data-bind="text: date"></span></dd>
                     </dl>
@@ -253,29 +261,36 @@
                   <button class="btn" data-bind="click: showMap"><i class="icon-globe"></i> return to map</button>
                 </div>
                 <h4>Report <img src="{{MEDIA_URL}}img/ajax-loader.gif" data-bind="visible: showReportSpinner"/></h4>
-                <p>This report is a summary of all of the events from your search on the left.</p>
+                <p>This report is a summary of all of the events from your query results on the left.</p>
                 <div class="row-fluid">
                   <div class="span6">
-                    <div data-bind="visible: activeFilterTypes().length">                    
+                    <div data-bind="visible: activeFilterTypes().length">
                       <dl class="dl-horizontal" data-bind="foreach: activeFilterTypes">
                         <dt data-bind="text: $data"></dt>
                         <dd data-bind="text: $root.queryDisplay()[$data]"></dd>
                       </dl>
                     </div>
                     <div data-bind="visible: activeFilterTypes().length === 0">
-                      <p>No filters.  Showing all data.</p>
+                      <p>You have no filters.  Showing all data.</p>
                     </div>
                   </div>
                   <div class="span6" data-bind="if: report" id="report">
                     <dl data-bind="foreach: report().event_values" class="dl-horizontal">
-                      <dt data-bind="text:$data.field.display_name"></dt>
-                      <dd data-bind="text:$data.field.value"></dd>
+                      <dt data-bind="text:$data.display_name"></dt>
+                      <dd data-bind="text:$data.value"></dd>
                     </dl>
                   </div>
                 </div>
                 <div class="row-fluid" data-bind="if: report">
+                  <div class="span12" data-bind="if: report" id='datasheets'>
+                  
+                    <!-- Put warning about multiple datasheets here -->
+                    
+                  </div>
+                </div>
+                <div class="row-fluid" data-bind="if: report">
                   <div class="filter"></div>
-                  <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { dataSource: report, options: $root.reportTableOptions, rowTemplate: 'reportRowTemplate', columns: [{mDataProp: 'field.name', sTitle: 'Field'}, {mDataProp:'field.value', sTitle: 'Value'}, {mDataProp:'field.unit', sTitle: ''}] }">
+                  <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { dataSource: report().fields, options: $root.reportTableOptions, rowTemplate: 'reportRowTemplate', columns: [{mDataProp: 'name', sTitle: 'Field'}, {mDataProp:'value', sTitle: 'Value'}, {mDataProp:'unit', sTitle: ''}] }">
                   </table>
                 </div>
               </div>
@@ -292,9 +307,9 @@
 <script src="{{STATIC_URL}}third-party/chosen/chosen.jquery.js"></script>
 <script src="{{STATIC_URL}}third-party/jquery/js/jquery.ba-bbq.min.js"></script>
 <script type="text/html" id="reportRowTemplate">
-  <td data-bind="text: field.name.replace(/_/g,' ')"></td>
-  <td data-bind="text: field.value"></td>
-  <td data-bind="text: field.unit"></td>
+  <td data-bind="text: name.replace(/_/g,' ')"></td>
+  <td data-bind="text: value"></td>
+  <td data-bind="text: unit"></td>
 </script>
 <script type="text/html" id="rowTemplate">
   <td data-bind="text: datasheet.event_type, click: $root.zoomTo"></td>
@@ -311,6 +326,7 @@
 </script>
 
 <script src="{{STATIC_URL}}js/events.js"></script>
+<script src="{{STATIC_URL}}js/pageguide.js" type="text/javascript" charset="utf-8"></script>
 {% endblock %}
 
 {% block js %}

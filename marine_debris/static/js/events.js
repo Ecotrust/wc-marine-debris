@@ -178,13 +178,13 @@ function viewModel(options) {
             'Pounds_trash_beach': 'Lbs of trash',
             'Cleanup_distance_beach': 'Miles cleaned'
         };
-        report.event_values = $.map(report, function(field) {
-            if ($.inArray(field.field.name, [
+        report.event_values = $.map(report.fields, function(field) {
+            if ($.inArray(field.name, [
                 'Number_volunteers_beach',
                 'Pounds_trash_beach',
                 'Cleanup_distance_beach'
             ]) !== -1){
-                field.field.display_name = mapping[field.field.name];
+                field.display_name = mapping[field.name];
                 return field;
             }
         });

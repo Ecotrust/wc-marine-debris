@@ -17,16 +17,15 @@ from django.contrib.gis.geos import Point
 from django.utils.http import urlencode
 from django.core.cache import cache
 from django.contrib.gis.geos import Polygon, Point
+from forms import *
+from models import *
+from sets import Set
 
 import datetime
 import time
 import string
 import logging
 import csv
-from forms import *
-from models import *
-from sets import Set
-
 
 def index(request): 
 
@@ -327,7 +326,7 @@ def get_event_geojson(request):
     loop_count = 0
     for event in qs:
         loop_count = loop_count + 1
-        key = 'event_%s_geocache' % event.id
+        key = 'event_%s_geocache' % event.id        #CACHE_KEY  --  geojson by event
         geo_string = cache.get(key)
         if not geo_string:
             gj = None
@@ -359,70 +358,74 @@ def get_event_geojson(request):
     response.write(geojson)
     return response
         
-def get_event_values_list(request, filters=None):
+def get_aggregate_values_list(request, filters=None):
     '''
-    TODO should be renamed to get_aggregate_values_list!
-    TODO use field_value.converted_value instead of field_value.field_value
     TODO profile
-    TODO caching strategy 
     '''
-    # type = 'Site Cleanup'   #TODO: get this type name dynamically so we can show derelict and others
-    # field_list = None
-    # key = False
-    # if not filters:    
-        # key = "reportcache_%s" % type.replace(" ","_")
-        # field_list = cache.get(key)
-    # if not field_list:
-        # cleanup_events = Event.objects.filter(datasheet_id__type_id__type = type)
-        # if filters:
     cleanup_events = Event.filter(filters)
+    fields = Field.objects.all()
     agg_fields = {}
 
-    field_values = FieldValue.objects.filter(event_id__in = cleanup_events, field_id__datatype__aggregatable = True)
+    event_values_list = [x.toValuesDict() for x in cleanup_events]
+    field_values = []
+    datasheets = []
+
+    for event in cleanup_events:
+        datasheet = event.toEventsDict['datasheet']['name']
+        if datasheet not in datasheets:
+            datasheets.append(datasheet)
+            
+    for event_value in event_values_list:
+        field_values.extend([{'int_name':x[0], 'label':x[1], 'value':event_value[x]} for x in event_value])
 
     for field_value in field_values:
-        field_name = field_value.field_id.internal_name
-        if field_value.field_value and not field_value.field_value in ['', None, 'None']:
-            if not agg_fields.has_key(field_name):
-                agg_fields[field_name] = get_agg_template(field_value.field_id)
-            field = agg_fields[field_name]
-            
-            if not field['value']:
-                field['value'] = 0
-            
-            field['value'] = field['value'] + float(field_value.field_value)
-            if field['unit'].__len__() == 0:
-                ds = field_value.event_id.datasheet_id
-                unit = DataSheetField.objects.get(sheet_id = ds, field_id = field_value.field_id).unit_id.short_name
-                if unit in ['dd', 'dd mm.mm', 'ft', 'kg', 'km', 'mi', 'mm', 'mm.000', '%', 'lbs', 'sq ft']:
-                    field['unit'] = [unit]
-                else:
-                    field['unit'] = [' ']
-            # else:     #TODO: get translators in here to handle converting unit types and feeding a whole selection of values
+        
+        db_field = fields.get(internal_name=field_value['int_name'])
+        if db_field.datatype.aggregatable:
+            if (field_value['value'] or field_value['value'] == 0) and not field_value['value'] in ['', None, 'None']:
+                if not agg_fields.has_key(field_value['int_name']):
+                    agg_fields[field_value['int_name']] = get_agg_template(db_field)
+                field = agg_fields[field_value['int_name']]
+                
+                if not field['value']:
+                    field['value'] = 0
+
+                field['value'] = field['value'] + float(field_value['value'])
+                field['num_values'] = field['num_values'] + 1
      
     field_list = []
+
     for agg_field in agg_fields:
-        field_list.append({
-            'field': agg_fields[agg_field]
-        })
-    # if key:
-        # cache.set(key, field_list, settings.CACHE_TIMEOUT)
-            
-    return field_list
+        field_list.append(agg_fields[agg_field])
+
+    ret_dict = {
+        'report':{
+            'events': event_values_list.__len__(),
+            'datasheets': datasheets
+        },
+        'fields': field_list
+    }
+        
+    return ret_dict
     
 def get_agg_template(field):
+    if field.unit_id:
+        unit = field.unit_id.short_name
+    else:
+        unit = ''
     return {
         'name': field.internal_name,
         'type': field.datatype.name,
-        'unit': [],
-        'value': None
+        'unit': unit,
+        'value': None,
+        'num_values': 0
     }
     
 def get_event_values(request):
     filters = request.GET.get('filters', None)
     if filters:
         filters = simplejson.loads(filters)
-    field_list = get_event_values_list(request, filters)
+    field_list = get_aggregate_values_list(request, filters)
     return HttpResponse(simplejson.dumps(field_list))
     
 @login_required
@@ -688,7 +691,6 @@ def edit_datasheet(request, event_id):
             event_details['county'] = event.site.county
             event_details['sitename'] = event.site.sitename
         return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'eventForm': None, 'event': event_details, 'action': '/datasheet/edit/'+str(event.event_id), 'active': 'events', 'error':'Some answers were invalid. Please review them.'}))
-    
 
 def view_datasheet(request, sheet_slug):
     sheet = DataSheet.objects.get(slug=sheet_slug)
@@ -706,17 +708,13 @@ def organizations(request):
         
     return render_to_response( 'organizations.html', RequestContext(request,{'organizations':organizations, 'active':'organizations'}))
 
-
-def  view_organization(request, organization_slug):
+def view_organization(request, organization_slug):
     organization = Organization.objects.get(slug=organization_slug)
     organization.projects = Project.objects.filter(organization = organization)
     
     return render_to_response('organization-detail.html', RequestContext(request, {'organization': organization}))
 
-
-
-
-def  view_project(request, project_slug):
+def view_project(request, project_slug):
     project = Project.objects.get(slug=project_slug)
     project.organizations = project.organization.filter(projectorganization__is_lead=True)
     project.data_sheets = project.active_sheets.all()
@@ -729,8 +727,6 @@ def projects(request):
     projects = Project.objects.all()       
     
     return render_to_response( 'projects.html', RequestContext(request,{'projects': projects, 'active':'projects'}))    
-
-
 
 def map_test(request):
     return render_to_response('map-test.html', RequestContext(request, {}))
@@ -753,7 +749,6 @@ def bulk_bad_request(form, request, errors=None, site_form=None):
                 'errors':errors, 'active':'events'}))
     res.status_code = 400
     return res
-
 
 ################# Utilities
 class LatLonError(Exception):
