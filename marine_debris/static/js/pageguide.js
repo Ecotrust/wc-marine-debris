@@ -7,7 +7,7 @@ var defaultGuide = {
   title: 'Data Page Guide',
   steps: [
     {
-      target: '#left-content',
+      target: '#left-content',      
       content: 'The panel on the left side of the screen is where you will be able to filter, or \'query\' the full set of events collected in this database. There are thousands of cleanup events collected here, so this will make it easy for you to only view the events you want to see.',
       direction: 'right',
       arrow: {offsetX: 0, offsetY: 0}
@@ -17,7 +17,7 @@ var defaultGuide = {
       direction: 'left',
       arrow: {offsetX: 0, offsetY: 50}
     },{
-      target: '#location-tab',
+      target: '#location-tab',      //mention "one or more filters"
       content: 'This tab allows you to query the cleanup events by location, either by specifying the state or the county that they were conducted in. You can select multiple states or counties to include events for each in your query. For derelict gear removal, the county with coast closest in proximity to the event is used.',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
@@ -37,7 +37,7 @@ var defaultGuide = {
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     },{
-      target: '#events-table',
+      target: '#events-table',      //mention selecting an event
       content: 'Here is the list of events that match your query. If you haven\'t added any filters to your query, then this will display all of the events (by pages of 5 at a time).',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
@@ -47,13 +47,14 @@ var defaultGuide = {
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     },{
-      target: '#map-tab',
-      content: 'Click this tab to display all of the queried events on the map. If you have not entered any query criteria, all events will show.',
+      target: '#map-tab',       //mention selecting an event    //use images for clusters
+      content: 'The Map tab allows you to view the location of each event in your query results. Select a cluster of events [img] to zoom in on them. Select an single event [img] to learn more about it',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     },{
       target: '#details-tab',
-      content: 'Click on this tab to display the details of a certain event. To select an event to get details about, either click on its point on the map, or on the event from the list in the left panel.',
+      // content: 'Click on this tab to display the details of a certain event. To select an event to get details about, either click on its point on the map, or on the event from the list in the left panel.',
+      content: 'Once you\'ve selected an event, you can view all available information for that event in the Event Details tab.',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     },{

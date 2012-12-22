@@ -261,10 +261,10 @@
                   <button class="btn" data-bind="click: showMap"><i class="icon-globe"></i> return to map</button>
                 </div>
                 <h4>Report <img src="{{MEDIA_URL}}img/ajax-loader.gif" data-bind="visible: showReportSpinner"/></h4>
-                <p>This report is a summary of all of the events from your query on the left.</p>
+                <p>This report is a summary of all of the events from your query results on the left.</p>
                 <div class="row-fluid">
                   <div class="span6">
-                    <div data-bind="visible: activeFilterTypes().length">                    
+                    <div data-bind="visible: activeFilterTypes().length">
                       <dl class="dl-horizontal" data-bind="foreach: activeFilterTypes">
                         <dt data-bind="text: $data"></dt>
                         <dd data-bind="text: $root.queryDisplay()[$data]"></dd>
@@ -276,14 +276,21 @@
                   </div>
                   <div class="span6" data-bind="if: report" id="report">
                     <dl data-bind="foreach: report().event_values" class="dl-horizontal">
-                      <dt data-bind="text:$data.field.display_name"></dt>
-                      <dd data-bind="text:$data.field.value"></dd>
+                      <dt data-bind="text:$data.display_name"></dt>
+                      <dd data-bind="text:$data.value"></dd>
                     </dl>
                   </div>
                 </div>
                 <div class="row-fluid" data-bind="if: report">
+                  <div class="span12" data-bind="if: report" id='datasheets'>
+                  
+                    <!-- Put warning about multiple datasheets here -->
+                    
+                  </div>
+                </div>
+                <div class="row-fluid" data-bind="if: report">
                   <div class="filter"></div>
-                  <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { dataSource: report, options: $root.reportTableOptions, rowTemplate: 'reportRowTemplate', columns: [{mDataProp: 'field.name', sTitle: 'Field'}, {mDataProp:'field.value', sTitle: 'Value'}, {mDataProp:'field.unit', sTitle: ''}] }">
+                  <table class="table wcga table-striped table-hover table-condensed" data-bind="dataTable: { dataSource: report().fields, options: $root.reportTableOptions, rowTemplate: 'reportRowTemplate', columns: [{mDataProp: 'name', sTitle: 'Field'}, {mDataProp:'value', sTitle: 'Value'}, {mDataProp:'unit', sTitle: ''}] }">
                   </table>
                 </div>
               </div>
@@ -300,9 +307,9 @@
 <script src="{{STATIC_URL}}third-party/chosen/chosen.jquery.js"></script>
 <script src="{{STATIC_URL}}third-party/jquery/js/jquery.ba-bbq.min.js"></script>
 <script type="text/html" id="reportRowTemplate">
-  <td data-bind="text: field.name.replace(/_/g,' ')"></td>
-  <td data-bind="text: field.value"></td>
-  <td data-bind="text: field.unit"></td>
+  <td data-bind="text: name.replace(/_/g,' ')"></td>
+  <td data-bind="text: value"></td>
+  <td data-bind="text: unit"></td>
 </script>
 <script type="text/html" id="rowTemplate">
   <td data-bind="text: datasheet.event_type, click: $root.zoomTo"></td>

@@ -405,7 +405,7 @@ class State (models.Model):
         
     @property
     def toDict(self):
-        key = 'statecache_%s' % self.id
+        key = 'statecache_%s' % self.id     #CACHE_KEY -- Sites by state
         res = cache.get(key)
         if res == None:
             stateabr = State.objects.get(name=self).initials
@@ -698,10 +698,6 @@ class Event (models.Model):
         unit_lut = self.datasheet_id.unit_lookup
         rvals = []
         for fval in fvals.order_by('field_id__display_category__display_order'):
-            if fval.field_id.display_category:
-                print fval.field_id.display_category.display_order
-            else:
-                print 'None'
             text = unicode(name_lut[fval.field_id.internal_name])
             value = fval.field_value
             if fval.field_id.internal_name in unit_lut.keys():
@@ -739,7 +735,7 @@ class Event (models.Model):
         
     @property
     def toEventsDict(self):
-        key = 'event_%s_eventdict' % self.id
+        key = 'event_%s_eventdict' % self.id        #CACHE_KEY  --  Event details by event
         d = cache.get(key)
 
         if not d:
@@ -777,7 +773,7 @@ class Event (models.Model):
         else:
             unit_handler = "raw"
 
-        key = 'event_%s_valuedict_%s' % (self.id, unit_handler)
+        key = 'event_%s_valuedict_%s' % (self.id, unit_handler)     #CACHE_KEY  --  field values by event
         d = cache.get(key)
         if not d:
             qs = FieldValue.objects.filter(event_id = self) 
