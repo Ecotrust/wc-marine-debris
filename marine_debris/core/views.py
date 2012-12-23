@@ -398,28 +398,38 @@ def get_aggregate_values_list(request, filters=None):
                 #Collect data for high-level categories
                 if db_field['display_category']['name'] not in ['Location', 'Date', 'Event', 'Debris', 'Mixed', ''] and (db_field['unit']['short_name'] == 'Count' or db_field['datatype']['name'] == 'Weight'):
                     if not categories.has_key(db_field['display_category']['name']):
-                        categories[db_field['display_category']['name']] = {}
-                    if not categories[db_field['display_category']['name']].has_key(db_field['datatype']['name']):
-                        categories[db_field['display_category']['name']][db_field['datatype']['name']] = 0
+                        categories[db_field['display_category']['name']] = {
+                            'pounds': 0,
+                            'count': 0
+                        }
                     if db_field['datatype']['name'] == 'Weight':
                         if not db_field['unit']['short_name'] == 'lbs':
                             factor = Unit.objects.get(short_name=db_field['unit']['short_name']).conversion_factor(Unit.objects.get(short_name='lbs'))      #NEED TO CACHE!
                             lbs_val = factor * field_value['value']
                         else:
                             lbs_val = field_value['value']
-                        categories[db_field['display_category']['name']][db_field['datatype']['name']] = categories[db_field['display_category']['name']][db_field['datatype']['name']] + float(lbs_val)
+                        categories[db_field['display_category']['name']]['pounds'] = categories[db_field['display_category']['name']]['pounds'] + float(lbs_val)
                     else:
-                        categories[db_field['display_category']['name']][db_field['datatype']['name']] = categories[db_field['display_category']['name']][db_field['datatype']['name']] + float(field_value['value'])
+                        categories[db_field['display_category']['name']]['count'] = categories[db_field['display_category']['name']]['count'] + float(field_value['value'])
+                        
     field_list = []
 
     for agg_field in agg_fields:
         field_list.append(agg_fields[agg_field])
+        
+    category_list = []
+    for category in categories:
+        category_list.append({
+            'name': category,
+            'pounds': categories[category]['pounds'],
+            'count': categories[category]['count']
+        })
 
     ret_dict = {
         'report':{
             'events': event_values_list.__len__(),
             'datasheets': datasheets,
-            'categories': categories
+            'categories': category_list
         },
         'fields': field_list
     }
