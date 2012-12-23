@@ -368,6 +368,7 @@ def get_aggregate_values_list(request, filters=None):
     event_values_list = [x.toValuesDict() for x in cleanup_events]
     field_values = []
     datasheets = []
+    categories = {}
 
     for event in cleanup_events:
         datasheet = event.toEventsDict['datasheet']['name']
@@ -383,6 +384,7 @@ def get_aggregate_values_list(request, filters=None):
         
         db_field = fields[field_value['int_name']]
         if db_field['datatype']['aggregatable']:
+            #sum up values for table
             if (field_value['value'] or field_value['value'] == 0) and not field_value['value'] in ['', None, 'None']:
                 if not agg_fields.has_key(field_value['int_name']):
                     agg_fields[field_value['int_name']] = get_agg_template(db_field)
@@ -393,7 +395,21 @@ def get_aggregate_values_list(request, filters=None):
 
                 field['value'] = field['value'] + float(field_value['value'])
                 field['num_values'] = field['num_values'] + 1
-     
+                #Collect data for high-level categories
+                if db_field['display_category']['name'] not in ['Location', 'Date', 'Event', 'Debris', 'Mixed', ''] and (db_field['unit']['short_name'] == 'Count' or db_field['datatype']['name'] == 'Weight'):
+                    if not categories.has_key(db_field['display_category']['name']):
+                        categories[db_field['display_category']['name']] = {}
+                    if not categories[db_field['display_category']['name']].has_key(db_field['datatype']['name']):
+                        categories[db_field['display_category']['name']][db_field['datatype']['name']] = 0
+                    if db_field['datatype']['name'] == 'Weight':
+                        if not db_field['unit']['short_name'] == 'lbs':
+                            factor = Unit.objects.get(short_name=db_field['unit']['short_name']).conversion_factor(Unit.objects.get(short_name='lbs'))      #NEED TO CACHE!
+                            lbs_val = factor * field_value['value']
+                        else:
+                            lbs_val = field_value['value']
+                        categories[db_field['display_category']['name']][db_field['datatype']['name']] = categories[db_field['display_category']['name']][db_field['datatype']['name']] + float(lbs_val)
+                    else:
+                        categories[db_field['display_category']['name']][db_field['datatype']['name']] = categories[db_field['display_category']['name']][db_field['datatype']['name']] + float(field_value['value'])
     field_list = []
 
     for agg_field in agg_fields:
@@ -402,7 +418,8 @@ def get_aggregate_values_list(request, filters=None):
     ret_dict = {
         'report':{
             'events': event_values_list.__len__(),
-            'datasheets': datasheets
+            'datasheets': datasheets,
+            'categories': categories
         },
         'fields': field_list
     }

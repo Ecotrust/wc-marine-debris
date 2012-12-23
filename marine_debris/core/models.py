@@ -220,6 +220,7 @@ class Field (models.Model):
                     'name': '',
                     'display_order' : 10000
                 }
+            
             dict =  {
                 'name': self.internal_name,
                 'label': self.label,
@@ -935,7 +936,7 @@ class FieldValue (models.Model):
 
 
     @property
-    def converted_value(self):
+    def converted_value(self, to_unit=None):
         ''' TODO use some thing like
            converted_value = datasheet_units.factor(desired_units)
         where the factor method of a unit will return the multiplier required to go from it to the desired units
@@ -947,7 +948,10 @@ class FieldValue (models.Model):
             return self.field_value
 
         try:
-            factor = self.from_unit.conversion_factor(self.to_unit) 
+            if to_unit == None:
+                factor = self.from_unit.conversion_factor(self.to_unit)
+            else:
+                factor = self.from_unit.conversion_factor(to_unit)
         except (AttributeError): #from_unit is None
             factor = 1  # TODO maybe we don't want to fail silently here! 
 
