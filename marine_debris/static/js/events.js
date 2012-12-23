@@ -110,6 +110,13 @@ function viewModel(options) {
     "bSort": false,
      "sDom": '<"filter"f><"wrapper"lipt>'
   };
+  
+  self.categoryTableOptions = {
+    'bFilter': false, 
+    'iDisplayLength': -1,
+    "bSort": false,
+     "sDom": '<"filter"f><"wrapper"lipt>'
+  };
 
   self.dataTablesOptions = {
     'bFilter': false, 

@@ -187,7 +187,11 @@ ul.errorlist {
 	margin-top: 10px;
 }
 #report-values-content {
-	min-height: 450px
+	min-height: 450px;
+}
+#high-level-details-row {
+    background: #DDDDDD;
+    padding: 5px;
 }
 .carousel-control {
 	display: none;
@@ -347,7 +351,7 @@ img.olTileImage {
 	float: right;
 }
 .wcga-database-right .wrapper {
-	height: 400px;
+	max-height: 280px;
 	overflow: auto;
 	clear:both;
 }

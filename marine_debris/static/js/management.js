@@ -134,6 +134,14 @@ function viewModel (fixture) {
 	  'bFilter': false,
 	   "sDom": '<"filter"f><"wrapper"lipt>'
 	};
+    
+    self.categoryTableOptions = {
+      'bFilter': false, 
+      'iDisplayLength': -1,
+      "bSort": false,
+       "sDom": '<"filter"f><"wrapper"lipt>'
+    };
+    
 	self.dataTableColumns = [
 		{mDataProp: 'username', sTitle: 'Username'},
 		{mDataProp: 'organization', sTitle: 'Organization'},
