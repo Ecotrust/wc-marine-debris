@@ -35,6 +35,24 @@ class Unit(models.Model):
     def __unicode__(self):
         return self.long_name
         
+    @property
+    def toDict(self):
+        if self.data_type:
+            data_type = {
+                'name': self.data_type.name,
+                'aggregatabale': self.data_type.aggregatable
+            }
+        else:
+            data_type = {
+                'name': '',
+                'aggregatable': ''
+            }
+        return {
+            'short_name': self.short_name,
+            'long_name': self.long_name,
+            'data_type': data_type
+        }
+        
     def conversion_factor(self, to_unit):
         if self == to_unit:
             # "No conversion needed, %s and %s are the same units" % (self, to_unit)
@@ -168,6 +186,66 @@ class Field (models.Model):
     def __unicode__(self):
         return self.internal_name
 
+    @classmethod
+    def toFieldsDict(cls):
+        fields_dict = {}
+        for field in cls.objects.all():
+            fields_dict[field.internal_name] = field.toDict
+        
+        return fields_dict
+        
+    @property
+    def toDict(self):
+        key = 'field_%s' % self.id        #CACHE_KEY  --  field details by field
+        dict = cache.get(key)
+        if not dict:
+            if self.unit_id:
+                unit = self.unit_id.toDict
+            else:
+                unit = {
+                    'short_name':'',
+                    'long_name': '',
+                    'datatype': {
+                        'name' : '',
+                        'aggregatable': ''
+                    }
+                }
+            if self.display_category:
+                display_category = {
+                    'name':self.display_category.name,
+                    'display_order': self.display_category.display_order
+                }
+            else:
+                display_category = {
+                    'name': '',
+                    'display_order' : 10000
+                }
+            dict =  {
+                'name': self.internal_name,
+                'label': self.label,
+                'type': self.datatype.name,
+                'unit': unit,
+                'datatype': {
+                    'aggregatable': self.datatype.aggregatable,
+                    'name': self.datatype.name
+                },
+                'display_category': display_category
+            }
+            cache.set(key, dict, settings.CACHE_TIMEOUT)
+            
+        return dict
+        
+    def save(self, *args, **kwargs):
+        if self.id:
+            # invalidate/clear all cached data associated with this field
+            keys = [
+                'field_%s' % self.id
+            ]
+            for key in keys:
+                cache.delete(key)
+            
+        super(Field, self).save(*args, **kwargs)
+        
     class Meta:
         ordering = ['internal_name']
     

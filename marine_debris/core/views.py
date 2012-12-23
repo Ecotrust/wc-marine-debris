@@ -363,7 +363,6 @@ def get_aggregate_values_list(request, filters=None):
     TODO profile
     '''
     cleanup_events = Event.filter(filters)
-    fields = Field.objects.all()
     agg_fields = {}
 
     event_values_list = [x.toValuesDict() for x in cleanup_events]
@@ -375,13 +374,15 @@ def get_aggregate_values_list(request, filters=None):
         if datasheet not in datasheets:
             datasheets.append(datasheet)
             
+    fields = Field.toFieldsDict()
+            
     for event_value in event_values_list:
         field_values.extend([{'int_name':x[0], 'label':x[1], 'value':event_value[x]} for x in event_value])
 
     for field_value in field_values:
         
-        db_field = fields.get(internal_name=field_value['int_name'])
-        if db_field.datatype.aggregatable:
+        db_field = fields[field_value['int_name']]
+        if db_field['datatype']['aggregatable']:
             if (field_value['value'] or field_value['value'] == 0) and not field_value['value'] in ['', None, 'None']:
                 if not agg_fields.has_key(field_value['int_name']):
                     agg_fields[field_value['int_name']] = get_agg_template(db_field)
@@ -409,13 +410,13 @@ def get_aggregate_values_list(request, filters=None):
     return ret_dict
     
 def get_agg_template(field):
-    if field.unit_id:
-        unit = field.unit_id.short_name
+    if field['unit']:
+        unit = field['unit']['short_name']
     else:
         unit = ''
     return {
-        'name': field.internal_name,
-        'type': field.datatype.name,
+        'name': field['name'],
+        'type': field['datatype']['name'],
         'unit': unit,
         'value': None,
         'num_values': 0
