@@ -66,6 +66,17 @@ class Unit(models.Model):
             raise ConversionError("%s to %s ... conversion factor not specified in UnitConversion table" % (self, to_unit))
 
         return uc.factor
+        
+    @classmethod
+    def get_conversion_factor(cls, from_unit_short_name, to_unit_short_name):
+        key = 'unit_from_%s_to_%s' % (from_unit_short_name, to_unit_short_name)     #CACHE_KEY  --  conversion factor by to/from units
+        factor = cache.get(key)
+        if not factor:    
+            from_unit = cls.objects.get(short_name=from_unit_short_name)
+            to_unit = cls.objects.get(short_name=to_unit_short_name)
+            factor = from_unit.conversion_factor(to_unit)
+            cache.set(key, factor, settings.CACHE_TIMEOUT)
+        return factor
 
     class Meta:
         ordering = ['long_name']
