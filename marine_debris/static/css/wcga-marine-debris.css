@@ -197,6 +197,13 @@ ul.errorlist {
 	display: none;
 }
 
+.wcga .dl-horizontal dt {
+    width: 115px;
+}
+.wcga .dl-horizontal dd {
+    margin-left: 135px;
+}
+
 /*.carousel.carousel-fade .item {
   -webkit-transition: opacity 1s ease-in-out;
   -moz-transition: opacity 1s ease-in-out;
