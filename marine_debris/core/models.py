@@ -74,8 +74,12 @@ class Unit(models.Model):
         if not factor:    
             from_unit = cls.objects.get(short_name=from_unit_short_name)
             to_unit = cls.objects.get(short_name=to_unit_short_name)
-            factor = from_unit.conversion_factor(to_unit)
-            cache.set(key, factor, settings.CACHE_TIMEOUT)
+            try:
+                factor = from_unit.conversion_factor(to_unit)
+                cache.set(key, factor, settings.CACHE_TIMEOUT)
+            except UnitConversion.DoesNotExist:
+                raise ConversionError("%s to %s ... conversion factor not specified in UnitConversion table" % (from_unit_short_name, to_unit_short_name))
+                factor = None
         return factor
 
     class Meta:
