@@ -26,7 +26,7 @@ class BulkImportForm(forms.Form):
         proj_choices.append((proj.id, proj.projname))
     ds_choices = []
     for ds in DataSheet.objects.all():
-        ds_choices.append((ds.id, ds.sheetname))
+        ds_choices.append((ds.id, ds.created_by.orgname + ' ' + str(ds.year_started) + ' ' + ds.sheetname))
         
     organization = forms.ChoiceField(
         choices = org_choices, 
