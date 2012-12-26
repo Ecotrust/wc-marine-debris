@@ -318,9 +318,9 @@
   <td data-bind="text: count"></td>
 </script>
 <script type="text/html" id="reportRowTemplate">
-  <td data-bind="text: name.replace(/_/g,' ')"></td>
-  <td data-bind="text: value"></td>
-  <td data-bind="text: unit"></td>
+  <td><span data-bind="text: field.name.replace(/_/g,' ')"></span></td>
+  <td><span data-bind="text: field.value"></span> <i class="icon-info-sign"></i></td>
+  <td data-bind="text: field.unit"></td>
 </script>
 <script type="text/html" id="rowTemplate">
   <td data-bind="text: datasheet.event_type, click: $root.zoomTo"></td>

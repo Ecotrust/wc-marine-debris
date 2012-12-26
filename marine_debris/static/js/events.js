@@ -392,8 +392,8 @@ app.loadHash = function (hash) {
   $.each(filterList, function (i, filter) {
     var parts = filter.split('='),
         type = parts[0],
-        values = parts[1].replace(/\+/, ' ').split(','), firstFilter=true;
-        
+        values = parts[1].replace(/\+/g, ' ').split(','), firstFilter=true;
+        console.log(values);
         // open the first tab
         if (firstFilter && type !== 'report' ) {
           $('.' + type).tab('show');
