@@ -189,6 +189,9 @@ ul.errorlist {
 #report-values-content {
 	min-height: 450px;
 }
+.report-table i {
+	color: red;
+}
 #high-level-details-row {
     background: #DDDDDD;
     padding: 5px;
