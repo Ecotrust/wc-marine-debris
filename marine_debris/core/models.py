@@ -901,11 +901,7 @@ class Event (models.Model):
             ]
             for key in keys:
                 cache.delete(key)
-            
-        if self.datasheet_id and self.datasheet_id.type_id and self.datasheet_id.type_id.type:
-            reportkey = 'reportcache_%s' % self.datasheet_id.type_id.type
-            cache.delete(reportkey)
-            
+
         super(Event, self).save(*args, **kwargs)
     
     class Meta:
