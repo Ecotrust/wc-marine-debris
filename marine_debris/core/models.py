@@ -728,7 +728,7 @@ class Event (models.Model):
                 pass
             else:
                 site_filters.append(filter)
-                
+        
         if event_types == []:
             event_types.append('all')
         for event_type in event_types:
@@ -741,10 +741,12 @@ class Event (models.Model):
             else:
                 filtered_events = None
             for filter in site_filters:
+
                 if filter['type'] == "county":
                     res = events.filter(site__county=filter['value'], site__state__name=filter['state'])
                     res_county = events.filter(site__county=filter['value'] + ' County', site__state__name=filter['state'])
                     res = res | res_county
+                    print len(res)
                 if filter['type'] == "state":
                     res = events.filter(site__state__name=filter['value'])
                 if filtered_events:
