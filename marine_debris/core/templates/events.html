@@ -273,14 +273,14 @@
                     </p>
                   </div>
                   <div class="span6">
-                    <div data-bind="visible: activeFilterTypes().length">
+                    <div data-bind="visible: activeFilterTypes().length" class="well">
                       <dl class="dl-horizontal" data-bind="foreach: activeFilterTypes">
                         <dt data-bind="text: $data"></dt>
                         <dd data-bind="text: $root.queryDisplay()[$data]"></dd>
                       </dl>
                     </div>
                     <div data-bind="visible: activeFilterTypes().length === 0">
-                      <p>You have no filters.  Showing all data.</p>
+                      <p>You have no filters.  Showing all data.  Loading a report may take some time.</p>
                     </div>
                   </div>
                 </div>
@@ -302,8 +302,8 @@
                     </table>
                   </div>
                   <div class="span5" data-bind="if: report" id="report">
-                    <div class="well">
-                      <dl data-bind="foreach: report().event_values" class="dl-horizontal">
+                    <div class="">
+                      <dl data-bind="foreach: report().event_values" class="">
                       <dt data-bind="text:$data.display_name"></dt>
                         <dd data-bind="text:$data.value"></dd>
                       </dl>

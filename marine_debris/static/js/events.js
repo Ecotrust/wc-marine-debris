@@ -578,7 +578,7 @@ app.initMap = function () {
         // Rules go here.
         context: {
           radius: function(feature) {
-            return Math.min(feature.attributes.count, 10) + 5;
+            return Math.min(feature.attributes.count, 12) + 5;
           },
           clusterCount: function (feature) {
             return feature.attributes.count > 1 ? feature.attributes.count: "";
