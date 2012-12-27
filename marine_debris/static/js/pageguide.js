@@ -48,7 +48,7 @@ var defaultGuide = {
       arrow: {offsetX: 0, offsetY: 0}
     },{
       target: '#map-tab',       //mention selecting an event    //use images for clusters
-      content: 'Use the Map tab to view the location of each event in your query results. Select a cluster of events <img src="' + static_url + 'img/cluster.png" /> to zoom in on them. Select a single event <img src="' + static_url + 'img/event_point.png" /> to learn more about it. Different colors represent different event types: orange for site cleanups, gray for derelict gear removals. NOTE: IE8 and below will display clusters as larger circles with no numbers.',
+      content: 'Use the Map tab to view the location of each event in your query results. Select a cluster of events <img src="' + static_url + 'img/cluster.png" /> to zoom in on them. Select a single event <img src="' + static_url + 'img/event_point.png" /> to learn more about it. Different colors represent different event types: orange for site cleanups, gray for derelict gear removals. NOTE: IE8 and older will display clusters as larger circles with no numbers.',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     },{
