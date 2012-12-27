@@ -28,7 +28,7 @@
         <form class="event-form" method="post" action="{% if action %}{{ action }}{% else %}/event/create/location{% endif %}">
         {% csrf_token %}
         {{form}}
-        <div id="map" class="smallmap"></div>
+        <div id="map" class="map"></div>
         <div class="map-buttons"><button type="button" class="btn" id="back" value="Back" onClick="history.go(-1);return true;">Back</button>
         {% if derelict %}
         <button data-bind="enable: selectedStateName() && latitude() && longitude()" type="submit" class='btn'>Continue</button>
