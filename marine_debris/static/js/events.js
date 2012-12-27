@@ -186,16 +186,22 @@ function viewModel(options) {
             'Pounds_trash_beach': 'Lbs of trash',
             'Cleanup_distance_beach': 'Miles cleaned'
         };
-        report.event_values = $.map(report.fields, function(field) {
-            if ($.inArray(field.name, [
-                'Number_volunteers_beach',
-                'Pounds_trash_beach',
-                'Cleanup_distance_beach'
-            ]) !== -1){
-                field.display_name = mapping[field.name];
-                return field;
-            }
+        report.showWarning = false;
+        report.event_values = [];
+        $.each(report.fields, function (i, field) {
+          if (field.num_values !== report.event_values) {
+            report.showWarning = true;
+          };
+          if ($.inArray(field.name, [
+              'Number_volunteers_beach',
+              'Pounds_trash_beach',
+              'Cleanup_distance_beach'
+          ]) !== -1){
+              field.display_name = mapping[field.name];
+              report.event_values.push(field);
+          };
         });
+
         self.report(report);
         self.showReportSpinner(false);
         $("#report").show();
@@ -251,6 +257,7 @@ function viewModel(options) {
     app.highlightedCluster = null;
     self.report(false);
     self.mapIsLoading(true);
+    $('#map_wrapper').find('.loader').show();
     $('#events-table').dataTable().fnReloadAjax();
     // if the last filter is not a point
 
@@ -265,7 +272,7 @@ function viewModel(options) {
     } 
 
     
-    if ($("#report").is(":visible")){
+    if ($("#report-tab").closest('li').is(":visible")) {
         self.getReport(self.queryFilter());
     }
   });
@@ -323,7 +330,6 @@ function viewModel(options) {
   };
 
   self.handleTableClick = function (event, e) {
-    
     var selectedCluster, $row = $(e.target).closest('tr'),
        pos = new OpenLayers.LonLat(event.site.lon, event.site.lat).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
     $row.siblings().removeClass('active');
@@ -335,7 +341,6 @@ function viewModel(options) {
   };
 
   self.zoomTo = function (event, e) {
-    
     var zoomLevel = Math.max(12, app.map.getZoom()), $row = $(e.target).closest('tr');
     $row.siblings().removeClass('active');
     $row.addClass('active');
@@ -351,7 +356,10 @@ function viewModel(options) {
     
   };
 
-  self.showDetail = function(event, showDetail) {
+  self.showDetail = function(event, e) {
+    $row = $(e.target).closest('tr');
+    $row.siblings().removeClass('active');
+    $row.addClass('active');
     event.data = ko.observable(false);
     self.showDetailsSpinner(true);
     $.get('/event/view/' + event.id, function (data) {
@@ -359,9 +367,9 @@ function viewModel(options) {
       event_details.data = data.fields;
       self.activeEvent(event_details);
       self.showDetailsSpinner(false);
-      if (showDetail) {
-        $('a[href=#event-details-content]').tab('show');    
-      }      
+      
+      $('a[href=#event-details-content]').tab('show');    
+            
     });
   };
 };
@@ -438,7 +446,7 @@ $.ajax({
     
     $(".filters").removeClass('hide');
     $(document).ready(function() {
-
+      $('.tip').tooltip({});
       $('#map-tab').on('shown', function (e) {
         app.viewModel.showDetailsSpinner(false);
       })
@@ -571,7 +579,7 @@ app.initMap = function () {
         // Rules go here.
         context: {
           radius: function(feature) {
-            return Math.min(feature.attributes.count, 7) + 5;
+            return Math.min(feature.attributes.count, 10) + 5;
           },
           clusterCount: function (feature) {
             return feature.attributes.count > 1 ? feature.attributes.count: "";

@@ -265,8 +265,13 @@
                   <button class="btn" data-bind="click: showMap"><i class="icon-globe"></i> return to map</button>
                 </div>
                 <h4>Report <img src="{{MEDIA_URL}}img/ajax-loader.gif" data-bind="visible: showReportSpinner"/></h4>
-                <p>This report is a summary of all of the events from your query results on the left.</p>
                 <div class="row-fluid">
+                  <div class="span6" data-bind="if: report">
+                    <p>This report is a summary of all of the events from your query results on the left.</p>
+                    <p data-bind="visible: report().showWarning">
+                      <i class="icon-info-sign"></i> <em>Not all matching report values have been aggregated into this view.</em>
+                    </p>
+                  </div>
                   <div class="span6">
                     <div data-bind="visible: activeFilterTypes().length">
                       <dl class="dl-horizontal" data-bind="foreach: activeFilterTypes">
@@ -279,28 +284,35 @@
                     </div>
                   </div>
                 </div>
-                <div class="row-fluid" data-bind="if: report">
-                  <div class="span12" data-bind="if: report" id='datasheets'>
-                  
-                    <!-- Put warning about multiple datasheets here -->
-                    
-                  </div>
-                </div>
                 <div class="row-fluid" data-bind="if: report" id="high-level-details-row">
                   <div class="span7" data-bind="if: report().report.categories.length" id='datasheets'>
-                    <table class="table wcga high-level-details table-striped table-hover table-condensed" data-bind="dataTable: { dataSource: report().report.categories, options: $root.categoryTableOptions, rowTemplate: 'categoryRowTemplate', columns: [{mDataProp: 'name', sTitle: 'Category'}, {mDataProp:'pounds', sTitle: 'Lbs Reported'}, {mDataProp:'count', sTitle: 'Count reported'}] }">
+                    <table class="table high-level-details wcga table-striped table-hover table-condensed" data-bindd="dataTable: { dataSource: report().report.categories, options: $root.categoryTableOptions, rowTemplate: 'categoryRowTemplate', columns: [{mDataProp: 'name', sTitle: 'Category'}, {mDataProp:'pounds', sTitle: 'Lbs Reported'}, {mDataProp:'count', sTitle: 'Count reported'}] }">
+                      <thead>
+                        <tr>
+                          <th>Category</th>
+                          <th>Pounds Reported</th>
+                          <th>Count Reported</th>
+                        </tr>
+                        <tbody data-bind="foreach: report().report.categories">
+                          <tr>
+                            <td data-bind="text: name"></td>
+                            <td data-bind="text: pounds"></td>
+                            <td data-bind="text: count"></td>
+                          </tr>
                     </table>
                   </div>
                   <div class="span5" data-bind="if: report" id="report">
-                    <dl data-bind="foreach: report().event_values" class="dl-horizontal">
+                    <div class="well">
+                      <dl data-bind="foreach: report().event_values" class="dl-horizontal">
                       <dt data-bind="text:$data.display_name"></dt>
-                      <dd data-bind="text:$data.value"></dd>
-                    </dl>
+                        <dd data-bind="text:$data.value"></dd>
+                      </dl>
+                    </div>
                   </div>
                 </div>
                 <div class="row-fluid" data-bind="if: report">
                   <div class="filter"></div>
-                  <table class="table wcga table-striped table-hover table-condensed report-table" data-bind="dataTable: { dataSource: report().fields, options: $root.reportTableOptions, rowTemplate: 'reportRowTemplate', columns: [{mDataProp: 'name', sTitle: 'Field'}, {mDataProp:'value', sTitle: 'Value'}, {mDataProp:'unit', sTitle: 'Unit'}] }">
+                  <table class="table wcga table-striped table-hover table-condensed report-table" data-bind="dataTable: { dataSource: report().fields, options: $root.reportTableOptions, rowTemplate: 'reportRowTemplate', columns: [{mDataProp: 'name', sTitle: 'Field'}, {mDataProp:'value', sTitle: 'Value'}] }">
                   </table>
                 </div>
               </div>
@@ -322,11 +334,9 @@
   <td data-bind="text: count"></td>
 </script>
 <script type="text/html" id="reportRowTemplate">
-  <td><span data-bind="text: name.replace(/_/g,' ')"></span></td>
-  <td><span data-bind="text: value"></span>
-    <i class="icon-info-sign" data-bind="visible: num_values !== $parent.report.events"></i>
-  </td>
-  <td data-bind="text: unit"></td>
+  <td class="tip" title="Some data sheet values were not used for this total."><span data-bind="text: name.replace(/_/g,' ')"></span>
+  <i class="icon-info-sign" data-bind="visible: num_values !== $parent.report.events" rel="tooltip"></i></td>
+  <td><span data-bind="text: value"></span> <span data-bind="text: unit"></span></td>
 </script>
 <script type="text/html" id="rowTemplate">
   <td data-bind="text: datasheet.event_type, click: $root.zoomTo"></td>
@@ -335,9 +345,7 @@
   <td data-bind="text: site.st_initials, click: $root.zoomTo"></td>
   <td data-bind="text: date, click: $root.zoomTo"></td>
   <td style="text-align: center">
-    <div class="btn-group">    
-      <button class="btn" data-bind="click: $root.showDetail" rel="tooltip" title="show event details"><i class="icon-info-sign"></i></button>
-    </div>
+    <button class="btn" data-bind="click: $root.showDetail" rel="tooltip" title="show event details"><i class="icon-info-sign"></i></button>
   </td>
 </script>
 
@@ -348,3 +356,4 @@
 {% block js %}
 {% endblock %}
     
+
