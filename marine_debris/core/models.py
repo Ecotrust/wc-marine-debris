@@ -694,7 +694,7 @@ class Event (models.Model):
         return[(field.name, field.value_to_string(self)) for field in Event._meta.fields]
         
     @classmethod
-    def filter(cls, filters):
+    def filter(cls, filters, bbox=None):
         event_types = []
         site_filters = []
         date_filters = []
@@ -709,10 +709,6 @@ class Event (models.Model):
         for filter in filters:
             if filter['type'] == 'event_type':
                 event_types.append(filter['value'])
-            # if filter['type'] == 'bbox':
-                # bbox = tuple(filter['bbox'].split(','))
-                # geom = Polygon.from_bbox(bbox)
-                # bbox_filter = True  
             #datepicker sends 1969 as null date              
             elif filter['type'] == 'toDate' or filter['type'] == 'fromDate':
                 date_filters.append(filter)
@@ -732,16 +728,22 @@ class Event (models.Model):
         if event_types == []:
             event_types.append('all')
         for event_type in event_types:
-            if event_type == 'all':
+            if bbox and event_type == 'all':
+                geom = Polygon.from_bbox(bbox)
+                events = cls.objects.filter(site__geometry__contained=geom)
+            elif event_type == 'all':
                 events = cls.objects.all()
             else:
-                events = cls.objects.filter(datasheet_id__type_id__type = event_type)
+                if bbox:
+                    geom = Polygon.from_bbox(bbox)
+                    events = cls.objects.filter(site__geometry__contained=geom)
+                else:
+                    events = cls.objects.filter(datasheet_id__type_id__type = event_type)
             if site_filters == []:
                 filtered_events = events
             else:
                 filtered_events = None
             for filter in site_filters:
-
                 if filter['type'] == "county":
                     res = events.filter(site__county=filter['value'], site__state__name=filter['state'])
                     res_county = events.filter(site__county=filter['value'] + ' County', site__state__name=filter['state'])

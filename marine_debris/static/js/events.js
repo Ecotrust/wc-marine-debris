@@ -566,6 +566,7 @@ app.initMap = function () {
       url: "/events/get_geojson",
       format: new OpenLayers.Format.GeoJSON(),
       params: {
+
           'filter': JSON.stringify(app.viewModel.queryFilter())
         }
     }),
@@ -633,7 +634,11 @@ app.initMap = function () {
 
   app.map.events.on({
     "moveend": function () {
-    
+      app.points.refresh({ 
+      params: {
+        'bbox': JSON.stringify(app.map.getExtent().transform(gProj, mProj).toArray()),
+        'filter': JSON.stringify(app.viewModel.queryFilter())
+      }});
 
       if (app.highlightedEvent) {
         app.viewModel.highlightCluster(app.highlightedEvent);
