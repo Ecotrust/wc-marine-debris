@@ -125,7 +125,8 @@ function viewModel(options) {
     "sAjaxSource": "/events/get",
     "iDisplayStart": 0,
     "fnServerParams": function ( aoData ) {
-      var filters = self.queryFilter();
+      var filters = ko.toJS(app.viewModel.queryFilter());
+      
       if (self.startID) {
         aoData.push({ "name": "startID", "value": self.startID });
         self.startID = null;
@@ -133,6 +134,9 @@ function viewModel(options) {
       // if (self.mapExtent()) {
         // filters.push({"type": "bbox", "bbox": self.mapExtent().transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326")).toBBOX() });
       // }
+      if (app.viewModel.pointFilter) {
+        filters.push(app.viewModel.pointFilter);
+      }
       aoData.push( { "name": "filter", "value": JSON.stringify(filters) });
     }
   };
@@ -242,24 +246,14 @@ function viewModel(options) {
 
 
   self.queryFilter.subscribe(function (newFilter) {
-    var getPoints = true;
     
     app.highlightedEvent = null;
     app.highlightedCluster = null;
     self.report(false);
     $('#events-table').dataTable().fnReloadAjax();
-    
-    // points not exist at first
-    // $.each(newFilter, function (i, filter) {
-    //   if (filter.type === 'point') {
-    //     getPoints = false;
-    //   }
-    // });
-    // if (newFilter.length === 0) {
-    //   getPoints = false;
-    // }
+    // if the last filter is not a point
 
-    if (app.points && getPoints) {
+    if (app.points) {
       self.mapIsLoading(true);
       app.points.refresh({ 
           params: {
@@ -359,24 +353,17 @@ function viewModel(options) {
   self.showDetail = function(event, showDetail) {
     event.data = ko.observable(false);
     self.showDetailsSpinner(true);
-    $.get('/event/view/' + event.id, function(data) {
+    $.get('/event/view/' + event.id, function (data) {
       var event_details = data.details;
       event_details.data = data.fields;
       self.activeEvent(event_details);
       self.showDetailsSpinner(false);
       if (showDetail) {
         $('a[href=#event-details-content]').tab('show');    
-      }
-      
-      
-      
+      }      
     });
-      
   };
-
-  
-
-}
+};
 
 
 
@@ -652,26 +639,28 @@ app.initMap = function () {
       app.viewModel.mapIsLoading(false);
     },
     "loadend": function () {
+
       app.viewModel.mapIsLoading(false);
       app.viewModel.clusteredEvents(false);
+
     },
     "featureselected": function(e) {
       var centerLonLat = e.feature.geometry.bounds.centerLonLat,
-          centroid = e.feature.geometry.transform(gProj, mProj).getCentroid();
+          centroid = $.extend({}, e.feature.geometry).transform(gProj, mProj).getCentroid();
 
-      app.viewModel.queryFilter.remove(function (item) {
-        return item.type === 'point';
-      });
       
-      app.viewModel.queryFilter.push({
+      app.viewModel.pointFilter = {
         type: 'point',
         value: [centroid.x.toFixed(4), centroid.y.toFixed(4)].join(':')
-      });
+      };
+      $('#events-table').dataTable().fnReloadAjax();
+
       if ( e.feature.attributes.count === 1){
         if (app.viewModel.clusteredEvents()) {
           app.viewModel.clusteredEvents.removeAll();
         }
-         app.viewModel.showDetail(e.feature.cluster[0].attributes, false);
+        app.viewModel.showDetail(e.feature.cluster[0].attributes, false);
+
         setTimeout(function () {
           $("#events-table").find('tbody tr:first').addClass('active');
         }, 500);
