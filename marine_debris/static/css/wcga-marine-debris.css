@@ -513,3 +513,7 @@ img.olTileImage {
 #pageGuideWrapper #pageGuideToggle {
 	display: none;
 }
+
+#pageGuideWrapper #pageGuideMessage {
+    z-index: 4001;
+}
