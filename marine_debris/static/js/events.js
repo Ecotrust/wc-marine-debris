@@ -60,11 +60,10 @@ function viewModel(options) {
     });
     if (date) {
       self.queryFilter.push({
-        type: 'toDate',
-        value: new Date(date).toString('yyyy-MM-dd')
+        type: 'fromDate',
+        value: new Date(date).toString('MM/dd/yyyy')
       });
     }
-    
   });
 
   self.toDate.subscribe(function (date) {
@@ -74,11 +73,10 @@ function viewModel(options) {
     });
     if (date) {
       self.queryFilter.push({
-        type: 'fromDate',
-        value: new Date(date).toString('yyyy-MM-dd')
+        type: 'toDate',
+        value: new Date(date).toString('MM/dd/yyyy')
       });  
     }
-    
   });
 
   self.removeDate = function (self, event) {
@@ -129,7 +127,6 @@ function viewModel(options) {
     "fnServerParams": function ( aoData ) {
       var filters = self.queryFilter();
       if (self.startID) {
-        console.log(self.startID);
         aoData.push({ "name": "startID", "value": self.startID });
         self.startID = null;
       }
@@ -317,7 +314,6 @@ function viewModel(options) {
     }
 
     if (app.highlightedCluster !== selectedCluster) {
-      console.log('highlighting');
       if (app.highlightedCluster) {
         app.selectControl.unhighlight(app.highlightedCluster);  
       }
@@ -393,7 +389,6 @@ app.loadHash = function (hash) {
     var parts = filter.split('='),
         type = parts[0],
         values = parts[1].replace(/\+/g, ' ').split(','), firstFilter=true;
-        console.log(values);
         // open the first tab
         if (firstFilter && type !== 'report' ) {
           $('.' + type).tab('show');
@@ -639,6 +634,7 @@ app.initMap = function () {
   app.map.events.on({
     "moveend": function () {
     
+
       if (app.highlightedEvent) {
         app.viewModel.highlightCluster(app.highlightedEvent);
         //app.highlightedEvent = null;
@@ -655,7 +651,7 @@ app.initMap = function () {
     "featuresremoved": function () {
       app.viewModel.mapIsLoading(false);
     },
-    "refresh": function () {
+    "loadend": function () {
       app.viewModel.mapIsLoading(false);
       app.viewModel.clusteredEvents(false);
     },
