@@ -246,10 +246,11 @@ function viewModel(options) {
 
 
   self.queryFilter.subscribe(function (newFilter) {
-    
+    app.viewModel.pointFilter = null;
     app.highlightedEvent = null;
     app.highlightedCluster = null;
     self.report(false);
+    self.mapIsLoading(true);
     $('#events-table').dataTable().fnReloadAjax();
     // if the last filter is not a point
 
@@ -643,6 +644,9 @@ app.initMap = function () {
       app.viewModel.mapIsLoading(false);
       app.viewModel.clusteredEvents(false);
 
+    },
+    "loadstart": function () {
+      app.viewModel.mapIsLoading(true);
     },
     "featureselected": function(e) {
       var centerLonLat = e.feature.geometry.bounds.centerLonLat,
