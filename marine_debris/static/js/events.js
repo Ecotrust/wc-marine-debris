@@ -335,7 +335,6 @@ function viewModel(options) {
     $row.siblings().removeClass('active');
     $row.addClass('active');
     self.highlightCluster(event);
-    
     self.showDetail(event, true);
     //app.map.setCenter(pos, app.map.getZoom() + 2);
   };
@@ -638,7 +637,7 @@ app.initMap = function () {
     
     }
   })
-
+  app.points.renderer.textRoot = app.points.renderer.vectorRoot; 
   app.points.events.on({
     "featuresadded": function () {
       app.viewModel.mapIsLoading(false);
