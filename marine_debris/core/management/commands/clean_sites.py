@@ -7,7 +7,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         sites = [x for x in Site.objects.all()]
         for site in sites:
-            if not site.sitename == site.sitename.strip():
+            if not site.sitename == site.sitename.strip() or not site.county == site.county.strip():
                 conflicts = Site.objects.filter(sitename = site.sitename.strip(), county = site.county.strip())
                 if conflicts.count() > 0:
                     print '"' + site.sitename + ', ' + site.county + '"'
@@ -15,9 +15,10 @@ class Command(BaseCommand):
                     if abs(int(site.geometry.get_coords()[1]) - int(good_site.geometry.get_coords()[1])) < 0.0001 and abs(int(site.geometry.get_coords()[0]) - int(good_site.geometry.get_coords()[0])) < 0.0001:
                         events = Event.objects.filter(site = site)
                         for event in events:
-                            print 'changing site from ' + str(event.site.id) + ' to ' + str(good_site.id)
+                            print 'changing event ' + str(event.id) + '\'s site from ' + str(event.site.id) + ' to ' + str(good_site.id)
                             event.site = good_site
                             event.save()
+                        print 'Deleting site ' + site.sitename + ' id: ' + site.id
                         site.delete()
                     else:
                         print site.sitename.strip() + ':'
