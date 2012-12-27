@@ -41,5 +41,5 @@ class Command(BaseCommand):
                                 print 'changing event ' + str(event.id) + '\'s site from ' + str(event.site.id) + ' to ' + str(master_site.id)
                                 event.site = master_site
                                 event.save()
-                            print 'Deleting dupe site ' + dupe.sitename + ' id: ' + dupe.id
+                            print 'Deleting dupe site ' + dupe.sitename + ' id: ' + str(dupe.id)
                             dupe.delete()
