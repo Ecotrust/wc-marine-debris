@@ -18,7 +18,7 @@ class Command(BaseCommand):
                             print 'changing event ' + str(event.id) + '\'s site from ' + str(event.site.id) + ' to ' + str(good_site.id)
                             event.site = good_site
                             event.save()
-                        print 'Deleting site ' + site.sitename + ' id: ' + site.id
+                        print 'Deleting site ' + site.sitename + ' id: ' + str(site.id)
                         site.delete()
                     else:
                         print site.sitename.strip() + ':'
