@@ -282,8 +282,8 @@
                 <div class="row-fluid">
                   <div class="span6" data-bind="if: report">
                     <p>This report is a summary of all of the events from your query results on the left.</p>
-                    <p data-bind="visible: report().showWarning">
-                      <i class="icon-info-sign"></i> <em>Not all matching report values have been aggregated into this view.</em>
+                    <p data-bind="visible: report().report.datasheets.length > 1"><i class="icon-info-sign"></i> <em>The data in this report comes aggregated from different datasheets. Not all values will be aggregated from fields present in all datasheets, and may not be fully representative.</em>
+                      
                     </p>
                   </div>
                   <div class="span6">
@@ -319,7 +319,7 @@
                     <div class="">
                       <dl data-bind="foreach: report().event_values" class="">
                       <dt data-bind="text:$data.display_name"></dt>
-                        <dd data-bind="text:$data.value"></dd>
+                        <dd data-bind="text: Math.floor($data.value)"></dd>
                       </dl>
                     </div>
                   </div>
@@ -349,7 +349,7 @@
 </script>
 <script type="text/html" id="reportRowTemplate">
   <td class="tip" title="Some data sheet values were not used for this total."><span data-bind="text: name.replace(/_/g,' ')"></span>
-  <i class="icon-info-sign" data-bind="visible: num_values !== $parent.report.events" rel="tooltip"></i></td>
+  <i class="icon-info-sign" data-bind="visible: num_values < $parent.report().report.events" rel="tooltip"></i></td>
   <td><span data-bind="text: value"></span> <span data-bind="text: unit"></span></td>
 </script>
 <script type="text/html" id="rowTemplate">
