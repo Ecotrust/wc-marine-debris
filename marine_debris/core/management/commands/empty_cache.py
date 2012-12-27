@@ -11,6 +11,7 @@ class Command(BaseCommand):
                     'event_%s_eventdict' % event.id,
                     'event_%s_valuedict_convert' % event.id,
                     'event_%s_valuedict_ray' % event.id,
+                    'event_%s_geocache' % event.id,
                 ]
             for key in keys:
                 cache.delete(key)
