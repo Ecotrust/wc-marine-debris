@@ -16,6 +16,10 @@
 {% endblock %}
 
 {% block content %}
+<div id="help-tab" class="rounded">
+    <a href="#">tour</a>
+</div>
+
 {% endblock %}    
 
 {% block leftcontent %}
@@ -283,7 +287,7 @@
                   </div>
                 </div>
                 <div class="row-fluid" data-bind="if: report" id="high-level-details-row">
-                  <div class="span7" data-bind="if: report" id='datasheets'>
+                  <div class="span7" data-bind="if: report().report.categories.length" id='datasheets'>
                     <table class="table wcga high-level-details table-striped table-hover table-condensed" data-bind="dataTable: { dataSource: report().report.categories, options: $root.categoryTableOptions, rowTemplate: 'categoryRowTemplate', columns: [{mDataProp: 'name', sTitle: 'Category'}, {mDataProp:'pounds', sTitle: 'Lbs Reported'}, {mDataProp:'count', sTitle: 'Count reported'}] }">
                     </table>
                   </div>

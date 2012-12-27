@@ -192,10 +192,7 @@ ul.errorlist {
 .report-table i {
 	color: red;
 }
-#high-level-details-row {
-    background: #DDDDDD;
-    padding: 5px;
-}
+
 .carousel-control {
 	display: none;
 }
@@ -474,4 +471,39 @@ img.olTileImage {
 
 #pageGuideToggle {
     top: 180px !important;
+}
+
+#help-tab {
+	position: fixed;
+    z-index: 950;
+	right: -10px;
+	top: 80%;
+	padding: 2px 8px;
+	border: 2px solid #ccc;
+	background: #5170B0; /* fallback for IE - IE6 requires background shorthand*/
+	background: rgba(81,112,176, 1);
+
+	color: white;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	-moz-border-top-left-radius: 10px;
+	-moz-border-top-right-radius: 10px;
+	-webkit-border-top-left-radius: 10px;
+	-webkit-border-top-right-radius: 10px;
+	-webkit-transform: rotate(-90deg);	
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+
+}
+#help-tab a {
+	color: white;
+}
+#help-tab a:hover {
+    text-decoration: none;
+}
+
+#pageGuideWrapper #pageGuideToggle {
+	display: none;
 }

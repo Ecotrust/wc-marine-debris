@@ -109,9 +109,26 @@ var defaultGuideOverrides = {
   }
 }
 
+
 $(function() {
   // Load the default guide!  
   $.pageguide(defaultGuide, defaultGuideOverrides);
-  // $.pageguide(defaultGuide);
+
+  setTimeout(function () {
+    $('#help-tab').effect("pulsate", { times:3 }, 1000);  
+  }, 2000);
+  
+
+  $('#help-tab').on('click', function() {
+    if ( $.pageguide('isOpen') ) { // activated when 'tour' is clicked
+        // close the pageguide
+        $.pageguide('close');
+        
+    } else {
+        //start the tour
+        setTimeout( function() { $.pageguide('open'); }, 200 );      
+    }
+  });
+  
   
 });
