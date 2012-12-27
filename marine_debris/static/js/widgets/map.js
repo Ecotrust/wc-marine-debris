@@ -1,6 +1,10 @@
-var layerExtent = new OpenLayers.Bounds( -14050000, 3800000, -13000000 , 6280000);
+var layerExtent = new OpenLayers.Bounds( -14050000, 3800000, -13000000 , 6300000);
 
-var map = new OpenLayers.Map(null, {'restrictedExtent': layerExtent});
+var map = new OpenLayers.Map('map', {
+  restrictedExtent: layerExtent,
+  displayProjection: new OpenLayers.Projection("EPSG:4326"),
+  projection: "EPSG:3857"
+});
 
 var map_extent = new OpenLayers.Bounds(-20037508, -20037508, 20037508, 20037508.34);	
     
@@ -74,3 +78,4 @@ map.addLayers([hybrid, pointLayer]);
 
 map.addControl(point);
 point.activate();
+map.zoomTo(4);
