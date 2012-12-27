@@ -153,11 +153,14 @@ function viewModel(options) {
     self.showSpinner(false);
     return self.events();
   });
-  
+  self.showTOU = function () {
+    $('#tou-modal').modal().removeClass('hide');
+  };
   self.downloadData = function () {
     var filters = self.queryFilter();
     var url = "/events/download.csv?pprint=True&filter=" + JSON.stringify(filters || []);
     $('iframe#download-frame').attr('src', url);
+    $('#tou-modal').modal('hide')
   };
 
   self.showReport = function () {
@@ -448,7 +451,9 @@ $.ajax({
       $('.tip').tooltip({});
       $('#map-tab').on('shown', function (e) {
         app.viewModel.showDetailsSpinner(false);
-      })
+      });
+
+
 
       $("select.organization").chosen().change(function (event, option) {
         if (option.selected) {
