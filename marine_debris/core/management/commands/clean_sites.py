@@ -7,7 +7,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         sites = [x for x in Site.objects.all()]
         for site in sites:
-            if not site.sitename == site.sitename.strip():
+            if not site.sitename == site.sitename.strip() or site.county == site.county.strip():
                 conflicts = Site.objects.filter(sitename = site.sitename.strip(), county = site.county.strip())
                 if conflicts.count() > 0:
                     print '"' + site.sitename + ', ' + site.county + '"'
