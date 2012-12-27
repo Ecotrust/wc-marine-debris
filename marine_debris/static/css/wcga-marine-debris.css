@@ -189,10 +189,16 @@ ul.errorlist {
 #report-values-content {
 	min-height: 450px;
 }
-.report-table i {
-	color: red;
+#report-values-content i.icon-info-sign {
+	background-color: #DDDDDD;
+	border-radius: 5px 5px 5px 5px;
+	color: #D14;
+	padding: 2px 4px;
+	border: 1px solid #aaa;
+}	
+#report-values-content dl {
+    margin-top: 0px;
 }
-
 .carousel-control {
 	display: none;
 }
