@@ -736,7 +736,7 @@ class Event (models.Model):
             else:
                 if bbox:
                     geom = Polygon.from_bbox(bbox)
-                    events = cls.objects.filter(site__geometry__contained=geom)
+                    events = cls.objects.filter(site__geometry__contained=geom, datasheet_id__type_id__type = event_type)
                 else:
                     events = cls.objects.filter(datasheet_id__type_id__type = event_type)
             if site_filters == []:
@@ -763,9 +763,9 @@ class Event (models.Model):
                 filtered_events = filtered_events.filter(proj_id__organization__slug=filter['value'])
             for filter in date_filters:
                 if filter['type'] == 'toDate':
-                    filtered_events = filtered_events.filter(cleanupdate__gte=filter['value'])
+                    filtered_events = filtered_events.filter(cleanupdate__gte=datetime.datetime.strptime(filter['value'], '%m/%d/%Y'))
                 if filter['type'] == 'fromDate':
-                    filtered_events = filtered_events.filter(cleanupdate__lte=filter['value'])
+                    filtered_events = filtered_events.filter(cleanupdate__lte=datetime.datetime.strptime(filter['value'], '%m/%d/%Y'))
             for filter in transaction_filters:
                 filtered_events = filtered_events.filter(transaction=filter['value'])
         # if bbox_filter:
