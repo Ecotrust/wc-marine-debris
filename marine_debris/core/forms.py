@@ -47,6 +47,7 @@ class BulkImportForm(forms.Form):
             'data-placement': 'right'
         })
     )
+
     datasheet_id = forms.ChoiceField(
         choices = ds_choices,
         widget = widgets.SelectWithTooltip(attrs={
@@ -84,7 +85,7 @@ class CreateEventForm(forms.Form):
                 'tool-id': 'organization',
                 'rel': 'tooltip',
                 'data-placement': 'right',
-                'title': 'Which organization is this event associated with?\nOnly organizations that you are associated with will be shown here.\n If the options seem incorrect, please contact your project lead or organization contact and request to have your account associated with the correct organization(s).'
+                'title': 'Which organization is this event associated with? Only organizations that you are associated with will be shown here. If the options seem incorrect, please contact your project lead or organization contact and request to have your account associated with the correct '
             }
         )
     )
