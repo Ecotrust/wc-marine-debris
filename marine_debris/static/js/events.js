@@ -195,6 +195,8 @@ function viewModel(options) {
           if (field.num_values !== report.event_values) {
             report.showWarning = true;
           };
+          
+          field.tooltipText = 'Only ' + field.num_values + ' of ' + report.report.events + ' events have a value for this field.';
           if ($.inArray(field.name, [
               'Number_volunteers_beach',
               'Pounds_trash_beach',
