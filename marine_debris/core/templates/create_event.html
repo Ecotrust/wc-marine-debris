@@ -31,13 +31,13 @@
             
     $('#info_organization').qtip({
        content: 'Which organization is this event associated with? Only organizations that you are associated with will be shown here. If the options seem incorrect, please contact your project lead or organization contact and request to have your account associated with the correct organization(s).',
-       show: 'mouseover',
-       hide: 'mouseout'
+       show: 'mouseover click',
+       hide: 'mouseout blur',
     });
     
     $('#info_project').qtip({
        content: 'Which project was this event performed for? Only projects associated with the organization you selected in the previous field will be shown.',
-       show: 'mouseover',
+       show: 'mouseover click',
        hide: 'mouseout'
     });
     
