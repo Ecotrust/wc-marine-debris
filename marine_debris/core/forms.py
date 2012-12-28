@@ -33,18 +33,18 @@ class BulkImportForm(forms.Form):
         choices = org_choices, 
         widget = widgets.SelectWithTooltip(attrs={
             'tool-id': 'organization',
-            'title': 'Which organization are these events associated with?',
-            'rel': 'tooltip',
-            'data-placement': 'right'
+            'tool-title': 'Which organization are these events associated with?',
+            'tool-rel': 'tooltip',
+            'tool-data-placement': 'right'
         })
     )
     project_id = forms.ChoiceField(
         choices = proj_choices,
         widget = widgets.SelectWithTooltip(attrs={
             'tool-id': 'project',
-            'title': 'Which project are these events associated with?',
-            'rel': 'tooltip',
-            'data-placement': 'right'
+            'tool-title': 'Which project are these events associated with?',
+            'tool-rel': 'tooltip',
+            'tool-data-placement': 'right'
         })
     )
 
@@ -52,17 +52,17 @@ class BulkImportForm(forms.Form):
         choices = ds_choices,
         widget = widgets.SelectWithTooltip(attrs={
             'tool-id': 'datasheet',
-            'title': 'Which data sheet matches the fields on the CSV that you wish to upload?',
-            'rel': 'tooltip',
-            'data-placement': 'right'
+            'tool-title': 'Which data sheet matches the fields on the CSV that you wish to upload?',
+            'tool-rel': 'tooltip',
+            'tool-data-placement': 'right'
         })
     )
     csvfile = forms.FileField(
         widget = widgets.FileFieldWithTooltip(attrs={
             'tool-id': 'csv',
-            'title': 'Browse to and select the Comma Separated Value file that contains the events data.',
-            'rel': 'tooltip',
-            'data-placement': 'right'
+            'tool-title': 'Browse to and select the Comma Separated Value file that contains the events data.',
+            'tool-rel': 'tooltip',
+            'tool-data-placement': 'right'
         })
     )
         
@@ -83,9 +83,9 @@ class CreateEventForm(forms.Form):
             attrs={
                 'data-bind':'options: data.orgs ? data.orgs : [], optionsText: "name", value: selectedOrganizationName, optionsValue: "name", optionsCaption: "Choose..."',
                 'tool-id': 'organization',
-                'rel': 'tooltip',
-                'data-placement': 'right',
-                'title': 'Which organization is this event associated with? Only organizations that you are associated with will be shown here. If the options seem incorrect, please contact your project lead or organization contact and request to have your account associated with the correct '
+                'tool-rel': 'tooltip',
+                'tool-data-placement': 'right',
+                'tool-title': 'Which organization is this event associated with? Only organizations that you are associated with will be shown here. If the options seem incorrect, please contact your project lead or organization contact and request to have your account associated with the correct '
             }
         )
     )
@@ -95,9 +95,9 @@ class CreateEventForm(forms.Form):
             attrs={
                 'data-bind':'options: selectedOrganization() ? selectedOrganization().projects : [], optionsText: "name", optionsValue: "name", value: selectedProjectName, optionsCaption: "Select...", enable: selectedOrganizationName',
                 'tool-id' : 'project',
-                'rel': 'tooltip',
-                'data-placement': 'right',
-                'title': 'Which project was this event performed for? Only projects associated with the organization you selected in the previous field will be shown.',
+                'tool-rel': 'tooltip',
+                'tool-data-placement': 'right',
+                'tool-title': 'Which project was this event performed for? Only projects associated with the organization you selected in the previous field will be shown.',
             }
         )
     )
@@ -107,9 +107,9 @@ class CreateEventForm(forms.Form):
                 'class':'date', 
                 'data-bind':'datepicker: selectedDate, enable: selectedProjectName',
                 'tool-id': 'date',
-                'rel': 'tooltip',
-                'data-placement': 'right',
-                'title': 'The date on which the event occurred. For cleanups this would be the first day of the cleanup. For derelict gear reports/removals it would be the day that the derelict gear was reported.'
+                'tool-title': 'The date on which the event occurred. For cleanups this would be the first day of the cleanup. For derelict gear reports/removals it would be the day that the derelict gear was reported.' 
+                'tool-rel': 'tooltip',
+                'tool-data-placement': 'right',
             }
         )
     )
@@ -119,9 +119,9 @@ class CreateEventForm(forms.Form):
             attrs={
                 'data-bind':'options: availableDatasheets() ? availableDatasheets() : [], optionsText: "name", value: selectedDatasheet, optionsCaption: "Select...", optionsValue: "id", enable: availableDatasheets',
                 'tool-id': 'data_sheet',
-                'title': 'Which data sheet was used to collect the data? Datasheets are the list of questions used for reporting your event.',
-                'rel': 'tooltip',
-                'data-placement': 'right'
+                'tool-title': 'Which data sheet was used to collect the data? Datasheets are the list of questions used for reporting your event.',
+                'tool-rel': 'tooltip',
+                'tool-data-placement': 'right'
             }
         )
     )
@@ -140,9 +140,12 @@ class CreateEventForm(forms.Form):
         required=False,
         widget = widgets.SelectWithTooltip(
             attrs={
-            'class':'state-select',
-            'data-bind':'options: data.states ? data.states : [], optionsText: "name", value: selectedStateName, optionsValue: "initials", optionsCaption: "Choose..."',
-                'tool-id': 'state'
+                'class':'state-select',
+                'data-bind':'options: data.states ? data.states : [], optionsText: "name", value: selectedStateName, optionsValue: "initials", optionsCaption: "Choose..."',
+                'tool-id': 'state',
+                'tool-title': 'Which state (waters) was this event performed in?',
+                'tool-rel': 'tooltip',
+                'tool-data-placement': 'right'
             }
         )
     )
@@ -153,7 +156,10 @@ class CreateEventForm(forms.Form):
             attrs={
                 'class':'county-select',
                 'data-bind':'options: selectedState().counties ? selectedState().counties.sort(function(a, b) { return a.name.localeCompare(b.name) }) : [], optionsText: "name", value: selectedCountyName, optionsValue: "name", optionsCaption: "Choose...", enable: selectedState',
-                'tool-id': 'county'
+                'tool-id': 'county',
+                'tool-title': 'Which county (waters) was this event performed in?',
+                'tool-rel': 'tooltip',
+                'tool-data-placement': 'right'
             }
         )
     )
@@ -164,7 +170,10 @@ class CreateEventForm(forms.Form):
                 'class':'site-typeahead',
                 'autocomplete':'off',
                 'data-bind':'value: selectedSiteName, enable: selectedCounty',
-                'tool-id': 'sitename'
+                'tool-id': 'sitename',
+                'tool-title': 'What is the name of the site where this event was performed? Feel free to select from the options suggested. If your site\'s name isn\'t in the list, you may use what you typed.',
+                'tool-rel': 'tooltip',
+                'tool-data-placement': 'right'
             }
         )
     )
@@ -174,7 +183,10 @@ class CreateEventForm(forms.Form):
         widget = widgets.TextInputWithTooltip(
             attrs={
                 'data-bind': 'enable: selectedState, value: longitude',
-                'tool-id': 'longitude'
+                'tool-id': 'longitude',
+                'tool-title': 'What was the approximate longitude of the site where your event was performed? This can be filled in by either selecting a pre-existing site name above, or by clicking on the map below.',
+                'tool-rel': 'tooltip',
+                'tool-data-placement': 'right'
             }
         )
     )
@@ -184,7 +196,10 @@ class CreateEventForm(forms.Form):
         widget = widgets.TextInputWithTooltip(
             attrs={
                 'data-bind': 'enable: selectedState, value: latitude',
-                'tool-id': 'latitude'
+                'tool-id': 'latitude',
+                'tool-title': 'What was the approximate latitude of the site where your event was performed? This can be filled in by either selecting a pre-existing site name above, or by clicking on the map below.',
+                'tool-rel': 'tooltip',
+                'tool-data-placement': 'right'
             }
         )
     )
