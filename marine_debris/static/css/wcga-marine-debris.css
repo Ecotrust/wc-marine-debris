@@ -92,7 +92,9 @@ h6 { font-weight: normal; }
 	bottom: 15px;
 
 }
-.dataTables_wrapper tr.even.active td, .dataTables_wrapper tr.odd.active td, .dataTables_wrapper tr:hover td {
+.dataTables_wrapper .table-hover tr.even.active td,
+.dataTables_wrapper .table-hover tr.odd.active td,
+.dataTables_wrapper .table-hover tr:hover td {
 	background-color: #344770!important;
 	color: white;
 }
@@ -196,7 +198,7 @@ ul.errorlist {
 #report-values-content i.icon-info-sign {
 	background-color: #DDDDDD;
 	border-radius: 5px 5px 5px 5px;
-	color: #D14;
+	color: #F71906;
 	padding: 2px 4px;
 	border: 1px solid #aaa;
 }	
