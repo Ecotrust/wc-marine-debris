@@ -339,7 +339,7 @@
 </script>
 <script type="text/html" id="reportRowTemplate">
   <td class="tip"><span data-bind="text: name.replace(/_/g,' ')"></span>
-  <i class="icon-info-sign" data-bind="visible: num_values < $parent.report().report.events, attr: { title: tooltipText }" rel="tooltip"></i></td>>
+  <i class="icon-info-sign" data-bind="visible: num_values < $parent.report().report.events, attr: { title: tooltipText }" data-placement="bottom" rel="tooltip"></i></td>>
   <td><span data-bind="text: value"></span> <span data-bind="text: unit"></span></td>
 </script>
 <script type="text/html" id="rowTemplate">
@@ -349,7 +349,7 @@
   <td data-bind="text: site.st_initials, click: $root.zoomTo"></td>
   <td data-bind="text: date, click: $root.zoomTo"></td>
   <td style="text-align: center">
-    <button class="btn" data-bind="click: $root.showDetail" rel="tooltip" title="show event details"><i class="icon-info-sign"></i></button>
+    <button class="btn" data-bind="click: $root.showDetail" rel="tooltip" title="show event details" data-placement="top"><i class="icon-info-sign"></i></button>
   </td>
 </script>
 <script type="text/javascript" >

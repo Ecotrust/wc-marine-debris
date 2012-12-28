@@ -450,7 +450,11 @@ $.ajax({
     
     $(".filters").removeClass('hide');
     $(document).ready(function() {
-      $('.tip').tooltip({});
+      
+      $(document).on('click mouseover', '[rel="tooltip"]', function (e) {
+        $(e.target).tooltip('show');
+      });
+
       $('#map-tab').on('shown', function (e) {
         app.viewModel.showDetailsSpinner(false);
       });

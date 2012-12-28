@@ -34,11 +34,11 @@ h6 { font-weight: normal; }
 .navbar .navbar-inner {
 	padding: 0px 10px 0px 0px;
 }
-.tooltip {
+/*.tooltip {
     display: inline-block;
     opacity: 1;
     position: relative;
-}
+}*/
 .info {
 	text-align: right;
 	margin-bottom: 30px;
@@ -233,13 +233,13 @@ ul.errorlist {
   -o-transition: opacity 1s ease-in-out;
   transition: opacity 1s ease-in-out;
 }*/
-.fade {
+/*.fade {
 	opacity: .4;
 }
-
-.hide {
+*/
+/*.hide {
 	visibility: hidden;
-}
+}*/
 img.olTileImage {
     max-width: 256px !important;
 }
