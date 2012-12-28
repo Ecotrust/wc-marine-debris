@@ -54,6 +54,37 @@
 
 {% block js %}
 
+    $('#info_state').qtip({
+       content: 'Which state (waters) was this event performed in?',
+       show: 'mouseover',
+       hide: 'mouseout'
+    });
+    
+    $('#info_county').qtip({
+       content: 'Which county (waters) was this event performed in?',
+       show: 'mouseover',
+       hide: 'mouseout'
+    });
+    
+    $('#info_sitename').qtip({
+       content: 'What is the name of the site where this event was performed? Feel free to select from the options suggested. If your site\'s name isn\'t in the list, you may use what you typed.',
+       show: 'mouseover',
+       hide: 'mouseout'
+    });
+    
+    $('#info_longitude').qtip({
+       content: 'What was the approximate longitude of the site where your event was performed? This can be filled in by either selecting a pre-existing site name above, or by clicking on the map below.',
+       show: 'mouseover',
+       hide: 'mouseout'
+    });
+    
+    $('#info_latitude').qtip({
+       content: 'What was the approximate latitude of the site where your event was performed? This can be filled in by either selecting a pre-existing site name above, or by clicking on the map below.',
+       show: 'mouseover',
+       hide: 'mouseout'
+    });
+    
+
     var onResizeMap = function () {
       setTimeout( function() { map.updateSize();}, 200);
     };

@@ -34,7 +34,11 @@ h6 { font-weight: normal; }
 .navbar .navbar-inner {
 	padding: 0px 10px 0px 0px;
 }
-
+.tooltip {
+    display: inline-block;
+    opacity: 1;
+    position: relative;
+}
 .info {
 	text-align: right;
 	margin-bottom: 30px;

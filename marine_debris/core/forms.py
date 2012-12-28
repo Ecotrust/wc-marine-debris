@@ -6,6 +6,7 @@ import re, datetime
 from django.forms import TextInput, Textarea
 from django.contrib.gis.geos import Point
 from cgi import escape
+from core import widgets
 import datetime
 
 class EventForm(forms.ModelForm):
@@ -55,33 +56,37 @@ class CreateEventForm(forms.Form):
         
     organization = forms.ChoiceField(
         choices = org_choices, 
-        widget = forms.Select(
+        widget = widgets.SelectWithTooltip(
             attrs={
-                'data-bind':'options: data.orgs ? data.orgs : [], optionsText: "name", value: selectedOrganizationName, optionsValue: "name", optionsCaption: "Choose..."'
+                'data-bind':'options: data.orgs ? data.orgs : [], optionsText: "name", value: selectedOrganizationName, optionsValue: "name", optionsCaption: "Choose..."',
+                'tool-id': 'organization'
             }
         )
     )
     project = forms.ChoiceField(
         choices = proj_choices,
-        widget = forms.Select(
+        widget = widgets.SelectWithTooltip(
             attrs={
-                'data-bind':'options: selectedOrganization() ? selectedOrganization().projects : [], optionsText: "name", optionsValue: "name", value: selectedProjectName, optionsCaption: "Select...", enable: selectedOrganizationName'
+                'data-bind':'options: selectedOrganization() ? selectedOrganization().projects : [], optionsText: "name", optionsValue: "name", value: selectedProjectName, optionsCaption: "Select...", enable: selectedOrganizationName',
+                'tool-id' : 'project'
             }
         )
     )
     date = forms.DateField(
-        widget=forms.TextInput(
+        widget=widgets.TextInputWithTooltip(
             attrs={
                 'class':'date', 
-                'data-bind':'datepicker: selectedDate, enable: selectedProjectName'
+                'data-bind':'datepicker: selectedDate, enable: selectedProjectName',
+                'tool-id': 'date'
             }
         )
     )
     data_sheet = forms.ChoiceField(
         choices = ds_choices,
-        widget = forms.Select(
+        widget = widgets.SelectWithTooltip(
             attrs={
-                'data-bind':'options: availableDatasheets() ? availableDatasheets() : [], optionsText: "name", value: selectedDatasheet, optionsCaption: "Select...", optionsValue: "id", enable: availableDatasheets'
+                'data-bind':'options: availableDatasheets() ? availableDatasheets() : [], optionsText: "name", value: selectedDatasheet, optionsCaption: "Select...", optionsValue: "id", enable: availableDatasheets',
+                'tool-id': 'data_sheet'
             }
         )
     )
@@ -98,48 +103,53 @@ class CreateEventForm(forms.Form):
     state = forms.ChoiceField(
         choices = state_choices, 
         required=False,
-        widget = forms.Select(
+        widget = widgets.SelectWithTooltip(
             attrs={
             'class':'state-select',
-            'data-bind':'options: data.states ? data.states : [], optionsText: "name", value: selectedStateName, optionsValue: "initials", optionsCaption: "Choose..."'
+            'data-bind':'options: data.states ? data.states : [], optionsText: "name", value: selectedStateName, optionsValue: "initials", optionsCaption: "Choose..."',
+                'tool-id': 'state'
             }
         )
     )
     county = forms.ChoiceField(
         choices = county_choices,
         required=False,
-        widget = forms.Select(
+        widget = widgets.SelectWithTooltip(
             attrs={
                 'class':'county-select',
-                'data-bind':'options: selectedState().counties ? selectedState().counties.sort(function(a, b) { return a.name.localeCompare(b.name) }) : [], optionsText: "name", value: selectedCountyName, optionsValue: "name", optionsCaption: "Choose...", enable: selectedState'
+                'data-bind':'options: selectedState().counties ? selectedState().counties.sort(function(a, b) { return a.name.localeCompare(b.name) }) : [], optionsText: "name", value: selectedCountyName, optionsValue: "name", optionsCaption: "Choose...", enable: selectedState',
+                'tool-id': 'county'
             }
         )
     )
     sitename = forms.CharField(
         required=False,
-        widget = forms.TextInput(
+        widget = widgets.TextInputWithTooltip(
             attrs={
                 'class':'site-typeahead',
                 'autocomplete':'off',
-                'data-bind':'value: selectedSiteName, enable: selectedCounty'
+                'data-bind':'value: selectedSiteName, enable: selectedCounty',
+                'tool-id': 'sitename'
             }
         )
     )
     longitude = forms.CharField(
         label="Longitude (or click on map)",
         required=False,
-        widget = forms.TextInput(
+        widget = widgets.TextInputWithTooltip(
             attrs={
-                'data-bind': 'enable: selectedState, value: longitude'
+                'data-bind': 'enable: selectedState, value: longitude',
+                'tool-id': 'longitude'
             }
         )
     )
     latitude = forms.CharField(
         label="Latitude (or click on map)",
         required=False,
-        widget = forms.TextInput(
+        widget = widgets.TextInputWithTooltip(
             attrs={
-                'data-bind': 'enable: selectedState, value: latitude'
+                'data-bind': 'enable: selectedState, value: latitude',
+                'tool-id': 'latitude'
             }
         )
     )

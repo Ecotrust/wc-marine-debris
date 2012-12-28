@@ -27,6 +27,32 @@
     var app = {}, 
         json = {"orgs": {{json|safe}}};
         
+        
+            
+    $('#info_organization').qtip({
+       content: 'Which organization is this event associated with? Only organizations that you are associated with will be shown here. If the options seem incorrect, please contact your project lead or organization contact and request to have your account associated with the correct organization(s).',
+       show: 'mouseover',
+       hide: 'mouseout'
+    });
+    
+    $('#info_project').qtip({
+       content: 'Which project was this event performed for? Only projects associated with the organization you selected in the previous field will be shown.',
+       show: 'mouseover',
+       hide: 'mouseout'
+    });
+    
+    $('#info_date').qtip({
+       content: 'The date on which the event occurred. For cleanups this would be the first day of the cleanup. For derelict gear reports/removals it would be the day that the derelict gear was reported.',
+       show: 'mouseover',
+       hide: 'mouseout'
+    });
+    
+    $('#info_data_sheet').qtip({
+       content: 'Which data sheet was used to collect the data? Datasheets are the list of questions used for reporting your event.',
+       show: 'mouseover',
+       hide: 'mouseout'
+    });
+        
     function EventViewModel() {
         var self = this;
         
@@ -81,5 +107,6 @@
     
     app.viewModel = new EventViewModel();
     ko.applyBindings(app.viewModel);
+
     
 {% endblock %}
