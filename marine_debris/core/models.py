@@ -290,7 +290,7 @@ class DataSheet (models.Model):
     slug = models.TextField(null=True, blank=True)
 
     def __unicode__(self):
-        return self.sheetname
+        return self.created_by.orgname + str(selfyear_started) + self.sheetname
         
     class Meta:
         ordering = ['sheetname']
