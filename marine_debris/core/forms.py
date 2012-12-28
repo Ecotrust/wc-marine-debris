@@ -107,9 +107,9 @@ class CreateEventForm(forms.Form):
                 'class':'date', 
                 'data-bind':'datepicker: selectedDate, enable: selectedProjectName',
                 'tool-id': 'date',
-                'tool-title': 'The date on which the event occurred. For cleanups this would be the first day of the cleanup. For derelict gear reports/removals it would be the day that the derelict gear was reported.' 
                 'tool-rel': 'tooltip',
                 'tool-data-placement': 'right',
+                'tool-title': 'The date on which the event occurred. For cleanups this would be the first day of the cleanup. For derelict gear reports/removals it would be the day that the derelict gear was reported.' 
             }
         )
     )
