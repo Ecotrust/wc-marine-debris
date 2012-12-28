@@ -56,7 +56,7 @@ function viewModel(options) {
   self.fromDate.subscribe(function (date) {
     $( "#to" ).datepicker( "option", "minDate", date );
     self.queryFilter.remove(function (item) {
-      return item.type === 'toDate';
+      return item.type === 'fromDate';
     });
     if (date) {
       self.queryFilter.push({
@@ -69,7 +69,7 @@ function viewModel(options) {
   self.toDate.subscribe(function (date) {
     $( "#from" ).datepicker( "option", "maxDate", date );
     self.queryFilter.remove(function (item) {
-      return item.type === 'fromDate';
+      return item.type === 'toDate';
     });
     if (date) {
       self.queryFilter.push({
