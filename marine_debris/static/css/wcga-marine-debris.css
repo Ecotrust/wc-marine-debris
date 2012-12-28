@@ -521,3 +521,11 @@ img.olTileImage {
 #pageGuideWrapper #pageGuideMessage {
     z-index: 4001;
 }
+
+#report dt {
+    font-size: 20px;
+}
+#report dd {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
