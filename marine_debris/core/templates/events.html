@@ -268,13 +268,13 @@
                 </div>
                 <h4>Report <img src="{{MEDIA_URL}}img/ajax-loader.gif" data-bind="visible: showReportSpinner"/></h4>
                 <div class="row-fluid">
-                  <div class="span6" data-bind="if: report">
+                  <div class="span8" data-bind="if: report">
                     <p>This report is a summary of all of the events from your query results on the left.</p>
-                    <p data-bind="visible: report().report.datasheets.length > 1"><i class="icon-info-sign"></i> <em>The data in this report comes aggregated from different datasheets. Not all values will be aggregated from fields present in all datasheets, and may not be fully representative.</em>
+                    <p data-bind="visible: report().report.datasheets.length > 1"><i class="icon-info-sign"></i> <em>The data in this report is aggregated from different datasheets. Not all values will be aggregated from fields present in all datasheets, and may not be fully representative.</em>
                       
                     </p>
                   </div>
-                  <div class="span6">
+                  <div class="span4">
                     <div data-bind="visible: activeFilterTypes().length" class="well">
                       <p>Active Filters</p>
                       <dl  data-bind="foreach: activeFilterTypes">
@@ -288,7 +288,7 @@
                   </div>
                 </div>
                 <div class="row-fluid" data-bind="if: report" id="high-level-details-row">
-                  <div class="span6" data-bind="if: report().report.categories.length" id='datasheets'>
+                  <div class="span8" data-bind="if: report().report.categories.length" id='datasheets'>
                     <table class="table high-level-details wcga table-striped table-hover table-condensed" data-bindd="dataTable: { dataSource: report().report.categories, options: $root.categoryTableOptions, rowTemplate: 'categoryRowTemplate', columns: [{mDataProp: 'name', sTitle: 'Category'}, {mDataProp:'pounds', sTitle: 'Lbs Reported'}, {mDataProp:'count', sTitle: 'Count reported'}] }">
                       <thead>
                         <tr>
@@ -304,7 +304,7 @@
                           </tr>
                     </table>
                   </div>
-                  <div class="span6" data-bind="if: report" id="report">
+                  <div class="span4" data-bind="if: report" id="report">
                     <div class="">
                       <dl data-bind="foreach: report().event_values" class="">
                       <dt data-bind="text:$data.display_name"></dt>
