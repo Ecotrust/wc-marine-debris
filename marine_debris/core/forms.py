@@ -31,17 +31,19 @@ class BulkImportForm(forms.Form):
         
     organization = forms.ChoiceField(
         choices = org_choices, 
-        widget = forms.Select()
+        widget = widgets.SelectWithTooltip(attrs={'tool-id': 'organization'})
     )
     project_id = forms.ChoiceField(
         choices = proj_choices,
-        widget = forms.Select()
+        widget = widgets.SelectWithTooltip(attrs={'tool-id': 'project'})
     )
     datasheet_id = forms.ChoiceField(
         choices = ds_choices,
-        widget = forms.Select()
+        widget = widgets.SelectWithTooltip(attrs={'tool-id': 'datasheet'})
     )
-    csvfile = forms.FileField()
+    csvfile = forms.FileField(
+        widget = widgets.FileFieldWithTooltip(attrs={'tool-id': 'csv'})
+    )
         
 class CreateEventForm(forms.Form):
     org_choices = []

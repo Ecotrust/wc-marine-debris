@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+    {% load flatblock_tags %}
 {% endblock %}
 {% block leftcontent %}
 <h2> Bulk import from .csv file</i></h2>
@@ -16,7 +17,7 @@
 {% endblock %}
 
 {% block rightcontent %}
-  <p>Help goes here.</p>
+  {% flatblock "bulk-help" %}
   {% if errors %}
   <h4>The following errors were encountered</h4>
   <ul class="errorlist unstyled">
@@ -83,6 +84,31 @@
 {% endblock %}
 
 {% block js %}
+
+    $('#info_organization').qtip({
+       content: 'Which organization are these events associated with?',
+       show: 'mouseover',
+       hide: 'mouseout'
+    });
+    
+    $('#info_project').qtip({
+       content: 'Which project are these events associated with?',
+       show: 'mouseover',
+       hide: 'mouseout'
+    });
+    
+    $('#info_datasheet').qtip({
+       content: 'Which data sheet matches the fields on the CSV that you wish to upload?',
+       show: 'mouseover',
+       hide: 'mouseout'
+    });
+    
+    $('#info_csv').qtip({
+       content: 'Browse to and select the Comma Separated Value file that contains the events data.',
+       show: 'mouseover',
+       hide: 'mouseout'
+    });
+
 var onResizeMap = function () {
   setTimeout( function() { map.updateSize();}, 200);
 };
