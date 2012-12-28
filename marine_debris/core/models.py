@@ -736,7 +736,7 @@ class Event (models.Model):
             else:
                 if bbox:
                     geom = Polygon.from_bbox(bbox)
-                    events = cls.objects.filter(site__geometry__contained=geom)
+                    events = cls.objects.filter(site__geometry__contained=geom, datasheet_id__type_id__type = event_type)
                 else:
                     events = cls.objects.filter(datasheet_id__type_id__type = event_type)
             if site_filters == []:
