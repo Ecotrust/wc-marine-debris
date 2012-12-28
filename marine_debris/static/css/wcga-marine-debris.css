@@ -178,10 +178,10 @@ tr:hover td a .icon-circle-arrow-right {
 }
 
 .site-form input, .bulk-form input {
-	width: 98%;
+	width: 40%;
 }
 .site-form select, .bulk-form select {
-	width: 100%;
+	width: 80%;
 }
 ul.errorlist {
     max-height: 85%;
@@ -202,6 +202,16 @@ ul.errorlist {
 }	
 #report-values-content dl {
     margin-top: 0px;
+}
+#report-values-content .well p {
+	font-weight: bold;
+	margin-bottom: 0px;
+}
+
+#report-values-content .well {
+
+	padding-top: 1px;
+	padding-bottom: 5px;
 }
 .carousel-control {
 	display: none;

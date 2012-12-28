@@ -1,11 +1,15 @@
 {% extends "base.html" %}
+{% block content %}
+{% include "terms_modal.html" %}
+{% endblock %}
 {% block rightcontent %}
 <div style="padding: 26px;">
     <ul>
     {% for d in downloads %}
         {% if d.thefile %}
         <li>
-            <a href="{{d.thefile.url}}">{{d.label}}</a> <span>{{d.description}}</span>     
+            <!-- All data links should have class="tou" to activate modal-->
+            <a class="tou" href="{{d.thefile.url}}">{{d.label}}</a> <span>{{d.description}}</span>     
         </li>
         {% endif %}
     {% endfor %}
@@ -22,7 +26,8 @@
         {% for d in cat.list %}
             <li>
                 {% if d.thefile %}
-                <a href="{{d.thefile.url}}">{{d.label}}</a> <p>{{d.description}}</p>     
+                <!-- All data links should have class="tou" to activate modal-->
+                <a class="tou" href="{{d.thefile.url}}">{{d.label}}</a> <p>{{d.description}}</p>     
                 {% else %}
                 {{d.label}} (<em>no download currently available</em>): <p>{{d.description}}</p>     
                 {% endif %}
@@ -30,5 +35,14 @@
         {% endfor %}
     </ul>
 {% endfor %}
-
-{% endblock %}    
+{% endblock %}
+{% block js %}
+    $(document).ready(function () {
+        $('.wcga-database').on('click', 'a.tou', function (e) {
+            var $target = $(e.target).closest('a');
+            e.preventDefault();
+            $('#tou-modal').find('.btn-primary').attr('href', $target.attr('href'))
+            $('#tou-modal').modal().removeClass('hide');
+        });
+    });
+{% endblock %}

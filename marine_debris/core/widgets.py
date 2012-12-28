@@ -9,12 +9,6 @@ class SelectWithTooltip(forms.Select):
         self.attrs = attrs
 
     def render(self, *args, **kwargs): 
-    
-        if settings.SERVER == 'Dev':
-            static_media_url = settings.MEDIA_URL
-        else:
-            static_media_url = settings.STATIC_URL
-    
         output = super(SelectWithTooltip, self).render(*args,**kwargs) 
         output = output + '<img src="%simg/info.png" id="info_%s" class="tooltip" />' % (settings.STATIC_URL, self.attrs['tool-id'])
         #print output
@@ -26,13 +20,18 @@ class TextInputWithTooltip(forms.TextInput):
         self.attrs = attrs
 
     def render(self, *args, **kwargs): 
-    
-        if settings.SERVER == 'Dev':
-            static_media_url = settings.MEDIA_URL
-        else:
-            static_media_url = settings.STATIC_URL
-    
         output = super(TextInputWithTooltip, self).render(*args,**kwargs) 
+        output = output + '<img src="%simg/info.png" id="info_%s" class="tooltip" />' % (settings.STATIC_URL, self.attrs['tool-id'])
+        #print output
+        return mark_safe(output)
+        
+class FileFieldWithTooltip(forms.ClearableFileInput):
+    def __init__(self, attrs=None):
+        super(FileFieldWithTooltip, self).__init__(attrs)
+        self.attrs = attrs
+
+    def render(self, *args, **kwargs): 
+        output = super(FileFieldWithTooltip, self).render(*args,**kwargs) 
         output = output + '<img src="%simg/info.png" id="info_%s" class="tooltip" />' % (settings.STATIC_URL, self.attrs['tool-id'])
         #print output
         return mark_safe(output)
