@@ -153,11 +153,14 @@ function viewModel(options) {
     self.showSpinner(false);
     return self.events();
   });
-  
+  self.showTOU = function () {
+    $('#tou-modal').modal().removeClass('hide');
+  };
   self.downloadData = function () {
     var filters = self.queryFilter();
     var url = "/events/download.csv?pprint=True&filter=" + JSON.stringify(filters || []);
     $('iframe#download-frame').attr('src', url);
+    $('#tou-modal').modal('hide')
   };
 
   self.showReport = function () {
@@ -448,7 +451,9 @@ $.ajax({
       $('.tip').tooltip({});
       $('#map-tab').on('shown', function (e) {
         app.viewModel.showDetailsSpinner(false);
-      })
+      });
+
+
 
       $("select.organization").chosen().change(function (event, option) {
         if (option.selected) {
@@ -561,6 +566,7 @@ app.initMap = function () {
       url: "/events/get_geojson",
       format: new OpenLayers.Format.GeoJSON(),
       params: {
+
           'filter': JSON.stringify(app.viewModel.queryFilter())
         }
     }),
@@ -578,7 +584,7 @@ app.initMap = function () {
         // Rules go here.
         context: {
           radius: function(feature) {
-            return Math.min(feature.attributes.count, 10) + 5;
+            return Math.min(feature.attributes.count, 12) + 5;
           },
           clusterCount: function (feature) {
             return feature.attributes.count > 1 ? feature.attributes.count: "";
@@ -628,7 +634,11 @@ app.initMap = function () {
 
   app.map.events.on({
     "moveend": function () {
-    
+      app.points.refresh({ 
+      params: {
+        'bbox': JSON.stringify(app.map.getExtent().transform(gProj, mProj).toArray()),
+        'filter': JSON.stringify(app.viewModel.queryFilter())
+      }});
 
       if (app.highlightedEvent) {
         app.viewModel.highlightCluster(app.highlightedEvent);

@@ -8,47 +8,47 @@ var defaultGuide = {
   steps: [
     {
       target: '#left-content',      
-      content: 'The panel on the left side of the screen is where you will be able to filter, or \'query\' the full set of events collected in this database. There are thousands of cleanup events collected here, so this will make it easy for you to only view the events you want to see.',
+      content: 'Use the panel on the left side of the screen to filter, or \'query\' the full set of events collected in this database. There are thousands of cleanup events collected here. This will make it easy for you to only view the events you want to see.',
       direction: 'right',
       arrow: {offsetX: 0, offsetY: 0}
     },{
       target: '#right-content',
-      content: 'The panel on the right side of the screen is where you will view the data for the events in your query. We will cover the different ways the data can be viewed in just a moment.',
+      content: 'Use the panel on the right side of the screen to view the data for the events in your query. This tour will cover the different ways the data can be viewed.',
       direction: 'left',
       arrow: {offsetX: 0, offsetY: 50}
     },{
       target: '#location-tab',      //mention "one or more filters"
-      content: 'This tab allows you to query the cleanup events by location, either by specifying the state or the county that they were conducted in. You can select multiple states or counties to include events for each in your query. For derelict gear removal, the county with coast closest in proximity to the event is used.',
+      content: 'Use the Location tab to apply one or more location filters to query the cleanup events by location, either by specifying the state or the county that they were conducted in.',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     },{
       target: '#event-type-tab',
-      content: 'This tab allows you to select the type of debris cleanup event you\'re looking for. This will likely be either a \'Site Cleanup\' or a \'Derelict Gear Removal\'.',
+      content: 'Use the Type of Debris tab to apply one or more filters to query the events by the type of debris cleanup event you\'re looking for. This will likely be either a \'Site Cleanup\' or a \'Derelict Gear Removal\'.',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     },{
       target: '#project-organization-tab',
-      content: 'This tab allows you to narrow your query down to specific organizations\' or projects\' events. Select as many organizations or projects as you\'re interested in and the rest will be left out of your query.',
+      content: 'Use the Organization/Project tab to apply filters to query the events by those belonging to one or more specific organizations or projects.',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     },{
       target: '#date-tab',
-      content: 'If you are only interested in events that fall within a range of dates, you may specify the starting date and ending date here. This is very useful if you only want to see 1 year\'s worth of data.',
+      content: 'Use the Date tab to apply filters to query the events by those that fall within a range of dates, you may specify the starting date and ending date here. This is very useful if you only want to see 1 year\'s worth of data.',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     },{
       target: '#events-table',      //mention selecting an event
-      content: 'Here is the list of events that match your query. If you haven\'t added any filters to your query, then this will display all of the events (by pages of 5 at a time).',
+      content: 'Use the Events Table to view the list of events in your query results. If you haven\'t added any filters to your query, then this will display all of the events by pages of 5 at a time. You can click on an event to highlight it on the map, and use the \'i\' button to see details about it.',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     },{
       target: '#events-table_paginate',
-      content: 'Use these buttons to navigate the list of events.',
+      content: 'Use these buttons to navigate the list of events pages. Five events can be shown per page.',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     },{
       target: '#map-tab',       //mention selecting an event    //use images for clusters
-      content: 'The Map tab allows you to view the location of each event in your query results. Select a cluster of events [img] to zoom in on them. Select an single event [img] to learn more about it',
+      content: 'Use the Map tab to view the location of each event in your query results. Select a cluster of events <img src="' + static_url + 'img/cluster.png" /> to zoom in on them. Select a single event <img src="' + static_url + 'img/event_point.png" /> to learn more about it. Different colors represent different event types: orange for site cleanups, gray for derelict gear removals. NOTE: IE8 and older will display clusters as larger circles with no numbers.',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     },{
@@ -59,15 +59,9 @@ var defaultGuide = {
       arrow: {offsetX: 0, offsetY: 0}
     },{
       target: '#report-tab',
-      content: 'Click on this tab to aggregate the values for fields across all of the events in your query. Warning: this may take some time to generate if you have a lot of events.',
+      content: 'Click on this tab to aggregate the values for fields across all of the events in your query results. Be sure that you have selected the correct filters for this report to represent what you want.',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
-    },{
-      target: '.wcga-database-right .tab-content',
-      content: 'This is the map where you can view the locations of the events in your query. You can move the map, as well as zoom in on it. You may also select an event on the map to show it in the left list, as well as pull up the details of event by clicking on the \'Event Details\' tab afterwards.',
-      direction: 'left',
-      arrow: {offsetX: 100, offsetY: 100},
-      zIndex: 10000
     },{
       target: '#view-report-button',
       content: 'Click on this button to jump to the report tab described in the last step.',
@@ -100,8 +94,12 @@ var defaultGuideOverrides = {
             $('#project-organization-tab').tab('show');
         } else if ($(this).data('idx') === 5){
             $('#date-tab').tab('show');
-        } else if ($(this).data('idx') === 11){
+        } else if ($(this).data('idx') === 8){
             $('#map-tab').tab('show');
+        } else if ($(this).data('idx') === 9){
+            $('#details-tab').tab('show');
+        } else if ($(this).data('idx') === 10){
+            $('#report-tab').tab('show');
         }
         
       }

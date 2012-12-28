@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base.html" %}{% load flatblock_tags %}
 
 {% block styles %}
     <link href="{{STATIC_URL}}third-party/chosen/chosen.css" rel="stylesheet" />
@@ -19,7 +19,19 @@
 <div id="help-tab" class="rounded">
     <a href="#">tour</a>
 </div>
-
+<div class="modal fade hide" id="tou-modal">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Terms of Use</h3>
+  </div>
+  <div class="modal-body">
+    {% flatblock "terms-page" %}
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn">Cancel</a>
+    <a href="#" class="btn btn-primary" data-bind="click: downloadData">I agree</a>
+  </div>
+</div>
 {% endblock %}    
 
 {% block leftcontent %}
@@ -150,7 +162,7 @@
     <button id="view-report-button" class="btn" data-bind="click: showReport">
       <i class="icon-bar-chart"></i> View Report
     </button>
-    <button id="download-data-button" class="btn" data-bind="click: downloadData">
+    <button id="download-data-button" class="btn" data-bind="click: showTOU" role="button" class="btn" >
         <i class="icon-download-alt"></i> Download Data
     </button>
     <iframe src="" style="display:none;" id="download-frame"></iframe>
@@ -166,6 +178,8 @@
   </div>
 </div>
 
+    
+    
 {% endblock %}    
 {% block rightcontent %}
     {%if data %}
@@ -268,19 +282,19 @@
                 <div class="row-fluid">
                   <div class="span6" data-bind="if: report">
                     <p>This report is a summary of all of the events from your query results on the left.</p>
-                    <p data-bind="visible: report().showWarning">
-                      <i class="icon-info-sign"></i> <em>Not all matching report values have been aggregated into this view.</em>
+                    <p data-bind="visible: report().report.datasheets.length > 1"><i class="icon-info-sign"></i> <em>The data in this report comes aggregated from different datasheets. Not all values will be aggregated from fields present in all datasheets, and may not be fully representative.</em>
+                      
                     </p>
                   </div>
                   <div class="span6">
-                    <div data-bind="visible: activeFilterTypes().length">
+                    <div data-bind="visible: activeFilterTypes().length" class="well">
                       <dl class="dl-horizontal" data-bind="foreach: activeFilterTypes">
                         <dt data-bind="text: $data"></dt>
                         <dd data-bind="text: $root.queryDisplay()[$data]"></dd>
                       </dl>
                     </div>
                     <div data-bind="visible: activeFilterTypes().length === 0">
-                      <p>You have no filters.  Showing all data.</p>
+                      <p>You have no filters.  Showing all data.  Loading a report may take some time.</p>
                     </div>
                   </div>
                 </div>
@@ -302,10 +316,10 @@
                     </table>
                   </div>
                   <div class="span5" data-bind="if: report" id="report">
-                    <div class="well">
-                      <dl data-bind="foreach: report().event_values" class="dl-horizontal">
+                    <div class="">
+                      <dl data-bind="foreach: report().event_values" class="">
                       <dt data-bind="text:$data.display_name"></dt>
-                        <dd data-bind="text:$data.value"></dd>
+                        <dd data-bind="text: Math.floor($data.value)"></dd>
                       </dl>
                     </div>
                   </div>
@@ -335,7 +349,7 @@
 </script>
 <script type="text/html" id="reportRowTemplate">
   <td class="tip" title="Some data sheet values were not used for this total."><span data-bind="text: name.replace(/_/g,' ')"></span>
-  <i class="icon-info-sign" data-bind="visible: num_values !== $parent.report.events" rel="tooltip"></i></td>
+  <i class="icon-info-sign" data-bind="visible: num_values < $parent.report().report.events" rel="tooltip"></i></td>
   <td><span data-bind="text: value"></span> <span data-bind="text: unit"></span></td>
 </script>
 <script type="text/html" id="rowTemplate">
@@ -347,6 +361,9 @@
   <td style="text-align: center">
     <button class="btn" data-bind="click: $root.showDetail" rel="tooltip" title="show event details"><i class="icon-info-sign"></i></button>
   </td>
+</script>
+<script type="text/javascript" >
+    var static_url = {{STATIC_URL}}
 </script>
 
 <script src="{{STATIC_URL}}js/events.js"></script>

@@ -316,9 +316,12 @@ def get_event_geojson(request):
     srid = settings.GEOJSON_SRID
     crs = srid_to_proj(srid)
     filter_json = request.GET.get('filter', False)
+    bbox = request.GET.get('bbox', False)
     feature_jsons = []
     
-    if filter_json:
+    if filter_json and bbox:
+        qs = Event.filter(simplejson.loads(filter_json), simplejson.loads(bbox))
+    elif filter_json:
         qs = Event.filter(simplejson.loads(filter_json))
     else:
         qs = Event.objects.all()
@@ -478,10 +481,9 @@ def create_event(request):
             event['organization'] = form.data['organization']
             event['project'] = form.data['project']
             event['date'] = form.data['date']
-            datasheetName = DataSheet.objects.get(id=form.data['data_sheet']).sheetname
-            event['data_sheet'] = datasheetName
+            datasheet = DataSheet.objects.get(id=form.data['data_sheet'])
+            event['data_sheet'] = datasheet.sheetname
             
-            datasheet = DataSheet.objects.get(sheetname=event['data_sheet'])
             if datasheet.type_id:
                 derelict = not datasheet.type_id.display_sites
             else:
