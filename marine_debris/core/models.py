@@ -763,9 +763,11 @@ class Event (models.Model):
                 filtered_events = filtered_events.filter(proj_id__organization__slug=filter['value'])
             for filter in date_filters:
                 if filter['type'] == 'toDate':
-                    filtered_events = filtered_events.filter(cleanupdate__gte=datetime.datetime.strptime(filter['value'], '%m/%d/%Y'))
-                if filter['type'] == 'fromDate':
                     filtered_events = filtered_events.filter(cleanupdate__lte=datetime.datetime.strptime(filter['value'], '%m/%d/%Y'))
+                    print "To Date %s " % datetime.datetime.strptime(filter['value'], '%m/%d/%Y')
+                if filter['type'] == 'fromDate':
+                    filtered_events = filtered_events.filter(cleanupdate__gte=datetime.datetime.strptime(filter['value'], '%m/%d/%Y'))
+                    print "From Date %s " % datetime.datetime.strptime(filter['value'], '%m/%d/%Y')
             for filter in transaction_filters:
                 filtered_events = filtered_events.filter(transaction=filter['value'])
         # if bbox_filter:
