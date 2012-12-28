@@ -85,36 +85,18 @@
 
 {% block js %}
 
-    $('#info_organization').qtip({
-       content: 'Which organization are these events associated with?',
-       show: 'mouseover',
-       hide: 'mouseout'
-    });
-    
-    $('#info_project').qtip({
-       content: 'Which project are these events associated with?',
-       show: 'mouseover',
-       hide: 'mouseout'
-    });
-    
-    $('#info_datasheet').qtip({
-       content: 'Which data sheet matches the fields on the CSV that you wish to upload?',
-       show: 'mouseover',
-       hide: 'mouseout'
-    });
-    
-    $('#info_csv').qtip({
-       content: 'Browse to and select the Comma Separated Value file that contains the events data.',
-       show: 'mouseover',
-       hide: 'mouseout'
-    });
-
+     
 var onResizeMap = function () {
   setTimeout( function() { map.updateSize();}, 200);
 };
 
 $(document).ready(function () {
   $(window).on('resize', onResizeMap).resize();
+  
+  $(document).on('click mouseover', '[rel="tooltip"]', function (e) {
+    $(e.target).tooltip('show');
+  });
+  
 });
 
 {% endblock %}

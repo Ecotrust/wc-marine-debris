@@ -31,18 +31,38 @@ class BulkImportForm(forms.Form):
         
     organization = forms.ChoiceField(
         choices = org_choices, 
-        widget = widgets.SelectWithTooltip(attrs={'tool-id': 'organization'})
+        widget = widgets.SelectWithTooltip(attrs={
+            'tool-id': 'organization',
+            'title': 'Which organization are these events associated with?',
+            'rel': 'tooltip',
+            'data-placement': 'right'
+        })
     )
     project_id = forms.ChoiceField(
         choices = proj_choices,
-        widget = widgets.SelectWithTooltip(attrs={'tool-id': 'project'})
+        widget = widgets.SelectWithTooltip(attrs={
+            'tool-id': 'project',
+            'title': 'Which project are these events associated with?',
+            'rel': 'tooltip',
+            'data-placement': 'right'
+        })
     )
     datasheet_id = forms.ChoiceField(
         choices = ds_choices,
-        widget = widgets.SelectWithTooltip(attrs={'tool-id': 'datasheet'})
+        widget = widgets.SelectWithTooltip(attrs={
+            'tool-id': 'datasheet',
+            'title': 'Which data sheet matches the fields on the CSV that you wish to upload?',
+            'rel': 'tooltip',
+            'data-placement': 'right'
+        })
     )
     csvfile = forms.FileField(
-        widget = widgets.FileFieldWithTooltip(attrs={'tool-id': 'csv'})
+        widget = widgets.FileFieldWithTooltip(attrs={
+            'tool-id': 'csv',
+            'title': 'Browse to and select the Comma Separated Value file that contains the events data.',
+            'rel': 'tooltip',
+            'data-placement': 'right'
+        })
     )
         
 class CreateEventForm(forms.Form):
@@ -61,7 +81,10 @@ class CreateEventForm(forms.Form):
         widget = widgets.SelectWithTooltip(
             attrs={
                 'data-bind':'options: data.orgs ? data.orgs : [], optionsText: "name", value: selectedOrganizationName, optionsValue: "name", optionsCaption: "Choose..."',
-                'tool-id': 'organization'
+                'tool-id': 'organization',
+                'rel': 'tooltip',
+                'data-placement': 'right',
+                'title': 'Which organization is this event associated with?\nOnly organizations that you are associated with will be shown here.\n If the options seem incorrect, please contact your project lead or organization contact and request to have your account associated with the correct organization(s).'
             }
         )
     )
@@ -70,7 +93,10 @@ class CreateEventForm(forms.Form):
         widget = widgets.SelectWithTooltip(
             attrs={
                 'data-bind':'options: selectedOrganization() ? selectedOrganization().projects : [], optionsText: "name", optionsValue: "name", value: selectedProjectName, optionsCaption: "Select...", enable: selectedOrganizationName',
-                'tool-id' : 'project'
+                'tool-id' : 'project',
+                'rel': 'tooltip',
+                'data-placement': 'right',
+                'title': 'Which project was this event performed for? Only projects associated with the organization you selected in the previous field will be shown.',
             }
         )
     )
@@ -79,7 +105,10 @@ class CreateEventForm(forms.Form):
             attrs={
                 'class':'date', 
                 'data-bind':'datepicker: selectedDate, enable: selectedProjectName',
-                'tool-id': 'date'
+                'tool-id': 'date',
+                'rel': 'tooltip',
+                'data-placement': 'right',
+                'title': 'The date on which the event occurred. For cleanups this would be the first day of the cleanup. For derelict gear reports/removals it would be the day that the derelict gear was reported.'
             }
         )
     )
@@ -88,7 +117,10 @@ class CreateEventForm(forms.Form):
         widget = widgets.SelectWithTooltip(
             attrs={
                 'data-bind':'options: availableDatasheets() ? availableDatasheets() : [], optionsText: "name", value: selectedDatasheet, optionsCaption: "Select...", optionsValue: "id", enable: availableDatasheets',
-                'tool-id': 'data_sheet'
+                'tool-id': 'data_sheet',
+                'title': 'Which data sheet was used to collect the data? Datasheets are the list of questions used for reporting your event.',
+                'rel': 'tooltip',
+                'data-placement': 'right'
             }
         )
     )
