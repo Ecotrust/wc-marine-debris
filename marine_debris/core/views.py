@@ -44,7 +44,10 @@ def about(request):
     
 def resources(request):
     return render_to_response('resources.html', RequestContext(request))
-    
+  
+def aggregation_info(request):
+    return render_to_response('aggregation_info.html', RequestContext(request))
+
 def guidelines(request):
     return render_to_response('guidelines.html', RequestContext(request))
 
