@@ -8,6 +8,7 @@
     {% for d in downloads %}
         {% if d.thefile %}
         <li>
+            <!-- All data links should have class="tou" to activate modal-->
             <a class="tou" href="{{d.thefile.url}}">{{d.label}}</a> <span>{{d.description}}</span>     
         </li>
         {% endif %}
@@ -25,6 +26,7 @@
         {% for d in cat.list %}
             <li>
                 {% if d.thefile %}
+                <!-- All data links should have class="tou" to activate modal-->
                 <a class="tou" href="{{d.thefile.url}}">{{d.label}}</a> <p>{{d.description}}</p>     
                 {% else %}
                 {{d.label}} (<em>no download currently available</em>): <p>{{d.description}}</p>     
