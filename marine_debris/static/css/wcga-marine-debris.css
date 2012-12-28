@@ -203,6 +203,16 @@ ul.errorlist {
 #report-values-content dl {
     margin-top: 0px;
 }
+#report-values-content .well p {
+	font-weight: bold;
+	margin-bottom: 0px;
+}
+
+#report-values-content .well {
+
+	padding-top: 1px;
+	padding-bottom: 5px;
+}
 .carousel-control {
 	display: none;
 }

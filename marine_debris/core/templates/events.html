@@ -288,7 +288,8 @@
                   </div>
                   <div class="span6">
                     <div data-bind="visible: activeFilterTypes().length" class="well">
-                      <dl class="dl-horizontal" data-bind="foreach: activeFilterTypes">
+                      <p>Active Filters</p>
+                      <dl  data-bind="foreach: activeFilterTypes">
                         <dt data-bind="text: $data"></dt>
                         <dd data-bind="text: $root.queryDisplay()[$data]"></dd>
                       </dl>
@@ -299,7 +300,7 @@
                   </div>
                 </div>
                 <div class="row-fluid" data-bind="if: report" id="high-level-details-row">
-                  <div class="span7" data-bind="if: report().report.categories.length" id='datasheets'>
+                  <div class="span6" data-bind="if: report().report.categories.length" id='datasheets'>
                     <table class="table high-level-details wcga table-striped table-hover table-condensed" data-bindd="dataTable: { dataSource: report().report.categories, options: $root.categoryTableOptions, rowTemplate: 'categoryRowTemplate', columns: [{mDataProp: 'name', sTitle: 'Category'}, {mDataProp:'pounds', sTitle: 'Lbs Reported'}, {mDataProp:'count', sTitle: 'Count reported'}] }">
                       <thead>
                         <tr>
@@ -315,7 +316,7 @@
                           </tr>
                     </table>
                   </div>
-                  <div class="span5" data-bind="if: report" id="report">
+                  <div class="span6" data-bind="if: report" id="report">
                     <div class="">
                       <dl data-bind="foreach: report().event_values" class="">
                       <dt data-bind="text:$data.display_name"></dt>
@@ -348,8 +349,8 @@
   <td data-bind="text: count"></td>
 </script>
 <script type="text/html" id="reportRowTemplate">
-  <td class="tip" title="Some data sheet values were not used for this total."><span data-bind="text: name.replace(/_/g,' ')"></span>
-  <i class="icon-info-sign" data-bind="visible: num_values < $parent.report().report.events" rel="tooltip"></i></td>
+  <td class="tip"><span data-bind="text: name.replace(/_/g,' ')"></span>
+  <i class="icon-info-sign" data-bind="visible: num_values < $parent.report().report.events, attr: { title: tooltipText }" rel="tooltip"></i></td>>
   <td><span data-bind="text: value"></span> <span data-bind="text: unit"></span></td>
 </script>
 <script type="text/html" id="rowTemplate">
