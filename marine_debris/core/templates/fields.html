@@ -5,49 +5,60 @@
     <div class="span12">
         <div class="btn-group pull-right">
             <a class="btn" href="{% url sheet-list %}"><i class="icon-circle-arrow-left"></i> Back</a>
-            <!--<a class="btn" href="{% url events-filter %}"><i class="icon-bar-chart"></i> Data</a>-->
         </div>
         <h2>Database Fields</h2>
-        
         <div>
-            <table class="table table-condensed table-hover organization-table">
-                <tr>
-                    <th>Label</th>
-                    <th>Default Unit</th>
-                    <th>Description</th>
-                    <th>Internal Name</th>
-                    <th>Min</th>
-                    <th>Max</th>
-                    <th>Category</th>
-                </tr>
-            {% for field in fields %}
-                <tr>
-                    <td>
-                        <a id="{{field.id}}"></a>{{ field.label }}
-                    </td>
-                    <td>
-                        {{ field.unit_id.long_name }}
-                    </td>
-                    <td>
-                        {{ field.field_id.description }}
-                    </td>
-                    <td>
-                        {{ field.internal_name }}
-                    <td>
-                    <td>
-                        {{ field.min }}
-                    <td>
-                    <td>
-                        {{ field.max }}
-                    <td>
-                    <td>
-                        {{ field.category.name }}
-                    <td>
-                </tr>
-            {% endfor %}    
+            <table class="table table-condensed table-hover organization-table" id="fields-table" >
+                <thead>
+                    <tr>
+                        <th>Label</th>
+                        <th>Internal Name</th>
+                        <th>Default Unit</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for field in fields %}
+                        <tr>
+                            <td>
+                                <a id="{{field.id}}"></a>{{ field.label }}
+                            </td>
+                            <td>
+                                {{ field.internal_name }}
+                            </td>
+                            <td>
+                                {{ field.unit_id.long_name }}
+                            </td>
+                            <td>
+                                {{ field.display_category.name }}
+                            </td>
+                            <td>
+                                {{ field.description }}
+                            </td>
+                        </tr>
+                    {% endfor %}    
+                </tbody>
             </table>
         </div>
     </div>
 </div>
 
 {% endblock %}    
+
+{% block js %}
+
+app = {};
+
+$(document).ready(
+    function(){
+        $('#fields-table').dataTable(
+            {
+                "bPaginate": false,
+                "sDom": "<\"filter\"f><\"wrapper\"lipt>"
+            }
+        );
+    }
+);
+
+{% endblock %}
