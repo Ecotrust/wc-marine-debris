@@ -48,6 +48,11 @@ def resources(request):
 def aggregation_info(request):
     return render_to_response('aggregation_info.html', RequestContext(request))
 
+def fields(request):
+    fields = Field.objects.all()
+    
+    return render_to_response('fields.html', RequestContext(request, {'fields': fields}))
+    
 def guidelines(request):
     return render_to_response('guidelines.html', RequestContext(request))
 

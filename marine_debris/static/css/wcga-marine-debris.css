@@ -396,22 +396,22 @@ img.olTileImage {
 	/*-webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.25);
        -moz-box-shadow: 0 1px 1px rgba(0,0,0,0.25);
 			box-shadow: 0 1px 1px rgba(0,0,0,0.25);*/
-	}
+}
 
-	.wcga-database .table td{
-		vertical-align: middle;
-	}
-	.wcga-database h2 { margin-top: 0; }
+.wcga-database .table td{
+    vertical-align: middle;
+}
+.wcga-database h2 { margin-top: 0; }
 
-	/*.wcga-database select { width: 160px; }*/
+/*.wcga-database select { width: 160px; }*/
 
-	.wcga-database-btn-group { margin-bottom: 20px; }
+.wcga-database-btn-group { margin-bottom: 20px; }
 
-	.wcga-database-right-chart {
-		margin: 10px auto;
-		width: 454px; height: 310px;
-		background: url('../images/chart.png') 0 0 no-repeat;
-		}
+.wcga-database-right-chart {
+    margin: 10px auto;
+    width: 454px; height: 310px;
+    background: url('../images/chart.png') 0 0 no-repeat;
+}
 
 /* import events */
 .import-row { margin-bottom: 10px; }
