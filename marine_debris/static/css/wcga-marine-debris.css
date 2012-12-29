@@ -206,6 +206,7 @@ tr:hover td a .icon-circle-arrow-right {
 ul.errorlist {
     max-height: 85%;
     overflow: auto;
+    color: red;
 }
 #site-form {
 	margin-top: 10px;

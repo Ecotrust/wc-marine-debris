@@ -356,6 +356,12 @@ class DataSheetForm(forms.Form):
             
         self.event = event
 
+    def hideRequiredFields(self, datasheet):
+        for key in self.fields:
+            field = self.fields[key]
+            if field.field.internal_name in settings.REQUIRED_FIELDS[datasheet.site_type].values():
+                field.widget = field.hidden_widget()
+        
     def save(self):
         now = datetime.datetime.today()
         for field_name in self.fields:

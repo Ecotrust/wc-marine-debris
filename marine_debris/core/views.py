@@ -522,7 +522,7 @@ def create_event(request):
     return res
 
 @login_required            
-def event_location(request):
+def event_location(request, form=None):
     createEventForm = CreateEventForm
     eventForm = createEventForm(request.POST)
     event = {}
@@ -545,10 +545,14 @@ def event_location(request):
         event['state'] = eventForm.data['state']
         event['latitude'] = eventForm.data['latitude']
         event['longitude'] = eventForm.data['longitude']
-        form = DataSheetForm(datasheet, None, request.POST)
+        if form:
+            formError = "Please correct the errors in your form below."
+            form.hideRequiredFields(datasheet)
+        else:
+            formError = None
+            form = DataSheetForm(datasheet, None, request.POST)
         
-
-        return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'eventForm': eventForm.as_p(), 'event':event, 'active':'events'}))
+        return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'eventForm': eventForm.as_p(), 'event':event, 'active':'events', 'error':formError}))
     else :
     
         error = 'There is an error in your location data. Please be sure to fill out all required fields.'
@@ -613,6 +617,7 @@ def event_save(request):
                 Event.delete(event)
                 if created:
                     Site.delete(site)
+                return event_location(request, datasheetForm)
         else:
             UserTransaction.delete(user_transaction)
             event = {}
