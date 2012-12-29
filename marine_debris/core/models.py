@@ -551,7 +551,8 @@ class UserTransaction (models.Model):
         if events_count > 0:
             for event in Event.objects.filter(transaction=self):
                 if not event.site.transaction == self and not event.site.transaction.status == "accepted":
-                    site_transaction_dependencies.append(event.site.transaction.id)
+                    if not event.site.transaction.id in site_transaction_dependencies:
+                        site_transaction_dependencies.append(event.site.transaction.id)
         
         if self.organization:
             orgname = self.organization.orgname
