@@ -98,7 +98,7 @@ def update_transaction(request):
                 else:
                     send_email = False
                 if send_email:
-                    msg_header = "Dear %s,\n\nThis email is to inform you that the %s you created on %s has been %s.\n" %  (user.username.capitalize(), transaction_type, transaction.created_date, transaction.status)
+                    msg_header = "Dear %s,\n\nThis email is to inform you that the %s you created on %s have been %s.\n" %  (user.username.capitalize(), transaction_type, transaction.created_date, transaction.status)
 
                     if transaction.status == "rejected":
                         msg_rejected = "\nReason:\n%s\n\nIf you would still like your data included in the database, please review your data, make any recommended changes mentioned in the reason for rejection, and resubmit it.\n" % (transaction.reason)
@@ -111,7 +111,7 @@ def update_transaction(request):
                     for site in sites:
                         msg_details = msg_details + "\nSite: %s\nCounty: %s\nState: %s\n" % (site.sitename, site.county, site.state.initials)
                     for event in events:
-                        msg_details = msg_details + "\nEvent Project: %s\nSite: %s\nDate: %s\n" % (event.project, event.site.sitename, event.date.isoformat())
+                        msg_details = msg_details + "\nEvent Project: %s\nSite: %s\nDate: %s\n" % (event.proj_id.projname, event.site.sitename, event.date.isoformat())
                     
                     message = msg_header + msg_rejected + msg_footer + msg_details
 
