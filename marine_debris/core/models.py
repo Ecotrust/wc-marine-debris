@@ -545,6 +545,13 @@ class UserTransaction (models.Model):
     @property
     def toDict(self):    
         events_count = Event.objects.filter(transaction=self).count()
+        sites_count = Site.objects.filter(transaction=self).count()
+        
+        site_transaction_dependencies = []
+        if events_count > 0:
+            for event in Event.objects.filter(transaction=self):
+                if not event.site.transaction == self and not event.site.transaction.status == "accepted":
+                    site_transaction_dependencies.append(event.site.transaction.id)
         
         if self.organization:
             orgname = self.organization.orgname
@@ -556,6 +563,7 @@ class UserTransaction (models.Model):
             projname = None
         
         res = {
+            'id': self.id,
             'username': self.submitted_by.username,
             'organization': orgname,
             'project': projname,
@@ -563,6 +571,8 @@ class UserTransaction (models.Model):
             'status': self.status,
             'id': self.id,
             'events_count': events_count,
+            'sites_count': sites_count,
+            'site_dependencies': site_transaction_dependencies,
             'reason': self.reason
         }
     

@@ -584,7 +584,7 @@ def event_save(request):
         state = State.objects.get(initials=createEventForm.data['state'])
         point = Point(float(createEventForm.data['longitude']), float(createEventForm.data['latitude']))
         
-        user_transaction = UserTransaction(submitted_by = request.user, status='New', organization=organization, project=project)
+        user_transaction = UserTransaction(submitted_by = request.user, status='new', organization=organization, project=project)
         user_transaction.save()
         if user_transaction.id:
             if datasheet.type_id.display_sites:        
@@ -938,7 +938,7 @@ def bulk_import(request):
 
             project = Project.objects.get(id=form.data['project_id'])
             organization = Organization.objects.get(orgname=form.data['organization'])
-            user_transaction = UserTransaction(submitted_by = request.user, status = 'New', organization=organization, project=project)
+            user_transaction = UserTransaction(submitted_by = request.user, status = 'new', organization=organization, project=project)
             user_transaction.save()
             if user_transaction.id:
                 for site_key in unique_site_keys:

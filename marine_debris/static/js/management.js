@@ -87,8 +87,21 @@ function viewModel (fixture) {
 	};
 
 	self.acceptTransaction = function () {
-		self.updateTransaction(self.selectedTransaction(), 'accepted');
-
+        var dependencies_met = true;
+        if (self.selectedTransaction().site_dependencies().length > 0){
+            for (i = 0; i < self.selectedTransaction().site_dependencies().length; i++){
+                if ($.inArray(self.selectedTransaction().site_dependencies()[i], self.accepted_transactions()) < 0) {
+                    dependencies_met = false;
+                }
+            }
+        }
+        if (self.selectedTransaction().site_dependencies().length === 0 || dependencies_met) {
+            self.accepted_transactions().push(self.selectedTransaction().id()) 
+            self.updateTransaction(self.selectedTransaction(), 'accepted');
+        } else {
+            self.dependency_text(self.selectedTransaction().site_dependencies().toString())
+            $('#dependence-modal').modal('show');
+        }
 	};
 
 	self.selectTransaction = function (transaction, e) {
@@ -111,6 +124,9 @@ function viewModel (fixture) {
 
 	// observable to hold reason for rejecting
 	self.reason = ko.observable();
+    
+    self.dependency_text = ko.observable();
+    self.accepted_transactions = ko.observable([]);
 
 	self.selectedEvent.subscribe(function (event) {
 		if (event) {
@@ -143,9 +159,10 @@ function viewModel (fixture) {
     };
     
 	self.dataTableColumns = [
-		{mDataProp: 'username', sTitle: 'Username'},
-		{mDataProp: 'organization', sTitle: 'Organization'},
-		{mDataProp:'timestamp', sTitle: 'Timestamp'},
+		{mDataProp: 'id', sTitle: 'Id'},
+		{mDataProp: 'username', sTitle: 'User'},
+		{mDataProp:'timestamp', sTitle: 'Time'},
+        {mDataProp:'sites_count', sTitle: 'Sites Count'},
 		{mDataProp:'events_count', sTitle: 'Events Count'},
 		{mDataProp:'status', sTitle: 'Status', bSortable: false}
 	];

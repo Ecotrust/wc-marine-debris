@@ -135,6 +135,20 @@
   </div>
 </div>
 
+<div id="dependence-modal" class="modal  fade">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismis="modal" aria-hidden="true">&times;</button>
+    <h3>Site Dependency</h3>
+  </div>
+  <div class="modal-body"> 
+    <p>The event(s) in this transaction depend(s) on sites that are not yet accepted!</p>
+    <p>Please accept transactions with the following IDs before accepting this one:<span data-bind="text: dependency_text"></p>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Close</a>
+  </div>
+</div>
+
 {% endblock %}
 {% block styles %}
     <link href="{{STATIC_URL}}third-party/jquery/css/jquery.dataTables.css" rel="stylesheet" />
@@ -145,9 +159,10 @@
 {% block scripts %}
 
 <script type="text/html" id="rowTemplate">
+	<td data-bind="text: id, click: $root.selectTransaction"></td>
 	<td data-bind="text: username, click: $root.selectTransaction"></td>
-	<td data-bind="text: organization, click: $root.selectTransaction"></td>
 	<td data-bind="text: timestamp, click: $root.selectTransaction"></td>
+	<td data-bind="text: sites_count, click: $root.selectTransaction"></td>
 	<td data-bind="text: events_count, click: $root.selectTransaction"></td>
 	<td><span class="label" data-bind="text: status(), click: $root.selectTransaction, css: { 'label-important': status === 'rejected', 'label-success': status() === 'accepted', 'label-warning': status() === 'new' }"></span></td>
 </script>
