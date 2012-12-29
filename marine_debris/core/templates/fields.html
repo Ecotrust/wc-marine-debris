@@ -16,13 +16,14 @@
                         <th>Default Unit</th>
                         <th>Category</th>
                         <th>Description</th>
+                        <th>DataSheets</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for field in fields %}
-                        <tr>
+                        <tr id="{{field.id}}">
                             <td>
-                                <a id="{{field.id}}"></a>{{ field.label }}
+                                {{ field.label }}
                             </td>
                             <td>
                                 {{ field.internal_name }}
@@ -35,6 +36,14 @@
                             </td>
                             <td>
                                 {{ field.description }}
+                            </td>
+                            <td>
+                                <table class="embedded-table">
+                                    <tr><th>Datasheet</th><th>Label</th></tr>
+                                    {% for ds in field.datasheetfield_set.all %}
+                                    <tr><td><a href="/datasheet/{{ds.sheet_id.slug}}">{{ds.sheet_id}}</a></td><td>{{ds.field_name}}</td></tr>
+                                    {% endfor %}
+                                </table>
                             </td>
                         </tr>
                     {% endfor %}    
