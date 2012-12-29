@@ -544,39 +544,45 @@ class UserTransaction (models.Model):
 
     @property
     def toDict(self):    
-        events_count = Event.objects.filter(transaction=self).count()
-        sites_count = Site.objects.filter(transaction=self).count()
-        
-        site_transaction_dependencies = []
-        if events_count > 0:
-            for event in Event.objects.filter(transaction=self):
-                if not event.site.transaction == self and not event.site.transaction.status == "accepted":
-                    if not event.site.transaction.id in site_transaction_dependencies:
-                        site_transaction_dependencies.append(event.site.transaction.id)
-        
-        if self.organization:
-            orgname = self.organization.orgname
-        else:
-            orgname = None
-        if self.project:
-            projname = self.project.projname
-        else:
-            projname = None
-        
-        res = {
-            'id': self.id,
-            'username': self.submitted_by.username,
-            'organization': orgname,
-            'project': projname,
-            'timestamp': self.created_date.strftime('%m/%d/%Y %H:%M'),
-            'status': self.status,
-            'id': self.id,
-            'events_count': events_count,
-            'sites_count': sites_count,
-            'site_dependencies': site_transaction_dependencies,
-            'reason': self.reason
-        }
     
+        key = 'transaction_%s' % self.id        #CACHE_KEY  --  transaction details by transaction
+        res = cache.get(key)
+
+        if not res:
+    
+            events_count = Event.objects.filter(transaction=self).count()
+            sites_count = Site.objects.filter(transaction=self).count()
+            
+            site_transaction_dependencies = []
+            if events_count > 0:
+                for event in Event.objects.filter(transaction=self):
+                    if not event.site.transaction == self and not event.site.transaction.status == "accepted":
+                        if not event.site.transaction.id in site_transaction_dependencies:
+                            site_transaction_dependencies.append(event.site.transaction.id)
+            
+            if self.organization:
+                orgname = self.organization.orgname
+            else:
+                orgname = None
+            if self.project:
+                projname = self.project.projname
+            else:
+                projname = None
+            
+            res = {
+                'id': self.id,
+                'username': self.submitted_by.username,
+                'organization': orgname,
+                'project': projname,
+                'timestamp': self.created_date.strftime('%m/%d/%Y %H:%M'),
+                'status': self.status,
+                'id': self.id,
+                'events_count': events_count,
+                'sites_count': sites_count,
+                'site_dependencies': site_transaction_dependencies,
+                'reason': self.reason
+            }
+            cache.set(key, res, settings.CACHE_TIMEOUT)
         return res
     
     def __unicode__(self):
@@ -909,12 +915,14 @@ class Event (models.Model):
     def save(self, *args, **kwargs):
         
         if self.id:
+            site_trans_id = self.site.transaction.id
             # invalidate/clear all cached data associated with this event
             keys = [
                 'event_%s_eventdict' % self.id,
                 'event_%s_valuedict_convert' % self.id,
                 'event_%s_valuedict_raw' % self.id,
                 'event_%s_geocache' % self.id,
+                'transaction_%s' % site_trans_id
             ]
             for key in keys:
                 cache.delete(key)
