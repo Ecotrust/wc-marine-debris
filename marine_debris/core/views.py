@@ -76,6 +76,7 @@ def update_transaction(request):
         transaction_id = request.POST.get('transaction_id', None)
         status = request.POST.get('status', None)
         reason = request.POST.get('reason', None)
+        send_email = True
         if transaction_id is not None:
             transaction = UserTransaction.objects.get(id=transaction_id)
             if status is not None:
@@ -84,6 +85,52 @@ def update_transaction(request):
                     transaction.reason = reason
                 transaction.save()
                 res = {'status': 'success', 'transaction_id': transaction_id}
+                
+                user = transaction.submitted_by
+                events = Event.objects.filter(transaction=transaction)
+                sites = Site.objects.filter(transaction=transaction)
+                if events.count() > 0:
+                    transaction_type = "events"
+                    if sites.count() > 0:
+                        transaction_type = "sites and " + transaction_type
+                elif sites.count() > 0:
+                    transaction_type = "sites"
+                else:
+                    send_email = False
+                if send_email:
+                    msg_header = "Dear %s,\n\n\
+                    This email is to inform you that the %s you created on %s has been %s." %  (user.username, transaction_type, transaction.created_date, transaction.status)
+
+                    if transaction.status == "rejected":
+                        msg_rejected = "\n\
+                        Reason:\n\
+                        %s\n\n\
+                        If you would still like your data included in the database, please review your data, make any recommended changes mentioned in the reason for rejection, and resubmit it." % (transaction.reason)
+                    else:
+                        msg_rejected = ''
+                        
+                    msg_footer = "\n\
+                    Thanks again for submitting data to the West Coast Marine Debris Database. Details about your submission are below.\n\
+                    To submit more data, please visit our tool again at %s.\n\n\
+                    If you have questions, concerns, or would like to contact us for any other reason, please refer to our website ( %s ) for direction and information.\n\n\
+                    Cheers,\n\
+                    - The West Coast Marine Debris Action Coordination Team Staff" % (settings.TOOL_URL, settings.WCGA_ACT_URL)
+                    
+                    msg_details = "\n\
+                    Details about your submitted data:\n"
+                    for site in sites:
+                        msg_details = msg_details + "Site: %s\n\
+                        County: %s\n\
+                        State: %s\n" % (site.sitename, site.county, site.state.initials)
+                    for event in events:
+                        msg_details = msg_details + "Event Project: %s\n\
+                        Site: %s\n\
+                        Date: %s\n" % (event.project, event.site.sitename, event.date.isoformat())
+                    
+                    message = msg_header + msg_rejected + msg_footer + msg_details
+
+                    user.email_user("Marine Debris DB Status Update", message)
+                
 
     else:
         res = {
