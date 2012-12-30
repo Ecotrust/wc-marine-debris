@@ -28,15 +28,20 @@ import logging
 import csv
 
 def index(request): 
-
-    event_count = [
-        {
-            "type": x.type,
-            "count": Event.objects.filter(datasheet_id__type_id__type = x.type).count(),
-        } for x in EventType.objects.all()
-    ]
-    
-
+    if not settings.DEMO:
+        event_count = [
+            {
+                "type": x.type,
+                "count": Event.objects.filter(datasheet_id__type_id__type = x.type, transaction__status = "accepted").count(),
+            } for x in EventType.objects.all()
+        ]
+    else:
+        event_count = [
+            {
+                "type": x.type,
+                "count": Event.objects.filter(datasheet_id__type_id__type = x.type).count(),
+            } for x in EventType.objects.all()
+        ]
     return render_to_response( 'index.html', RequestContext(request,{'thankyou': False, 'active':'home', 'event_count': event_count}))
 
 def about(request):
@@ -76,7 +81,10 @@ def update_transaction(request):
         transaction_id = request.POST.get('transaction_id', None)
         status = request.POST.get('status', None)
         reason = request.POST.get('reason', None)
-        send_email = True
+        if settings.DEMO or settings.SERVER == 'Dev':
+            send_email = False
+        else:
+            send_email = True
         if transaction_id is not None:
             transaction = UserTransaction.objects.get(id=transaction_id)
             if status is not None:
@@ -204,6 +212,9 @@ def download_stream_generator(request):
         filters = None
         qs = Event.objects.all()
 
+    if not settings.DEMO:
+        qs = qs.filter(transaction__status = "accepted")
+        
     data = []
     all_fieldnames = Set([])
     for event in qs: 
@@ -284,6 +295,10 @@ def get_events(request):
     sort_column = request.GET.get('iSortCol_0', False)
     filter_json = request.GET.get('filter', False)
     start_id = request.GET.get('startID', False)
+    accepted_only = request.GET.get('accepted-only', False)
+    
+    if settings.DEMO:
+        accepted_only = False
 
     if filter_json:
         filters = simplejson.loads(filter_json)
@@ -291,6 +306,9 @@ def get_events(request):
     else:
         qs = Event.objects.all()
 
+    if accepted_only:
+        qs = qs.filter(transaction__status = "accepted")
+    
     if sort_column:
         sort_name_key = request.GET.get("mDataProp_%s" % sort_column, False)
         sort_dir = request.GET.get("sSortDir_0", False)
@@ -328,10 +346,14 @@ def get_events(request):
                 data.append(dict)
                 found_records = found_records + 1
             
-            
+    if accepted_only:
+        total_records = Event.objects.filter(transaction__status = "accepted")
+    else:
+        total_records = Event.objects.all()
+    
     res = {
        "aaData": data,
-       "iTotalRecords": Event.objects.all().count(),
+       "iTotalRecords": total_records.count(),
        "iTotalDisplayRecords": filtered_count,
        "sEcho": sEcho
     }
@@ -393,7 +415,11 @@ def get_event_geojson(request):
     else:
         qs = Event.objects.all()
     
+    if not settings.DEMO:
+        qs = qs.filter(transaction__status = "accepted")
+    
     loop_count = 0
+    
     for event in qs:
         loop_count = loop_count + 1
         key = 'event_%s_geocache' % event.id        #CACHE_KEY  --  geojson by event
@@ -433,6 +459,9 @@ def get_aggregate_values_list(request, filters=None):
     TODO profile
     '''
     cleanup_events = Event.filter(filters)
+    if not settings.DEMO:
+        cleanup_events = cleanup_events.filter(transaction__status = "accepted")
+        
     agg_fields = {}
 
     event_values_list = [x.toValuesDict() for x in cleanup_events]

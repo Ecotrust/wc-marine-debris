@@ -506,8 +506,12 @@ class State (models.Model):
             counties = [county.name for county in County.objects.filter(stateabr=stateabr)]
             counties_list = []
             for county in counties:
-                sites1 = Site.objects.filter(state=self, county=county)
-                sites2 = Site.objects.filter(state=self, county=county+' County')
+                if settings.DEMO:
+                    sites1 = Site.objects.filter(state=self, county=county)
+                    sites2 = Site.objects.filter(state=self, county=county+' County')
+                else:
+                    sites1 = Site.objects.filter(state=self, county=county, transaction__status = "accepted")
+                    sites2 = Site.objects.filter(state=self, county=county+' County', transaction__status = "accepted")
                 all_sites = sites1 | sites2
                 sites = [x.toDict for x in all_sites]
                 county_dict = { 'name': county, 'sites': sites }
@@ -601,7 +605,10 @@ class Site (models.Model):
         
     @property
     def countyDict(self):
-        sites = [ site.toDict for site in Site.objects.filter(county = self.county)]
+        if settings.DEMO:
+            sites = [ site.toDict for site in Site.objects.filter(county = self.county)]
+        else:
+            sites = [ site.toDict for site in Site.objects.filter(county = self.county, transaction__status="accepted")]
         if self.county:
             county = self.county
         else:
