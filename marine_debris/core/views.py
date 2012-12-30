@@ -119,7 +119,7 @@ def update_transaction(request):
                     for site in sites:
                         msg_details = msg_details + "\nSite: %s\nCounty: %s\nState: %s\n" % (site.sitename, site.county, site.state.initials)
                     for event in events:
-                        msg_details = msg_details + "\nEvent Project: %s\nSite: %s\nDate: %s\n" % (event.proj_id.projname, event.site.sitename, event.cleanupdate.isoformat())
+                        msg_details = msg_details + "\nEvent Project: %s\nSite: %s\nDate: %s\n" % (event.proj_id.projname, event.site.sitename, event.cleanupdate.strftime('%m/%d/%Y'))
                     
                     message = msg_header + msg_rejected + msg_footer + msg_details
 
@@ -792,7 +792,7 @@ def edit_datasheet(request, event_id):
         event_details = {
             'organization': event.proj_id.projectorganization_set.get(is_lead=True).organization_id.orgname,
             'project': event.proj_id.projname,
-            'date': event.cleanupdate,
+            'date': event.cleanupdate.strftime('%m/%d/%Y'),
             'data_sheet': event.datasheet_id.sheetname,
             'state': event.site.state.name,
             'latitude': event.site.lat,
@@ -812,7 +812,7 @@ def edit_datasheet(request, event_id):
             event_details = {
             'organization': event.proj_id.projectorganization_set.get(is_lead=True).organization_id.orgname,
             'project': event.proj_id.projname,
-            'date': event.cleanupdate,
+            'date': event.cleanupdate.strftime('%m/%d/%Y'),
             'data_sheet': event.datasheet_id.sheetname,
             'state': event.site.state.name,
             'latitude': event.site.lat,
