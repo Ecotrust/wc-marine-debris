@@ -26,6 +26,7 @@ import time
 import string
 import logging
 import csv
+import re
 
 def index(request): 
     if not settings.DEMO:
@@ -243,10 +244,11 @@ def download_stream_generator(request):
     if pretty_headers:
         header = [x.replace('_',' ').title() for x in header]
         for x in ordered_fieldnames:
+            clean_head = re.sub(r',', '', x[1])
             if x[2]: # if units are defined
-                header.append("%s (%s)" % (x[1], x[2]))
+                header.append("%s (%s)" % (clean_head, x[2]))
             else:
-                header.append("%s" % x[1])
+                header.append("%s" % clean_head)
     else:
         header.extend([x[0] for x in ordered_fieldnames])
 
@@ -699,7 +701,7 @@ def event_save(request):
             if event.id:
                 datasheetForm = DataSheetForm(event.datasheet_id, event, None, request.POST)
             if event.id and datasheetForm.is_valid():
-                datasheetForm.save()
+                datasheetForm.save(datasheet)
                 return HttpResponseRedirect('/events/%s' % event.id)
             else:
                 Event.delete(event)

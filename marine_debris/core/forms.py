@@ -366,15 +366,16 @@ class DataSheetForm(forms.Form):
             if field.field.internal_name in settings.REQUIRED_FIELDS[datasheet.site_type].values():
                 field.widget = field.hidden_widget()
         
-    def save(self):
+    def save(self, datasheet):
         now = datetime.datetime.today()
         for field_name in self.fields:
             fld = self.fields[field_name]
-            answer = self.cleaned_data[field_name]
-            value = FieldValue.objects.get_or_create(event_id=fld.event, field_id=fld.field)[0]
-            value.field_value = unicode(answer)
-            value.last_modified = now
-            value.save()
+            if not fld.field.internal_name in settings.REQUIRED_FIELDS[datasheet.site_type].values():     #Do Not Save Values for required ('event level') fields
+                answer = self.cleaned_data[field_name]
+                value = FieldValue.objects.get_or_create(event_id=fld.event, field_id=fld.field)[0]
+                value.field_value = unicode(answer)
+                value.last_modified = now
+                value.save()
         return True
            
 
