@@ -336,6 +336,32 @@ def get_events(request):
        "sEcho": sEcho
     }
     return HttpResponse(simplejson.dumps(res))
+    
+def get_sites(request):
+    sEcho = request.GET.get('sEcho', False)
+    start_id = request.GET.get('startID', False)
+    transaction = request.GET.get('transaction', False)
+
+    if transaction:
+        qs = Site.objects.filter(transaction__id=transaction)
+    else:
+        qs = Site.objects.all()
+
+    filtered_count = qs.count()
+
+    data = []
+
+    for site in qs: 
+        dict = site.toDict
+        data.append(dict)
+            
+    res = {
+       "aaData": data,
+       "iTotalRecords": Site.objects.all().count(),
+       "iTotalDisplayRecords": filtered_count,
+       "sEcho": sEcho
+    }
+    return HttpResponse(simplejson.dumps(res))
 
 def srid_to_proj(srid):
     """

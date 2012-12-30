@@ -38,13 +38,30 @@ function viewModel (fixture) {
 			$.get('/event/view/' + event.id, function(data) {
 			  	event.data = data.fields;
 			  	self.selectedEvent(event);
-			  	console.log('selected event');
 			  	self.showDetailsSpinner(false);
 			});
 		}
 		  
 	};
+    
+    self.selectSite = function (site, e) {
+		var $row = $(e.target).closest('tr');
+		$row.addClass('active');
+		$row.siblings().removeClass('active');
+		self.showDetailsSpinner(true);
 
+		if (!site.data) {
+            site.data = {
+                "details": {
+                    "sitename": site.name,
+                    "state": site.state,
+                    "county": site.county
+                }
+            }
+		}
+        self.selectedSite(site);
+        self.showDetailsSpinner(false);
+	};
 
 	self.updateTransaction = function (transaction, status, reason) {
 		self.showTransactionSpinner(true);
@@ -108,16 +125,20 @@ function viewModel (fixture) {
 		var $row = $(e.target).closest('tr');
 		$row.addClass('active');
 		$row.siblings().removeClass('active');
+        self.showEvents(transaction.events_count())
+        self.showSites(transaction.sites_count())
 		self.selectedTransaction(transaction);
 	};
 
 	self.returnToTransaction = function () {
 		self.selectedEvent(false);
+		self.selectedSite(false);
 		self.selectedTransaction(false);
 		$('tr.active').removeClass('active');
 	};
 
 	self.selectedEvent = ko.observable(false);
+	self.selectedSite = ko.observable(false);
 	self.selectedTransaction =  ko.observable(false);
 	self.showDetailsSpinner = ko.observable(false);
 	self.showTransactionSpinner = ko.observable(false);
@@ -126,7 +147,9 @@ function viewModel (fixture) {
 	self.reason = ko.observable();
     
     self.dependency_text = ko.observable();
-    self.accepted_transactions = ko.observable([]);
+    self.accepted_transactions = ko.observableArray([]);
+    self.showSites = ko.observable(null);
+    self.showEvents = ko.observable(null);
 
 	self.selectedEvent.subscribe(function (event) {
 		if (event) {
@@ -135,6 +158,25 @@ function viewModel (fixture) {
 				event.site.lat).transform(
 					new OpenLayers.Projection("EPSG:4326"),
 					new OpenLayers.Projection("EPSG:900913"));
+
+			setTimeout(function () {
+				app.map.render('map');			
+				app.mapIsRendered = true;	
+				app.map.setCenter(pos, 9);
+				app.markers.clearMarkers();
+				app.markers.addMarker(new OpenLayers.Marker(pos, new OpenLayers.Icon('http://www.openlayers.org/dev/img/marker.png')));
+			}, 0);	
+		}
+	});
+    
+    self.selectedSite.subscribe(function (site) {
+		if (site) {
+			var pos = new OpenLayers.LonLat(
+				site.lon, 
+				site.lat).transform(
+					new OpenLayers.Projection("EPSG:4326"),
+					new OpenLayers.Projection("EPSG:900913"));
+
 			setTimeout(function () {
 				app.map.render('map');			
 				app.mapIsRendered = true;	
@@ -183,7 +225,21 @@ function viewModel (fixture) {
 				}])
 			});
 		}
-    	
+	};
+    
+    self.siteTableOptions = {
+		"iDisplayLength": 8,
+		"bProcessing": true,
+		"bServerSide": true,
+		"sPaginationType": "full_numbers",
+		"sAjaxSource": "/sites/get",
+		"iDisplayStart": 0,
+		"fnServerParams": function ( aoData ) {
+			aoData.push({
+				name: "transaction",
+				value: self.selectedTransaction().id()
+			});
+		}
 	};
 
 	self.dataTableOptions = {

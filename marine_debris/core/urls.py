@@ -40,6 +40,7 @@ urlpatterns = patterns('',
     url(r'^resources/$', resources),
     url(r'^search/', include('haystack.urls')),
     url(r'^site/create$', create_site),  
+    url(r'^sites/get$', get_sites),
     url(r'^site-media/(?P<path>.*)$','django.views.static.serve',{'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
     url(r'^terms/$', terms),
     url(r'^$', index )
