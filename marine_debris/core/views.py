@@ -502,8 +502,8 @@ def get_aggregate_values_list(request, filters=None):
                             'count': 0
                         }
                     if db_field['datatype']['name'] == 'Weight':
-                        if not db_field['unit']['short_name'] == 'lbs':
-                            factor = Unit.get_conversion_factor(db_field['unit']['short_name'],'lbs')
+                        if not db_field['unit']['slug'] == 'pounds_lbs':
+                            factor = Unit.get_conversion_factor(db_field['unit']['slug'],'pounds_lbs')
                             lbs_val = factor * field_value['value']
                         else:
                             lbs_val = field_value['value']

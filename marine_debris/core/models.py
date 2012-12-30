@@ -31,6 +31,7 @@ class Unit(models.Model):
     short_name = models.TextField()
     long_name = models.TextField()
     data_type = models.ForeignKey(DataType, null=True, blank=True)
+    slug = models.TextField(unique=True)
     
     def __unicode__(self):
         return self.long_name
@@ -50,7 +51,8 @@ class Unit(models.Model):
         return {
             'short_name': self.short_name,
             'long_name': self.long_name,
-            'data_type': data_type
+            'data_type': data_type,
+            'slug': self.slug
         }
         
     def conversion_factor(self, to_unit):
@@ -66,19 +68,23 @@ class Unit(models.Model):
             raise ConversionError("%s to %s ... conversion factor not specified in UnitConversion table" % (self, to_unit))
 
         return uc.factor
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.long_name + '_' + self.short_name)
+        super(Unit, self).save(*args, **kwargs)
         
     @classmethod
-    def get_conversion_factor(cls, from_unit_short_name, to_unit_short_name):
-        key = 'unit_from_%s_to_%s' % (from_unit_short_name, to_unit_short_name)     #CACHE_KEY  --  conversion factor by to/from units
+    def get_conversion_factor(cls, from_unit_slug, to_unit_slug):
+        key = 'unit_from_%s_to_%s' % (from_unit_slug, to_unit_slug)     #CACHE_KEY  --  conversion factor by to/from units
         factor = cache.get(key)
         if not factor:    
-            from_unit = cls.objects.get(short_name=from_unit_short_name)
-            to_unit = cls.objects.get(short_name=to_unit_short_name)
+            from_unit = cls.objects.get(slug=from_unit_slug)
+            to_unit = cls.objects.get(slug=to_unit_slug)
             try:
                 factor = from_unit.conversion_factor(to_unit)
                 cache.set(key, factor, settings.CACHE_TIMEOUT)
             except UnitConversion.DoesNotExist:
-                raise ConversionError("%s to %s ... conversion factor not specified in UnitConversion table" % (from_unit_short_name, to_unit_short_name))
+                raise ConversionError("%s to %s ... conversion factor not specified in UnitConversion table" % (from_unit_slug, to_unit_slug))
                 factor = None
         return factor
 
@@ -220,6 +226,7 @@ class Field (models.Model):
                 unit = {
                     'short_name':'',
                     'long_name': '',
+                    'slug': '',
                     'datatype': {
                         'name' : '',
                         'aggregatable': ''

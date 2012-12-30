@@ -20,7 +20,7 @@ class Command(BaseCommand):
 
         for from_unit in Unit.objects.all():
             for to_unit in Unit.objects.all():
-                cache.delete('unit_from_%s_to_%s' % (from_unit.short_name, to_unit.short_name))
+                cache.delete('unit_from_%s_to_%s' % (from_unit.slug, to_unit.slug))
                 
         for trans in UserTransaction.objects.all():
             cache.delete('transaction_%s' % trans.id)
