@@ -548,7 +548,6 @@ class UserTransaction (models.Model):
 
     @property
     def toDict(self):    
-    
         key = 'transaction_%s' % self.id        #CACHE_KEY  --  transaction details by transaction
         res = cache.get(key)
 
@@ -589,6 +588,18 @@ class UserTransaction (models.Model):
             cache.set(key, res, settings.CACHE_TIMEOUT)
         return res
     
+    def update(self):
+        #Clear caches affected by this update
+        keys = ['transaction_%s' % self.id]
+        states = []
+        for site in Site.objects.filter(transaction=self):
+            if not site.state.id in states:   
+                states.append(site.state.id)
+        for st_id in states:
+            keys.append('statecache_%s' % st_id)
+        for key in keys:
+            cache.delete(key)
+        
     def __unicode__(self):
         return "%s, %s" % (self.submitted_by, self.created_date.isoformat())
                 
@@ -919,8 +930,8 @@ class Event (models.Model):
         return d
         
         
-    def save(self, *args, **kwargs):
         
+    def save(self, *args, **kwargs):
         if self.id:
             site_trans_id = self.site.transaction.id
             # invalidate/clear all cached data associated with this event

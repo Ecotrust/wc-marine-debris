@@ -24,3 +24,6 @@ class Command(BaseCommand):
                 
         for trans in UserTransaction.objects.all():
             cache.delete('transaction_%s' % trans.id)
+            
+        for state in State.objects.all():
+            cache.delete('statecache_%s' % state.id)

@@ -132,7 +132,11 @@ class CreateEventForm(forms.Form):
     for county in County.objects.all():
         county_choices.append((county.name, county.name))
     site_choices = []
-    for site in Site.objects.all().exclude(sitename=''):
+    if settings.DEMO:
+        sites = Site.objects.all().exclude(sitename='')
+    else:
+        sites = Site.objects.filter(transaction__status = "accepted").exclude(sitename='')
+    for site in sites:
         site_choices.append(escape('"' + str(site.sitename) + '"'))
     
     state = forms.ChoiceField(

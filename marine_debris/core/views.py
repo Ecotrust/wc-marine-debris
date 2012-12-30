@@ -124,8 +124,8 @@ def update_transaction(request):
                     message = msg_header + msg_rejected + msg_footer + msg_details
 
                     user.email_user("Marine Debris DB Status Update", message)
-                
-
+                    
+                transaction.update()
     else:
         res = {
             'status_code': 400,
