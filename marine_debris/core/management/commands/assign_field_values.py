@@ -7,7 +7,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         orphan_values = []
-        for value in FieldValue.objects.all():
+        field_values =  FieldValue.objects.all()
+        for (counter, value) in enumerate(field_values):
+            if counter % 1000 == 0:
+                print "Value number %s of %s" % (str(counter), str(field_values.count()))
             if value.event_id:                          #FieldValue is associated with an event
                 if value.event_id.datasheet_id:             #Event is associated with a datasheet
                     datasheetfield_qs = DataSheetField.objects.filter(field_id = value.field_id, sheet_id = value.event_id.datasheet_id)
