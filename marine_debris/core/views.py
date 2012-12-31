@@ -881,12 +881,12 @@ def bulk_csv_header(request, datasheet_id):
     response['Content-Disposition'] = 'attachment; filename=%s' % filename
     return response
 
-def bulk_bad_request(form, request, errors=None, site_form=None):
+def bulk_bad_request(form, request, errors=None, site_form=None, json=None):
     if not errors:
         errors = []
     res = render_to_response('bulk_import.html', 
             RequestContext(request,{'form':form.as_p(), 'site_form': site_form, 
-                'errors':errors, 'active':'events'}))
+                'errors':errors, 'active':'events', 'json': json, 'active':'events'}))
     res.status_code = 400
     return res
 
@@ -966,18 +966,22 @@ def bulk_import(request):
         form = BulkImportForm() # instance=ds)
     else:
         logger = logging.getLogger('datasheet_errors')
+        #TODO: Filter Organizations by only those which the user has access to.
+        org_dict = [org.toDict for org in Organization.objects.all()]
+        org_json = simplejson.dumps(org_dict)
+
         form = BulkImportForm(request.POST, request.FILES)
         if form.is_valid():
             rows = csv.DictReader(request.FILES['csv_file'])
             rows = list(rows) # eval now so we can do multiple loops
             if len(rows) == 0:
-                return bulk_bad_request(form, request, ['Uploaded file does not contain any rows.', ])
+                return bulk_bad_request(form, request, ['Uploaded file does not contain any rows.', ], json=org_json)
             
             # Get the datasheet. Must post a datasheet_id variable
             try:
                 datasheet_id = request.POST['datasheet']
             except KeyError:
-                return bulk_bad_request(form, request, ['Form is not valid, please review.', ])
+                return bulk_bad_request(form, request, ['Form is not valid, please review.', ], json=org_json)
 
             ds = get_object_or_404(DataSheet, pk=datasheet_id)
 
@@ -986,7 +990,7 @@ def bulk_import(request):
                 errors = ["""Sorry. This datasheet is not configured handle bulk imports. 
                         The database administrator has been notified and will fix the problem ASAP.""", ]
                 logger.error(message) 
-                return bulk_bad_request(form, request, errors)
+                return bulk_bad_request(form, request, errors, json=org_json)
 
             errors = []
 
@@ -1003,7 +1007,7 @@ def bulk_import(request):
                         errors.append("Uploaded file contains column '%s' which is not recognized by this datasheet" % (key,))
                 if len(errors) > 0:
                     # return at the datasheet level
-                    return bulk_bad_request(form, request, errors)
+                    return bulk_bad_request(form, request, errors, json=org_json)
 
             # loop through rows and validate against forms
             # also collect sites
@@ -1065,7 +1069,7 @@ def bulk_import(request):
 
                 if len(errors) > 0:
                     site_form = CreateSiteForm()
-                    return bulk_bad_request(form, request, errors, site_form=site_form)
+                    return bulk_bad_request(form, request, errors, site_form=site_form, json=org_json)
 
                 # valid!
                 # loop through rows to create events and submit datasheet forms
@@ -1205,13 +1209,10 @@ def bulk_import(request):
                         
         else:
             res = render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(), 
-                'errors':['Form is not valid, please review.',], 'active':'events'}))
+                'errors':['Form is not valid, please review.',], 'json':org_json, 'active':'events'}))
             res.status_code = 400
             return res
 
-    #TODO: Filter Organizations by only those which the user has access to.
-    org_dict = [org.toDict for org in Organization.objects.all()]
-    org_json = simplejson.dumps(org_dict)
     return render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(), 'json':org_json, 'active':'events'}))
 
 @login_required

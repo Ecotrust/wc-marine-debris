@@ -1,6 +1,19 @@
-{% extends "base.html" %}
+{% extends "base.html" %}{% load flatblock_tags %}
     
 {% block content %}
+<div class="modal fade hide" id="confirm-modal">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Confirm Submission</h3>
+  </div>
+  <div class="modal-body">
+    Are you sure?
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+    <a href="#" class="btn btn-primary submit-btn">Ok</a>
+  </div>
+</div>
 {% endblock %}
 {% block leftcontent %}
     <h2>Create a New Event</h2>
@@ -28,8 +41,8 @@
     {% csrf_token %}
     {{eventForm}}
     {{form}}
-    <p><button id="submit" type="submit">Continue</button>
-    {% if action %}<button type="button" class="datasheet_cancel" id="cancel" value="Cancel">Cancel</button>{% endif %}
+    <p><button class="btn" type="submit">Continue</button>
+    {% if action %}<button type="button" class="datasheet_cancel btn" id="cancel" value="Cancel">Cancel</button>{% endif %}
     </p>
     </form>
 {% endblock %}
@@ -37,7 +50,30 @@
 {% block js %}
 
 $(document).ready(function() {
+
+    var submissionConfirmed = false;
+
+    $('#confirm-modal').on('click', '.submit-btn', function () {
+        submissionConfirmed = true;
+        $('form').submit();
+    });
+
+    $('form').on('submit', function (event) {
+        if (submissionConfirmed) {
+            // let the form submit!
+        } else {    
+            event.preventDefault();
+            $('#confirm-modal').modal('show');
+        }
+        
+    });
+
+
+
     $(".date").datepicker();
+
 });
+
+
 
 {% endblock %}

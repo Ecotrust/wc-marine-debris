@@ -8,68 +8,67 @@ var defaultGuide = {
   steps: [
     {
       target: '#left-content',      
-      content: 'Use the panel on the left side of the screen to filter, or \'query\' the full set of events collected in this database. There are thousands of cleanup events collected here. This will make it easy for you to only view the events you want to see.',
+      content: 'Initially, all marine debris events from the database will be shown in the event list.  You can narrow down this list with a combination of one or more filters.  Only the events that match <i>all</i> of your filters will be shown.',
       direction: 'right',
       arrow: {offsetX: 0, offsetY: 0}
     },{
-      target: '#right-content',
-      content: 'Use the panel on the right side of the screen to view the data for the events in your query. This tour will cover the different ways the data can be viewed.',
+      target: '#location-tab',
+      content: 'The <i>Location</i> tab lets you filter events by State or County by typing them in or selecting them from the drop-down list. <i>Note</i>, you can add more than one state or county.',
       direction: 'left',
       arrow: {offsetX: 0, offsetY: 50}
     },{
-      target: '#location-tab',      //mention "one or more filters"
-      content: 'Use the Location tab to apply one or more location filters to query the cleanup events by location, either by specifying the state or the county that they were conducted in.',
-      direction: 'top',
-      arrow: {offsetX: 0, offsetY: 0}
-    },{
       target: '#event-type-tab',
-      content: 'Use the Type of Debris tab to apply one or more filters to query the events by the type of debris cleanup event you\'re looking for. This will likely be either a \'Site Cleanup\' or a \'Derelict Gear Removal\'.',
+      content: 'The <i>Type Of debris</i> tab lets you filter by event type (e.g. Site Cleanup, Derelict Gear Removal) or Debris Type (e.g. plastic bags, ammunition, debris description).',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     },{
       target: '#project-organization-tab',
-      content: 'Use the Organization/Project tab to apply filters to query the events by those belonging to one or more specific organizations or projects.',
+      content: 'The <i>Organization/Project</i> tab lets you find events associated with a specific debris cleanup organization or project',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     },{
       target: '#date-tab',
-      content: 'Use the Date tab to apply filters to query the events by those that fall within a range of dates, you may specify the starting date and ending date here. This is very useful if you only want to see 1 year\'s worth of data.',
+      content: 'The <i>Date</i> tab lets you find events after a given start date and/or before a given end date.',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     },{
-      target: '#events-table',      //mention selecting an event
-      content: 'Use the Events Table to view the list of events in your query results. If you haven\'t added any filters to your query, then this will display all of the events by pages of 5 at a time. You can click on an event to highlight it on the map, and use the \'i\' button to see details about it.',
+      target: '#events-table',
+      content: 'Marine debris events are listed 5 at a time.  As you apply or remove filters this list will be updated.  Click one of the events to highlight it on the map.  Click any of the column headers to sort by that column ascending or descending.',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     },{
       target: '#events-table_paginate',
-      content: 'Use these buttons to navigate the list of events pages. Five events can be shown per page.',
+      content: 'The <i>Navigation</i> bar lets you scroll through the list of events.  The <i>First</i> and <i>Last</i> button lets you quickly jump to the beginning or end of the list',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     },{
-      target: '#map-tab',       //mention selecting an event    //use images for clusters
-      content: 'Use the Map tab to view the location of each event in your query results. Select a cluster of events <img src="' + static_url + 'img/cluster.png" /> to zoom in on them. Select a single event <img src="' + static_url + 'img/event_point.png" /> to learn more about it. Different colors represent different event types: orange for site cleanups, gray for derelict gear removals. NOTE: IE8 and older will display clusters as larger circles with no numbers.',
+      target: '#right-content',
+      content: 'You can get more information about individual events in your list, or your list as a whole using the Map, Event Details, and Report tabs.',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     },{
-      target: '#details-tab',
-      // content: 'Click on this tab to display the details of a certain event. To select an event to get details about, either click on its point on the map, or on the event from the list in the left panel.',
-      content: 'Once you\'ve selected an event, you can view all available information for that event in the Event Details tab.',
+      target: '#map-tab',
+      content: 'The <i>Map</i> tab shows you geographically where each of the events in your list occurred.  Orange colored circles are site cleanups and grey colored circles are derelict gear removals.  Events that are close together are clustered <image>.  Click on a cluster to zoom in on individual events.  Individual events that took place at the exact same location will always show as clustered, no matter how far you zoom in.  Clicking a cluster or an event on the map will also  reorder the event list so that the event(s) you selected will show first in the list.',
+      direction: 'top',
+      arrow: {offsetX: 0, offsetY: 0}
+    },{
+      target: '#details-tab',    
+      content: 'Once you\'ve selected an event, either on the map or in the event list, the <i>Event Details</i> tab provides you with all of the information collected for that event.',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     },{
       target: '#report-tab',
-      content: 'Click on this tab to aggregate the values for fields across all of the events in your query results. Be sure that you have selected the correct filters for this report to represent what you want.',
+      content: 'The <i>Report<i> tab provides you with a cumulative summary of all events in your event list (e.g. total pounds of trash collected, total number of volunteers, etc).  Note, filtering your events to either Site Cleanups or Derelict Gear Removal will provide you with the most meaningful report.',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     },{
       target: '#view-report-button',
-      content: 'Click on this button to jump to the report tab described in the last step.',
+      content: 'The <i>View Report</i> button below the event list will take you straight to the <i>Report</i> tab',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     },{
       target: '#download-data-button',
-      content: 'Click on this button once you\'re happy with your query results and you want to download the data for your own use.',
+      content: 'The <i>Download Data</i> button allows you to download all of the event data for all of the events in your list as a CSV spreadsheet.  By removing all filters you can effectively download the entire database.',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     }
