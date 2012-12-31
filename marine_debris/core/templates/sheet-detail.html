@@ -27,6 +27,12 @@
         <h3>Fields</h3>
         <div class="table-wrapper-short">
             <table class="table table-condensed table-hover organization-table">
+                <tr>
+                    <th>Label</th>
+                    <th>Unit</th>
+                    <th>Description</th>
+                    <th>Internal Field</th>
+                </tr>
             {% for field in sheet.fields %}
                 <tr>
                     <td>
@@ -39,6 +45,12 @@
                     <td>
                         {{ field.unit_id.long_name }}
                     </td>
+                    <td>
+                        {{ field.field_id.description }}
+                    </td>
+                    <td>
+                        <a href="/fields#{{ field.field_id.id }}">{{field.field_id.internal_name}}</a>
+                    <td>
                 </tr>
             {% endfor %}    
             </table>

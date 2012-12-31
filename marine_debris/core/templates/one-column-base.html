@@ -60,7 +60,7 @@
         {% ifequal active 'events' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/events">Data</a></li>
         {% if request.path|slice:":4" == '/org' %}<li class="active">{% else %}<li>{% endif %}<a href="/organizations">Organizations</a></li>
         {% if request.path|slice:":4" == '/pro' %}<li class="active">{% else %}<li>{% endif %}<a href="/projects">Projects</a></li>
-        {% if request.path|slice:":4" == '/dat' and not request.path == '/datasheet/bulk_import' %}<li class="active">{% else %}<li>{% endif %}<a href="/datasheets">Data Sheets</a></li>
+        {% if request.path|slice:":4" == '/dat' %}<li class="active">{% else %}<li>{% endif %}<a href="/datasheets">Data Sheets</a></li>
         {% if user.is_superuser %}
             {% ifequal active 'management' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/management">Management</a></li>
             {% ifequal active 'admin' %}<li class="active">{% else %}<li>{% endifequal %}<a href="/admin">Admin</a></li>
@@ -85,15 +85,9 @@
   {% endblock %}
  
   <div class="row-fluid">
-      <div class="span6">
-        <div id="left-content" class="wcga-database wcga-database-left">
-          {% block leftcontent %}
-          {% endblock %}
-        </div>
-      </div>
-      <div class="span6">
-        <div id="right-content" class="wcga-database wcga-database-right">
-          {% block rightcontent %}
+      <div class="span12">
+        <div id="column-content" class="wcga-database">
+          {% block columncontent %}
           {% endblock %}
         </div>
       </div>

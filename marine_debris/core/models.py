@@ -11,6 +11,8 @@ add_introspection_rules([], ["^django\.contrib\.gis\.db\.models\.fields\.PointFi
 from django.core.cache import cache
 from django.contrib.gis.geos import Polygon
 from django.template.defaultfilters import slugify
+from pytz import timezone
+import pytz
 import urllib
 import time
 
@@ -31,6 +33,7 @@ class Unit(models.Model):
     short_name = models.TextField()
     long_name = models.TextField()
     data_type = models.ForeignKey(DataType, null=True, blank=True)
+    slug = models.TextField(unique=True)
     
     def __unicode__(self):
         return self.long_name
@@ -50,7 +53,8 @@ class Unit(models.Model):
         return {
             'short_name': self.short_name,
             'long_name': self.long_name,
-            'data_type': data_type
+            'data_type': data_type,
+            'slug': self.slug
         }
         
     def conversion_factor(self, to_unit):
@@ -66,19 +70,23 @@ class Unit(models.Model):
             raise ConversionError("%s to %s ... conversion factor not specified in UnitConversion table" % (self, to_unit))
 
         return uc.factor
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.long_name + '_' + self.short_name)
+        super(Unit, self).save(*args, **kwargs)
         
     @classmethod
-    def get_conversion_factor(cls, from_unit_short_name, to_unit_short_name):
-        key = 'unit_from_%s_to_%s' % (from_unit_short_name, to_unit_short_name)     #CACHE_KEY  --  conversion factor by to/from units
+    def get_conversion_factor(cls, from_unit_slug, to_unit_slug):
+        key = 'unit_from_%s_to_%s' % (from_unit_slug, to_unit_slug)     #CACHE_KEY  --  conversion factor by to/from units
         factor = cache.get(key)
         if not factor:    
-            from_unit = cls.objects.get(short_name=from_unit_short_name)
-            to_unit = cls.objects.get(short_name=to_unit_short_name)
+            from_unit = cls.objects.get(slug=from_unit_slug)
+            to_unit = cls.objects.get(slug=to_unit_slug)
             try:
                 factor = from_unit.conversion_factor(to_unit)
                 cache.set(key, factor, settings.CACHE_TIMEOUT)
             except UnitConversion.DoesNotExist:
-                raise ConversionError("%s to %s ... conversion factor not specified in UnitConversion table" % (from_unit_short_name, to_unit_short_name))
+                raise ConversionError("%s to %s ... conversion factor not specified in UnitConversion table" % (from_unit_slug, to_unit_slug))
                 factor = None
         return factor
 
@@ -220,6 +228,7 @@ class Field (models.Model):
                 unit = {
                     'short_name':'',
                     'long_name': '',
+                    'slug': '',
                     'datatype': {
                         'name' : '',
                         'aggregatable': ''
@@ -411,7 +420,7 @@ class DataSheetField (models.Model):
         ordering = ['field_name', 'sheet_id__sheetname', 'field_id__internal_name']
     
 class Project (models.Model):
-    projname = models.TextField()
+    projname = models.TextField(unique=True)
     organization = models.ManyToManyField(Organization, through='ProjectOrganization')
     website = models.TextField(blank=True, null=True)
     contact_name = models.TextField(blank=True, null=True)
@@ -506,8 +515,12 @@ class State (models.Model):
             counties = [county.name for county in County.objects.filter(stateabr=stateabr)]
             counties_list = []
             for county in counties:
-                sites1 = Site.objects.filter(state=self, county=county)
-                sites2 = Site.objects.filter(state=self, county=county+' County')
+                if settings.DEMO:
+                    sites1 = Site.objects.filter(state=self, county=county)
+                    sites2 = Site.objects.filter(state=self, county=county+' County')
+                else:
+                    sites1 = Site.objects.filter(state=self, county=county, transaction__status = "accepted")
+                    sites2 = Site.objects.filter(state=self, county=county+' County', transaction__status = "accepted")
                 all_sites = sites1 | sites2
                 sites = [x.toDict for x in all_sites]
                 county_dict = { 'name': county, 'sites': sites }
@@ -544,30 +557,59 @@ class UserTransaction (models.Model):
 
     @property
     def toDict(self):    
-        events_count = Event.objects.filter(transaction=self).count()
+        key = 'transaction_%s' % self.id        #CACHE_KEY  --  transaction details by transaction
+        res = cache.get(key)
+        pacific = timezone('US/Pacific')
         
-        if self.organization:
-            orgname = self.organization.orgname
-        else:
-            orgname = None
-        if self.project:
-            projname = self.project.projname
-        else:
-            projname = None
-        
-        res = {
-            'username': self.submitted_by.username,
-            'organization': orgname,
-            'project': projname,
-            'timestamp': self.created_date.strftime('%m/%d/%Y %H:%M'),
-            'status': self.status,
-            'id': self.id,
-            'events_count': events_count,
-            'reason': self.reason
-        }
+        if not res:
     
+            events_count = Event.objects.filter(transaction=self).count()
+            sites_count = Site.objects.filter(transaction=self).count()
+            
+            site_transaction_dependencies = []
+            if events_count > 0:
+                for event in Event.objects.filter(transaction=self):
+                    if not event.site.transaction == self and not event.site.transaction.status == "accepted":
+                        if not event.site.transaction.id in site_transaction_dependencies:
+                            site_transaction_dependencies.append(event.site.transaction.id)
+            
+            if self.organization:
+                orgname = self.organization.orgname
+            else:
+                orgname = None
+            if self.project:
+                projname = self.project.projname
+            else:
+                projname = None
+            
+            res = {
+                'id': self.id,
+                'username': self.submitted_by.username,
+                'organization': orgname,
+                'project': projname,
+                'timestamp': self.created_date.astimezone(pacific).strftime('%m/%d/%Y %H:%M'),
+                'status': self.status,
+                'id': self.id,
+                'events_count': events_count,
+                'sites_count': sites_count,
+                'site_dependencies': site_transaction_dependencies,
+                'reason': self.reason
+            }
+            cache.set(key, res, settings.CACHE_TIMEOUT)
         return res
     
+    def update(self):
+        #Clear caches affected by this update
+        keys = ['transaction_%s' % self.id]
+        states = []
+        for site in Site.objects.filter(transaction=self):
+            if not site.state.id in states:   
+                states.append(site.state.id)
+        for st_id in states:
+            keys.append('statecache_%s' % st_id)
+        for key in keys:
+            cache.delete(key)
+        
     def __unicode__(self):
         return "%s, %s" % (self.submitted_by, self.created_date.isoformat())
                 
@@ -584,7 +626,10 @@ class Site (models.Model):
         
     @property
     def countyDict(self):
-        sites = [ site.toDict for site in Site.objects.filter(county = self.county)]
+        if settings.DEMO:
+            sites = [ site.toDict for site in Site.objects.filter(county = self.county)]
+        else:
+            sites = [ site.toDict for site in Site.objects.filter(county = self.county, transaction__status="accepted")]
         if self.county:
             county = self.county
         else:
@@ -810,11 +855,10 @@ class Event (models.Model):
             else:
                 try:
                     if float(value) == 0.0:
-                        value = ''
-                        unit = ''
+                        value = '0'
                 except ValueError:
                     pass
-            if unit == 'Text' or unit == 'Count':
+            if unit == 'Text':
                 unit = ''
             rvals.append({
                 'text': text,
@@ -895,15 +939,17 @@ class Event (models.Model):
         return d
         
         
-    def save(self, *args, **kwargs):
         
+    def save(self, *args, **kwargs):
         if self.id:
+            site_trans_id = self.site.transaction.id
             # invalidate/clear all cached data associated with this event
             keys = [
                 'event_%s_eventdict' % self.id,
                 'event_%s_valuedict_convert' % self.id,
                 'event_%s_valuedict_raw' % self.id,
                 'event_%s_geocache' % self.id,
+                'transaction_%s' % site_trans_id
             ]
             for key in keys:
                 cache.delete(key)

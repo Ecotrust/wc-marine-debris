@@ -26,17 +26,23 @@ import time
 import string
 import logging
 import csv
+import re
 
 def index(request): 
-
-    event_count = [
-        {
-            "type": x.type,
-            "count": Event.objects.filter(datasheet_id__type_id__type = x.type).count(),
-        } for x in EventType.objects.all()
-    ]
-    
-
+    if not settings.DEMO:
+        event_count = [
+            {
+                "type": x.type,
+                "count": Event.objects.filter(datasheet_id__type_id__type = x.type, transaction__status = "accepted").count(),
+            } for x in EventType.objects.all()
+        ]
+    else:
+        event_count = [
+            {
+                "type": x.type,
+                "count": Event.objects.filter(datasheet_id__type_id__type = x.type).count(),
+            } for x in EventType.objects.all()
+        ]
     return render_to_response( 'index.html', RequestContext(request,{'thankyou': False, 'active':'home', 'event_count': event_count}))
 
 def about(request):
@@ -48,6 +54,11 @@ def resources(request):
 def aggregation_info(request):
     return render_to_response('aggregation_info.html', RequestContext(request))
 
+def fields(request):
+    fields = Field.objects.all()
+    
+    return render_to_response('fields.html', RequestContext(request, {'fields': fields}))
+    
 def guidelines(request):
     return render_to_response('guidelines.html', RequestContext(request))
 
@@ -71,6 +82,10 @@ def update_transaction(request):
         transaction_id = request.POST.get('transaction_id', None)
         status = request.POST.get('status', None)
         reason = request.POST.get('reason', None)
+        if settings.DEMO or settings.SERVER == 'Dev':
+            send_email = False
+        else:
+            send_email = True
         if transaction_id is not None:
             transaction = UserTransaction.objects.get(id=transaction_id)
             if status is not None:
@@ -79,7 +94,39 @@ def update_transaction(request):
                     transaction.reason = reason
                 transaction.save()
                 res = {'status': 'success', 'transaction_id': transaction_id}
+                
+                user = transaction.submitted_by
+                events = Event.objects.filter(transaction=transaction)
+                sites = Site.objects.filter(transaction=transaction)
+                if events.count() > 0:
+                    transaction_type = "events"
+                    if sites.count() > 0:
+                        transaction_type = "sites and " + transaction_type
+                elif sites.count() > 0:
+                    transaction_type = "sites"
+                else:
+                    send_email = False
+                if send_email:
+                    msg_header = "Dear %s,\n\nThis email is to inform you that the %s you created on %s have been %s.\n" %  (user.username.capitalize(), transaction_type, transaction.created_date, transaction.status)
 
+                    if transaction.status == "rejected":
+                        msg_rejected = "\nReason:\n%s\n\nIf you would still like your data included in the database, please review your data, make any recommended changes mentioned in the reason for rejection, and resubmit it.\n" % (transaction.reason)
+                    else:
+                        msg_rejected = ''
+                        
+                    msg_footer = "\nThanks again for submitting data to the West Coast Marine Debris Database. Details about your submission are below.\nTo submit more data, please visit our tool again at %s.\n\nIf you have questions, concerns, or would like to contact us for any other reason, please refer to our website (%s) for direction and information.\n\nCheers,\n- The West Coast Marine Debris Action Coordination Team Staff\n\n" % (settings.TOOL_URL, settings.WCGA_ACT_URL)
+                    
+                    msg_details = "\nDetails about your submitted data:\n"
+                    for site in sites:
+                        msg_details = msg_details + "\nSite: %s\nCounty: %s\nState: %s\n" % (site.sitename, site.county, site.state.initials)
+                    for event in events:
+                        msg_details = msg_details + "\nEvent Project: %s\nSite: %s\nDate: %s\n" % (event.proj_id.projname, event.site.sitename, event.cleanupdate.strftime('%m/%d/%Y'))
+                    
+                    message = msg_header + msg_rejected + msg_footer + msg_details
+
+                    user.email_user("Marine Debris DB Status Update", message)
+                    
+                transaction.update()
     else:
         res = {
             'status_code': 400,
@@ -166,6 +213,9 @@ def download_stream_generator(request):
         filters = None
         qs = Event.objects.all()
 
+    if not settings.DEMO:
+        qs = qs.filter(transaction__status = "accepted")
+        
     data = []
     all_fieldnames = Set([])
     for event in qs: 
@@ -194,10 +244,11 @@ def download_stream_generator(request):
     if pretty_headers:
         header = [x.replace('_',' ').title() for x in header]
         for x in ordered_fieldnames:
+            clean_head = re.sub(r',', '', x[1])
             if x[2]: # if units are defined
-                header.append("%s (%s)" % (x[1], x[2]))
+                header.append("%s (%s)" % (clean_head, x[2]))
             else:
-                header.append("%s" % x[1])
+                header.append("%s" % clean_head)
     else:
         header.extend([x[0] for x in ordered_fieldnames])
 
@@ -246,6 +297,10 @@ def get_events(request):
     sort_column = request.GET.get('iSortCol_0', False)
     filter_json = request.GET.get('filter', False)
     start_id = request.GET.get('startID', False)
+    accepted_only = request.GET.get('accepted-only', False)
+    
+    if settings.DEMO:
+        accepted_only = False
 
     if filter_json:
         filters = simplejson.loads(filter_json)
@@ -253,6 +308,9 @@ def get_events(request):
     else:
         qs = Event.objects.all()
 
+    if accepted_only:
+        qs = qs.filter(transaction__status = "accepted")
+    
     if sort_column:
         sort_name_key = request.GET.get("mDataProp_%s" % sort_column, False)
         sort_dir = request.GET.get("sSortDir_0", False)
@@ -290,10 +348,40 @@ def get_events(request):
                 data.append(dict)
                 found_records = found_records + 1
             
+    if accepted_only:
+        total_records = Event.objects.filter(transaction__status = "accepted")
+    else:
+        total_records = Event.objects.all()
+    
+    res = {
+       "aaData": data,
+       "iTotalRecords": total_records.count(),
+       "iTotalDisplayRecords": filtered_count,
+       "sEcho": sEcho
+    }
+    return HttpResponse(simplejson.dumps(res))
+    
+def get_sites(request):
+    sEcho = request.GET.get('sEcho', False)
+    start_id = request.GET.get('startID', False)
+    transaction = request.GET.get('transaction', False)
+
+    if transaction:
+        qs = Site.objects.filter(transaction__id=transaction)
+    else:
+        qs = Site.objects.all()
+
+    filtered_count = qs.count()
+
+    data = []
+
+    for site in qs: 
+        dict = site.toDict
+        data.append(dict)
             
     res = {
        "aaData": data,
-       "iTotalRecords": Event.objects.all().count(),
+       "iTotalRecords": Site.objects.all().count(),
        "iTotalDisplayRecords": filtered_count,
        "sEcho": sEcho
     }
@@ -329,7 +417,11 @@ def get_event_geojson(request):
     else:
         qs = Event.objects.all()
     
+    if not settings.DEMO:
+        qs = qs.filter(transaction__status = "accepted")
+    
     loop_count = 0
+    
     for event in qs:
         loop_count = loop_count + 1
         key = 'event_%s_geocache' % event.id        #CACHE_KEY  --  geojson by event
@@ -369,6 +461,9 @@ def get_aggregate_values_list(request, filters=None):
     TODO profile
     '''
     cleanup_events = Event.filter(filters)
+    if not settings.DEMO:
+        cleanup_events = cleanup_events.filter(transaction__status = "accepted")
+        
     agg_fields = {}
 
     event_values_list = [x.toValuesDict() for x in cleanup_events]
@@ -409,8 +504,8 @@ def get_aggregate_values_list(request, filters=None):
                             'count': 0
                         }
                     if db_field['datatype']['name'] == 'Weight':
-                        if not db_field['unit']['short_name'] == 'lbs':
-                            factor = Unit.get_conversion_factor(db_field['unit']['short_name'],'lbs')
+                        if not db_field['unit']['slug'] == 'pounds_lbs':
+                            factor = Unit.get_conversion_factor(db_field['unit']['slug'],'pounds_lbs')
                             lbs_val = factor * field_value['value']
                         else:
                             lbs_val = field_value['value']
@@ -449,6 +544,7 @@ def get_agg_template(field):
         unit = ''
     return {
         'name': field['name'],
+        'label': field['label'],
         'type': field['datatype']['name'],
         'unit': unit,
         'value': None,
@@ -517,7 +613,7 @@ def create_event(request):
     return res
 
 @login_required            
-def event_location(request):
+def event_location(request, form=None):
     createEventForm = CreateEventForm
     eventForm = createEventForm(request.POST)
     event = {}
@@ -540,10 +636,14 @@ def event_location(request):
         event['state'] = eventForm.data['state']
         event['latitude'] = eventForm.data['latitude']
         event['longitude'] = eventForm.data['longitude']
-        form = DataSheetForm(datasheet, None, request.POST)
+        if form:
+            formError = "Please correct the errors in your form below."
+            form.hideRequiredFields(datasheet)
+        else:
+            formError = None
+            form = DataSheetForm(datasheet, None, request.POST)
         
-
-        return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'eventForm': eventForm.as_p(), 'event':event, 'active':'events'}))
+        return render_to_response('fill_datasheet.html', RequestContext(request, {'form':form.as_p(), 'eventForm': eventForm.as_p(), 'event':event, 'active':'events', 'error':formError}))
     else :
     
         error = 'There is an error in your location data. Please be sure to fill out all required fields.'
@@ -575,7 +675,7 @@ def event_save(request):
         state = State.objects.get(initials=createEventForm.data['state'])
         point = Point(float(createEventForm.data['longitude']), float(createEventForm.data['latitude']))
         
-        user_transaction = UserTransaction(submitted_by = request.user, status='New', organization=organization, project=project)
+        user_transaction = UserTransaction(submitted_by = request.user, status='new', organization=organization, project=project)
         user_transaction.save()
         if user_transaction.id:
             if datasheet.type_id.display_sites:        
@@ -602,12 +702,13 @@ def event_save(request):
             if event.id:
                 datasheetForm = DataSheetForm(event.datasheet_id, event, None, request.POST)
             if event.id and datasheetForm.is_valid():
-                datasheetForm.save()
+                datasheetForm.save(datasheet)
                 return HttpResponseRedirect('/events/%s' % event.id)
             else:
                 Event.delete(event)
                 if created:
                     Site.delete(site)
+                return event_location(request, datasheetForm)
         else:
             UserTransaction.delete(user_transaction)
             event = {}
@@ -694,7 +795,7 @@ def edit_datasheet(request, event_id):
         event_details = {
             'organization': event.proj_id.projectorganization_set.get(is_lead=True).organization_id.orgname,
             'project': event.proj_id.projname,
-            'date': event.cleanupdate,
+            'date': event.cleanupdate.strftime('%m/%d/%Y'),
             'data_sheet': event.datasheet_id.sheetname,
             'state': event.site.state.name,
             'latitude': event.site.lat,
@@ -714,7 +815,7 @@ def edit_datasheet(request, event_id):
             event_details = {
             'organization': event.proj_id.projectorganization_set.get(is_lead=True).organization_id.orgname,
             'project': event.proj_id.projname,
-            'date': event.cleanupdate,
+            'date': event.cleanupdate.strftime('%m/%d/%Y'),
             'data_sheet': event.datasheet_id.sheetname,
             'state': event.site.state.name,
             'latitude': event.site.lat,
@@ -861,18 +962,19 @@ def bulk_import(request):
         logger = logging.getLogger('datasheet_errors')
         form = BulkImportForm(request.POST, request.FILES)
         if form.is_valid():
-            rows = csv.DictReader(request.FILES['csvfile'])
+            rows = csv.DictReader(request.FILES['csv_file'])
             rows = list(rows) # eval now so we can do multiple loops
             if len(rows) == 0:
                 return bulk_bad_request(form, request, ['Uploaded file does not contain any rows.', ])
             
             # Get the datasheet. Must post a datasheet_id variable
             try:
-                datasheet_id = request.POST['datasheet_id']
+                datasheet_id = request.POST['datasheet']
             except KeyError:
                 return bulk_bad_request(form, request, ['Form is not valid, please review.', ])
 
             ds = get_object_or_404(DataSheet, pk=datasheet_id)
+
             valid, message = ds.is_valid() 
             if not valid:
                 errors = ["""Sorry. This datasheet is not configured handle bulk imports. 
@@ -926,9 +1028,9 @@ def bulk_import(request):
             
             sites = []
 
-            project = Project.objects.get(id=form.data['project_id'])
+            project = Project.objects.get(projname=form.data['project'])
             organization = Organization.objects.get(orgname=form.data['organization'])
-            user_transaction = UserTransaction(submitted_by = request.user, status = 'New', organization=organization, project=project)
+            user_transaction = UserTransaction(submitted_by = request.user, status = 'new', organization=organization, project=project)
             user_transaction.save()
             if user_transaction.id:
                 for site_key in unique_site_keys:
@@ -970,7 +1072,7 @@ def bulk_import(request):
                         date_string = get_required_val(ds,'date', row)
                         date = parse_date(date_string)
 
-                        project = get_object_or_404(Project, id=int(form.cleaned_data['project_id']))
+                        project = get_object_or_404(Project, projname=form.cleaned_data['project'])
                         event = Event(
                             datasheet_id = ds,
                             proj_id = project, # get this at the row level? or the bulk import level?
@@ -1072,7 +1174,7 @@ def bulk_import(request):
                         ds_final_form = DataSheetForm(ds, event, None, qd)
                         if ds_final_form.is_valid():
                             try:
-                                ds_final_form.save()
+                                ds_final_form.save(ds)
                             except Exception as e:
                                 logger.error(unicode(e)) 
                                 errors.append("An internal error occured while saving the form. Please contact the database administrator.")

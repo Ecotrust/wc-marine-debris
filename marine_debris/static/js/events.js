@@ -138,6 +138,7 @@ function viewModel(options) {
         filters.push(app.viewModel.pointFilter);
       }
       aoData.push( { "name": "filter", "value": JSON.stringify(filters) });
+      aoData.push( { "name": "accepted-only", "value": true });
     }
   };
 

@@ -34,14 +34,28 @@
 				<dt data-bind="visible: reason">reason for rejection</dt>
 				<dd data-bind="text: reason, visible: reason"></dd>
 			</dl>
-		  	<table class="table table-striped" data-bind="dataTable: {  options: $root.eventTableOptions, rowTemplate: 'eventRowTemplate',  columns: [
-	                { mDataProp: 'datasheet.event_type', sTitle: 'Event Type', 'sWidth': '25%'},
-	                { mDataProp: 'site.name', sTitle: 'Site', 'sWidth': '35%'},
-	                { mDataProp: 'site.county', sTitle: 'County', 'sWidth': '15%'},
-	                { mDataProp: 'site.st_initials', sTitle: 'State', 'sWidth': '5%'},
-	                { mDataProp: 'date', sTitle: 'Date', 'sWidth': '10%' }
-	              ] }">
-			</table>
+            <div><!-- data-bind="if: showSites, visible: showSites > 0"> -->
+                <h3>Sites</h3>
+                <table class="table table-striped" data-bind="dataTable: {  options: $root.siteTableOptions, rowTemplate: 'siteRowTemplate',  columns: [
+                        { mDataProp: 'name', sTitle: 'Site', 'sWidth': '25%'},
+                        { mDataProp: 'state', sTitle: 'State', 'sWidth': '15%'},
+                        { mDataProp: 'county', sTitle: 'County', 'sWidth': '20%'},
+                        { mDataProp: 'lat', sTitle: 'Lat', 'sWidth': '20%'},
+                        { mDataProp: 'lon', sTitle: 'Lon', 'sWidth': '20%'}
+                      ] }">
+                </table>
+            </div>
+            <div><!-- data-bind="if: showEvents, visible: showEvents > 0"> -->
+                <h3>Events</h3>
+                <table class="table table-striped" data-bind="dataTable: {  options: $root.eventTableOptions, rowTemplate: 'eventRowTemplate',  columns: [
+                        { mDataProp: 'datasheet.event_type', sTitle: 'Event Type', 'sWidth': '25%'},
+                        { mDataProp: 'site.name', sTitle: 'Site', 'sWidth': '35%'},
+                        { mDataProp: 'site.county', sTitle: 'County', 'sWidth': '15%'},
+                        { mDataProp: 'site.st_initials', sTitle: 'State', 'sWidth': '5%'},
+                        { mDataProp: 'date', sTitle: 'Date', 'sWidth': '10%' }
+                      ] }">
+                </table>
+            </div>
 		</div>
 	</div>
 	<div data-bind="visible: ! selectedTransaction()" style="display: none">
@@ -81,9 +95,32 @@
   <strong>Error!</strong> <span data-bind="text: showError"></span>
 </div>
 </div>
-<div data-bind="visible: ! selectedEvent()">
+<div data-bind="visible: (! selectedEvent() && ! selectedSite())">
 	Here is some help content.
 </div>
+
+<div class="management" data-bind="if: selectedSite, visible: selectedSite" style="display:none">
+	<div class="tab-pane" id="site-details-content">
+	    <div data-bind="with: selectedSite">
+	    	<div class="row-fluid">
+	    		<div class="span6">
+			      <h4><span data-bind="text: name"></span><img data-bind="visible: $root.showDetailsSpinner" src="{{MEDIA_URL}}img/ajax-loader.gif" class="pull-right"/></h4>
+			      <dl class="dl-horizontal">
+			        <dt>state</dt>
+			        <dd><span data-bind="text: state"></span></dd>
+			        <dt>county</dt>
+                    <dd><span data-bind="text: county"></span></dd>
+			      </dl>
+                </div>
+                <div class="span6">
+                    <div id="map" style="height: 200px">
+                    </div>
+                </div>
+            </div>
+	    </div>
+	</div>
+</div>
+
 <div class="management" data-bind="if: selectedEvent, visible: selectedEvent" style="display:none">
 	<div class="tab-pane" id="event-details-content">
 	    <div data-bind="with: selectedEvent">
@@ -135,6 +172,20 @@
   </div>
 </div>
 
+<div id="dependence-modal" class="modal  fade">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismis="modal" aria-hidden="true">&times;</button>
+    <h3>Site Dependency</h3>
+  </div>
+  <div class="modal-body"> 
+    <p>The event(s) in this transaction depend(s) on sites that are not yet accepted!</p>
+    <p>Please accept transactions with the following IDs before accepting this one:<span data-bind="text: dependency_text"></p>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Close</a>
+  </div>
+</div>
+
 {% endblock %}
 {% block styles %}
     <link href="{{STATIC_URL}}third-party/jquery/css/jquery.dataTables.css" rel="stylesheet" />
@@ -145,9 +196,10 @@
 {% block scripts %}
 
 <script type="text/html" id="rowTemplate">
+	<td data-bind="text: id, click: $root.selectTransaction"></td>
 	<td data-bind="text: username, click: $root.selectTransaction"></td>
-	<td data-bind="text: organization, click: $root.selectTransaction"></td>
 	<td data-bind="text: timestamp, click: $root.selectTransaction"></td>
+	<td data-bind="text: sites_count, click: $root.selectTransaction"></td>
 	<td data-bind="text: events_count, click: $root.selectTransaction"></td>
 	<td><span class="label" data-bind="text: status(), click: $root.selectTransaction, css: { 'label-important': status === 'rejected', 'label-success': status() === 'accepted', 'label-warning': status() === 'new' }"></span></td>
 </script>
@@ -157,6 +209,13 @@
   <td data-bind="text: site.county, click: $root.selectEvent"></td>
   <td data-bind="text: site.st_initials, click: $root.selectEvent"></td>
   <td data-bind="text: date, click: $root.selectEvent"></td>
+</script>
+<script type="text/html" id="siteRowTemplate">
+  <td data-bind="text: name, click: $root.selectSite"></td>
+  <td data-bind="text: state, click: $root.selectSite"></td>
+  <td data-bind="text: county, click: $root.selectSite"></td>
+  <td data-bind="text: lat, click: $root.selectSite"></td>
+  <td data-bind="text: lon, click: $root.selectSite"></td>
 </script>
 <script src="{{STATIC_URL}}js/management.js"></script>
 {% endblock %}

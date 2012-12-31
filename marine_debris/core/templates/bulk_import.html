@@ -17,7 +17,6 @@
 {% endblock %}
 
 {% block rightcontent %}
-  {% flatblock "bulk-help" %}
   {% if errors %}
   <h4>The following errors were encountered</h4>
   <ul class="errorlist unstyled">
@@ -31,12 +30,14 @@
   {% if not errors and success and sites %}
 
   <div class="alert alert-success"> Bulk Upload Complete </div>
+  
+  <h4>Your data has been submitted. You will receive an email once it has been reviewed.</h4>
 
   <h4> {{ events|length }} events were loaded </h4>
     <ul>
     {% for event in events %}
     <li>
-    On {{event.cleanupdate}} 
+    On {{event.cleanupdate.date}} 
     at {{event.site}}
     for the {{event.proj_id}} Project
     </li>
@@ -50,9 +51,6 @@
         {% endif %}
     {% endfor %}
     </ul>
-    <div class="well" style="width:240px; height: 200px;">
-        MAP
-    </div>
   {% endif %}
 {% if site_form %}
 <div id="site-form" style="display:none">
@@ -75,6 +73,9 @@
   </div>
 </div>
 {% endif %}
+{% if not success %}
+    {% flatblock "bulk-help" %}
+{% endif %}
 {% endblock %}
 {% block scripts %}
 <script src="{{STATIC_URL}}third-party/js/jquery.ba-bbq.min.js"></script>
@@ -85,6 +86,7 @@
 
 {% block js %}
 
+var json = {"orgs": {{json|safe}}};
      
 var onResizeMap = function () {
   setTimeout( function() { map.updateSize();}, 200);
@@ -98,5 +100,52 @@ $(document).ready(function () {
   });
   
 });
+
+function BulkViewModel() {
+        var self = this;
+        
+        self.data = json;
+        self.selectedOrganizationName = ko.observable();
+        self.selectedOrganization = ko.computed(function() {
+            var org = false;
+            $.each(json.orgs, function(index, value) {
+                if (value.name === self.selectedOrganizationName()){
+                    org = value;
+                }
+            });
+            return org;
+        });
+        self.selectedProjectName = ko.observable();
+        self.selectedProject = ko.computed(function () {
+            var proj = false;
+            if (self.selectedOrganization() && self.selectedProjectName()){
+                $.each(self.selectedOrganization().projects, function(index, value) {
+                    if (value.name === self.selectedProjectName()){
+                        proj = value;
+                    }
+                });
+            }
+            return proj;
+        });
+
+        self.availableDatasheets = ko.observable();
+        self.selectedDatasheet = ko.observable();
+        
+        self.availableDatasheets = ko.computed(function() {
+            var ads = false;
+            if (self.selectedOrganization() && self.selectedProject()){
+                return $.map(self.selectedProject().datasheets, function(datasheet) {
+                    datasheet.name = self.selectedOrganization().name + ' ' + datasheet.start_date + ' ' + datasheet.name;
+                    return datasheet;
+                });
+            } else {
+                return false;
+            }
+        });
+        
+    }
+    
+    app.viewModel = new BulkViewModel();
+    ko.applyBindings(app.viewModel);
 
 {% endblock %}

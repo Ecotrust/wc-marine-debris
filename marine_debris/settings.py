@@ -2,7 +2,12 @@
 import os, sys
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+DEMO = False
 SERVER = 'Apache'   #Set to 'Dev' in local settings if running Django's dev server
+
+TOOL_URL = 'http://debris-db.westcoastoceans.org'
+WCGA_ACT_URL = 'http://www.westcoastoceans.org/index.cfm?content.display&pageID=81'
+DEFAULT_FROM_EMAIL = 'info@westcoastoceans.org'
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -28,7 +33,7 @@ MANAGERS = ADMINS
 # timezone as the operating system.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'US/Pacific'
 USE_TZ = True
 
 # Language code for this installation. All choices can be found here:

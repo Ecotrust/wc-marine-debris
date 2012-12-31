@@ -208,8 +208,8 @@ class StateAdmin(admin.ModelAdmin):
     }
    
 class UnitAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'short_name', 'data_type')
-    search_fields = ['long_name', 'short_name', 'data_type__name']
+    list_display = ('__unicode__', 'short_name', 'data_type', 'slug')
+    search_fields = ['long_name', 'short_name', 'data_type__name', 'slug']
     formfield_overrides = {
         models.TextField: {
             'widget': TextInput()

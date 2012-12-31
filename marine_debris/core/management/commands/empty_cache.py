@@ -10,7 +10,7 @@ class Command(BaseCommand):
             keys = [
                     'event_%s_eventdict' % event.id,
                     'event_%s_valuedict_convert' % event.id,
-                    'event_%s_valuedict_ray' % event.id,
+                    'event_%s_valuedict_raw' % event.id,
                     'event_%s_geocache' % event.id,
                 ]
             for key in keys:
@@ -20,4 +20,10 @@ class Command(BaseCommand):
 
         for from_unit in Unit.objects.all():
             for to_unit in Unit.objects.all():
-                cache.delete('unit_from_%s_to_%s' % (from_unit.short_name, to_unit.short_name))
+                cache.delete('unit_from_%s_to_%s' % (from_unit.slug, to_unit.slug))
+                
+        for trans in UserTransaction.objects.all():
+            cache.delete('transaction_%s' % trans.id)
+            
+        for state in State.objects.all():
+            cache.delete('statecache_%s' % state.id)
