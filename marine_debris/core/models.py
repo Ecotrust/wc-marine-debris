@@ -852,11 +852,10 @@ class Event (models.Model):
             else:
                 try:
                     if float(value) == 0.0:
-                        value = ''
-                        unit = ''
+                        value = '0'
                 except ValueError:
                     pass
-            if unit == 'Text' or unit == 'Count':
+            if unit == 'Text':
                 unit = ''
             rvals.append({
                 'text': text,
