@@ -11,6 +11,8 @@ add_introspection_rules([], ["^django\.contrib\.gis\.db\.models\.fields\.PointFi
 from django.core.cache import cache
 from django.contrib.gis.geos import Polygon
 from django.template.defaultfilters import slugify
+from pytz import timezone
+import pytz
 import urllib
 import time
 
@@ -557,7 +559,8 @@ class UserTransaction (models.Model):
     def toDict(self):    
         key = 'transaction_%s' % self.id        #CACHE_KEY  --  transaction details by transaction
         res = cache.get(key)
-
+        pacific = timezone('US/Pacific')
+        
         if not res:
     
             events_count = Event.objects.filter(transaction=self).count()
@@ -584,7 +587,7 @@ class UserTransaction (models.Model):
                 'username': self.submitted_by.username,
                 'organization': orgname,
                 'project': projname,
-                'timestamp': self.created_date.strftime('%m/%d/%Y %H:%M'),
+                'timestamp': self.created_date.astimezone(pacific).strftime('%m/%d/%Y %H:%M'),
                 'status': self.status,
                 'id': self.id,
                 'events_count': events_count,
