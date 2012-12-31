@@ -268,13 +268,10 @@
                 </div>
                 <h4>Report <img src="{{MEDIA_URL}}img/ajax-loader.gif" data-bind="visible: showReportSpinner"/></h4>
                 <div class="row-fluid">
-                  <div class="span8" data-bind="if: report">
+                  <div class="span6" >
                     <p>This report is a summary of all of the events from your query results on the left.</p>
-                    <p data-bind="visible: report().report.datasheets.length > 1"><i class="icon-info-sign"></i> <em>The data in this report is aggregated from different datasheets. Not all values will be aggregated from fields present in all datasheets, and may not be fully representative.</em>
-                      
-                    </p>
                   </div>
-                  <div class="span4">
+                  <div class="span5" >
                     <div data-bind="visible: activeFilterTypes().length" class="well">
                       <p>Active Filters</p>
                       <dl  data-bind="foreach: activeFilterTypes">
@@ -284,6 +281,19 @@
                     </div>
                     <div data-bind="visible: activeFilterTypes().length === 0">
                       <p>You have no filters.  Showing all data.  Loading a report may take some time.</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div data-bind="if: report">
+                  <div class="row-fluid well" data-bind="visible: report().report.datasheets.length > 1">
+                    <div class="span1">
+                      <p class="icon-info-sign"></p>
+                    </div>
+                    <div class="span10">
+                      <p>
+                        Report values with this icon were not collected for all events. Do not misuse or misrepresent this information. <a href="/aggregation-info">Learn More</a>.
+                      </p>
                     </div>
                   </div>
                 </div>
