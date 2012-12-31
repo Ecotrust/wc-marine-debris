@@ -3,6 +3,7 @@ import datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
+from django.template.defaultfilters import slugify
 
 class Migration(DataMigration):
 
@@ -10,6 +11,7 @@ class Migration(DataMigration):
         "Write your forwards methods here."
         # Note: Remember to use orm['appname.ModelName'] rather than "from appname.models..."
         for unit in orm['core.Unit'].objects.all():
+            unit.slug = slugify(unit.long_name + '_' + unit.short_name)
             unit.save()
 
     def backwards(self, orm):
