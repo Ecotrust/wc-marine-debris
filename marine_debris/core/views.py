@@ -544,6 +544,7 @@ def get_agg_template(field):
         unit = ''
     return {
         'name': field['name'],
+        'label': field['label'],
         'type': field['datatype']['name'],
         'unit': unit,
         'value': None,
