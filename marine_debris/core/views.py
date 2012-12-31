@@ -472,9 +472,16 @@ def get_aggregate_values_list(request, filters=None):
     categories = {}
 
     for event in cleanup_events:
-        datasheet = event.toEventsDict['datasheet']['name']
-        if datasheet not in datasheets:
-            datasheets.append(datasheet)
+        datasheet = event.toEventsDict['datasheet']
+        if datasheet['name'] not in datasheets:
+            datasheets.append(datasheet['name'])
+        for dsf in datasheet['datasheetfields']:
+            if dsf['field']['datatype']['aggregatable']:
+                if not agg_fields.has_key(dsf['field']['name']):
+                    agg_fields[dsf['field']['name']] = get_agg_template(dsf['field'])
+                agg_fields[dsf['field']['name']]['num_values'] = agg_fields[dsf['field']['name']]['num_values'] + 1
+                
+                
             
     fields = Field.toFieldsDict()
             
@@ -495,7 +502,6 @@ def get_aggregate_values_list(request, filters=None):
                     field['value'] = 0
 
                 field['value'] = field['value'] + float(field_value['value'])
-                field['num_values'] = field['num_values'] + 1
                 #Collect data for high-level categories
                 if db_field['display_category']['name'] not in ['Location', 'Date', 'Event', 'Debris', 'Mixed', ''] and (db_field['unit']['short_name'] == 'Count' or db_field['datatype']['name'] == 'Weight'):
                     if not categories.has_key(db_field['display_category']['name']):
