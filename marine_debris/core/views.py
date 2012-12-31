@@ -1172,7 +1172,7 @@ def bulk_import(request):
                         ds_final_form = DataSheetForm(ds, event, None, qd)
                         if ds_final_form.is_valid():
                             try:
-                                ds_final_form.save()
+                                ds_final_form.save(ds)
                             except Exception as e:
                                 logger.error(unicode(e)) 
                                 errors.append("An internal error occured while saving the form. Please contact the database administrator.")
