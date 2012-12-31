@@ -86,6 +86,7 @@
 
 {% block js %}
 
+var json = {"orgs": {{json|safe}}};
      
 var onResizeMap = function () {
   setTimeout( function() { map.updateSize();}, 200);
@@ -99,5 +100,52 @@ $(document).ready(function () {
   });
   
 });
+
+function BulkViewModel() {
+        var self = this;
+        
+        self.data = json;
+        self.selectedOrganizationName = ko.observable();
+        self.selectedOrganization = ko.computed(function() {
+            var org = false;
+            $.each(json.orgs, function(index, value) {
+                if (value.name === self.selectedOrganizationName()){
+                    org = value;
+                }
+            });
+            return org;
+        });
+        self.selectedProjectName = ko.observable();
+        self.selectedProject = ko.computed(function () {
+            var proj = false;
+            if (self.selectedOrganization() && self.selectedProjectName()){
+                $.each(self.selectedOrganization().projects, function(index, value) {
+                    if (value.name === self.selectedProjectName()){
+                        proj = value;
+                    }
+                });
+            }
+            return proj;
+        });
+
+        self.availableDatasheets = ko.observable();
+        self.selectedDatasheet = ko.observable();
+        
+        self.availableDatasheets = ko.computed(function() {
+            var ads = false;
+            if (self.selectedOrganization() && self.selectedProject()){
+                return $.map(self.selectedProject().datasheets, function(datasheet) {
+                    datasheet.name = self.selectedOrganization().name + ' ' + datasheet.start_date + ' ' + datasheet.name;
+                    return datasheet;
+                });
+            } else {
+                return false;
+            }
+        });
+        
+    }
+    
+    app.viewModel = new BulkViewModel();
+    ko.applyBindings(app.viewModel);
 
 {% endblock %}

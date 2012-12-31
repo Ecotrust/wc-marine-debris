@@ -418,7 +418,7 @@ class DataSheetField (models.Model):
         ordering = ['field_name', 'sheet_id__sheetname', 'field_id__internal_name']
     
 class Project (models.Model):
-    projname = models.TextField()
+    projname = models.TextField(unique=True)
     organization = models.ManyToManyField(Organization, through='ProjectOrganization')
     website = models.TextField(blank=True, null=True)
     contact_name = models.TextField(blank=True, null=True)

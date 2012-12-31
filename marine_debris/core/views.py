@@ -961,18 +961,19 @@ def bulk_import(request):
         logger = logging.getLogger('datasheet_errors')
         form = BulkImportForm(request.POST, request.FILES)
         if form.is_valid():
-            rows = csv.DictReader(request.FILES['csvfile'])
+            rows = csv.DictReader(request.FILES['csv_file'])
             rows = list(rows) # eval now so we can do multiple loops
             if len(rows) == 0:
                 return bulk_bad_request(form, request, ['Uploaded file does not contain any rows.', ])
             
             # Get the datasheet. Must post a datasheet_id variable
             try:
-                datasheet_id = request.POST['datasheet_id']
+                datasheet_id = request.POST['datasheet']
             except KeyError:
                 return bulk_bad_request(form, request, ['Form is not valid, please review.', ])
 
             ds = get_object_or_404(DataSheet, pk=datasheet_id)
+
             valid, message = ds.is_valid() 
             if not valid:
                 errors = ["""Sorry. This datasheet is not configured handle bulk imports. 
@@ -1026,7 +1027,7 @@ def bulk_import(request):
             
             sites = []
 
-            project = Project.objects.get(id=form.data['project_id'])
+            project = Project.objects.get(projname=form.data['project'])
             organization = Organization.objects.get(orgname=form.data['organization'])
             user_transaction = UserTransaction(submitted_by = request.user, status = 'new', organization=organization, project=project)
             user_transaction.save()
@@ -1070,7 +1071,7 @@ def bulk_import(request):
                         date_string = get_required_val(ds,'date', row)
                         date = parse_date(date_string)
 
-                        project = get_object_or_404(Project, id=int(form.cleaned_data['project_id']))
+                        project = get_object_or_404(Project, projname=form.cleaned_data['project'])
                         event = Event(
                             datasheet_id = ds,
                             proj_id = project, # get this at the row level? or the bulk import level?
