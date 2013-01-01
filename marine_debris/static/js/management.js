@@ -5,7 +5,7 @@ app.map = new OpenLayers.Map({
 		displayProjection: new OpenLayers.Projection("EPSG:4326"),
 		projection: "EPSG:3857"
 });
-app.map.updateSize = $.noop;
+map.updateSize = $.noop;
 app.markers = new OpenLayers.Layer.Markers( "Markers" );
 app.map.addLayer(app.markers);
 
@@ -27,10 +27,11 @@ function viewModel (fixture) {
 
 	self.selectEvent = function (event, e) {
 		var $row = $(e.target).closest('tr');
+		$('tr.active').removeClass('active');
 		$row.addClass('active');
-		$row.siblings().removeClass('active');
+		
 		self.showDetailsSpinner(true);
-
+		self.selectedSite(false);
 		if (event.data) {
 			self.selectedEvent(event);
 			self.showDetailsSpinner(false);
@@ -46,10 +47,11 @@ function viewModel (fixture) {
     
     self.selectSite = function (site, e) {
 		var $row = $(e.target).closest('tr');
+		$('tr.active').removeClass('active');
 		$row.addClass('active');
-		$row.siblings().removeClass('active');
+		
 		self.showDetailsSpinner(true);
-
+		self.selectedEvent(false);
 		if (!site.data) {
             site.data = {
                 "details": {
@@ -210,7 +212,7 @@ function viewModel (fixture) {
 	];
 
 	self.eventTableOptions = {
-		"iDisplayLength": 8,
+		"iDisplayLength": 5,
 		"bProcessing": true,
 		"bServerSide": true,
 		"sPaginationType": "full_numbers",
@@ -228,7 +230,7 @@ function viewModel (fixture) {
 	};
     
     self.siteTableOptions = {
-		"iDisplayLength": 8,
+		"iDisplayLength": 5,
 		"bProcessing": true,
 		"bServerSide": true,
 		"sPaginationType": "full_numbers",

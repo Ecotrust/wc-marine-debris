@@ -193,13 +193,6 @@ def get_filters(request):
         "fields": fields
     }))
 
-sort_cols = {
-    "site.st_initials": 'site__state',
-    "datasheet.event_type": "datasheet_id__type_id",
-    "site.name": "site__sitename",
-    "site.county": "site__county",
-    "date": "cleanupdate"
-}
 
 def download_stream_generator(request):
     yield ' ' # yield something immediately to start the download
@@ -290,6 +283,14 @@ def download_events(request):
     res['Content-Disposition'] = 'attachment; filename="%s.csv"' % filename
     return res
 
+event_sort_cols = {
+    "site.st_initials": 'site__state',
+    "datasheet.event_type": "datasheet_id__type_id",
+    "site.name": "site__sitename",
+    "site.county": "site__county",
+    "date": "cleanupdate"
+}
+
 def get_events(request):
     start_index = request.GET.get('iDisplayStart', 0)
     count = request.GET.get('iDisplayLength', False)
@@ -315,7 +316,7 @@ def get_events(request):
         sort_name_key = request.GET.get("mDataProp_%s" % sort_column, False)
         sort_dir = request.GET.get("sSortDir_0", False)
         if sort_name_key:
-            sort_name = sort_cols[sort_name_key]
+            sort_name = event_sort_cols[sort_name_key]
             if sort_dir == 'desc':
                 sort_name = "-" + sort_name
             qs = qs.order_by(sort_name)
@@ -360,14 +361,34 @@ def get_events(request):
        "sEcho": sEcho
     }
     return HttpResponse(simplejson.dumps(res))
+
+site_sort_cols = {
+    'name': "sitename",
+    'state': 'state',
+    'county': 'county'
+}
+
     
 def get_sites(request):
     sEcho = request.GET.get('sEcho', False)
-    start_id = request.GET.get('startID', False)
+    start_index = request.GET.get('iDisplayStart', 0)
     transaction = request.GET.get('transaction', False)
+    count = request.GET.get('iDisplayLength', False)
+    sEcho = request.GET.get('sEcho', False)
+    sort_column = request.GET.get('iSortCol_0', False)
 
     if transaction:
         qs = Site.objects.filter(transaction__id=transaction)
+        if sort_column:
+            sort_name_key = request.GET.get("mDataProp_%s" % sort_column, False)
+            sort_dir = request.GET.get("sSortDir_0", False)
+            if sort_name_key:
+                sort_name = site_sort_cols[sort_name_key]
+                if sort_dir == 'desc':
+                    sort_name = "-" + sort_name
+                qs = qs.order_by(sort_name)
+        if count:
+            qs = qs[int(start_index):int(start_index) + int(count)]
     else:
         qs = Site.objects.all()
 
