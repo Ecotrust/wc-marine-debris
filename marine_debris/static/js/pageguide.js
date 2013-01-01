@@ -14,7 +14,7 @@ var defaultGuide = {
     },{
       target: '#location-tab',
       content: 'The <i>Location</i> tab lets you filter events by State or County by typing them in or selecting them from the drop-down list. Note, you can add more than one state or county.',
-      direction: 'top',
+      direction: 'left',
       arrow: {offsetX: 0, offsetY: 50}
     },{
       target: '#event-type-tab',
