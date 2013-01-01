@@ -103,6 +103,13 @@ h6 { font-weight: normal; }
 	bottom: 15px;
 
 }
+
+.manage-transactions .dataTables_filter {
+	display: none;
+}
+.manage-transactions h3 {
+	margin-bottom: 0px;
+}
 .dataTables_wrapper .table-hover tr.even.active td,
 .dataTables_wrapper .table-hover tr.odd.active td,
 .dataTables_wrapper .table-hover tr:hover td {
@@ -411,7 +418,8 @@ img.olTileImage {
 	clear:both;
 }
 .wcga-database-right .management .wrapper {
-	height: 330px;
+	height: 400px;
+	max-height: 400px;
 }
 .wcga-database {
 	overflow: auto;
