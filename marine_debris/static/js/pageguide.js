@@ -13,12 +13,12 @@ var defaultGuide = {
       arrow: {offsetX: 0, offsetY: 0}
     },{
       target: '#location-tab',
-      content: 'The <i>Location</i> tab lets you filter events by State or County by typing them in or selecting them from the drop-down list. <i>Note</i>, you can add more than one state or county.',
-      direction: 'left',
+      content: 'The <i>Location</i> tab lets you filter events by State or County by typing them in or selecting them from the drop-down list. Note, you can add more than one state or county.',
+      direction: 'top',
       arrow: {offsetX: 0, offsetY: 50}
     },{
       target: '#event-type-tab',
-      content: 'The <i>Type Of debris</i> tab lets you filter by event type (e.g. Site Cleanup, Derelict Gear Removal) or Debris Type (e.g. plastic bags, ammunition, debris description).',
+      content: 'The <i>Type of debris</i> tab lets you filter by event type (e.g. site cleanups, derelict gear removals) or Debris Type (e.g. plastic bags, ammunition, debris description).',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     },{
@@ -42,13 +42,8 @@ var defaultGuide = {
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     },{
-      target: '#right-content',
-      content: 'You can get more information about individual events in your list, or your list as a whole using the Map, Event Details, and Report tabs.',
-      direction: 'top',
-      arrow: {offsetX: 0, offsetY: 0}
-    },{
       target: '#map-tab',
-      content: 'The <i>Map</i> tab shows you geographically where each of the events in your list occurred.  Orange colored circles are site cleanups and grey colored circles are derelict gear removals.  Events that are close together are clustered <image>.  Click on a cluster to zoom in on individual events.  Individual events that took place at the exact same location will always show as clustered, no matter how far you zoom in.  Clicking a cluster or an event on the map will also  reorder the event list so that the event(s) you selected will show first in the list.',
+      content: 'The <i>Map</i> tab shows you geographically where each of the events in your list occurred.  Orange colored circles are site cleanups and grey colored circles are derelict gear removals.  Events that are close together are clustered <img src="' + static_url + 'img/cluster.png" />.  Click on a cluster to zoom in on individual events <img src="' + static_url + 'img/event_point.png" />. Individual events that took place at the exact same location will always show as clustered, no matter how far you zoom in.  Clicking a cluster or an event on the map will also  reorder the event list so that the event(s) you selected will show first in the list.',
       direction: 'top',
       arrow: {offsetX: 0, offsetY: 0}
     },{
