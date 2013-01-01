@@ -1072,10 +1072,15 @@ def bulk_import(request):
                     except IndexError:
                         if ds.site_type == 'coord-based':
                             # just insert it 
-                            site, created = Site.objects.get_or_create(**site_key)
+                            lon = float(site_text.split('(')[1].split(' ')[0])
+                            lat = float(site_text.split(' ')[1].split(')')[0])
+                            point = Point(lon, lat)
+                            closest = impute_state_county(point)
+                            
+                            site, created = Site.objects.get_or_create(state = closest['state'], county = closest['county'], geometry = str(point))
                             if created:
                                 site.transaction = user_transaction
-                            site.save()
+                                site.save()
                             sites.append({'name':site_text, 'site':site})
                         else:
                             urlargs = urlencode(site_key) 
@@ -1279,4 +1284,34 @@ def get_downloads(request):
     return render_to_response('downloads.html', RequestContext(request,{'downloads': ds}))
 
 
+    
+def impute_state_county(point):
+        '''
+        Based on the geometry, sets state and county
+        '''
+        pnt = point
+        counties = County.objects.filter(geom__bboverlaps=pnt.buffer(1)) # search in a 1 degree radius
+
+        closest = None
+        shortest_distance = 181
+        for county in counties:
+            if county.geom.intersects(pnt):
+                # direct hit
+                closest = county
+                break
+            d = county.geom.distance(pnt)
+            if d < shortest_distance:
+                # look for the closest if no direct hit
+                closest = county
+                shortest_distance = d
+
+        if not closest:
+            return None
+
+        res = {
+            'county': closest.name,
+            'state': State.objects.filter(initials=closest.stateabr)[0]
+        }
+
+        return res
     
