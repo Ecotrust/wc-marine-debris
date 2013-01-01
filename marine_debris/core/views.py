@@ -962,13 +962,13 @@ def parse_date(date_string):
 
 @login_required    
 def bulk_import(request):
+    org_dict = [org.toDict for org in Organization.objects.all()]
+    org_json = simplejson.dumps(org_dict)
     if request.method == 'GET':
         form = BulkImportForm() # instance=ds)
     else:
         logger = logging.getLogger('datasheet_errors')
         #TODO: Filter Organizations by only those which the user has access to.
-        org_dict = [org.toDict for org in Organization.objects.all()]
-        org_json = simplejson.dumps(org_dict)
 
         form = BulkImportForm(request.POST, request.FILES)
         if form.is_valid():
@@ -983,12 +983,12 @@ def bulk_import(request):
             except KeyError:
                 return bulk_bad_request(form, request, ['Form is not valid, please review.', ], json=org_json)
 
-            ds = get_object_or_404(DataSheet, pk=datasheet_id)
+            ds = get_object_or_404(DataSheet, id=int(datasheet_id))
 
             valid, message = ds.is_valid() 
             if not valid:
                 errors = ["""Sorry. This datasheet is not configured handle bulk imports. 
-                        The database administrator has been notified and will fix the problem ASAP.""", ]
+                        Please notify the database administrator and it will be fixed ASAP.""", ]
                 logger.error(message) 
                 return bulk_bad_request(form, request, errors, json=org_json)
 

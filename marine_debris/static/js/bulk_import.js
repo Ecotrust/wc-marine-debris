@@ -63,8 +63,13 @@ $(function() {
       });
       $( "#download-csv-template" ).click( function(e) {
           e.preventDefault();
-          selected = $("#id_datasheet_id").val();
-          window.open("/datasheet/csv_header/" + selected);
+          // selected = $("#id_datasheet_id").val();
+          if (!app.viewModel.selectedDatasheet()) {
+            alert('Please select a datasheet, first.');
+          } else {
+            selected = app.viewModel.selectedDatasheet();
+            window.open("/datasheet/csv_header/" + selected);
+          }
       });
       $('.errorlist').on('click', '.cancel', function (e) {
         var $a = $(e.target).closest('.btn'), $container = $a.closest('li');
