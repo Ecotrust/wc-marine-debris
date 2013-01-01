@@ -223,6 +223,7 @@ ul.errorlist {
 }	
 #report-values-content dl {
     margin-top: 0px;
+    padding-left: 20px;
 }
 #report-values-content .well p {
 	margin-bottom: 0px;
@@ -232,6 +233,13 @@ ul.errorlist {
 	padding-top: 1px;
 	padding-bottom: 5px;
     width: 90%;
+    color: gray;
+}
+#report-values-content .well p.icon-info-sign {
+	color: #F71906;
+}
+#high-level-details-row {
+    margin-bottom: 15px;
 }
 .carousel-control {
 	display: none;
@@ -552,10 +560,21 @@ img.olTileImage {
     z-index: 4001;
 }
 
+#report {
+    margin-top: 20px;
+}
+
 #report dt {
-    font-size: 20px;
+    font-size: 15px;
 }
 #report dd {
-    font-size: 20px;
+    font-size: 15px;
     margin-bottom: 10px;
+}
+
+#report-text p {
+    font-size: larger;
+}
+#report-filter-header {
+    font-size: large;
 }

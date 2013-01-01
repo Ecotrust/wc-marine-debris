@@ -266,21 +266,21 @@
                 <div class="pull-right">
                   <button class="btn" data-bind="click: showMap"><i class="icon-globe"></i> return to map</button>
                 </div>
-                <h4>Report <img src="{{MEDIA_URL}}img/ajax-loader.gif" data-bind="visible: showReportSpinner"/></h4>
+                <h3>Report <img src="{{MEDIA_URL}}img/ajax-loader.gif" data-bind="visible: showReportSpinner"/></h3>
                 <div class="row-fluid">
                   <div class="span6" >
-                    <p>This report is a summary of all of the events from your query results on the left.</p>
+                    <p id="report-text">This report provides a cumulative summary of your list of events</p>
                   </div>
-                  <div class="span5" >
-                    <div data-bind="visible: activeFilterTypes().length" class="well">
-                      <p>Active Filters</p>
+                  <div class="span5" id="report-filters">
+                    <p id="report-filter-header">Active Filters</p>
+                    <div data-bind="visible: activeFilterTypes().length" >
                       <dl  data-bind="foreach: activeFilterTypes">
                         <dt data-bind="text: $data"></dt>
                         <dd data-bind="text: $root.queryDisplay()[$data]"></dd>
                       </dl>
                     </div>
                     <div data-bind="visible: activeFilterTypes().length === 0">
-                      <p>You have no filters.  Showing all data.  Loading a report may take some time.</p>
+                      <p>You have no filters.</p>
                     </div>
                   </div>
                 </div>
@@ -292,7 +292,7 @@
                     </div>
                     <div class="span10">
                       <p>
-                        Report values with this icon were not collected for all events. Do not misuse or misrepresent this information. <a href="/aggregation-info">Learn More</a>.
+                        Some fields in this report were not collected for all events in your list. Do not misuse the reported values for these fields! <a href="/aggregation-info">Learn More</a>.
                       </p>
                     </div>
                   </div>
