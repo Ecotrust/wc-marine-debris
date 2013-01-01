@@ -197,7 +197,7 @@ class DisplayCategory(models.Model):
         
 class Field (models.Model):
     unit_id = models.ForeignKey(Unit, blank=True, null=True) 
-    internal_name = models.TextField()
+    internal_name = models.TextField(unique=True)
     datatype = models.ForeignKey(DataType, default=8)
     minvalue = models.IntegerField(blank=True, null=True)
     maxvalue = models.IntegerField(blank=True, null=True)
@@ -393,11 +393,46 @@ class DataSheet (models.Model):
             type = self.type_id.type
         else:
             type = 'None'
+        datasheetfields = []
+        for field in self.datasheetfield_set.all():
+            
+            if field.field_id.unit_id:
+                field_unit = field.field_id.unit_id.short_name
+            else:
+                field_unit = ''
+            if field.grouping:
+                grouping = field.grouping.name
+            else:
+                grouping = ''
+            
+            datasheetfields.append({
+                'field': {
+                    'id': field.field_id.id,
+                    'name': field.field_id.internal_name,
+                    'label': field.field_id.label,
+                    'datatype': {
+                        'name':field.field_id.datatype.name,
+                        'aggregatable':field.field_id.datatype.aggregatable
+                    },
+                    'unit': {
+                        'short_name': field_unit
+                    }
+                },
+                'field_name': field.field_name,
+                'print_name': field.print_name,
+                'unit': {
+                    'short_name':field.unit_id.short_name
+                },
+                'grouping': grouping,
+                'required': field.required
+            })
+            
         ds_dict = {
             'name': self.sheetname,
             'start_date': self.year_started,
             'id': self.id,
             'event_type':type,
+            'datasheetfields': datasheetfields,
             'slug': self.slug,
             'url': '/datasheet/'+self.slug
         }
