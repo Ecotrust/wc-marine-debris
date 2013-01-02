@@ -318,7 +318,7 @@
                   <div class="span4" data-bind="if: report" id="report">
                     <div class="">
                       <dl data-bind="foreach: report().event_values" class="">
-                      <dt data-bind="text:$data.display_name"></dt>
+                      <dt><span data-bind="text:$data.display_name"></span><i class="icon-info-sign" data-bind="visible: $data.num_values < $parent.report().report.events, attr: { title: $data.tooltipText }" data-placement="bottom" rel="tooltip"></i></dt>
                         <dd data-bind="text: Math.floor($data.value)"></dd>
                       </dl>
                     </div>

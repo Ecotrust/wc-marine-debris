@@ -227,6 +227,7 @@ ul.errorlist {
 	color: #F71906;
 	padding: 2px 4px;
 	border: 1px solid #aaa;
+    margin-left: 5px;
 }	
 #report-values-content dl {
     margin-top: 0px;
