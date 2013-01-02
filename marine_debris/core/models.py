@@ -244,16 +244,24 @@ class Field (models.Model):
                     'name': '',
                     'display_order' : 10000
                 }
+            if self.datatype:
+                datatype = {
+                    'aggregatable': self.datatype.aggregatable,
+                    'name': self.datatype.name
+                }
+            else:
+                datatype = {
+                    'aggregatable': False,
+                    'name': ''
+                }
             
             dict =  {
+                'id': self.id,
                 'name': self.internal_name,
                 'label': self.label,
                 'type': self.datatype.name,
                 'unit': unit,
-                'datatype': {
-                    'aggregatable': self.datatype.aggregatable,
-                    'name': self.datatype.name
-                },
+                'datatype': datatype,
                 'display_category': display_category
             }
             cache.set(key, dict, settings.CACHE_TIMEOUT)
@@ -394,40 +402,11 @@ class DataSheet (models.Model):
         else:
             type = 'None'
         datasheetfields = []
-        for field in self.datasheetfield_set.all():
-            
-            if field.field_id.unit_id:
-                field_unit = field.field_id.unit_id.short_name
-            else:
-                field_unit = ''
-            if field.grouping:
-                grouping = field.grouping.name
-            else:
-                grouping = ''
-            
-            datasheetfields.append({
-                'field': {
-                    'id': field.field_id.id,
-                    'name': field.field_id.internal_name,
-                    'label': field.field_id.label,
-                    'datatype': {
-                        'name':field.field_id.datatype.name,
-                        'aggregatable':field.field_id.datatype.aggregatable
-                    },
-                    'unit': {
-                        'short_name': field_unit
-                    }
-                },
-                'field_name': field.field_name,
-                'print_name': field.print_name,
-                'unit': {
-                    'short_name':field.unit_id.short_name
-                },
-                'grouping': grouping,
-                'required': field.required
-            })
+        for dsfield in self.datasheetfield_set.all():
+            datasheetfields.append(dsfield.toDict())
             
         ds_dict = {
+            'id': self.id,
             'name': self.sheetname,
             'start_date': self.year_started,
             'id': self.id,
@@ -450,6 +429,32 @@ class DataSheetField (models.Model):
     
     def __unicode__(self):
         return "%s-%s-%s" % (self.field_name, self.sheet_id.sheetname, self.field_id.internal_name)
+        
+    def toDict(self):
+    
+        if self.grouping:
+            grouping = self.grouping.name
+        else:
+            grouping = ''
+            
+        if self.unit_id:
+            unit = {
+                'short_name': self.unit_id.short_name
+            }
+        else:
+            unit = {
+                'short_name': ''
+            }
+    
+        dict = {
+            'field': self.field_id.toDict,
+            'field_name': self.field_name,
+            'print_name': self.print_name,
+            'unit': unit,
+            'grouping': grouping,
+            'required': self.required
+        }
+        return dict
         
     class Meta:
         ordering = ['field_name', 'sheet_id__sheetname', 'field_id__internal_name']
@@ -915,11 +920,11 @@ class Event (models.Model):
     @property
     def toEventsDict(self):
         key = 'event_%s_eventdict' % self.id        #CACHE_KEY  --  Event details by event
-        d = cache.get(key)
+        dict = cache.get(key)
 
-        if not d:
+        if not dict:
             proj = self.proj_id
-            d = {
+            dict = {
                 "site": self.site.toDict,
                 "project": {
                     "name": proj.projname,
@@ -932,9 +937,9 @@ class Event (models.Model):
                 },
                 "date" : self.cleanupdate.strftime('%m/%d/%Y')
             } 
-            cache.set(key, d, settings.CACHE_TIMEOUT)
+            cache.set(key, dict, settings.CACHE_TIMEOUT)
 
-        return d
+        return dict
 
     def toValuesDict(self, convert_units=True):
         """

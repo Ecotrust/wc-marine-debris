@@ -491,9 +491,15 @@ def get_aggregate_values_list(request, filters=None):
     field_values = []
     datasheets = []
     categories = {}
+    display_categories={}
 
     for event in cleanup_events:
         datasheet = event.toEventsDict['datasheet']
+        if not display_categories.has_key(str(datasheet['id'])):
+            new_datasheet = True
+            display_categories[str(datasheet['id'])] = {}
+        else:
+            new_datasheet = False
         if datasheet['name'] not in datasheets:
             datasheets.append(datasheet['name'])
         for dsf in datasheet['datasheetfields']:
@@ -501,8 +507,37 @@ def get_aggregate_values_list(request, filters=None):
                 if not agg_fields.has_key(dsf['field']['name']):
                     agg_fields[dsf['field']['name']] = get_agg_template(dsf['field'])
                 agg_fields[dsf['field']['name']]['num_values'] = agg_fields[dsf['field']['name']]['num_values'] + 1
-                
-                
+                if dsf['field'].has_key('display_category') and dsf['field']['display_category']['name'] not in ['Location', 'Date', 'Event', 'Debris', 'Mixed', '']:
+                    display_category = dsf['field']['display_category']['name']
+                    if not categories.has_key(display_category):
+                        print "adding cat key %s" % display_category
+                        categories[display_category] = {
+                            'pounds': {
+                                'total': 0,
+                                'ds_hits': 0
+                            },
+                            'count': {
+                                'total': 0,
+                                'ds_hits': 0
+                            }
+                        }
+                    if new_datasheet:
+                        if not display_categories[str(datasheet['id'])].has_key(display_category):
+                            display_categories[str(datasheet['id'])][display_category] = {
+                                'pounds': False,
+                                'count': False
+                            }
+                        if dsf['field']['datatype']['name'] == 'Weight':
+                            display_categories[str(datasheet['id'])][display_category]['pounds'] = True
+                        if dsf['field']['unit']['short_name'] == 'Count':
+                            display_categories[str(datasheet['id'])][display_category]['count'] = True
+        for key in categories.keys():
+            if display_categories[str(datasheet['id'])].has_key(key):
+                print "datasheet has key %s" % key
+                if display_categories[str(datasheet['id'])][key]['pounds']:
+                    categories[key]['pounds']['ds_hits'] = categories[key]['pounds']['ds_hits'] + 1
+                if display_categories[str(datasheet['id'])][key]['count']:
+                    categories[key]['count']['ds_hits'] = categories[key]['count']['ds_hits'] + 1
             
     fields = Field.toFieldsDict()
             
@@ -525,10 +560,16 @@ def get_aggregate_values_list(request, filters=None):
                 field['value'] = field['value'] + float(field_value['value'])
                 #Collect data for high-level categories
                 if db_field['display_category']['name'] not in ['Location', 'Date', 'Event', 'Debris', 'Mixed', ''] and (db_field['unit']['short_name'] == 'Count' or db_field['datatype']['name'] == 'Weight'):
-                    if not categories.has_key(db_field['display_category']['name']):
+                    if not categories.has_key(db_field['display_category']['name']):        #This should only happen if a FieldValue is no longer related to a DataSheetField (the DataSheet was changed after data was entered)
                         categories[db_field['display_category']['name']] = {
-                            'pounds': 0,
-                            'count': 0
+                            'pounds': {
+                                'total': 0,
+                                'ds_hits': 0
+                            },
+                            'count': {
+                                'total': 0,
+                                'ds_hits': 0
+                            }
                         }
                     if db_field['datatype']['name'] == 'Weight':
                         if not db_field['unit']['slug'] == 'pounds_lbs':
@@ -536,9 +577,9 @@ def get_aggregate_values_list(request, filters=None):
                             lbs_val = factor * field_value['value']
                         else:
                             lbs_val = field_value['value']
-                        categories[db_field['display_category']['name']]['pounds'] = categories[db_field['display_category']['name']]['pounds'] + float(lbs_val)
+                        categories[db_field['display_category']['name']]['pounds']['total'] = categories[db_field['display_category']['name']]['pounds']['total'] + float(lbs_val)
                     else:
-                        categories[db_field['display_category']['name']]['count'] = categories[db_field['display_category']['name']]['count'] + float(field_value['value'])
+                        categories[db_field['display_category']['name']]['count']['total'] = categories[db_field['display_category']['name']]['count']['total'] + float(field_value['value'])
                         
     field_list = []
 

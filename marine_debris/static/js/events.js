@@ -192,12 +192,19 @@ function viewModel(options) {
         };
         report.showWarning = false;
         report.event_values = [];
+        
+        $.each(report.report.categories, function (i, category) {
+          category.catPoundsTooltipText = 'Collected for ' + category.pounds.ds_hits + ' of ' + report.report.events + ' events.';
+          category.catCountTooltipText = 'Collected for ' + category.count.ds_hits + ' of ' + report.report.events + ' events.';
+        });
+        
         $.each(report.fields, function (i, field) {
           if (field.num_values !== report.event_values) {
             report.showWarning = true;
           };
           
-          field.tooltipText = 'Only ' + field.num_values + ' of ' + report.report.events + ' events have a value for this field.';
+          
+          field.tooltipText = 'Collected for ' + field.num_values + ' of ' + report.report.events + ' events.';
           if ($.inArray(field.name, [
               'Number_volunteers_beach',
               'Pounds_trash_beach',
