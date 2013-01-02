@@ -75,7 +75,7 @@ def get_transactions(request):
     return HttpResponse(simplejson.dumps(trans_dict))
 
 def management(request):
-    return render_to_response( 'management.html', RequestContext(request))
+    return render_to_response( 'management.html', RequestContext(request, {'active':'management'}))
 
 def update_transaction(request):
     if request.method == 'POST':
