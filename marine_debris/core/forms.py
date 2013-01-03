@@ -25,7 +25,6 @@ class BulkImportForm(forms.Form):
         
         org_choices = []
         for org in Organization.objects.all():
-            print org.orgname
             org_choices.append((org, org.orgname))
         proj_choices = []
         for proj in Project.objects.all():
