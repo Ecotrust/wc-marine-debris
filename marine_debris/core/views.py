@@ -90,6 +90,9 @@ def update_transaction(request):
             transaction = UserTransaction.objects.get(id=transaction_id)
             if status is not None:
                 transaction.status = status
+                if status == 'rejected':
+                    if reason is not None:
+                        transaction.reason = reason
                 transaction.save()
                 res = {'status': 'success', 'transaction_id': transaction_id}
                 
@@ -125,10 +128,9 @@ def update_transaction(request):
                     user.email_user("Marine Debris DB Status Update", message)
                     
                 if status == 'rejected':
-                    if reason is not None:
-                        transaction.reason = reason
                     for event in Event.objects.filter(transaction = transaction):
                         event.delete()
+                    
                 transaction.update()
     else:
         res = {
