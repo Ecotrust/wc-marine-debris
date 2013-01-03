@@ -163,6 +163,7 @@ function viewModel(options) {
     $('iframe#download-frame').attr('src', url);
     $('#tou-modal').modal('hide')
   };
+  self.showWarning = ko.observable(false)
 
   self.showReport = function () {
     $("#report-tab").tab('show');  
@@ -190,17 +191,21 @@ function viewModel(options) {
             'Pounds_trash_beach': 'Lbs of trash',
             'Cleanup_distance_beach': 'Miles cleaned'
         };
-        report.showWarning = false;
+        app.viewModel.showWarning = false;
         report.event_values = [];
         
         $.each(report.report.categories, function (i, category) {
+          if (category.pounds.ds_hits !== report.report.events ||
+            category.count.ds_hits !== report.report.events) {
+            app.viewModel.showWarning = true;
+          };
           category.catPoundsTooltipText = 'Collected for ' + category.pounds.ds_hits + ' of ' + report.report.events + ' events.';
           category.catCountTooltipText = 'Collected for ' + category.count.ds_hits + ' of ' + report.report.events + ' events.';
         });
         
         $.each(report.fields, function (i, field) {
-          if (field.num_values !== report.event_values) {
-            report.showWarning = true;
+          if (field.num_values !== report.report.events) {
+            app.viewModel.showWarning = true;
           };
           
           
