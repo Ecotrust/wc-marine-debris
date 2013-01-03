@@ -76,6 +76,7 @@
             if (year && self.selectedProject()) {
                 return $.map(self.selectedProject().datasheets, function(datasheet) {
                     if (datasheet.start_date <= year) {
+                        datasheet.name = self.selectedOrganization().name + ' ' + datasheet.start_date + ' ' + datasheet.name;
                         return datasheet;
                     }
                 });

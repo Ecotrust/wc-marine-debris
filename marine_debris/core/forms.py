@@ -19,199 +19,210 @@ class EventForm(forms.ModelForm):
 
 
 class BulkImportForm(forms.Form):
-    org_choices = []
-    for org in Organization.objects.all():
-        org_choices.append((org, org.orgname))
-    proj_choices = []
-    for proj in Project.objects.all():
-        proj_choices.append((proj, proj.projname))
-    ds_choices = []
-    for ds in DataSheet.objects.all():
-        ds_choices.append((ds.id, ds.created_by.orgname + ' ' + str(ds.year_started) + ' ' + ds.sheetname))
+
+    def __init__(self, *args, **kwargs):
+        super(BulkImportForm, self).__init__(*args, **kwargs)
         
-    organization = forms.ChoiceField(
-        choices = org_choices, 
-        widget = widgets.SelectWithTooltip(
-            attrs={
-                'data-bind':'options: data.orgs ? data.orgs : [], optionsText: "name", value: selectedOrganizationName, optionsValue: "name", optionsCaption: "Choose..."',
-                'tool-id': 'organization',
-                'tool-title': 'Which organization are these events associated with?',
+        org_choices = []
+        for org in Organization.objects.all():
+            print org.orgname
+            org_choices.append((org, org.orgname))
+        proj_choices = []
+        for proj in Project.objects.all():
+            proj_choices.append((proj, proj.projname))
+        ds_choices = []
+        for ds in DataSheet.objects.all():
+            ds_choices.append((ds.id, ds.created_by.orgname + ' ' + str(ds.year_started) + ' ' + ds.sheetname))
+            
+        self.fields['organization'] = forms.ChoiceField(
+            choices = org_choices, 
+            widget = widgets.SelectWithTooltip(
+                attrs={
+                    'data-bind':'options: data.orgs ? data.orgs : [], optionsText: "name", value: selectedOrganizationName, optionsValue: "name", optionsCaption: "Choose..."',
+                    'tool-id': 'organization',
+                    'tool-title': 'Which organization are these events associated with?',
+                    'tool-rel': 'tooltip',
+                    'tool-data-placement': 'right'
+                }
+            )
+        )
+
+        self.fields['project'] = forms.ChoiceField(
+            choices = proj_choices,
+            widget = widgets.SelectWithTooltip(attrs={
+                'data-bind':'options: selectedOrganization() ? selectedOrganization().projects : [], optionsText: "name", optionsValue: "name", value: selectedProjectName, optionsCaption: "Select...", enable: selectedOrganizationName',
+                'tool-id': 'project',
+                'tool-title': 'Which project are these events associated with?',
                 'tool-rel': 'tooltip',
                 'tool-data-placement': 'right'
-            }
+            })
         )
-    )
-    project = forms.ChoiceField(
-        choices = proj_choices,
-        widget = widgets.SelectWithTooltip(attrs={
-            'data-bind':'options: selectedOrganization() ? selectedOrganization().projects : [], optionsText: "name", optionsValue: "name", value: selectedProjectName, optionsCaption: "Select...", enable: selectedOrganizationName',
-            'tool-id': 'project',
-            'tool-title': 'Which project are these events associated with?',
-            'tool-rel': 'tooltip',
-            'tool-data-placement': 'right'
-        })
-    )
 
-    datasheet = forms.ChoiceField(
-        choices = ds_choices,
-        widget = widgets.SelectWithTooltip(attrs={
-            'data-bind':'options: availableDatasheets() ? availableDatasheets() : [], optionsText: "name", value: selectedDatasheet, optionsCaption: "Select...", optionsValue: "id", enable: availableDatasheets',
-            'tool-id': 'datasheet',
-            'tool-title': 'Which data sheet matches the fields on the CSV that you wish to upload?',
-            'tool-rel': 'tooltip',
-            'tool-data-placement': 'right'
-        })
-    )
-    csv_file = forms.FileField(
-        widget = widgets.FileFieldWithTooltip(attrs={
-            'tool-id': 'csv',
-            'tool-title': 'Browse to and select the Comma Separated Value file that contains the events data.',
-            'tool-rel': 'tooltip',
-            'tool-data-placement': 'right'
-        })
-    )
+        self.fields['datasheet'] = forms.ChoiceField(
+            choices = ds_choices,
+            widget = widgets.SelectWithTooltip(attrs={
+                'data-bind':'options: availableDatasheets() ? availableDatasheets() : [], optionsText: "name", value: selectedDatasheet, optionsCaption: "Select...", optionsValue: "id", enable: availableDatasheets',
+                'tool-id': 'datasheet',
+                'tool-title': 'Which data sheet matches the fields on the CSV that you wish to upload?',
+                'tool-rel': 'tooltip',
+                'tool-data-placement': 'right'
+            })
+        )
+        
+        self.fields['csv_file'] = forms.FileField(
+            widget = widgets.FileFieldWithTooltip(attrs={
+                'tool-id': 'csv',
+                'tool-title': 'Browse to and select the Comma Separated Value file that contains the events data.',
+                'tool-rel': 'tooltip',
+                'tool-data-placement': 'right'
+            })
+        )
         
 class CreateEventForm(forms.Form):
-    org_choices = []
-    for org in Organization.objects.all():
-        org_choices.append((org, org.orgname))
-    proj_choices = []
-    for proj in Project.objects.all():
-        proj_choices.append((proj, proj.projname))
-    ds_choices = []
-    for ds in DataSheet.objects.all():
-        ds_choices.append((ds.id, ds.sheetname))
+
+    def __init__(self, *args, **kwargs):
+        super(CreateEventForm, self).__init__(*args, **kwargs)
+
+        org_choices = []
+        for org in Organization.objects.all():
+            org_choices.append((org, org.orgname))
+        proj_choices = []
+        for proj in Project.objects.all():
+            proj_choices.append((proj, proj.projname))
+        ds_choices = []
+        for ds in DataSheet.objects.all():
+            ds_choices.append((ds.id, ds.created_by.orgname + ' ' + str(ds.year_started) + ' ' + ds.sheetname))
+            
+        self.fields['organization'] = forms.ChoiceField(
+            choices = org_choices, 
+            widget = widgets.SelectWithTooltip(
+                attrs={
+                    'data-bind':'options: data.orgs ? data.orgs : [], optionsText: "name", value: selectedOrganizationName, optionsValue: "name", optionsCaption: "Choose..."',
+                    'tool-id': 'organization',
+                    'tool-rel': 'tooltip',
+                    'tool-data-placement': 'right',
+                    'tool-title': 'Which organization is this event associated with? Only organizations that you are associated with will be shown here. If the options seem incorrect, please contact your project lead or organization contact and request to have your account associated with the correct '
+                }
+            )
+        )
+        self.fields['project'] = forms.ChoiceField(
+            choices = proj_choices,
+            widget = widgets.SelectWithTooltip(
+                attrs={
+                    'data-bind':'options: selectedOrganization() ? selectedOrganization().projects : [], optionsText: "name", optionsValue: "name", value: selectedProjectName, optionsCaption: "Select...", enable: selectedOrganizationName',
+                    'tool-id' : 'project',
+                    'tool-rel': 'tooltip',
+                    'tool-data-placement': 'right',
+                    'tool-title': 'Which project was this event performed for? Only projects associated with the organization you selected in the previous field will be shown.',
+                }
+            )
+        )
+        self.fields['date'] = forms.DateField(
+            widget=widgets.TextInputWithTooltip(
+                attrs={
+                    'class':'date', 
+                    'data-bind':'datepicker: selectedDate, enable: selectedProjectName',
+                    'tool-id': 'date',
+                    'tool-rel': 'tooltip',
+                    'tool-data-placement': 'right',
+                    'tool-title': 'The date on which the event occurred. For cleanups this would be the first day of the cleanup. For derelict gear reports/removals it would be the day that the derelict gear was reported.' 
+                }
+            )
+        )
+        self.fields['data_sheet'] = forms.ChoiceField(
+            choices = ds_choices,
+            widget = widgets.SelectWithTooltip(
+                attrs={
+                    'data-bind':'options: availableDatasheets() ? availableDatasheets() : [], optionsText: "name", value: selectedDatasheet, optionsCaption: "Select...", optionsValue: "id", enable: availableDatasheets',
+                    'tool-id': 'data_sheet',
+                    'tool-title': 'Which data sheet was used to collect the data? Datasheets are the list of questions used for reporting your event.',
+                    'tool-rel': 'tooltip',
+                    'tool-data-placement': 'right'
+                }
+            )
+        )
+        state_choices = []
+        for state in State.objects.all():
+            state_choices.append((state.initials, state.name))
+        county_choices = []
+        for county in County.objects.all():
+            county_choices.append((county.name, county.name))
+        site_choices = []
+        if settings.DEMO:
+            sites = Site.objects.all().exclude(sitename='')
+        else:
+            sites = Site.objects.filter(transaction__status = "accepted").exclude(sitename='')
+        for site in sites:
+            site_choices.append(escape('"' + str(site.sitename) + '"'))
         
-    organization = forms.ChoiceField(
-        choices = org_choices, 
-        widget = widgets.SelectWithTooltip(
-            attrs={
-                'data-bind':'options: data.orgs ? data.orgs : [], optionsText: "name", value: selectedOrganizationName, optionsValue: "name", optionsCaption: "Choose..."',
-                'tool-id': 'organization',
-                'tool-rel': 'tooltip',
-                'tool-data-placement': 'right',
-                'tool-title': 'Which organization is this event associated with? Only organizations that you are associated with will be shown here. If the options seem incorrect, please contact your project lead or organization contact and request to have your account associated with the correct '
-            }
+        self.fields['state'] = forms.ChoiceField(
+            choices = state_choices, 
+            required=False,
+            widget = widgets.SelectWithTooltip(
+                attrs={
+                    'class':'state-select',
+                    'data-bind':'options: data.states ? data.states : [], optionsText: "name", value: selectedStateName, optionsValue: "initials", optionsCaption: "Choose..."',
+                    'tool-id': 'state',
+                    'tool-title': 'Which state (waters) was this event performed in?',
+                    'tool-rel': 'tooltip',
+                    'tool-data-placement': 'right'
+                }
+            )
         )
-    )
-    project = forms.ChoiceField(
-        choices = proj_choices,
-        widget = widgets.SelectWithTooltip(
-            attrs={
-                'data-bind':'options: selectedOrganization() ? selectedOrganization().projects : [], optionsText: "name", optionsValue: "name", value: selectedProjectName, optionsCaption: "Select...", enable: selectedOrganizationName',
-                'tool-id' : 'project',
-                'tool-rel': 'tooltip',
-                'tool-data-placement': 'right',
-                'tool-title': 'Which project was this event performed for? Only projects associated with the organization you selected in the previous field will be shown.',
-            }
+        self.fields['county'] = forms.ChoiceField(
+            choices = county_choices,
+            required=False,
+            widget = widgets.SelectWithTooltip(
+                attrs={
+                    'class':'county-select',
+                    'data-bind':'options: selectedState().counties ? selectedState().counties.sort(function(a, b) { return a.name.localeCompare(b.name) }) : [], optionsText: "name", value: selectedCountyName, optionsValue: "name", optionsCaption: "Choose...", enable: selectedState',
+                    'tool-id': 'county',
+                    'tool-title': 'Which county (waters) was this event performed in?',
+                    'tool-rel': 'tooltip',
+                    'tool-data-placement': 'right'
+                }
+            )
         )
-    )
-    date = forms.DateField(
-        widget=widgets.TextInputWithTooltip(
-            attrs={
-                'class':'date', 
-                'data-bind':'datepicker: selectedDate, enable: selectedProjectName',
-                'tool-id': 'date',
-                'tool-rel': 'tooltip',
-                'tool-data-placement': 'right',
-                'tool-title': 'The date on which the event occurred. For cleanups this would be the first day of the cleanup. For derelict gear reports/removals it would be the day that the derelict gear was reported.' 
-            }
+        self.fields['sitename'] = forms.CharField(
+            required=False,
+            widget = widgets.TextInputWithTooltip(
+                attrs={
+                    'class':'site-typeahead',
+                    'autocomplete':'off',
+                    'data-bind':'value: selectedSiteName, enable: selectedCounty',
+                    'tool-id': 'sitename',
+                    'tool-title': 'What is the name of the site where this event was performed? Feel free to select from the options suggested. If your site\'s name isn\'t in the list, you may use what you typed.',
+                    'tool-rel': 'tooltip',
+                    'tool-data-placement': 'right'
+                }
+            )
         )
-    )
-    data_sheet = forms.ChoiceField(
-        choices = ds_choices,
-        widget = widgets.SelectWithTooltip(
-            attrs={
-                'data-bind':'options: availableDatasheets() ? availableDatasheets() : [], optionsText: "name", value: selectedDatasheet, optionsCaption: "Select...", optionsValue: "id", enable: availableDatasheets',
-                'tool-id': 'data_sheet',
-                'tool-title': 'Which data sheet was used to collect the data? Datasheets are the list of questions used for reporting your event.',
-                'tool-rel': 'tooltip',
-                'tool-data-placement': 'right'
-            }
+        self.fields['longitude'] = forms.CharField(
+            label="Longitude (or click on map)",
+            required=False,
+            widget = widgets.TextInputWithTooltip(
+                attrs={
+                    'data-bind': 'enable: selectedState, value: longitude',
+                    'tool-id': 'longitude',
+                    'tool-title': 'What was the approximate longitude of the site where your event was performed? This can be filled in by either selecting a pre-existing site name above, or by clicking on the map below.',
+                    'tool-rel': 'tooltip',
+                    'tool-data-placement': 'right'
+                }
+            )
         )
-    )
-    state_choices = []
-    for state in State.objects.all():
-        state_choices.append((state.initials, state.name))
-    county_choices = []
-    for county in County.objects.all():
-        county_choices.append((county.name, county.name))
-    site_choices = []
-    if settings.DEMO:
-        sites = Site.objects.all().exclude(sitename='')
-    else:
-        sites = Site.objects.filter(transaction__status = "accepted").exclude(sitename='')
-    for site in sites:
-        site_choices.append(escape('"' + str(site.sitename) + '"'))
-    
-    state = forms.ChoiceField(
-        choices = state_choices, 
-        required=False,
-        widget = widgets.SelectWithTooltip(
-            attrs={
-                'class':'state-select',
-                'data-bind':'options: data.states ? data.states : [], optionsText: "name", value: selectedStateName, optionsValue: "initials", optionsCaption: "Choose..."',
-                'tool-id': 'state',
-                'tool-title': 'Which state (waters) was this event performed in?',
-                'tool-rel': 'tooltip',
-                'tool-data-placement': 'right'
-            }
+        self.fields['latitude'] = forms.CharField(
+            label="Latitude (or click on map)",
+            required=False,
+            widget = widgets.TextInputWithTooltip(
+                attrs={
+                    'data-bind': 'enable: selectedState, value: latitude',
+                    'tool-id': 'latitude',
+                    'tool-title': 'What was the approximate latitude of the site where your event was performed? This can be filled in by either selecting a pre-existing site name above, or by clicking on the map below.',
+                    'tool-rel': 'tooltip',
+                    'tool-data-placement': 'right'
+                }
+            )
         )
-    )
-    county = forms.ChoiceField(
-        choices = county_choices,
-        required=False,
-        widget = widgets.SelectWithTooltip(
-            attrs={
-                'class':'county-select',
-                'data-bind':'options: selectedState().counties ? selectedState().counties.sort(function(a, b) { return a.name.localeCompare(b.name) }) : [], optionsText: "name", value: selectedCountyName, optionsValue: "name", optionsCaption: "Choose...", enable: selectedState',
-                'tool-id': 'county',
-                'tool-title': 'Which county (waters) was this event performed in?',
-                'tool-rel': 'tooltip',
-                'tool-data-placement': 'right'
-            }
-        )
-    )
-    sitename = forms.CharField(
-        required=False,
-        widget = widgets.TextInputWithTooltip(
-            attrs={
-                'class':'site-typeahead',
-                'autocomplete':'off',
-                'data-bind':'value: selectedSiteName, enable: selectedCounty',
-                'tool-id': 'sitename',
-                'tool-title': 'What is the name of the site where this event was performed? Feel free to select from the options suggested. If your site\'s name isn\'t in the list, you may use what you typed.',
-                'tool-rel': 'tooltip',
-                'tool-data-placement': 'right'
-            }
-        )
-    )
-    longitude = forms.CharField(
-        label="Longitude (or click on map)",
-        required=False,
-        widget = widgets.TextInputWithTooltip(
-            attrs={
-                'data-bind': 'enable: selectedState, value: longitude',
-                'tool-id': 'longitude',
-                'tool-title': 'What was the approximate longitude of the site where your event was performed? This can be filled in by either selecting a pre-existing site name above, or by clicking on the map below.',
-                'tool-rel': 'tooltip',
-                'tool-data-placement': 'right'
-            }
-        )
-    )
-    latitude = forms.CharField(
-        label="Latitude (or click on map)",
-        required=False,
-        widget = widgets.TextInputWithTooltip(
-            attrs={
-                'data-bind': 'enable: selectedState, value: latitude',
-                'tool-id': 'latitude',
-                'tool-title': 'What was the approximate latitude of the site where your event was performed? This can be filled in by either selecting a pre-existing site name above, or by clicking on the map below.',
-                'tool-rel': 'tooltip',
-                'tool-data-placement': 'right'
-            }
-        )
-    )
     
     #Check the event details fields of the form for validity
     def validate_event(self, *args, **kwargs):
