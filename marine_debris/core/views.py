@@ -1110,6 +1110,7 @@ def bulk_import(request):
             user_transaction = UserTransaction(submitted_by = request.user, status = 'new', organization=organization, project=project)
             user_transaction.save()
             if user_transaction.id:
+                site_count = 0
                 for site_key in unique_site_keys:
                     site_text = ', '.join([str(x) for x in site_key.values()])
                     try:
@@ -1122,8 +1123,12 @@ def bulk_import(request):
                             lat = float(site_text.split(' ')[1].split(')')[0])
                             point = Point(lon, lat)
                             closest = impute_state_county(point)
+                            if not closest['error']:
+                                site, created = Site.objects.get_or_create(state = closest['state'], county = closest['county'], geometry = str(point))
+                            else:
+                                errors.append("""%s""" % closest['error'])
+                                return bulk_bad_request(form, request, errors, json=org_json)
                             
-                            site, created = Site.objects.get_or_create(state = closest['state'], county = closest['county'], geometry = str(point))
                             if created:
                                 site.transaction = user_transaction
                                 site.save()
@@ -1337,6 +1342,14 @@ def impute_state_county(point):
         '''
         pnt = point
         counties = County.objects.filter(geom__bboverlaps=pnt.buffer(1)) # search in a 1 degree radius
+        deg_buffer = 1
+        error = ''
+        while counties.count() == 0 and deg_buffer < 50:
+            deg_buffer += 1
+            counties = County.objects.filter(geom__bboverlaps=pnt.buffer(deg_buffer)) # search in a {deg_buffer} degree radius
+            
+        if deg_buffer == 50:
+            error = "Entered site is too far from land.<br />Double check coordinates:<br />%s, %s" % (point.coords[0], point.coords[1])
 
         closest = None
         shortest_distance = 181
@@ -1352,12 +1365,17 @@ def impute_state_county(point):
                 shortest_distance = d
 
         if not closest:
-            return None
-
-        res = {
-            'county': closest.name,
-            'state': State.objects.filter(initials=closest.stateabr)[0]
-        }
+            res = {
+                'county': None,
+                'state': None,
+                'error': error
+            }
+        else:
+            res = {
+                'county': closest.name,
+                'state': State.objects.filter(initials=closest.stateabr)[0],
+                'error': None
+            }
 
         return res
     
