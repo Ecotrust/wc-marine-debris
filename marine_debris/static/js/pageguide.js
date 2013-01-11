@@ -14,8 +14,8 @@ var defaultGuide = {
     },{
       target: '#location-tab',
       content: 'The <i>Location</i> tab lets you filter events by State or County by typing them in or selecting them from the drop-down list. Note, you can add more than one state or county.',
-      direction: 'left',
-      arrow: {offsetX: 0, offsetY: 50}
+      direction: 'top',
+      arrow: {offsetX: 0, offsetY: 0}
     },{
       target: '#event-type-tab',
       content: 'The <i>Type of debris</i> tab lets you filter by event type (e.g. site cleanups, derelict gear removals) or Debris Type (e.g. plastic bags, ammunition, debris description).',
@@ -80,19 +80,19 @@ var defaultGuideOverrides = {
   step: {
     events: {
       select: function() {
-        if ($(this).data('idx') === 2) {
+        if ($(this).data('idx') === 1) {
             $('#location-tab').tab('show');
-        } else if ($(this).data('idx') === 3) {
+        } else if ($(this).data('idx') === 2) {
             $('#event-type-tab').tab('show');
-        } else if ($(this).data('idx') === 4) {
+        } else if ($(this).data('idx') === 3) {
             $('#project-organization-tab').tab('show');
-        } else if ($(this).data('idx') === 5){
+        } else if ($(this).data('idx') === 4){
             $('#date-tab').tab('show');
-        } else if ($(this).data('idx') === 8){
+        } else if ($(this).data('idx') === 7){
             $('#map-tab').tab('show');
-        } else if ($(this).data('idx') === 9){
+        } else if ($(this).data('idx') === 8){
             $('#details-tab').tab('show');
-        } else if ($(this).data('idx') === 10){
+        } else if ($(this).data('idx') === 9){
             $('#report-tab').tab('show');
         }
         
