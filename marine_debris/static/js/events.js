@@ -411,6 +411,11 @@ app.loadHash = function (hash) {
         if (type === 'report') {
           $('#report-tab').tab('show');
         }
+        
+        if (type === 'tour') {
+          $.pageguide('open');
+          return true;
+        }
 
         // update the select fields
         $('select.' + type).val(values);
