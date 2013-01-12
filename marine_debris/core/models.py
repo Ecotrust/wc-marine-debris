@@ -998,7 +998,7 @@ class Event (models.Model):
     
     class Meta:
         ordering = ['proj_id__projname', 'site', 'cleanupdate']
-        unique_together = (("datasheet_id", "proj_id", "cleanupdate", "site", "dup"),)
+        unique_together = (("cleanupdate", "site", "dup"),)
     
 class FieldValue (models.Model):
     field_id = models.ForeignKey(Field)

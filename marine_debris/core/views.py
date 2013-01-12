@@ -1127,12 +1127,14 @@ def bulk_import(request):
                                 site, created = Site.objects.get_or_create(state = closest['state'], county = closest['county'], geometry = str(point))
                             else:
                                 errors.append("""%s""" % closest['error'])
+                                site = False
                                 created = False
                             
                             if created:
                                 site.transaction = user_transaction
                                 site.save()
-                            sites.append({'name':site_text, 'site':site})
+                            if site:
+                                sites.append({'name':site_text, 'site':site})
                         else:
                             urlargs = urlencode(site_key) 
                             if urlargs:
