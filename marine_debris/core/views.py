@@ -88,6 +88,8 @@ def update_transaction(request):
             send_email = True
         if transaction_id is not None:
             transaction = UserTransaction.objects.get(id=transaction_id)
+            original_status = str(transaction.status)
+            update_transaction = True
             if status is not None:
                 transaction.status = status
                 if status == 'rejected':
@@ -107,6 +109,12 @@ def update_transaction(request):
                     transaction_type = "sites"
                 else:
                     send_email = False
+                    
+                if user.email == '' or  user.email == None:
+                    send_email = False
+                    update_transaction = False
+                    print 'User has no email'
+                    
                 if send_email:
                     msg_header = "Dear %s,\n\nThis email is to inform you that the %s you created on %s have been %s.\n" %  (user.username.capitalize(), transaction_type, transaction.created_date, transaction.status)
 
@@ -127,14 +135,24 @@ def update_transaction(request):
 
                     user.email_user("Marine Debris DB Status Update", message)
                     
-                if status == 'rejected':
-                    for event in Event.objects.filter(transaction = transaction):
-                        event.delete()
-                    
-                transaction.update()
+                if update_transaction:
+                    if status == 'rejected':
+                        for event in Event.objects.filter(transaction = transaction):
+                            event.delete()
+                        
+                    transaction.update()
+                else:
+                    transaction.status = original_status
+                    transaction.save()
+                    res = {
+                        'status_code': 400,
+                        'status': 'failed',
+                        'error':  'User %s has no email address. Assign one in the administration tool before changing transaction status.' % transaction.submitted_by.username
+                    }
     else:
         res = {
             'status_code': 400,
+            'status': 'failed',
             'error':  'request was not a POST'
         }
     return HttpResponse(simplejson.dumps(res))
@@ -951,6 +969,9 @@ def bulk_csv_header(request, datasheet_id):
 def bulk_bad_request(form, request, errors=None, site_form=None, json=None):
     if not errors:
         errors = []
+    if not json:
+        org_dict = [org.toDict for org in Organization.objects.all()]
+        json = simplejson.dumps(org_dict)
     res = render_to_response('bulk_import.html', 
             RequestContext(request,{'form':form.as_p(), 'site_form': site_form, 
                 'errors':errors, 'active':'events', 'json': json, 'active':'events'}))
@@ -1148,6 +1169,7 @@ def bulk_import(request):
 
                 if len(errors) > 0:
                     site_form = CreateSiteForm()
+                    UserTransaction.delete(user_transaction)
                     return bulk_bad_request(form, request, errors, site_form=site_form, json=org_json)
 
                 # valid!
@@ -1275,14 +1297,15 @@ def bulk_import(request):
                         transaction.rollback()
                         if len(events) > 0 and dups > 0:
                             errors.insert(0, "%d events were found but not loaded due to %d duplicate events." % (len(events), dups))
+                        UserTransaction.delete(user_transaction)
                         return bulk_bad_request(form, request, errors)
 
                 return render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(),
-                    'sites': sites, 'events': events, 'success': True, 'active':'events'}))
+                    'sites': sites, 'events': events, 'success': True, 'active':'events', 'json':org_json}))
             else:
                 UserTransaction.delete(user_transaction)
                 res = render_to_response('bulk_import.html', RequestContext(request,{'form':form.as_p(), 
-                    'errors':['Could not complete the transaction at this time.',], 'active':'events'}))
+                    'errors':['Could not complete the transaction at this time.',], 'active':'events', 'json':org_json}))
                 res.status_code = 400
                 return res
                         

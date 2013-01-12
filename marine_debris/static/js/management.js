@@ -77,20 +77,26 @@ function viewModel (fixture) {
 				csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val()
 			},
 			success: function (res) {
-				self.transactions[transaction.status()].remove(function (item) {
-					return item.id() === transaction.id();
-				});
-				transaction.status(status);
-				if (reason) {
-					transaction.reason(reason);
-				}
-				self.transactions[status].unshift(transaction);
-				self.showTransactionSpinner(false);
-				self.selectedTransaction(false);
+                result = JSON.parse(res)
+                if (result.status == 'failed'){
+                    self.showError(result.error);
+                } else {
+                    self.transactions[transaction.status()].remove(function (item) {
+                        return item.id() === transaction.id();
+                    });
+                    transaction.status(status);
+                    if (reason) {
+                        transaction.reason(reason);
+                    }
+                    self.transactions[status].unshift(transaction);
+                    self.selectedTransaction(false);
+                }
+                self.showTransactionSpinner(false);
 
 			},
 			error: function (res) {
-				self.showError(res.error);
+                result = JSON.parse(res)
+				self.showError(result.error);
 			}
 		});
 	}
