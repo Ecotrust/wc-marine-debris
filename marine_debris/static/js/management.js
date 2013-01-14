@@ -11,7 +11,7 @@ app.map.addLayer(app.markers);
 
 var hybrid = new OpenLayers.Layer.Bing({
               name: "Hybrid",
-              key: 'AiEF9gzhYiOfxnplJmKcY768T9GhG071ww0DizfaPFi7AnAKpBAJQ_UrHadSgDX4',
+              key: 'AvD-cuulbvBqwFDQGNB1gCXDEH4S6sEkS7Yw9r79gOyCvd2hBvQYPaRBem8cpkjv',
               type: "AerialWithLabels"
           });
 
