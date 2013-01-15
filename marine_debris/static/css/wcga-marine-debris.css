@@ -534,7 +534,7 @@ img.olTileImage {
 	position: fixed;
     z-index: 950;
 	right: -10px;
-	top: 23%;
+	top: 190px;
 	padding: 4px 11px 2px 3px;
 	border: 2px solid #ccc;
 	background: #7AAB42; /* fallback for IE - IE6 requires background shorthand*/
