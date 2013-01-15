@@ -534,14 +534,14 @@ img.olTileImage {
 	position: fixed;
     z-index: 950;
 	right: -10px;
-	top: 24%;
-	padding: 2px 8px;
+	top: 23%;
+	padding: 4px 11px 2px 3px;
 	border: 2px solid #ccc;
-	background: #F6CCCC; /* fallback for IE - IE6 requires background shorthand*/
-	background: rgba(246,204,204, 1);
+	background: #7AAB42; /* fallback for IE - IE6 requires background shorthand*/
+	background: rgba(122,171,66, 1);
     
-    width: 40px;
-    height: 35px;
+    width: 28px;
+    height: 20px;
     font-size: large;
 
 	color: white;
