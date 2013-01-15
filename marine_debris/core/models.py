@@ -11,6 +11,7 @@ add_introspection_rules([], ["^django\.contrib\.gis\.db\.models\.fields\.PointFi
 from django.core.cache import cache
 from django.contrib.gis.geos import Polygon
 from django.template.defaultfilters import slugify
+from django.core.exceptions import ValidationError
 from pytz import timezone
 import pytz
 import urllib
@@ -458,6 +459,22 @@ class DataSheetField (models.Model):
         
     class Meta:
         ordering = ['field_name', 'sheet_id__sheetname', 'field_id__internal_name']
+        
+    def clean(self):
+        if self.unit_id:
+            if self.field_id.unit_id:
+                if self.unit_id.data_type:
+                    if self.field_id.unit_id.data_type:
+                        if not self.unit_id.data_type.name == self.field_id.unit_id.data_type.name:
+                            raise ValidationError('This unit (%s) is not compatible with the field\'s unit (%s).' % (self.unit_id.long_name,self.field_id.unit_id.long_name))
+                    else:
+                        raise ValidationError('The field specified has the unit \'%s\' which does not have a data type assigned. Please update the unit before saving this data sheet.' % self.field_id.unit_id.long_name)
+                else:
+                    raise ValidationError('The unit specified (%s) does not have a data type assigned. Please update the unit before saving this data sheet.' % self.unit_id.long_name)
+            else:
+                raise ValidationError('The specified field does not have a unit assigned. Please assign a unit to %s before updating this datasheet.' % self.field_id.internal_name)
+        else:
+            raise ValidationError('Please assign a unit to this data sheet field.')
     
 class Project (models.Model):
     projname = models.TextField(unique=True)
