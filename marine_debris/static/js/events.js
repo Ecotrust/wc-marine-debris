@@ -413,7 +413,7 @@ app.loadHash = function (hash) {
         }
         
         if (type === 'tour') {
-          $.pageguide('open');
+          setTimeout(function(){$.pageguide('open')}, 1000);
           return true;
         }
 
