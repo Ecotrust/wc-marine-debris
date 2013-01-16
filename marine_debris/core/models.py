@@ -466,13 +466,13 @@ class DataSheetField (models.Model):
                 if self.unit_id.data_type:
                     if self.field_id.unit_id.data_type:
                         if not self.unit_id.data_type.name == self.field_id.unit_id.data_type.name:
-                            raise ValidationError('This unit (%s) is not compatible with the field\'s unit (%s).' % (self.unit_id.long_name,self.field_id.unit_id.long_name))
+                            raise ValidationError('This unit id (%s) is not compatible with the field\'s unit id (%s).' % (self.unit_id.long_name,self.field_id.unit_id.long_name))
                     else:
-                        raise ValidationError('The field specified has the unit \'%s\' which does not have a data type assigned. Please update the unit before saving this data sheet.' % self.field_id.unit_id.long_name)
+                        raise ValidationError('The field id specified has the unit \'%s\' which does not have a data type assigned. Please update the field\'s unit before saving this data sheet.' % self.field_id.unit_id.long_name)
                 else:
-                    raise ValidationError('The unit specified (%s) does not have a data type assigned. Please update the unit before saving this data sheet.' % self.unit_id.long_name)
+                    raise ValidationError('The unit id specified (%s) does not have a data type assigned. Please update the unit before saving this data sheet.' % self.unit_id.long_name)
             else:
-                raise ValidationError('The specified field does not have a unit assigned. Please assign a unit to %s before updating this datasheet.' % self.field_id.internal_name)
+                raise ValidationError('The specified field id does not have a unit id assigned. Please assign a unit id to %s before updating this datasheet.' % self.field_id.internal_name)
         else:
             raise ValidationError('Please assign a unit to this data sheet field.')
     
