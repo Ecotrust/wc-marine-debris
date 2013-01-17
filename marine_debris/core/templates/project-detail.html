@@ -45,7 +45,7 @@
         </table>
         {% endif %}
         {% if project.organizations %}
-        <h3>Organizations</h3>
+        <h3>Lead Organization</h3>
         <table class="table table-condensed table-hover organization-table">
         {% for organization in project.organizations %}
             <tr>
@@ -54,6 +54,7 @@
             </tr>
         {% endfor %}    
         </table>
+        <p>Note: Only the lead organization is listed here. Several other organizations may have contributed to this project as well.</p>
         {% endif %}
     </div>
 </div>
