@@ -144,7 +144,14 @@ function viewModel (fixture) {
 		self.selectedTransaction(false);
 		$('tr.active').removeClass('active');
 	};
-
+    
+    self.getAcceptedTransactions = function () {
+        this.id_array = [];
+        for(var i=0; i<self.transactions.accepted().length; i++){
+            this.id_array.push(self.transactions.accepted()[i].id());
+        }
+        return this.id_array;
+    }
 	self.selectedEvent = ko.observable(false);
 	self.selectedSite = ko.observable(false);
 	self.selectedTransaction =  ko.observable(false);
@@ -155,7 +162,7 @@ function viewModel (fixture) {
 	self.reason = ko.observable();
     
     self.dependency_text = ko.observable();
-    self.accepted_transactions = ko.observableArray([]);
+    self.accepted_transactions = ko.observableArray(self.getAcceptedTransactions());
     self.showSites = ko.observable(null);
     self.showEvents = ko.observable(null);
 
@@ -244,8 +251,11 @@ function viewModel (fixture) {
 		"iDisplayStart": 0,
 		"fnServerParams": function ( aoData ) {
 			aoData.push({
-				name: "transaction",
-				value: self.selectedTransaction().id()
+                // name: "filter",
+				// value: JSON.stringify([{
+                    name: "transaction",
+                    value: self.selectedTransaction().id()
+                // }])
 			});
 		}
 	};
