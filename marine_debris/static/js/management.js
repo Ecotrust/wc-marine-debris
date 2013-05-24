@@ -251,11 +251,8 @@ function viewModel (fixture) {
 		"iDisplayStart": 0,
 		"fnServerParams": function ( aoData ) {
 			aoData.push({
-                // name: "filter",
-				// value: JSON.stringify([{
-                    name: "transaction",
-                    value: self.selectedTransaction().id()
-                // }])
+                name: "transaction",
+                value: self.selectedTransaction().id()
 			});
 		}
 	};

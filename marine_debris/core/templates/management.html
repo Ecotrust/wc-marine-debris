@@ -59,7 +59,6 @@
 	                      ] }">
 	                </table>
 	            </div>
-
 	        </div>
 		</div>
 	</div>
@@ -142,20 +141,20 @@
 			  <div class="span6">
 			  	<div id="map" style="height: 200px">
 			  	</div>
-		  </div>
-	      <div class="filter"></div>
-	      <div data-bind="if: data" class="table-container">
-	        <table class="table wcga table-striped table-condensed" data-bind="dataTable: { dataSource: data, options: $root.reportTableOptions, columns: [{mDataProp: 'text', sTitle: 'Text'}, {mDataProp:'value', sTitle: 'Value'}, { bSortable: false, mDataProp: 'unit' }] }">
-	          <tbody>
-	            <tr data-bind="visible: value">
-	              <td data-bind="text: text"></td>
-	              <td><span data-bind="text: value"></span> <span data-bind="text: unit"></span></td>
-	            </tr>
-	          </tbody>
-	        </table>
-	      </div>
-	    </div>
-	  </div>
+              </div>
+              <div class="filter"></div>
+              <div data-bind="if: data" class="table-container">
+                <table class="table wcga table-striped table-condensed" data-bind="dataTable: { dataSource: data, options: $root.reportTableOptions, columns: [{mDataProp: 'text', sTitle: 'Text'}, {mDataProp:'value', sTitle: 'Value'}, { bSortable: false, mDataProp: 'unit' }] }">
+                  <tbody>
+                    <tr data-bind="visible: value">
+                      <td data-bind="text: text"></td>
+                      <td><span data-bind="text: value"></span> <span data-bind="text: unit"></span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+        </div>
 	</div>
 </div>
 

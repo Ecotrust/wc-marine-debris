@@ -330,6 +330,7 @@ def get_events(request):
         filters = simplejson.loads(filter_json)
         qs = Event.filter(filters)
     else:
+        filters = []
         qs = Event.objects.all()
 
     if accepted_only:
@@ -393,12 +394,12 @@ site_sort_cols = {
 
     
 def get_sites(request):
-    sEcho = request.GET.get('sEcho', False)
     start_index = request.GET.get('iDisplayStart', 0)
-    transaction = request.GET.get('transaction', False)
     count = request.GET.get('iDisplayLength', False)
     sEcho = request.GET.get('sEcho', False)
     sort_column = request.GET.get('iSortCol_0', False)
+    transaction = request.GET.get('transaction', False)
+    start_id = request.GET.get('startID', False)
 
     if transaction:
         qs = Site.objects.filter(transaction__id=transaction)
@@ -410,12 +411,12 @@ def get_sites(request):
                 if sort_dir == 'desc':
                     sort_name = "-" + sort_name
                 qs = qs.order_by(sort_name)
-        if count:
+        filtered_count = qs.count()
+        if count and not start_id:
             qs = qs[int(start_index):int(start_index) + int(count)]
     else:
+        filtered_count = qs.count()
         qs = Site.objects.all()
-
-    filtered_count = qs.count()
 
     data = []
 
