@@ -42,6 +42,10 @@
             var $target = $(e.target).closest('a');
             e.preventDefault();
             $('#tou-modal').find('.btn-primary').attr('href', $target.attr('href'))
+            $('#tou-modal').find('.btn-primary').on('click', function(e) {
+                $('#tou-modal').modal('hide');
+            }
+        );
             $('#tou-modal').modal().removeClass('hide');
         });
     });
