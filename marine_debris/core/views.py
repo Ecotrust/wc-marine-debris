@@ -239,7 +239,7 @@ def download_stream_generator(request):
         evd = event.toValuesDict()
         d['field_values'] = evd
         all_fieldnames = Set(evd.keys()) | all_fieldnames
-        data.append(d)
+        # data.append(d)
 
     ordered_fieldnames = list(all_fieldnames)
     ordered_fieldnames.sort()
@@ -272,7 +272,11 @@ def download_stream_generator(request):
     row += "\n"
     yield row
 
-    for d in data:
+    # for d in data:
+    for event in qs: 
+        d = event.toEventsDict
+        evd = event.toValuesDict()
+        d['field_values'] = evd
         row_data = [
                 d['id'],
                 d['date'],
@@ -295,7 +299,7 @@ def download_stream_generator(request):
                 v = ''
             row_data.append(v)
 
-        row = ','.join(['"%s"' % x for x in row_data])
+        row = ','.join(('"%s"' % x for x in row_data))
         row += "\n"
         yield row
 
