@@ -91,6 +91,21 @@ package { "python-software-properties":
 
 }
 
+package { "libgdal1-dev":
+    ensure => "installed"
+
+}
+
+package { "python-gdal":
+    ensure => "installed"
+
+}
+
+package { "redis-server":
+    ensure => "installed"
+
+}
+
 class { "postgresql::server": version => "9.1",
     listen_addresses => 'localhost',
     max_connections => 100,

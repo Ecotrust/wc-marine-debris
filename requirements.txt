@@ -1,14 +1,11 @@
-haystack
-django-haystack
+django-haystack==1.2.7
 south
 psycopg2
 django-registration
-django
+Django==1.4.10
 simplejson
 django-redis-cache
 hiredis
 django-flatblocks
 pytz
-# pyquery is required for unit testing
-# sudo apt-get install libxml2-dev libxslt1-dev
-# pip install pyquery
+
