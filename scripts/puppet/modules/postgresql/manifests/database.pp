@@ -18,15 +18,13 @@ define postgresql::database($owner, $ensure=present) {
     exec { "load postgis $name":
       command => "/usr/bin/psql -f /usr/share/postgresql/9.1/contrib/postgis-1.5/postgis.sql -d $name",
       user => $owner,
-      onlyif => $dbexists,
-      require => Postgresql::User[$owner],
+      require => [Postgresql::User[$owner], Exec["createdb $name"]],
     }
 
     exec { "load spatialrefs $name":
       command => "/usr/bin/psql -f /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql -d $name",
       user => $owner,
-      onlyif => $dbexists,
-      require => Postgresql::User[$owner],
+      require => [Postgresql::User[$owner], Exec["createdb $name"]],
     }
 
   } elsif $ensure == 'absent' {
