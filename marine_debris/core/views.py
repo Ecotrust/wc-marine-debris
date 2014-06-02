@@ -235,6 +235,7 @@ def download_stream_generator(request):
     data = []
     all_fieldnames = Set([])
     for event in qs: 
+        print event.id, event
         d = event.toEventsDict
         evd = event.toValuesDict()
         d['field_values'] = evd
@@ -304,10 +305,12 @@ def download_stream_generator(request):
         yield row
 
 def download_events(request):
+    print "download events"
     timestamp = time.strftime("%Y%m%d_%H%M%S")
     filename = request.GET.get('filename', 'WCGA_debris_%s' % timestamp )
     res = HttpResponse(download_stream_generator(request), content_type="text/csv")
     res['Content-Disposition'] = 'attachment; filename="%s.csv"' % filename
+    print "download events returns"
     return res
 
 event_sort_cols = {

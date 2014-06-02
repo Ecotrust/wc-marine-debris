@@ -9,7 +9,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         from core.views import download_events 
         from django.test.client import RequestFactory
-            
+        print "generating downloads"
         clear_cache = False
         try:
             if args[0].lower() == 'clear':
@@ -31,7 +31,7 @@ class Command(BaseCommand):
         else:
             print "Not clearing event cache"
 
-
+        print "getting objects"
         for dl in Download.objects.filter(auto_generate=True):
             print dl.label
 
@@ -39,6 +39,8 @@ class Command(BaseCommand):
             eres = download_events(request)
 
             from django.core.files.base import ContentFile
+            print eres.content
             myfile = ContentFile(eres.content)
-
+            print "got myfile, saving"
             dl.thefile.save(dl.filename, myfile)
+            print "saved"
