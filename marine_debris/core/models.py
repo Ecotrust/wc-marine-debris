@@ -382,7 +382,7 @@ class DataSheet (models.Model, SimpleCacheMixin):
         """
         return dict([(datasheet.field_id.internal_name, datasheet.unit_id.short_name) for datasheet in self.datasheetfield_set.all() if datasheet.unit_id])
         
-    @property
+
     def required_fieldnames(self):
         """
         Collects the fieldnames for required fields of two types:
@@ -423,13 +423,6 @@ class DataSheet (models.Model, SimpleCacheMixin):
             use_sites = True #default
         return use_sites
 
-    def is_valid(self):
-        try: 
-            self.required_fieldnames
-        except DataSheetError as e:
-            return (False, e.message)
-        # test for type_id?
-        return (True, "Valid")
 
     @property
     def toDict(self):
@@ -448,6 +441,9 @@ class DataSheet (models.Model, SimpleCacheMixin):
             'id': self.id,
             'event_type':type,
             # 'datasheetfields': datasheetfields,
+            # nothing else in this program seems to use datasheetfields; 
+            # including it costs about 1350 queries and 220 KB more data. 
+            # just set to None
             'datasheetfields': None,
             'slug': self.slug,
             'url': '/datasheet/'+self.slug
