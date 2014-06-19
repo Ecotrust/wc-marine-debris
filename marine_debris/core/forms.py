@@ -24,10 +24,10 @@ class BulkImportForm(forms.Form):
         super(BulkImportForm, self).__init__(*args, **kwargs)
         
         org_choices = []
-        for org in Organization.objects.all():
+        for org in Organization.all_cached():
             org_choices.append((org, org.orgname))
         proj_choices = []
-        for proj in Project.objects.all():
+        for proj in Project.all_cached():
             proj_choices.append((proj, proj.projname))
         ds_choices = []
         for ds in DataSheet.objects.all():

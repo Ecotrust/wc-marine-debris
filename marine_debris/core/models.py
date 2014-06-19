@@ -17,6 +17,36 @@ import pytz
 import urllib
 import time
 
+class SimpleCacheMixin(object):
+    """Mixin class to provide a simple caching layer. 
+    Currently, only Model.objects.all() is cached 
+    
+    Provides all_cached() method, which returns a cached version of 
+    Model.objects.all(). The inheriting class should invalidate the cache on 
+    save() via self._invalidate_caches()
+    """
+    @classmethod
+    def _cls_all_cache_key(cls):
+        """Return the cache key for Models.objects.all()
+        """
+        return '%s.objects.all' % cls.__name__
+
+    def _invalidate_caches(self):
+        """Invalidate any cache associated with this model.
+        """
+        cache.delete(self._cls_all_cache_key())
+
+    @classmethod
+    def all_cached(cls):
+        """Poor-man's cached query for Organization.objects.all()
+        """
+        all = cache.get(cls._cls_all_cache_key())
+        if all:
+            return all
+        all = cls.objects.all()
+        cache.set(cls._cls_all_cache_key(), all)
+        return all
+
 # Create your models here.
 class DataType (models.Model):
     name = models.TextField()
@@ -130,7 +160,7 @@ class Download(models.Model):
         return url
 
 
-class Organization (models.Model):
+class Organization (models.Model, SimpleCacheMixin):
     orgname = models.TextField()
     url = models.TextField(blank=True, null=True)
     address = models.TextField()
@@ -155,12 +185,16 @@ class Organization (models.Model):
         return "/events#organization=%s" % self.slug
 
     def save(self, *args, **kwargs):
+        """Save changes to the organization. 
+        Also, invalidate any cached items related to this instance. 
+        """
+        self.invalidate_caches()
         self.slug = slugify(self.orgname)
         super(Organization, self).save(*args, **kwargs)
-
+    
     @property
     def toDict(self):
-        projects = [project.toDict for project in Project.objects.filter(organization = self)]
+        projects = [p.toDict for p in self.project_set.all()]
         org_dict = {
             'name': self.orgname,
             'projects': projects,
@@ -296,7 +330,7 @@ class EventType (models.Model):
 class DataSheetError(Exception):
     pass
 
-class DataSheet (models.Model):
+class DataSheet (models.Model, SimpleCacheMixin):
     sheetname = models.TextField()
     created_by = models.ForeignKey(Organization)
     year_started = models.IntegerField(null=True, blank=True, default=None)
@@ -315,6 +349,7 @@ class DataSheet (models.Model):
     
 
     def save(self, *args, **kwargs):
+        self._invalidate_caches()
         self.slug = slugify(self.created_by.orgname + '_' + str(self.year_started) + '_' + self.sheetname)
         super(DataSheet, self).save(*args, **kwargs)
 
@@ -403,8 +438,8 @@ class DataSheet (models.Model):
         else:
             type = 'None'
         datasheetfields = []
-        for dsfield in self.datasheetfield_set.all():
-            datasheetfields.append(dsfield.toDict())
+        # for dsfield in self.datasheetfield_set.all():
+        #     datasheetfields.append(dsfield.toDict())
             
         ds_dict = {
             'id': self.id,
@@ -412,7 +447,8 @@ class DataSheet (models.Model):
             'start_date': self.year_started,
             'id': self.id,
             'event_type':type,
-            'datasheetfields': datasheetfields,
+            # 'datasheetfields': datasheetfields,
+            'datasheetfields': None,
             'slug': self.slug,
             'url': '/datasheet/'+self.slug
         }
@@ -476,7 +512,7 @@ class DataSheetField (models.Model):
         else:
             raise ValidationError('Please assign a unit to this data sheet field.')
     
-class Project (models.Model):
+class Project (models.Model, SimpleCacheMixin):
     projname = models.TextField(unique=True)
     organization = models.ManyToManyField(Organization, through='ProjectOrganization')
     website = models.TextField(blank=True, null=True)
@@ -501,6 +537,7 @@ class Project (models.Model):
 
 
     def save(self, *args, **kwargs):
+        self._invalidate_caches()
         self.slug = slugify(self.projname)
         super(Project, self).save(*args, **kwargs)
 
