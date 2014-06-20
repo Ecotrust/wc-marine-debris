@@ -1088,22 +1088,6 @@ def yield_some(iterable, howmany):
         yield i
 
 
-def bulk_import_verify_columns(rows, ds):
-    # confirm required columns
-    required_fieldnames = ds.required_fieldnames
-    all_fieldnames = ds.fieldnames
-    for i, row in enumerate(rows):
-        keys = row.keys()
-        for rf in required_fieldnames:
-            if rf not in keys or row[rf] is None:
-                errors.append("Uploaded file does not contain required column '%s'" % (rf,))
-        for key in keys:
-            if key not in all_fieldnames:
-                errors.append("Uploaded file contains column '%s' which is not recognized by this datasheet" % (key,))
-        if len(errors) > 0:
-            # return at the datasheet level
-            return bulk_bad_request(form, request, errors, json=org_json)
-
 def bulk_import_post(request, org_json):
     logger = logging.getLogger('datasheet_errors')
     #TODO: Filter Organizations by only those which the user has access to.
@@ -1112,8 +1096,8 @@ def bulk_import_post(request, org_json):
     if form.is_valid():
         rows = csv.DictReader(request.FILES['csv_file'])
         
-        # rows = list(rows) # eval now so we can do multiple loops
-        rows = list(yield_some(rows, 20))
+        rows = list(rows) # eval now so we can do multiple loops
+        # rows = list(yield_some(rows, 40))
 
         if len(rows) == 0:
             return bulk_bad_request(form, request, ['Uploaded file does not contain any rows.', ], json=org_json)
@@ -1135,7 +1119,20 @@ def bulk_import_post(request, org_json):
 
         errors = []
 
-        bulk_import_verify_columns(rows, ds)
+        # TODO: move this into a validate_columns() function, figure out some strategy to deal with the errors[] array
+         
+        # confirm required columns
+        all_fieldnames = ds.fieldnames
+        csv_file_columns = rows[0].keys()
+        for rf in ds.required_fieldnames():
+            if rf not in csv_file_columns: # or row[rf] is None:   # when would the row value be None? Wouldn't csv.DictReader replace it with an empty string if there were no data (,, in the csv)?
+                errors.append("Uploaded file does not contain required column '%s'" % (rf,))
+        for key in csv_file_columns:
+            if key not in all_fieldnames:
+                errors.append("Uploaded file contains column '%s' which is not recognized by this datasheet" % (key,))
+        if len(errors) > 0:
+            # return at the datasheet level
+            return bulk_bad_request(form, request, errors, json=org_json)
 
         # loop through rows and validate against forms
         # also collect sites
@@ -1143,7 +1140,6 @@ def bulk_import_post(request, org_json):
         for i, row in enumerate(rows):
             qd = get_querydict(ds, row)
             ds_form = DataSheetForm(ds, None, None, qd)
-            print("Got form")
             if not ds_form.is_valid():
                 for question, message in ds_form.errors.items():
                     fieldnum = int(question.replace("question_",''))
@@ -1153,6 +1149,7 @@ def bulk_import_post(request, org_json):
             try: 
                 parse_date(date_string = get_required_val(ds,'date', row))
             except ValueError:
+                # i + 2 => convert to 1s indexing and skip the header row, so the row numbers match what would show up in Excel
                 errors.append("Row %d, Invalid Date." % (i+2,))
 
             try:
@@ -1186,7 +1183,9 @@ def bulk_import_post(request, org_json):
                         point = Point(lon, lat)
                         closest = impute_state_county(point)
                         if not closest['error']:
-                            site, created = Site.objects.get_or_create(state = closest['state'], county = closest['county'], geometry = str(point))
+                            site, created = Site.objects.get_or_create(state=closest['state'], 
+                                                                       county=closest['county'], 
+                                                                       geometry=str(point))
                         else:
                             errors.append("""%s""" % closest['error'])
                             site = False
