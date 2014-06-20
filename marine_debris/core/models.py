@@ -389,6 +389,11 @@ class DataSheet (models.Model, SimpleCacheMixin):
          - globally required in settings
          - required per datasheet
         """
+        cache_key = '%s-%d.required_fieldnames' % (self.__class__.__name__, self.pk)
+        result = cache.get(cache_key)
+        if result:
+            return result
+        
         # global
         req_fields = settings.REQUIRED_FIELDS[self.site_type] 
         required_fieldnames = []
@@ -406,6 +411,7 @@ class DataSheet (models.Model, SimpleCacheMixin):
             if fieldname not in required_fieldnames:
                 required_fieldnames.append(fieldname)
 
+        cache.set(cache_key, required_fieldnames)
         return required_fieldnames
 
     @property
@@ -414,6 +420,41 @@ class DataSheet (models.Model, SimpleCacheMixin):
             return "site-based"
         else:
             return "coord-based"
+
+
+    def is_valid(self):
+        req_fields = settings.REQUIRED_FIELDS[self.site_type] 
+
+        # fetch the ID's of the required fields
+        req_field_ids = Field.objects.filter(internal_name__in=req_fields.values())
+        req_field_ids = req_field_ids.values_list('pk')
+        # flatten the list: [(1,), (2,), ...] -> [1, 2, ...]
+        req_field_ids = set(f[0] for f in req_field_ids)
+        
+        # fetch the matching field IDs in the DataSheet's field list
+        ds_field_ids = self.datasheetfield_set.filter(field_id__in=req_field_ids)
+        ds_field_ids = ds_field_ids.values_list('field_id')
+        ds_field_ids = set(f[0] for f in ds_field_ids)
+        
+        missing_ids = req_field_ids - ds_field_ids
+        if missing_ids: 
+            # the original code only presented one error (the first), duplicate
+            # that here with set.pop()
+            missing_fields = Field.objects.filter(pk__in=missing_ids).values_list('internal_name')
+            missing_fields = [m[0] for m in missing_fields] # flatten
+            s = "DataSheet (id=%d) is missing required fields %s"
+            s = s % (self.pk, ', '.join(missing_fields))
+            return (False, s)
+
+        return (True, "Valid")
+
+    def is_valid_old(self):
+        try: 
+            self.required_fieldnames()
+        except DataSheetError as e:
+            return (False, e.message)
+        # test for type_id?
+        return (True, "Valid")
 
     @property
     def site_based(self):
