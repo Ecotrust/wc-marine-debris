@@ -1,3 +1,4 @@
+# coding: utf-8
 from django import template
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
@@ -1057,14 +1058,7 @@ def parse_date(date_string):
 
 
 @login_required    
-def bulk_import(request):
-    # set pydev remote breakpoint
-    # import sys
-    # sys.path.insert(0, 'pysrc')
-    # import pydevd
-    # pydevd.settrace(host='10.0.2.2')
-
-    # org_dict = [org.toDict for org in Organization.objects.all()]
+def bulk_import_old(request):
     org_dict = [org.toDict for org in Organization.all_cached()]
     org_json = simplejson.dumps(org_dict)
     print org_json
@@ -1087,6 +1081,76 @@ def yield_some(iterable, howmany):
         count += 1
         yield i
 
+@login_required
+def bulk_import(request):
+    bulk = BulkImportHandler(request)
+    return bulk.dispatch()
+
+class BulkImportHandler(object):
+    def __init__(self, request):
+        self.request = request
+        self.logger = logging.getLogger('bulk_import')
+
+    def dispatch(self):
+        if self.request.method == 'GET':
+            return self.handle_get()
+        else: # post
+            return self.handle_post()
+
+    def handle_get(self):
+        org_json = self.get_org_json()
+        rc = RequestContext(self.request, {'form': BulkImportForm().as_p(),
+                                           'json': org_json,
+                                           'active': 'events'})
+        return render_to_response('bulk_import.html', rc)
+    
+    def handle_post(self):
+        form = BulkImportForm(self.request.POST, self.request.FILES)
+        if not form.is_valid():
+            d = {
+                'form': form.as_p(),
+                'json': org_json,
+                'errors':['Form is not valid, please review.'],
+                'active': 'events'
+            }
+            rc = RequestContext(self.request, d)
+            return render_to_response('bulk_import.html', rc, status=400)
+        
+        self.get_data_sheet()
+        valid, message = self.data_sheet.is_valid()
+        if not valid: 
+            errors = ["""Sorry. This datasheet is not configured handle bulk imports.
+                    Please notify the database administrator and it will be fixed ASAP.""", ]
+            self.logger.error(message)
+            org_json = self.get_org_json()
+            return bulk_bad_request(form, self.request, errors, json=org_json)
+
+        
+        # Things to do, in no particular order
+        # find rows in CSV
+        # validate CSV schema (headers)
+        # √get DataSheet that we're validating against, 
+            # make sure CSV and DataSheet agree with eachother
+        # Create a UserTransaction
+        # Create an Event for each row in the CSV
+        
+    def get_data_sheet(self):
+        self.data_sheet = get_object_or_404(DataSheet, 
+                                           id=self.request.POST.get('datasheet'))
+        
+                
+    def read_csv(self):
+        rows = csv.DictReader(self.request.FILES['csv_file'])
+        if not rows: 
+            pass
+    
+    
+    def get_org_json(self):
+        """Get all the organizations, projects, datasheets, datasheet fields, 
+        and convert them to JSON. 
+        """
+        org_dicts = [o.toDict for o in Organization.all_cached()]
+        return simplejson.dumps(org_dicts)
 
 def bulk_import_post(request, org_json):
     logger = logging.getLogger('datasheet_errors')
@@ -1096,8 +1160,8 @@ def bulk_import_post(request, org_json):
     if form.is_valid():
         rows = csv.DictReader(request.FILES['csv_file'])
         
-        rows = list(rows) # eval now so we can do multiple loops
-        # rows = list(yield_some(rows, 40))
+        # rows = list(rows) # eval now so we can do multiple loops
+        rows = list(yield_some(rows, 40))
 
         if len(rows) == 0:
             return bulk_bad_request(form, request, ['Uploaded file does not contain any rows.', ], json=org_json)
@@ -1110,12 +1174,12 @@ def bulk_import_post(request, org_json):
 
         ds = get_object_or_404(DataSheet, id=int(datasheet_id))
 
-        # valid, message = ds.is_valid()
-        # if not valid:
-        #     errors = ["""Sorry. This datasheet is not configured handle bulk imports.
-        #             Please notify the database administrator and it will be fixed ASAP.""", ]
-        #     logger.error(message)
-        #     return bulk_bad_request(form, request, errors, json=org_json)
+        valid, message = ds.is_valid()
+        if not valid:
+            errors = ["""Sorry. This datasheet is not configured handle bulk imports.
+                    Please notify the database administrator and it will be fixed ASAP.""", ]
+            logger.error(message)
+            return bulk_bad_request(form, request, errors, json=org_json)
 
         errors = []
 
