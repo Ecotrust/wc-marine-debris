@@ -356,9 +356,12 @@ class DataSheet (models.Model, SimpleCacheMixin):
     def get_absolute_url(self):
         return "/datasheet/%s/" % self.slug
 
-    @property
+
     def fieldnames(self):
-        return [f.field_name for f in self.datasheetfield_set.all()]
+        """Return list of field names associated with this datasheet. 
+        """
+        # compute field names and flatten [('a',), ('b',),] -> ['a', 'b',]
+        return [x[0] for x in self.datasheetfield_set.values_list('field_name')]
 
     @property
     def internal_fieldname_lookup(self):
@@ -446,14 +449,6 @@ class DataSheet (models.Model, SimpleCacheMixin):
             s = s % (self.pk, ', '.join(missing_fields))
             return (False, s)
 
-        return (True, "Valid")
-
-    def is_valid_old(self):
-        try: 
-            self.required_fieldnames()
-        except DataSheetError as e:
-            return (False, e.message)
-        # test for type_id?
         return (True, "Valid")
 
     @property
