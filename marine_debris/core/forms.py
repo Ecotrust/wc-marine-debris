@@ -303,10 +303,7 @@ class DataSheetForm(forms.Form):
                 dynamic_args['initial'] = event_post[key]
 
             datatype = field.datatype.name
-            try:
-                answer = answer_lookup[field.id]
-            except KeyError:
-                answer = None
+            answer = answer_lookup.get(field.id)
 
             if question.print_name and not question.print_name == '':
                 dynamic_args['label'] = question.print_name
