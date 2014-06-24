@@ -289,7 +289,6 @@ class DataSheetForm(forms.Form):
         forms.Form.__init__(self, *args, **kwargs)
 
         answer_lookup = dict([(a.field_id, a.field_value) for a in answers.all()])
-        field_lookup = dict([(f.id, f) for f in Field.objects.select_related().all()])
 
         for i, question in enumerate(questions):
             dynamic_args = {}
