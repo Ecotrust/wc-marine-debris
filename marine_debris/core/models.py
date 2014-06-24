@@ -430,21 +430,20 @@ class DataSheet (models.Model, SimpleCacheMixin):
 
         # fetch the ID's of the required fields
         req_field_ids = Field.objects.filter(internal_name__in=req_fields.values())
-        req_field_ids = req_field_ids.values_list('pk')
-        # flatten the list: [(1,), (2,), ...] -> [1, 2, ...]
-        req_field_ids = set(f[0] for f in req_field_ids)
+        req_field_ids = req_field_ids.values_list('pk', flat=True)
+        req_field_ids = set(req_field_ids)
         
         # fetch the matching field IDs in the DataSheet's field list
         ds_field_ids = self.datasheetfield_set.filter(field_id__in=req_field_ids)
-        ds_field_ids = ds_field_ids.values_list('field_id')
-        ds_field_ids = set(f[0] for f in ds_field_ids)
+        ds_field_ids = ds_field_ids.values_list('field_id', flat=True)
+        ds_field_ids = set(ds_field_ids)
         
         missing_ids = req_field_ids - ds_field_ids
         if missing_ids: 
             # the original code only presented one error (the first), duplicate
             # that here with set.pop()
-            missing_fields = Field.objects.filter(pk__in=missing_ids).values_list('internal_name')
-            missing_fields = [m[0] for m in missing_fields] # flatten
+            missing_fields = Field.objects.filter(pk__in=missing_ids)
+            missing_fields = missing_fields.values_list('internal_name', flat=True)
             s = "DataSheet (id=%d) is missing required fields %s"
             s = s % (self.pk, ', '.join(missing_fields))
             return (False, s)
