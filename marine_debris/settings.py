@@ -97,6 +97,9 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'johnny.middleware.LocalStoreClearMiddleware',
+    'johnny.middleware.QueryCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -127,10 +130,6 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
-HAYSTACK_SITECONF='set-in-local-settings'
-
-HAYSTACK_SEARCH_ENGINE='set-in-local-settings'
-
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -147,7 +146,10 @@ INSTALLED_APPS = (
     'south',
     'registration_custom',
     'haystack',
-    'flatblocks'
+    'flatblocks',
+    # Debugging
+    'debug_toolbar',
+    'redis_status',
 )
 
 # A sample logging configuration. The only tangible logging
