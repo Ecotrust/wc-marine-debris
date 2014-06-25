@@ -996,9 +996,9 @@ def get_required_val(ds, key, row):
     For a site_type and required field key, find the row's current value
     ex: for site-based event types, find the current row's `sitename`
     """
-    internal_name = settings.REQUIRED_FIELDS[ds.site_type][key]
-    dsf = ds.datasheetfield_set.get(field_id__internal_name=internal_name)
-    return row[dsf.field_name] # the header as it appears in the datasheet 
+    sheet_global_required_fields = ds._required_global_field_names()
+    field_name = sheet_global_required_fields[key]['field_name']
+    return row[field_name]
 
 def get_state(statename):
     statename = statename.strip()

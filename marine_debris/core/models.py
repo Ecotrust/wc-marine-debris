@@ -188,7 +188,7 @@ class Organization (models.Model, SimpleCacheMixin):
         """Save changes to the organization. 
         Also, invalidate any cached items related to this instance. 
         """
-        self.invalidate_caches()
+        self._invalidate_caches()
         self.slug = slugify(self.orgname)
         super(Organization, self).save(*args, **kwargs)
     
@@ -398,14 +398,8 @@ class DataSheet (models.Model, SimpleCacheMixin):
             return result
         
         # global
-        req_fields = settings.REQUIRED_FIELDS[self.site_type] 
-        required_fieldnames = []
-        for item, internal_name in req_fields.items():
-            try:
-                dsf = self.datasheetfield_set.get(field_id__internal_name=internal_name)
-            except DataSheetField.DoesNotExist:
-                raise DataSheetError("DataSheet (id=%d) should have a field with internal_name of '%s'" % (self.pk, internal_name,))
-            required_fieldnames.append(dsf.field_name)
+        required_fieldnames = [v['field_name'] 
+                               for k, v in self._required_global_field_names().iteritems()]
 
         # per datasheet
         ds_req_fields = self.datasheetfield_set.filter(required=True)
@@ -416,6 +410,35 @@ class DataSheet (models.Model, SimpleCacheMixin):
 
         cache.set(cache_key, required_fieldnames)
         return required_fieldnames
+
+    def _required_global_field_names(self):
+        """Compute and cache the global required field names dict for this data 
+        sheet. Raise a DataSheetError if this data sheet doesn't have the 
+        correct required fields. 
+        
+        Returns {
+            'field key': {                  # key as defined in settings.REQUIRED_FIELDS
+                'internal_name': <...>,     # Field.internal_name
+                'field_name': <...>,        # DataSheetField.field_name, also bulk CSV upload column name
+            }
+        }
+        """
+        cache_key = '%s-%d.required_global_field_names' % (self.__class__.__name__, self.pk)
+        result = cache.get(cache_key)
+        if result:
+            return result
+        
+        req_fields = settings.REQUIRED_FIELDS[self.site_type] 
+        field_names = {}
+        for key, internal_name in req_fields.items():
+            try:
+                dsf = self.datasheetfield_set.get(field_id__internal_name=internal_name)
+            except DataSheetField.DoesNotExist:
+                raise DataSheetError("DataSheet (id=%d) should have a field with internal_name of '%s'" % (self.pk, internal_name,))
+            field_names[key] = {'internal_name': internal_name, 'field_name': dsf.field_name}
+
+        cache.set(cache_key, field_names)
+        return field_names
 
     @property
     def site_type(self):
