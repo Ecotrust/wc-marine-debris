@@ -17,36 +17,6 @@ import pytz
 import urllib
 import time
 
-class SimpleCacheMixin(object):
-    """Mixin class to provide a simple caching layer. 
-    Currently, only Model.objects.all() is cached 
-    
-    Provides all_cached() method, which returns a cached version of 
-    Model.objects.all(). The inheriting class should invalidate the cache on 
-    save() via self._invalidate_caches()
-    """
-    @classmethod
-    def _cls_all_cache_key(cls):
-        """Return the cache key for Models.objects.all()
-        """
-        return '%s.objects.all' % cls.__name__
-
-    def _invalidate_caches(self):
-        """Invalidate any cache associated with this model.
-        """
-        cache.delete(self._cls_all_cache_key())
-
-    @classmethod
-    def all_cached(cls):
-        """Poor-man's cached query for Organization.objects.all()
-        """
-        all = cache.get(cls._cls_all_cache_key())
-        if all:
-            return all
-        all = cls.objects.all()
-        cache.set(cls._cls_all_cache_key(), all)
-        return all
-
 # Create your models here.
 class DataType (models.Model):
     name = models.TextField()
@@ -160,7 +130,7 @@ class Download(models.Model):
         return url
 
 
-class Organization (models.Model, SimpleCacheMixin):
+class Organization (models.Model):
     orgname = models.TextField()
     url = models.TextField(blank=True, null=True)
     address = models.TextField()
@@ -330,7 +300,7 @@ class EventType (models.Model):
 class DataSheetError(Exception):
     pass
 
-class DataSheet (models.Model, SimpleCacheMixin):
+class DataSheet (models.Model):
     sheetname = models.TextField()
     created_by = models.ForeignKey(Organization)
     year_started = models.IntegerField(null=True, blank=True, default=None)
@@ -566,7 +536,7 @@ class DataSheetField (models.Model):
         else:
             raise ValidationError('Please assign a unit to this data sheet field.')
     
-class Project (models.Model, SimpleCacheMixin):
+class Project (models.Model):
     projname = models.TextField(unique=True)
     organization = models.ManyToManyField(Organization, through='ProjectOrganization')
     website = models.TextField(blank=True, null=True)

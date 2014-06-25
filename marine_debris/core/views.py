@@ -1059,7 +1059,7 @@ def parse_date(date_string):
 
 @login_required    
 def bulk_import_old(request):
-    org_dict = [org.toDict for org in Organization.all_cached()]
+    org_dict = [org.toDict for org in Organization.objects.all()]
     org_json = simplejson.dumps(org_dict)
     print org_json
     if request.method == 'GET':
