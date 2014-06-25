@@ -7,7 +7,9 @@ from django.template import RequestContext, loader
 from django.template.loader import render_to_string
 from django.template.defaultfilters import slugify
 from django.conf import settings
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadRequest, HttpResponseNotFound, QueryDict
+from django.http import (HttpResponseRedirect, HttpResponse, Http404,
+                         HttpResponseBadRequest, HttpResponseNotFound, 
+                         QueryDict)
 from django.db import transaction, IntegrityError
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, REDIRECT_FIELD_NAME, login as auth_login
@@ -28,6 +30,41 @@ import string
 import logging
 import csv
 import re
+
+class Timer(object):
+    SECONDS = 1.0
+    MILLISECONDS = 1e3
+    MICROSECONDS = 1e6
+    
+    def __init__(self):
+        self.start()
+    
+    def start(self):
+        """Start (or restart) the timer. Also resets the lap counter.
+        """
+        self.t = datetime.datetime.now()
+        self.last_lap = self.t
+        self.lap_count = 0
+    
+    def elapsed(self, unit=SECONDS):
+        """Return the elapsed time in seconds since the timer was started.
+        """
+        return (datetime.datetime.now() - self.t).total_seconds() * (unit)
+
+    def lap(self, unit=SECONDS):
+        """Return the amount of time that's passed since the last call to lap. 
+        Start the timer at the top of your loop, then call this in the body of 
+        your loop to get the time between loop iterations.
+        """
+        self.lap_count += 1
+        now = datetime.datetime.now()
+        value, self.last_lap = (now - self.last_lap), now
+        return value.total_seconds() * (unit)
+    
+    def average(self, unit=SECONDS):
+        """Return the average lap time
+        """
+        return self.elapsed(unit) / self.lap_count
 
 def index(request): 
     if not settings.DEMO:
@@ -967,7 +1004,7 @@ def map_test(request):
 
 def bulk_csv_header(request, datasheet_id):
     ds = DataSheet.objects.get(id=datasheet_id)
-    field_names = ds.fieldnames
+    field_names = ds.fieldnames()
     header = ','.join(["\"%s\"" % f for f in field_names])
     test_row = '' #TODO put valid default values?
     filename = slugify(ds.sheetname) + ".csv"
@@ -1027,7 +1064,8 @@ def get_site_key(ds, row):
 
 def get_querydict(ds, row):
     row_qnum = {} # keys must refer to the question number (ie 'question_768') 
-    field_id_lookup = dict([(f.field_name, f.id) for f in ds.datasheetfield_set.all()])
+    #field_id_lookup = dict([(f.field_name, f.id) for f in ds.datasheetfield_set.all()])
+    field_id_lookup = dict(result for result in ds.datasheetfield_set.values_list('field_name', 'id'))
 
     for k,v in row.items():
         dsfid = field_id_lookup[k]
@@ -1087,69 +1125,354 @@ def bulk_import(request):
     return bulk.dispatch()
 
 class BulkImportHandler(object):
+    """Class-based handler for bulk_import.
+    """
     def __init__(self, request):
         self.request = request
         self.logger = logging.getLogger('bulk_import')
+        self.response = None
+        self.errors = [] # common collection to store response error messages
 
     def dispatch(self):
         if self.request.method == 'GET':
-            return self.handle_get()
+            self.handle_get()
         else: # post
-            return self.handle_post()
+            self.handle_post()
+        
+        return self.response
 
     def handle_get(self):
         org_json = self.get_org_json()
         rc = RequestContext(self.request, {'form': BulkImportForm().as_p(),
                                            'json': org_json,
                                            'active': 'events'})
-        return render_to_response('bulk_import.html', rc)
+        self.response = render_to_response('bulk_import.html', rc)
     
     def handle_post(self):
-        form = BulkImportForm(self.request.POST, self.request.FILES)
-        if not form.is_valid():
+        self.form = BulkImportForm(self.request.POST, self.request.FILES)
+        if not self.form.is_valid():
             d = {
-                'form': form.as_p(),
-                'json': org_json,
+                'form': self.form.as_p(),
+                'json': self.get_org_json(),
                 'errors':['Form is not valid, please review.'],
                 'active': 'events'
             }
             rc = RequestContext(self.request, d)
-            return render_to_response('bulk_import.html', rc, status=400)
+            r = render_to_response('bulk_import.html', rc)
+            r.status = 400
+
+        self.project = get_object_or_404(Project, projname=self.form.cleaned_data['project'])
+        organization = get_object_or_404(Organization, orgname=self.form.cleaned_data['organization'])
+
+        try:
+            datasheet_id = int(self.form.cleaned_data['datasheet'])
+        except ValueError:
+            raise Http404()
+        self.data_sheet = get_object_or_404(DataSheet, id=datasheet_id)
+
+        # validate the datasheet
+        if not self._validate_data_sheet():
+            return 
         
-        self.get_data_sheet()
+        # validate CSV schema (headers)
+        if not self._read_csv():
+            return
+        
+        # create a transaction for data import and validate the data
+        self.user_txn = UserTransaction(submitted_by=self.request.user, status='new', 
+                                        organization=organization, 
+                                        project=self.project)
+        self.user_txn.save()
+        if not self.user_txn.id: 
+            self.response = render_to_response('bulk_import.html', RequestContext(self.request,{'form':self.form.as_p(), 
+                'errors':['Could not complete the transaction at this time.',], 'active':'events', 'json':self.get_org_json()}))
+            self.response.status_code = 400
+            return
+            
+        self._validate_csv_rows()
+        if not self._check_site_keys():
+            return
+        
+        self._write_csv_rows()
+
+    
+    def _validate_data_sheet(self):
+        """Make sure the data sheet is set up for bulk imports 
+        (that it has required the fields).
+        """
         valid, message = self.data_sheet.is_valid()
         if not valid: 
             errors = ["""Sorry. This datasheet is not configured handle bulk imports.
                     Please notify the database administrator and it will be fixed ASAP.""", ]
             self.logger.error(message)
-            org_json = self.get_org_json()
-            return bulk_bad_request(form, self.request, errors, json=org_json)
+            self.response = bulk_bad_request(self.form, self.request, errors, 
+                                             json=self.get_org_json())
+            return False
+        return True
 
+    def _read_csv(self):
+        """Read and validate the CSV file.
+        """
+        reader = csv.DictReader(self.request.FILES['csv_file'])
+
+        # check for missing or extra fields
+        self.csv_fields = set(reader.fieldnames)
+        required_fields = set(self.data_sheet.required_fieldnames())
+        all_fields = set(self.data_sheet.fieldnames())
+        missing_fields = required_fields - self.csv_fields
+        extra_fields = self.csv_fields - all_fields
         
-        # Things to do, in no particular order
-        # find rows in CSV
-        # validate CSV schema (headers)
-        # √get DataSheet that we're validating against, 
-            # make sure CSV and DataSheet agree with eachother
-        # Create a UserTransaction
-        # Create an Event for each row in the CSV
+        # maybe produce one error for "Missing column" + join missing column 
+        # names instead of producing an error for every missing column...? 
+        self.errors = [
+            "Uploaded file does not contain required column '%s'" % (e)
+            for e in missing_fields] 
+
+        self.errors.extend(["Uploaded file contains column '%s' which is not recognized by this datasheet" % (e)
+                       for e in extra_fields])
+        if self.errors:
+            self.response = bulk_bad_request(self.form, self.request, self.errors, 
+                                             json=self.get_org_json())
+            return False
         
-    def get_data_sheet(self):
-        self.data_sheet = get_object_or_404(DataSheet, 
-                                           id=self.request.POST.get('datasheet'))
-        
-                
-    def read_csv(self):
-        rows = csv.DictReader(self.request.FILES['csv_file'])
-        if not rows: 
-            pass
+        self.data = list(reader)[:10] # read all CSV rows
+        return True
     
-    
+    def _validate_csv_rows(self):
+        """Validate rows against form and collect Sites.
+        """
+        # construct a QueryDict to supply CSV data to the DataSheetForm for 
+        # validation
+        qd = QueryDict('').copy() 
+        field_name_id_map = dict(res for res in self.data_sheet.datasheetfield_set.values_list('field_name', 'pk'))
+        for i, row in enumerate(self.data):
+            # populate the query dict with data from the current row
+            for k, v in row.iteritems():
+                qd['question_%d' % field_name_id_map[k]] = v
+
+            # Use the DataSheetForm to validate the row
+            data_sheet_form = DataSheetForm(self.data_sheet, None, None, qd)
+            if not data_sheet_form.is_valid():
+                # extract the errors from the form and put them into the error
+                # collection
+                for question, message in data_sheet_form.errors.items():
+                    fieldnum = int(question.replace('question_', ''))
+                    # fieldname = self.datasheetfield_set.get(pk=fieldnum).field_name
+                    fieldname = self.datasheetfield_set.filter(pk=fieldnum).values_list('field_name', flat=True)
+                    self.errors.append("Row %d, column <em>'%s'</em><br/>%s" % (i+2, fieldname, message.as_text().replace("* ","")))
+
+            # TODO: move date validation into the DataSheetForm
+            # Validate the required 'date' field
+            try: 
+                parse_date(date_string = get_required_val(self.data_sheet,'date', row))
+            except ValueError:
+                # i + 2 => convert to 1s indexing and skip the header row, so the row numbers match what would show up in Excel
+                self.errors.append("Row %d, Invalid Date." % (i+2,))
+
+            self.unique_site_keys = []
+            try:
+                site_key = get_site_key(self.data_sheet, row)
+                if site_key not in self.unique_site_keys:
+                    self.unique_site_keys.append(site_key)
+            except State.DoesNotExist:
+                self.errors.append("Row %d, Invalid state name" % (i+2, ))
+            except LatLonError:
+                self.errors.append("Row %d, Invalid Latitude/Longitude. Use decimal degrees." % (i+2, ))
+
+        # if self.errors:
+        #     fail? Return a bad bulk request? 
+        
+    def _check_site_keys(self):
+        """Find any sites referenced in the CSV and create them if they don't
+        exist.
+        """
+        self.sites = []
+        for site_key in self.unique_site_keys:
+            site_text = ', '.join([str(x) for x in site_key.values()])
+            try:
+                site = Site.objects.filter(**site_key)[0] # silent fail and grab first if not unique
+                self.sites.append({'name':site_text, 'site':site})
+            except IndexError:
+                if self.data_sheet.site_type == 'coord-based':
+                    # just insert it 
+                    lon = float(site_text.split('(')[1].split(' ')[0])
+                    lat = float(site_text.split(' ')[1].split(')')[0])
+                    point = Point(lon, lat)
+                    closest = impute_state_county(point)
+                    if not closest['error']:
+                        site, created = Site.objects.get_or_create(state=closest['state'], 
+                                                                   county=closest['county'], 
+                                                                   geometry=str(point))
+                    else:
+                        self.errors.append("""%s""" % closest['error'])
+                        site = False
+                        created = False
+                    
+                    if created:
+                        site.transaction = self.user_txn
+                        site.save()
+                    if site:
+                        self.sites.append({'name':site_text, 'site':site})
+                else:
+                    urlargs = urlencode(site_key) 
+                    if urlargs:
+                        urlargs = "?" + urlargs
+
+                    self.errors.append("""Site <em>'%s'</em> is not in the database. <br/>
+                    <button href="/site/create%s" class="btn btn-mini create-site" disabled> Create new site record </button>
+                    <!--<a href="/site/list" class="btn btn-mini"> Match to existing site record </a>-->
+                    """ % (site_text, urlargs ))
+                    self.sites.append({'name':site_text, 'site':None})
+
+        if len(self.errors) > 0:
+            site_form = CreateSiteForm()
+            self.user_tns.delete()
+            self.response = bulk_bad_request(self.form, self.request, 
+                                             self.errors, 
+                                             site_form=site_form, 
+                                             json=self.get_org_json())
+            return False
+        return True
+
+    def _write_csv_rows(self):
+        # loop through rows to create events and submit datasheet forms
+        events = []
+        dups = 0
+        with transaction.commit_on_success():
+            for row in self.data:
+                site_key = get_site_key(self.data_sheet, row)
+                site = Site.objects.filter(**site_key)[0]
+                date_string = get_required_val(self.data_sheet,'date', row)
+                date = parse_date(date_string)
+        
+                event = Event(datasheet_id=self.data_sheet, proj_id=self.project,
+                              cleanupdate=date, site=site, 
+                              transaction=self.user_txn)
+                events.append(event)
+                try:
+                    sid = transaction.savepoint()
+                    print "Trying to save event"
+                    event.save()
+                except IntegrityError as e:
+#                     print "Event save failed", str(e), "Ignoring duplicates"
+#                     transaction.savepoint_rollback(sid)
+#                     continue
+                    if e.message.startswith('duplicate key value violates unique constraint "core_event'):
+                        transaction.savepoint_rollback(sid)
+        
+                        # check against ALL events that match
+                        existing_events = Event.objects.filter(datasheet_id=self.data_sheet, 
+                                                               proj_id=self.project, 
+                                                               cleanupdate=date,
+                                                               site=site)
+        
+                        # compare existing values to the current row's values 
+                        # i.e. determine if it is indeed a new event or a true duplicate
+                        new_event = False
+                        for e in existing_events:
+                            print "Checking existing events in", str(e)
+                            existing = e.field_values
+        
+                            for k, v in existing.items():
+                                print "Checking existing items", k
+                                existing_val_raw = v[0]
+                                dtype = v[1]
+        
+                                try:
+                                    row_val_raw = row[k]
+                                except KeyError:
+                                    row_val_raw = None
+        
+                                if existing_val_raw in [u'None', u'', None]:
+                                    if row_val_raw is not None and row_val_raw != '':
+                                        new_event = True
+                                        break
+                                    else: 
+                                        continue
+        
+                                if dtype in ['Area', 'Distance', 'Duration', 'Number', 'Volume', 'Weight']: 
+                                    try:
+                                        if float(existing_val_raw) != float(row_val_raw):
+                                            new_event = True
+                                            break
+                                    except ValueError:
+                                        if existing_val_raw != row_val_raw:
+                                            new_event = True
+                                            break
+                                elif dtype == 'Date':
+                                    try:
+                                        extdate = parse_date(existing_val_raw)
+                                        rowdate = parse_date(row_val_raw)
+                                        if extdate != rowdate:
+                                            new_event = True
+                                            break
+                                    except ValueError:
+                                        if existing_val_raw != row_val_raw:
+                                            new_event = True
+                                            break
+                                else: #text
+                                    if existing_val_raw != row_val_raw:
+                                        new_event = True
+                                        break
+        
+                        if new_event: 
+                            # increment the event dup id
+                            try:
+                                maxdup = max([x.dup for x in existing_events]) # TODO: use an aggregator here; why a ValueError? 
+                            except ValueError:
+                                maxdup = 0
+        
+                            # and try again to create the event -- TODO: why not use `event` from above?
+                            event = Event(datasheet_id=self.data_sheet,
+                                          proj_id = self.project, 
+                                          cleanupdate=date, site=site, 
+                                          dup=maxdup + 1,
+                                          transaction=self.user_txn)
+                            try:
+                                event.save()
+                            except IntegrityError as e:
+                                if e.message.startswith('duplicate key value violates unique constraint "core_event'):
+                                    dups += 1
+                                    self.errors.append('Duplicate event already exists <br> (%s, %s, %s, %s)' % (self.project.projname,
+                                        self.data_sheet, site.sitename, date))
+                                    continue
+                        else:
+                            dups += 1
+                            self.errors.append('Duplicate Event <br/> (%s, %s, %s, %s)' % (self.project.projname,
+                                self.data_sheet.sheetname, site.sitename, date))
+                            continue
+                    else:
+                        raise e # something unexepected
+        
+                qd = get_querydict(self.data_sheet, row)
+                ds_final_form = DataSheetForm(self.data_sheet, event, None, qd)
+                if ds_final_form.is_valid():
+                    try:
+                        ds_final_form.save(self.data_sheet)
+                    except Exception as e:
+                        self.logger.error(unicode(e)) 
+                        self.errors.append("An internal error occured while saving the form. Please contact the database administrator.")
+                else:
+                    raise Exception("""Somehow the datasheetform is now invalid 
+                      (despite just validating it previously without event)... errors are '%s'""" % str(ds_final_form.errors))
+        
+            if len(self.errors) > 0:
+                transaction.rollback()
+                if len(events) > 0 and dups > 0:
+                    self.errors.insert(0, "%d events were found but not loaded due to %d duplicate events." % (len(events), dups))
+                self.user_txn.delete()
+                self.response = bulk_bad_request(self.form, self.request, self.errors)
+                return False
+        
+        self.response = render_to_response('bulk_import.html', RequestContext(self.request,{'form':self.form.as_p(),
+            'sites': self.sites, 'events': events, 'success': True, 'active':'events', 'json':self.get_org_json()}))
+        return True
+
     def get_org_json(self):
         """Get all the organizations, projects, datasheets, datasheet fields, 
         and convert them to JSON. 
         """
-        org_dicts = [o.toDict for o in Organization.all_cached()]
+        org_dicts = [o.toDict for o in Organization.objects.all()]
         return simplejson.dumps(org_dicts)
 
 def bulk_import_post(request, org_json):
@@ -1210,6 +1533,7 @@ def bulk_import_post(request, org_json):
                     fieldname = ds.datasheetfield_set.get(pk=fieldnum).field_name
                     errors.append("Row %d, column <em>'%s'</em><br/>%s" % (i+2, fieldname, message.as_text().replace("* ","")))
             
+            # TODO: move date validation into the DataSheetForm
             try: 
                 parse_date(date_string = get_required_val(ds,'date', row))
             except ValueError:
@@ -1229,7 +1553,10 @@ def bulk_import_post(request, org_json):
 
         project = Project.objects.get(projname=form.data['project'])
         organization = Organization.objects.get(orgname=form.data['organization'])
-        user_transaction = UserTransaction(submitted_by = request.user, status = 'new', organization=organization, project=project)
+        user_transaction = UserTransaction(submitted_by=request.user, 
+                                           status='new', 
+                                           organization=organization, 
+                                           project=project)
         user_transaction.save()
         if user_transaction.id:
             site_count = 0
