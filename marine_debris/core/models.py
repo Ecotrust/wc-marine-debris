@@ -330,8 +330,7 @@ class DataSheet (models.Model):
     def fieldnames(self):
         """Return list of field names associated with this datasheet. 
         """
-        # compute field names and flatten [('a',), ('b',),] -> ['a', 'b',]
-        return [x[0] for x in self.datasheetfield_set.values_list('field_name')]
+        return self.datasheetfield_set.values_list('field_name', flat=True)
 
     @property
     def internal_fieldname_lookup(self):
