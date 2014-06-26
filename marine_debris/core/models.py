@@ -158,7 +158,6 @@ class Organization (models.Model):
         """Save changes to the organization. 
         Also, invalidate any cached items related to this instance. 
         """
-        self._invalidate_caches()
         self.slug = slugify(self.orgname)
         super(Organization, self).save(*args, **kwargs)
     
@@ -319,7 +318,6 @@ class DataSheet (models.Model):
     
 
     def save(self, *args, **kwargs):
-        self._invalidate_caches()
         self.slug = slugify(self.created_by.orgname + '_' + str(self.year_started) + '_' + self.sheetname)
         super(DataSheet, self).save(*args, **kwargs)
 
@@ -560,7 +558,6 @@ class Project (models.Model):
 
 
     def save(self, *args, **kwargs):
-        self._invalidate_caches()
         self.slug = slugify(self.projname)
         super(Project, self).save(*args, **kwargs)
 
