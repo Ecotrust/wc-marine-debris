@@ -1337,6 +1337,7 @@ class BulkImportHandler(object):
     def _write_csv_rows(self):
         # loop through rows to create events and submit datasheet forms
         events = []
+        field_value_bulk_insert_generators = []
         dups = 0
         with transaction.commit_on_success():
             for row in self.data:
@@ -1443,15 +1444,11 @@ class BulkImportHandler(object):
                             continue
                     else:
                         raise e # something unexepected
-        
+                
                 qd = get_querydict(self.data_sheet, row)
                 ds_final_form = DataSheetForm(self.data_sheet, event, None, qd)
                 if ds_final_form.is_valid():
-                    try:
-                        ds_final_form.save(self.data_sheet)
-                    except Exception as e:
-                        self.logger.error(unicode(e)) 
-                        self.errors.append("An internal error occured while saving the form. Please contact the database administrator.")
+                    field_value_bulk_insert_generators.append(ds_final_form.get_faster_save_values_to_insert(self.data_sheet))
                 else:
                     raise Exception("""Somehow the datasheetform is now invalid 
                       (despite just validating it previously without event)... errors are '%s'""" % str(ds_final_form.errors))
@@ -1463,7 +1460,19 @@ class BulkImportHandler(object):
                 self.user_txn.delete()
                 self.response = bulk_bad_request(self.form, self.request, self.errors)
                 return False
-        
+
+            
+            chain = itertools.chain(*field_value_bulk_insert_generators)
+            
+            try:
+                FieldValue.objects.bulk_create(chain)
+            except Exception as e:
+                self.errors.append("An internal error occured while saving the form. Please contact the database administrator.")
+                self.response = bulk_bad_request(self.form, self.request, 
+                                                 self.errors)
+                self.logger.error(unicode(e))
+                return False 
+                
         self.response = render_to_response('bulk_import.html', RequestContext(self.request,{'form':self.form.as_p(),
             'sites': self.sites, 'events': events, 'success': True, 'active':'events', 'json':self.get_org_json()}))
         return True

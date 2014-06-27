@@ -378,17 +378,22 @@ class DataSheetForm(forms.Form):
                 field.widget = field.hidden_widget()
         
     def save(self, datasheet):
-        now = datetime.datetime.today()
-        for field_name in self.fields:
-            fld = self.fields[field_name]
-            if not fld.field.internal_name in settings.REQUIRED_FIELDS[datasheet.site_type].values():     #Do Not Save Values for required ('event level') fields
-                answer = self.cleaned_data[field_name]
-                value = FieldValue.objects.get_or_create(event_id=fld.event, field_id=fld.field)[0]
-                value.field_value = unicode(answer)
-                value.last_modified = now
-                value.save()
-        return True
-           
+        values_to_insert = self.bulk_create_generator(datasheet)
+        FieldValue.objects.bulk_create(values_to_insert)
+    
+    def bulk_create_generator(self, datasheet):
+        """Returns a generator of FieldValues() for use with 
+        FieldValue.objects.bulk_create
+        """
+        # now = datetime.datetime.today()
+        fields = ((name, f) for name, f in self.fields.iteritems()
+                  if f.field.internal_name not in settings.REQUIRED_FIELDS[datasheet.site_type].values())
+        values_to_insert = (FieldValue(event_id=f[1].event, field_id=f[1].field, 
+                                       field_value=self.cleaned_data[f[0]], 
+                                       # last_modified=now
+                                       )
+                            for f in fields)
+        return values_to_insert
 
 class CreateSiteForm(forms.ModelForm):
     county = forms.CharField(required=True,)
