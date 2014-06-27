@@ -1,4 +1,5 @@
 # coding: utf-8
+import itertools
 from django import template
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
@@ -30,6 +31,7 @@ import string
 import logging
 import csv
 import re
+from django.db.models import Max
 
 class Timer(object):
     SECONDS = 1.0
@@ -1193,8 +1195,8 @@ class BulkImportHandler(object):
         if not self._check_site_keys():
             return
         
-        self._write_csv_rows()
-
+        if not self._write_csv_rows():
+            return
     
     def _validate_data_sheet(self):
         """Make sure the data sheet is set up for bulk imports 
@@ -1334,144 +1336,143 @@ class BulkImportHandler(object):
             return False
         return True
 
+
+    @transaction.commit_on_success
     def _write_csv_rows(self):
         # loop through rows to create events and submit datasheet forms
         events = []
         field_value_bulk_insert_generators = []
         dups = 0
-        with transaction.commit_on_success():
-            for row in self.data:
-                site_key = get_site_key(self.data_sheet, row)
-                site = Site.objects.filter(**site_key)[0]
-                date_string = get_required_val(self.data_sheet,'date', row)
-                date = parse_date(date_string)
-        
-                event = Event(datasheet_id=self.data_sheet, proj_id=self.project,
-                              cleanupdate=date, site=site, 
-                              transaction=self.user_txn)
-                events.append(event)
-                try:
-                    sid = transaction.savepoint()
-                    print "Trying to save event"
-                    event.save()
-                except IntegrityError as e:
-#                     print "Event save failed", str(e), "Ignoring duplicates"
-#                     transaction.savepoint_rollback(sid)
-#                     continue
-                    if e.message.startswith('duplicate key value violates unique constraint "core_event'):
-                        transaction.savepoint_rollback(sid)
-        
-                        # check against ALL events that match
-                        existing_events = Event.objects.filter(datasheet_id=self.data_sheet, 
-                                                               proj_id=self.project, 
-                                                               cleanupdate=date,
-                                                               site=site)
-        
-                        # compare existing values to the current row's values 
-                        # i.e. determine if it is indeed a new event or a true duplicate
-                        new_event = False
-                        for e in existing_events:
-                            print "Checking existing events in", str(e)
-                            existing = e.field_values
-        
-                            for k, v in existing.items():
-                                print "Checking existing items", k
-                                existing_val_raw = v[0]
-                                dtype = v[1]
-        
+
+        for row in self.data:
+            site_key = get_site_key(self.data_sheet, row)
+            site = Site.objects.filter(**site_key)[0]
+            date_string = get_required_val(self.data_sheet,'date', row)
+            date = parse_date(date_string)
+    
+            event = Event(datasheet_id=self.data_sheet, proj_id=self.project,
+                          cleanupdate=date, site=site, 
+                          transaction=self.user_txn)
+            events.append(event)
+            try:
+                sid = transaction.savepoint()
+                print "Trying to save event"
+                event.save()
+            except IntegrityError as e:
+                print "IntegrityError inserting event", str(e)
+                # print "Event save failed", str(e), "Ignoring duplicates"
+                # transaction.savepoint_rollback(sid)
+                # continue
+                if e.message.startswith('duplicate key value violates unique constraint "core_event'):
+                    transaction.savepoint_rollback(sid)
+    
+                    # check against ALL events that match
+                    existing_events = Event.objects.filter(datasheet_id=self.data_sheet, 
+                                                           proj_id=self.project, 
+                                                           cleanupdate=date,
+                                                           site=site)
+    
+                    # compare existing values to the current row's values 
+                    # i.e. determine if it is indeed a new event or a true duplicate
+                    new_event = False
+                    t = Timer()
+                    for e in existing_events: # this loop is ~ 150ms per iteration * 50 iterations per duplicate row. I.e., lots. I'm not sure it should be happening at all, I still think we can safely ignore the duplication check. 
+                        print "Checking existing events in", str(e)
+                        
+                        # switching to the generator saves 500ms per loop
+                        for k, v in e.field_values_gen():
+                            print "Checking existing items", k
+                            existing_val_raw = v[0]
+                            dtype = v[1]
+    
+                            try:
+                                row_val_raw = row[k]
+                            except KeyError:
+                                row_val_raw = None
+    
+                            if existing_val_raw in [u'None', u'', None]:
+                                if row_val_raw is not None and row_val_raw != '':
+                                    new_event = True
+                                    break
+                                else: 
+                                    continue
+    
+                            if dtype in ['Area', 'Distance', 'Duration', 'Number', 'Volume', 'Weight']: 
                                 try:
-                                    row_val_raw = row[k]
-                                except KeyError:
-                                    row_val_raw = None
-        
-                                if existing_val_raw in [u'None', u'', None]:
-                                    if row_val_raw is not None and row_val_raw != '':
+                                    if float(existing_val_raw) != float(row_val_raw):
                                         new_event = True
                                         break
-                                    else: 
-                                        continue
-        
-                                if dtype in ['Area', 'Distance', 'Duration', 'Number', 'Volume', 'Weight']: 
-                                    try:
-                                        if float(existing_val_raw) != float(row_val_raw):
-                                            new_event = True
-                                            break
-                                    except ValueError:
-                                        if existing_val_raw != row_val_raw:
-                                            new_event = True
-                                            break
-                                elif dtype == 'Date':
-                                    try:
-                                        extdate = parse_date(existing_val_raw)
-                                        rowdate = parse_date(row_val_raw)
-                                        if extdate != rowdate:
-                                            new_event = True
-                                            break
-                                    except ValueError:
-                                        if existing_val_raw != row_val_raw:
-                                            new_event = True
-                                            break
-                                else: #text
+                                except ValueError:
                                     if existing_val_raw != row_val_raw:
                                         new_event = True
                                         break
-        
-                        if new_event: 
-                            # increment the event dup id
-                            try:
-                                maxdup = max([x.dup for x in existing_events]) # TODO: use an aggregator here; why a ValueError? 
-                            except ValueError:
-                                maxdup = 0
-        
-                            # and try again to create the event -- TODO: why not use `event` from above?
-                            event = Event(datasheet_id=self.data_sheet,
-                                          proj_id = self.project, 
-                                          cleanupdate=date, site=site, 
-                                          dup=maxdup + 1,
-                                          transaction=self.user_txn)
-                            try:
-                                event.save()
-                            except IntegrityError as e:
-                                if e.message.startswith('duplicate key value violates unique constraint "core_event'):
-                                    dups += 1
-                                    self.errors.append('Duplicate event already exists <br> (%s, %s, %s, %s)' % (self.project.projname,
-                                        self.data_sheet, site.sitename, date))
-                                    continue
-                        else:
-                            dups += 1
-                            self.errors.append('Duplicate Event <br/> (%s, %s, %s, %s)' % (self.project.projname,
-                                self.data_sheet.sheetname, site.sitename, date))
-                            continue
-                    else:
-                        raise e # something unexepected
-                
-                qd = get_querydict(self.data_sheet, row)
-                ds_final_form = DataSheetForm(self.data_sheet, event, None, qd)
-                if ds_final_form.is_valid():
-                    field_value_bulk_insert_generators.append(ds_final_form.get_faster_save_values_to_insert(self.data_sheet))
-                else:
-                    raise Exception("""Somehow the datasheetform is now invalid 
-                      (despite just validating it previously without event)... errors are '%s'""" % str(ds_final_form.errors))
-        
-            if len(self.errors) > 0:
-                transaction.rollback()
-                if len(events) > 0 and dups > 0:
-                    self.errors.insert(0, "%d events were found but not loaded due to %d duplicate events." % (len(events), dups))
-                self.user_txn.delete()
-                self.response = bulk_bad_request(self.form, self.request, self.errors)
-                return False
+                            elif dtype == 'Date':
+                                try:
+                                    extdate = parse_date(existing_val_raw)
+                                    rowdate = parse_date(row_val_raw)
+                                    if extdate != rowdate:
+                                        new_event = True
+                                        break
+                                except ValueError:
+                                    if existing_val_raw != row_val_raw:
+                                        new_event = True
+                                        break
+                            else: #text
+                                if existing_val_raw != row_val_raw:
+                                    new_event = True
+                                    break
+                        print t.lap(t.MILLISECONDS), t.average(t.MILLISECONDS)
+                    print t.elapsed(t.MILLISECONDS)
 
+                    if new_event: 
+                        # increment the event dup id
+                        maxdup = existing_events.aggregate(Max('dup')).get('dup__max')
+    
+                        # and try again to create the event
+                        event.dup = maxdup + 1
+                        try:
+                            event.save()
+                        except IntegrityError as e:
+                            if e.message.startswith('duplicate key value violates unique constraint "core_event'):
+                                dups += 1
+                                self.errors.append('Duplicate event already exists <br> (%s, %s, %s, %s)' % (self.project.projname,
+                                    self.data_sheet, site.sitename, date))
+                                continue
+                    else:
+                        dups += 1
+                        self.errors.append('Duplicate Event <br/> (%s, %s, %s, %s)' % (self.project.projname,
+                            self.data_sheet.sheetname, site.sitename, date))
+                        continue
+                else:
+                    raise e # something unexepected
             
-            chain = itertools.chain(*field_value_bulk_insert_generators)
-            
-            try:
-                FieldValue.objects.bulk_create(chain)
-            except Exception as e:
-                self.errors.append("An internal error occured while saving the form. Please contact the database administrator.")
-                self.response = bulk_bad_request(self.form, self.request, 
-                                                 self.errors)
-                self.logger.error(unicode(e))
-                return False 
+            qd = get_querydict(self.data_sheet, row)
+            ds_final_form = DataSheetForm(self.data_sheet, event, None, qd)
+            if ds_final_form.is_valid():
+                field_value_bulk_insert_generators.append(ds_final_form.bulk_create_generator(self.data_sheet))
+            else:
+                raise Exception("""Somehow the datasheetform is now invalid 
+                  (despite just validating it previously without event)... errors are '%s'""" % str(ds_final_form.errors))
+    
+        if len(self.errors) > 0:
+            transaction.rollback()
+            if len(events) > 0 and dups > 0:
+                self.errors.insert(0, "%d events were found but not loaded due to %d duplicate events." % (len(events), dups))
+            self.user_txn.delete()
+            self.response = bulk_bad_request(self.form, self.request, self.errors)
+            return False
+
+        
+        chain = itertools.chain(*field_value_bulk_insert_generators)
+        
+        try:
+            FieldValue.objects.bulk_create(chain)
+        except Exception as e:
+            self.errors.append("An internal error occured while saving the form. Please contact the database administrator.")
+            self.response = bulk_bad_request(self.form, self.request, 
+                                             self.errors)
+            self.logger.error(unicode(e))
+            return False 
                 
         self.response = render_to_response('bulk_import.html', RequestContext(self.request,{'form':self.form.as_p(),
             'sites': self.sites, 'events': events, 'success': True, 'active':'events', 'json':self.get_org_json()}))
