@@ -339,7 +339,7 @@ class DataSheet (models.Model):
             .....
         }
         """
-        return dict([(x.field_id.internal_name, x.field_name) for x in self.datasheetfield_set.all()])
+        return dict([(x.field_id.internal_name, x.field_name) for x in self.datasheetfield_set.select_related().all()])
 
     @property
     def unit_lookup(self):
@@ -946,7 +946,18 @@ class Event (models.Model):
             key = unicode(lut[fval.field_id.internal_name])
             rvals[key] = (fval.field_value, fval.field_id.datatype.name)
         return rvals
-        
+    
+    def field_values_gen(self):
+        """
+        Return a generator that yields field keys & values
+        """
+        fvals = FieldValue.objects.filter(event_id=self)
+        lut = self.datasheet_id.internal_fieldname_lookup
+        for fval in fvals.iterator():
+            key = unicode(lut[fval.field_id.internal_name])
+            value = (fval.field_value, fval.field_id.datatype.name)
+            yield key, value
+
     @property
     def field_values_list(self):
         """

@@ -8,6 +8,7 @@ from django.contrib.gis.geos import Point
 from cgi import escape
 from core import widgets
 import datetime
+from django.db import connection
 
 class EventForm(forms.ModelForm):
     class Meta:
@@ -281,7 +282,13 @@ class CreateEventForm(forms.Form):
 class DataSheetForm(forms.Form):
     def __init__(self, datasheet, event=None, event_post=None, *args, **kwargs):
         self.datasheet_id = datasheet.id
-        questions = DataSheetField.objects.select_related().filter(sheet_id=datasheet.id)
+        
+        questions = cache.get('DataSheetField-%d-questions' % datasheet.id)
+        if not questions: 
+            questions = datasheet.datasheetfield_set.select_related()
+            questions = list(questions) # evaluate queryset for cache
+            cache.set('DataSheetField-%d-questions' % datasheet.id, questions)
+
         if event:
             answers = FieldValue.objects.filter(event_id=event.id)
         else:
@@ -290,11 +297,10 @@ class DataSheetForm(forms.Form):
 
         answer_lookup = dict([(a.field_id, a.field_value) for a in answers.all()])
 
-        for i, question in enumerate(questions):
+        for question in questions:
             dynamic_args = {}
-            other_dynamic_args = {}
             field = question.field_id
-                    
+
             hidden = False
             if question.field_id.internal_name in settings.REQUIRED_FIELDS[datasheet.site_type].values() and event_post:
                 hidden = True
@@ -368,7 +374,7 @@ class DataSheetForm(forms.Form):
 
             if hidden:
                 self.fields['question_' + str(question.id)].widget = self.fields['question_' + str(question.id)].hidden_widget()
-            
+
         self.event = event
 
     def hideRequiredFields(self, datasheet):

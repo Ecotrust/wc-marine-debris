@@ -1,5 +1,6 @@
 # coding: utf-8
 import itertools
+import functools
 from django import template
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
@@ -67,6 +68,23 @@ class Timer(object):
         """Return the average lap time
         """
         return self.elapsed(unit) / self.lap_count
+
+    @staticmethod
+    def timed_function(fn):
+        """Print execution time after function completes
+        """
+        @functools.wraps(fn)
+        def time_it(*args, **kwargs):
+            t = Timer()
+            try:
+                result = fn(*args, **kwargs)
+            except: 
+                print "%s (exception) - %.2f ms" % (fn.__name__, t.elapsed(t.MILLISECONDS))
+                raise
+            print "%s - %.2f ms" % (fn.__name__, t.elapsed(t.MILLISECONDS))
+            return result
+        return time_it
+    
 
 def index(request): 
     if not settings.DEMO:
@@ -1041,10 +1059,13 @@ def get_required_val(ds, key, row):
 
 def get_state(statename):
     statename = statename.strip()
+
     try:
         state = State.objects.get(name__iexact=statename)
     except State.DoesNotExist:
         state = State.objects.get(initials__iexact=statename)
+        # TODO: Handle the other DoesNotExist exception here, or make sure 
+        # that it's propogated correctly in the caller. 
     return state
 
 def get_site_key(ds, row):
@@ -1136,11 +1157,12 @@ class BulkImportHandler(object):
         self.errors = [] # common collection to store response error messages
 
     def dispatch(self):
+        t = Timer()
         if self.request.method == 'GET':
             self.handle_get()
         else: # post
             self.handle_post()
-        
+        print "Time to process bulk import: %.2f ms" % t.elapsed(t.MILLISECONDS)
         return self.response
 
     def handle_get(self):
@@ -1180,6 +1202,7 @@ class BulkImportHandler(object):
         if not self._read_csv():
             return
         
+        
         # create a transaction for data import and validate the data
         self.user_txn = UserTransaction(submitted_by=self.request.user, status='new', 
                                         organization=organization, 
@@ -1190,14 +1213,16 @@ class BulkImportHandler(object):
                 'errors':['Could not complete the transaction at this time.',], 'active':'events', 'json':self.get_org_json()}))
             self.response.status_code = 400
             return
-            
+
         self._validate_csv_rows()
+        
         if not self._check_site_keys():
             return
         
         if not self._write_csv_rows():
             return
     
+    @Timer.timed_function
     def _validate_data_sheet(self):
         """Make sure the data sheet is set up for bulk imports 
         (that it has required the fields).
@@ -1212,6 +1237,7 @@ class BulkImportHandler(object):
             return False
         return True
 
+    @Timer.timed_function
     def _read_csv(self):
         """Read and validate the CSV file.
         """
@@ -1237,14 +1263,16 @@ class BulkImportHandler(object):
                                              json=self.get_org_json())
             return False
         
-        self.data = list(reader)[:10] # read all CSV rows
+        self.data = list(reader)[-100:] # read all CSV rows
         return True
     
+    @Timer.timed_function
     def _validate_csv_rows(self):
         """Validate rows against form and collect Sites.
         """
         # construct a QueryDict to supply CSV data to the DataSheetForm for 
         # validation
+        self.unique_site_keys = []
         qd = QueryDict('').copy() 
         field_name_id_map = dict(res for res in self.data_sheet.datasheetfield_set.values_list('field_name', 'pk'))
         for i, row in enumerate(self.data):
@@ -1271,7 +1299,6 @@ class BulkImportHandler(object):
                 # i + 2 => convert to 1s indexing and skip the header row, so the row numbers match what would show up in Excel
                 self.errors.append("Row %d, Invalid Date." % (i+2,))
 
-            self.unique_site_keys = []
             try:
                 site_key = get_site_key(self.data_sheet, row)
                 if site_key not in self.unique_site_keys:
@@ -1283,7 +1310,8 @@ class BulkImportHandler(object):
 
         # if self.errors:
         #     fail? Return a bad bulk request? 
-        
+
+    @Timer.timed_function
     def _check_site_keys(self):
         """Find any sites referenced in the CSV and create them if they don't
         exist.
@@ -1304,17 +1332,13 @@ class BulkImportHandler(object):
                     if not closest['error']:
                         site, created = Site.objects.get_or_create(state=closest['state'], 
                                                                    county=closest['county'], 
-                                                                   geometry=str(point))
+                                                                   geometry=str(point),
+                                                                   transaction=self.user_txn)
+                        if site:
+                            self.sites.append({'name':site_text, 'site':site})
                     else:
                         self.errors.append("""%s""" % closest['error'])
-                        site = False
-                        created = False
-                    
-                    if created:
-                        site.transaction = self.user_txn
-                        site.save()
-                    if site:
-                        self.sites.append({'name':site_text, 'site':site})
+
                 else:
                     urlargs = urlencode(site_key) 
                     if urlargs:
@@ -1328,7 +1352,7 @@ class BulkImportHandler(object):
 
         if len(self.errors) > 0:
             site_form = CreateSiteForm()
-            self.user_tns.delete()
+            self.user_txn.delete()
             self.response = bulk_bad_request(self.form, self.request, 
                                              self.errors, 
                                              site_form=site_form, 
@@ -1336,7 +1360,7 @@ class BulkImportHandler(object):
             return False
         return True
 
-
+    @Timer.timed_function
     @transaction.commit_on_success
     def _write_csv_rows(self):
         # loop through rows to create events and submit datasheet forms
@@ -1345,8 +1369,15 @@ class BulkImportHandler(object):
         dups = 0
 
         for row in self.data:
+            t = Timer()
             site_key = get_site_key(self.data_sheet, row)
-            site = Site.objects.filter(**site_key)[0]
+            print "Time to get site_key %.2f ms" % t.elapsed(t.MILLISECONDS)
+            try:
+                site = Site.objects.get(**site_key)
+            except Site.DoesNotExist:
+                print "Error, site", str(site_key), "does not exist"
+                raise
+            print "Time to get site object %.2f ms" % t.elapsed(t.MILLISECONDS)
             date_string = get_required_val(self.data_sheet,'date', row)
             date = parse_date(date_string)
     
@@ -1360,9 +1391,9 @@ class BulkImportHandler(object):
                 event.save()
             except IntegrityError as e:
                 print "IntegrityError inserting event", str(e)
-                # print "Event save failed", str(e), "Ignoring duplicates"
-                # transaction.savepoint_rollback(sid)
-                # continue
+                print "Event save failed", str(e), "Ignoring duplicates"
+                transaction.savepoint_rollback(sid)
+                continue
                 if e.message.startswith('duplicate key value violates unique constraint "core_event'):
                     transaction.savepoint_rollback(sid)
     
