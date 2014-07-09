@@ -2,6 +2,7 @@
 import os, sys
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+DEBUG_TOOLS = False
 DEMO = False
 SERVER = 'Apache'   #Set to 'Dev' in local settings if running Django's dev server
 
@@ -97,7 +98,6 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'johnny.middleware.LocalStoreClearMiddleware',
     'johnny.middleware.QueryCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -108,6 +108,13 @@ MIDDLEWARE_CLASSES = (
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
+
+if DEBUG_TOOLS: 
+    MIDDLEWARE_CLASSES = (
+        'core.profiler.ProfileMiddleware', 
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    ) + MIDDLEWARE_CLASSES
+
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.contrib.auth.context_processors.auth',
@@ -130,6 +137,11 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
+# haystack 0.15 complains if this is set:
+# HAYSTACK_SITECONF='set-in-local-settings'
+# haystack 0.15 thinks this should be "HAYSTACK_CONNECTIONS"
+# HAYSTACK_SEARCH_ENGINE='set-in-local-settings'
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -147,10 +159,13 @@ INSTALLED_APPS = (
     'registration_custom',
     'haystack',
     'flatblocks',
-    # Debugging
-    'debug_toolbar',
-    'redis_status',
 )
+
+if DEBUG_TOOLS: 
+    INSTALLED_APPS += (
+        'debug_toolbar', 
+        'redis_status',
+    )
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -224,8 +239,9 @@ GEOJSON_SRID = 4326
 
 CACHE_TIMEOUT = 60*60*24*7*52*10
 
+
 try:
     from settings_local import *
 except ImportError, exp:
     pass
-    
+ 

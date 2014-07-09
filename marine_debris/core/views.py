@@ -1,4 +1,5 @@
 # coding: utf-8
+import settings
 import itertools
 import functools
 from django import template
@@ -39,6 +40,7 @@ class Timer(object):
     MILLISECONDS = 1e3
     MICROSECONDS = 1e6
     
+    
     def __init__(self):
         self.start()
     
@@ -75,6 +77,9 @@ class Timer(object):
         """
         @functools.wraps(fn)
         def time_it(*args, **kwargs):
+            if settings.DEBUG_TOOLS:
+                return fn(*args, **kwargs)
+            
             t = Timer()
             try:
                 result = fn(*args, **kwargs)
@@ -85,7 +90,6 @@ class Timer(object):
             return result
         return time_it
     
-
 def index(request): 
     if not settings.DEMO:
         event_count = [
@@ -1157,12 +1161,11 @@ class BulkImportHandler(object):
         self.errors = [] # common collection to store response error messages
 
     def dispatch(self):
-        t = Timer()
         if self.request.method == 'GET':
             self.handle_get()
         else: # post
             self.handle_post()
-        print "Time to process bulk import: %.2f ms" % t.elapsed(t.MILLISECONDS)
+
         return self.response
 
     def handle_get(self):
@@ -1263,7 +1266,12 @@ class BulkImportHandler(object):
                                              json=self.get_org_json())
             return False
         
-        self.data = list(reader)[-100:] # read all CSV rows
+#         self.data = [BulkImportRow(row) for row in reader][:10]
+        def c():
+            self.data = list(reader)
+        c = Timer.timed_function(c)
+        c()
+#         self.data = list(reader) # read all CSV rows ~ 275ms for 4500 rows!
         return True
     
     @Timer.timed_function
@@ -1371,13 +1379,13 @@ class BulkImportHandler(object):
         for row in self.data:
             t = Timer()
             site_key = get_site_key(self.data_sheet, row)
-            print "Time to get site_key %.2f ms" % t.elapsed(t.MILLISECONDS)
+#             print "Time to get site_key %.2f ms" % t.elapsed(t.MILLISECONDS)
             try:
                 site = Site.objects.get(**site_key)
             except Site.DoesNotExist:
                 print "Error, site", str(site_key), "does not exist"
                 raise
-            print "Time to get site object %.2f ms" % t.elapsed(t.MILLISECONDS)
+#             print "Time to get site object %.2f ms" % t.elapsed(t.MILLISECONDS)
             date_string = get_required_val(self.data_sheet,'date', row)
             date = parse_date(date_string)
     
@@ -1387,13 +1395,13 @@ class BulkImportHandler(object):
             events.append(event)
             try:
                 sid = transaction.savepoint()
-                print "Trying to save event"
+                # print "Trying to save event"
                 event.save()
             except IntegrityError as e:
-                print "IntegrityError inserting event", str(e)
-                print "Event save failed", str(e), "Ignoring duplicates"
-                transaction.savepoint_rollback(sid)
-                continue
+                # print "IntegrityError inserting event", str(e)
+                # print "Event save failed", str(e), "Ignoring duplicates"
+                # transaction.savepoint_rollback(sid)
+                # continue
                 if e.message.startswith('duplicate key value violates unique constraint "core_event'):
                     transaction.savepoint_rollback(sid)
     
@@ -1408,11 +1416,11 @@ class BulkImportHandler(object):
                     new_event = False
                     t = Timer()
                     for e in existing_events: # this loop is ~ 150ms per iteration * 50 iterations per duplicate row. I.e., lots. I'm not sure it should be happening at all, I still think we can safely ignore the duplication check. 
-                        print "Checking existing events in", str(e)
+                        # print "Checking existing events in", str(e)
                         
                         # switching to the generator saves 500ms per loop
                         for k, v in e.field_values_gen():
-                            print "Checking existing items", k
+                            # print "Checking existing items", k
                             existing_val_raw = v[0]
                             dtype = v[1]
     
@@ -1452,8 +1460,8 @@ class BulkImportHandler(object):
                                 if existing_val_raw != row_val_raw:
                                     new_event = True
                                     break
-                        print t.lap(t.MILLISECONDS), t.average(t.MILLISECONDS)
-                    print t.elapsed(t.MILLISECONDS)
+                        # print t.lap(t.MILLISECONDS), t.average(t.MILLISECONDS)
+                    # print t.elapsed(t.MILLISECONDS)
 
                     if new_event: 
                         # increment the event dup id
@@ -1601,7 +1609,7 @@ def bulk_import_post(request, org_json):
         user_transaction.save()
         if user_transaction.id:
             site_count = 0
-            print("Unique site keys:", unique_site_keys)
+            # print("Unique site keys:", unique_site_keys)
             for site_key in unique_site_keys:
                 site_text = ', '.join([str(x) for x in site_key.values()])
                 try:
@@ -1666,12 +1674,12 @@ def bulk_import_post(request, org_json):
                     events.append(event)
                     try:
                         sid = transaction.savepoint()
-                        print "Trying to save event"
+                        # print "Trying to save event"
                         event.save()
                     except IntegrityError as e:
-                        print "Event save failed", str(e), "Ignoring duplicates"
-                        transaction.savepoint_rollback(sid)
-                        continue
+                        # print "Event save failed", str(e), "Ignoring duplicates"
+                        # transaction.savepoint_rollback(sid)
+                        # continue
                         if e.message.startswith('duplicate key value violates unique constraint "core_event'):
                             transaction.savepoint_rollback(sid)
 
@@ -1682,11 +1690,11 @@ def bulk_import_post(request, org_json):
                             # i.e. determine if it is indeed a new event or a true duplicate
                             new_event = False
                             for e in existing_events:
-                                print "Checking existing events in", str(e)
+                                # print "Checking existing events in", str(e)
                                 existing = e.field_values
 
                                 for k, v in existing.items():
-                                    print "Checking existing items", k
+                                    # print "Checking existing items", k
                                     existing_val_raw = v[0]
                                     dtype = v[1]
 
