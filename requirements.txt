@@ -8,4 +8,6 @@ django-redis-cache
 hiredis
 django-flatblocks
 pytz
-
+django-debug-toolbar==1.2.1
+django-redis-status==1.0.0
+johnny-cache==1.4
