@@ -54,7 +54,14 @@ class Timer(object):
     def elapsed(self, unit=SECONDS):
         """Return the elapsed time in seconds since the timer was started.
         """
-        return (datetime.datetime.now() - self.t).total_seconds() * (unit)
+        # python2.7+
+        # return (datetime.datetime.now() - self.t).total_seconds() * (unit)
+        
+        # python <= 2.6
+        diff = (datetime.datetime.now() - self.t)
+        total_seconds = float(diff.seconds) + (diff.days * 24 * 3600)
+        total_seconds = total_seconds * unit
+        return total_seconds
 
     def lap(self, unit=SECONDS):
         """Return the amount of time that's passed since the last call to lap. 
@@ -64,7 +71,12 @@ class Timer(object):
         self.lap_count += 1
         now = datetime.datetime.now()
         value, self.last_lap = (now - self.last_lap), now
-        return value.total_seconds() * (unit)
+        
+        # return value.total_seconds() * (unit)
+
+        total_seconds = float(value.seconds) + (value.days * 24 * 3600)
+        total_seconds = total_seconds * unit
+        return total_seconds
     
     def average(self, unit=SECONDS):
         """Return the average lap time
