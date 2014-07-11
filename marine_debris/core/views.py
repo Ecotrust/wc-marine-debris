@@ -77,9 +77,6 @@ class Timer(object):
         """
         @functools.wraps(fn)
         def time_it(*args, **kwargs):
-            if settings.DEBUG_TOOLS:
-                return fn(*args, **kwargs)
-            
             t = Timer()
             try:
                 result = fn(*args, **kwargs)
