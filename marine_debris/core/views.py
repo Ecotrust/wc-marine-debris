@@ -56,10 +56,10 @@ class Timer(object):
         """
         # python2.7+
         # return (datetime.datetime.now() - self.t).total_seconds() * (unit)
-        
+    
         # python <= 2.6
         diff = (datetime.datetime.now() - self.t)
-        total_seconds = float(diff.seconds) + (diff.days * 24 * 3600)
+        total_seconds = diff.seconds + diff.microseconds / 1e6 + (diff.days * 24 * 3600)
         total_seconds = total_seconds * unit
         return total_seconds
 
@@ -73,8 +73,8 @@ class Timer(object):
         value, self.last_lap = (now - self.last_lap), now
         
         # return value.total_seconds() * (unit)
-
-        total_seconds = float(value.seconds) + (value.days * 24 * 3600)
+        
+        total_seconds = value.seconds + value.microseconds / 1e6 + (value.days * 24 * 3600)
         total_seconds = total_seconds * unit
         return total_seconds
     
@@ -1407,10 +1407,10 @@ class BulkImportHandler(object):
                 # print "Trying to save event"
                 event.save()
             except IntegrityError as e:
-                # print "IntegrityError inserting event", str(e)
+                print "IntegrityError inserting event", str(e)
                 # print "Event save failed", str(e), "Ignoring duplicates"
-                # transaction.savepoint_rollback(sid)
-                # continue
+                transaction.savepoint_rollback(sid)
+                continue
                 if e.message.startswith('duplicate key value violates unique constraint "core_event'):
                     transaction.savepoint_rollback(sid)
     
