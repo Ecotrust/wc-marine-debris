@@ -1407,7 +1407,7 @@ class BulkImportHandler(object):
                 # print "Trying to save event"
                 event.save()
             except IntegrityError as e:
-                print "IntegrityError inserting event", str(e)
+                # print "IntegrityError inserting event", str(e)
                 # print "Event save failed", str(e), "Ignoring duplicates"
                 transaction.savepoint_rollback(sid)
                 continue
