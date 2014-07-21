@@ -33,7 +33,7 @@
   
   <h4>Your data has been submitted. You will receive an email once it has been reviewed.</h4>
 
-  <h4> {{ events|length }} events were loaded </h4>
+  <h4> {{ events|length }} events were loaded{% if dups %}{% if dups > 0 %} ({{ dups }} duplicates were ignored){% endif %}{% endif %}</h4>
     <ul>
     {% for event in events %}
     <li>

@@ -1381,12 +1381,17 @@ class BulkImportHandler(object):
     @transaction.commit_on_success
     def _write_csv_rows(self):
         # loop through rows to create events and submit datasheet forms
+        
+        # A list of events processed is passed into the bulk import template
         events = []
         field_value_bulk_insert_generators = []
         dups = 0
+        # a count of all rows we've seen
+        event_count = 0
 
         for row in self.data:
             t = Timer()
+            event_count += 1
             site_key = get_site_key(self.data_sheet, row)
 #             print "Time to get site_key %.2f ms" % t.elapsed(t.MILLISECONDS)
             try:
@@ -1409,8 +1414,8 @@ class BulkImportHandler(object):
             except IntegrityError as e:
                 # print "IntegrityError inserting event", str(e)
                 # print "Event save failed", str(e), "Ignoring duplicates"
-                transaction.savepoint_rollback(sid)
-                continue
+                #transaction.savepoint_rollback(sid)
+                #continue
                 if e.message.startswith('duplicate key value violates unique constraint "core_event'):
                     transaction.savepoint_rollback(sid)
     
@@ -1469,6 +1474,10 @@ class BulkImportHandler(object):
                                 if existing_val_raw != row_val_raw:
                                     new_event = True
                                     break
+                        
+                        if new_event:
+                            # Oops, don't forget to break out of the OUTER loop too
+                            break
                         # print t.lap(t.MILLISECONDS), t.average(t.MILLISECONDS)
                     # print t.elapsed(t.MILLISECONDS)
 
@@ -1485,11 +1494,13 @@ class BulkImportHandler(object):
                                 dups += 1
                                 self.errors.append('Duplicate event already exists <br> (%s, %s, %s, %s)' % (self.project.projname,
                                     self.data_sheet, site.sitename, date))
+                                events.pop() # toss out the last event
                                 continue
                     else:
                         dups += 1
                         self.errors.append('Duplicate Event <br/> (%s, %s, %s, %s)' % (self.project.projname,
                             self.data_sheet.sheetname, site.sitename, date))
+                        events.pop()    # toss out the last event
                         continue
                 else:
                     raise e # something unexepected
@@ -1503,13 +1514,16 @@ class BulkImportHandler(object):
                   (despite just validating it previously without event)... errors are '%s'""" % str(ds_final_form.errors))
     
         if len(self.errors) > 0:
-            transaction.rollback()
-            if len(events) > 0 and dups > 0:
-                self.errors.insert(0, "%d events were found but not loaded due to %d duplicate events." % (len(events), dups))
-            self.user_txn.delete()
-            self.response = bulk_bad_request(self.form, self.request, self.errors)
-            return False
-
+            if len(events) > 0:
+                # Some events were loaded, so show the number loaded as an error
+                self.errors = ["%d of %d loaded (%d duplicates ignored)" % (len(events), event_count, dups)]
+            elif len(events) == 0:
+                # Only bail out if there were no events loaded
+                self.errors = ["No events loaded. (%d events processed, %d were duplicates)" % (event_count, dups)]
+                transaction.rollback()
+                self.user_txn.delete()
+                self.response = bulk_bad_request(self.form, self.request, self.errors)
+                return False
         
         chain = itertools.chain(*field_value_bulk_insert_generators)
         
@@ -1522,7 +1536,7 @@ class BulkImportHandler(object):
             self.logger.error(unicode(e))
             return False 
                 
-        self.response = render_to_response('bulk_import.html', RequestContext(self.request,{'form':self.form.as_p(),
+        self.response = render_to_response('bulk_import.html', RequestContext(self.request,{'dups': dups, 'form':self.form.as_p(),
             'sites': self.sites, 'events': events, 'success': True, 'active':'events', 'json':self.get_org_json()}))
         return True
 
@@ -1743,6 +1757,9 @@ def bulk_import_post(request, org_json):
                                         if existing_val_raw != row_val_raw:
                                             new_event = True
                                             break
+                                
+                                if new_event:
+                                    break
 
                             if new_event: 
                                 # increment the event dup id
