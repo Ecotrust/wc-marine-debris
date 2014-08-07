@@ -527,6 +527,8 @@ def get_feature_json(geom_json, prop_json):
     }""" % (geom_json, prop_json)    
     
 def get_event_geojson(request):
+    t = Timer()
+    
     srid = settings.GEOJSON_SRID
     crs = srid_to_proj(srid)
     filter_json = request.GET.get('filter', False)
@@ -543,10 +545,8 @@ def get_event_geojson(request):
     if not settings.DEMO:
         qs = qs.filter(transaction__status = "accepted")
     
-    loop_count = 0
-    
+    print "Load filter time", t.lap()
     for event in qs:
-        loop_count = loop_count + 1
         key = 'event_%s_geocache' % event.id        #CACHE_KEY  --  geojson by event
         geo_string = cache.get(key)
         if not geo_string:
@@ -565,7 +565,7 @@ def get_event_geojson(request):
             geo_string = get_feature_json(gj, properties)
             cached = cache.set(key, geo_string, settings.CACHE_TIMEOUT)
         feature_jsons.append(geo_string)
-        
+    print "Time to complete loop", t.lap()
     geojson = """{
         "type": "FeatureCollection",
         "crs": { "type": "name", "properties": {"name": "%s"}},
