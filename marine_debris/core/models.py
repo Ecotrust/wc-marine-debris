@@ -830,6 +830,88 @@ class Site (models.Model):
         
         super(Site, self).save(*args, **kwargs)
 
+class EventOntology(models.Model):
+    """An UNMANAGED model to interact with the materialized view (actually, it's
+    a regularly generated table) to retrieve data from the events.
+    
+    
+    SQL: 
+    drop table if exists event_ontology;
+
+create table event_ontology as 
+select 
+e.id as event_id,
+e.cleanupdate,
+s.sitename,
+t.type,
+ST_AsGeoJSON(s.geometry, 15, 0) as geometry,
+f.internal_name,
+f.label,
+f.id field_id,
+fu.short_name unit,
+fv.field_value,
+fv.id field_value_id,
+ds.id datasheet_id,
+dt.name datatype,
+dt.aggregatable,
+ds.slug datasheet,
+p.slug project,
+o.slug organization
+
+from 
+
+core_fieldvalue fv 
+join core_field f on fv.field_id_id = f.id
+    join core_datatype dt on dt.id = f.datatype_id
+    join core_unit fu on fu.id = f.unit_id_id
+join core_event e on fv.event_id_id = e.id
+    join core_site s on e.site_id = s.id -- 442078
+join core_usertransaction ut on e.transaction_id = ut.id and ut.status = 'accepted'  -- 439824
+
+    join core_project p on ut.project_id = p.id -- 203731; about half the data was uploaded prior to the usertransaction foreign keys to project and organization, so that data isn't associated with anything (except maybe the user)
+        join core_projectdatasheet pds on p.id = pds.project_id_id
+        join core_datasheet ds on ds.id = pds.sheet_id_id
+        join core_eventtype t on ds.type_id_id = t.id
+
+join core_organization o on ut.organization_id = o.id
+
+where 
+field_value <> 'None'
+and field_value <> ''
+;
+
+alter table event_ontology add column id bigserial primary key;
+-- create index field_internal_name_idx on event_ontology (internal_name);
+-- create index field_value_idx on event_ontology (field_value);
+-- create index field_data on event_ontology(internal_name, field_value);
+
+select count(*) from event_ontology;
+    """
+    
+    class Meta:
+        managed = False
+        db_table = 'event_ontology'
+    
+    id = models.IntegerField(primary_key=True)
+    event_id = models.IntegerField()    # FK to Event
+    cleanupdate = models.DateField()
+    sitename = models.TextField()
+    type = models.TextField()           # Event Type
+    geometry = models.TextField()       # GeoJSON blob (not a GEOSGeometry)
+    internal_name = models.TextField()  # Field's internal name
+    label = models.TextField()          # field's label
+    field_id = models.IntegerField()    # FK to Field
+    unit = models.TextField()           # Name of the field's "Unit"
+    field_value = models.TextField()    # Format-agnostic value field
+    field_value_id = models.IntegerField()  # FK to FieldValue
+    datasheet_id = models.IntegerField()    # FK to DataSheet
+    datatype = models.TextField()       # Data sheet's datatype
+    aggregatable = models.TextField()   # pseudo bool (T or F)
+    datasheet = models.TextField()      # Data sheet slug
+    project = models.TextField()        # project slug
+    organization = models.TextField()   # organization slug
+
+
 class Event (models.Model):
     StatusChoices = (
         ('new', 'new'),
