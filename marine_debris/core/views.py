@@ -525,15 +525,145 @@ def get_feature_json(geom_json, prop_json):
         "geometry": %s,
         "properties": %s
     }""" % (geom_json, prop_json)    
+
+
+def event_search(request):
+    t = Timer()
+
+    events = EventOntology.objects.all()
+   
+    # Each category is a list of concepts (internal_name) that belong together 
+    # in some externally defined grouping.
+    # When the searcher passes a category, they want any Event that has any 
+    # of the selected concepts with counts > 0. 
+    # When the searcher passes a concept in addition to a category, they also 
+    # get any Events containing the single concept with counts > 0
+    #   
+    # So, if "category" is {A, B, C}, searching for that category will return 
+    # counts for any of those that have values > 0; if you add a concept {D}, 
+    # then you'll get counts of any of A, B, C + counts of D. 
     
+    # It looks like this kind of search reduces to concepts occuring in a list
+    # or individually
+
+    query = EventOntology.objects.all()
+    
+    search_groups = request.GET.getlist('c')
+    if search_groups:
+        search_groups = [x.split(',') for x in search_groups]
+        # flatten (see: http://stackoverflow.com/a/952952/65295)
+        search_groups = [item for sublist in search_groups
+                              for item in sublist]
+    
+        query = query.filter(internal_name__in=search_groups, field_value__gt=0)
+
+    format = request.GET.get('format', 'text') # either format=json or you get text
+    date_from = request.GET.get('from')
+    date_to = request.GET.get('to')
+    type_ = request.GET.get('type')
+    
+    if type_:
+        query = query.filter(type=type_)
+    
+    if date_from:
+        query = query.filter(cleanupdate__gte=date_from)
+    
+    if date_to:
+        query = query.filter(cleanupdate__lte=date_to)
+    
+    # query = query.order_by('internal_name')
+    query = query.order_by('cleanupdate')
+
+    if format == 'json':
+        out = '{"You wanted json": "you got json"}'
+        r = HttpResponse(out, mimetype='application/json')
+    else: 
+        out = [','.join((str(item.cleanupdate), item.internal_name, item.field_value)) 
+               for item in query]
+        out = '\n'.join(out)
+        r = HttpResponse(out, mimetype='text/plain')
+        
+    print t.lap()
+    return r
+
+
+def get_event_geojson_from_view(request):
+    t = Timer()
+    
+#     categories = [['cigarette butts', 'dead animals'], ['a', 'b']]
+#     filter = ['tires', 'birds']
+#     
+#     dates
+#     Event.objects.filter(categories__in=categories)
+#     
+#     qs = Event.objects.filter(field='tires')
+#     qs | qs2
+#     
+#     (qs | qs2) & qs3
+    
+    
+    srid = settings.GEOJSON_SRID
+    crs = srid_to_proj(srid)
+    filter_json = request.GET.get('filter', False)
+    bbox = request.GET.get('bbox', False)
+    
+    print "GET:", request.GET
+    print "Filter\n", filter_json
+    
+    
+    if filter_json and bbox:
+        qs = EventGeoJSONView.objects.filter(simplejson.loads(filter_json), simplejson.loads(bbox))
+    elif filter_json:
+        type_map = {'event_type': 'type'}
+        
+        f = simplejson.loads(filter_json)[0]
+        f = {type_map.get(f['type']): f['value']} # *sigh* 
+        qs = EventGeoJSONView.objects.filter(**f)
+        
+    else:
+        qs = EventGeoJSONView.objects.all()
+    
+#     if not settings.DEMO:
+#         qs = qs.filter(transaction__status='accepted')
+
+    print "+Load filter time", t.lap()
+
+    feature_jsons = []
+    for event in qs: 
+        gj = event.geojson
+        properties = simplejson.dumps({
+            "id": event.id,
+            "event_type": event.type,
+            "date": event.cleanupdate.strftime('%m/%d/%Y'),
+            "displayName": event.displayname 
+        })
+        geo_string = get_feature_json(gj, properties)
+        feature_jsons.append(geo_string)
+
+    print "Time to complete loop", t.lap()
+
+    geojson = """{
+        "type": "FeatureCollection",
+        "crs": { "type": "name", "properties": {"name": "%s"}},
+        "features": [
+            %s
+        ]
+    }""" % (crs, ', \n'.join(feature_jsons),)
+    
+    response = HttpResponse()
+    response['Content-Type'] = 'application/json'
+    response.write(geojson)
+    return response
+
 def get_event_geojson(request):
+    return event_search(request) 
+    return get_event_geojson_from_view(request)
     t = Timer()
     
     srid = settings.GEOJSON_SRID
     crs = srid_to_proj(srid)
     filter_json = request.GET.get('filter', False)
     bbox = request.GET.get('bbox', False)
-    feature_jsons = []
     
     if filter_json and bbox:
         qs = Event.filter(simplejson.loads(filter_json), simplejson.loads(bbox))
@@ -546,6 +676,8 @@ def get_event_geojson(request):
         qs = qs.filter(transaction__status = "accepted")
     
     print "Load filter time", t.lap()
+    
+    feature_jsons = []
     for event in qs:
         key = 'event_%s_geocache' % event.id        #CACHE_KEY  --  geojson by event
         geo_string = cache.get(key)
@@ -561,11 +693,13 @@ def get_event_geojson(request):
                 })
             except AttributeError:
                 pass
-            
+             
             geo_string = get_feature_json(gj, properties)
             cached = cache.set(key, geo_string, settings.CACHE_TIMEOUT)
+            return
         feature_jsons.append(geo_string)
     print "Time to complete loop", t.lap()
+    
     geojson = """{
         "type": "FeatureCollection",
         "crs": { "type": "name", "properties": {"name": "%s"}},
