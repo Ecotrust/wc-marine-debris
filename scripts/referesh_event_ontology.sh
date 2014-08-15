@@ -10,7 +10,7 @@ APPDIR=/usr/local/apps/wc-marine_debris
 PYTHON=/usr/local/venv/marine-debris/bin/python
 
 # run the SQL query (takes about 15 seconds as of 15-Aug)
-psql -U marine_debris < $APPDIR/marine_debris/event_ontology.sql
+psql -U marine_debris < $APPDIR/scripts/event_ontology.sql
 
 # flush the redis cache
 cd $APPDIR/marine_debris
