@@ -1406,8 +1406,7 @@ class BulkImportHandler(object):
                 # collection
                 for question, message in data_sheet_form.errors.items():
                     fieldnum = int(question.replace('question_', ''))
-                    # fieldname = self.datasheetfield_set.get(pk=fieldnum).field_name
-                    fieldname = self.datasheetfield_set.filter(pk=fieldnum).values_list('field_name', flat=True)
+                    fieldname = self.data_sheet.datasheetfield_set.filter(pk=fieldnum).values_list('field_name', flat=True)
                     self.errors.append("Row %d, column <em>'%s'</em><br/>%s" % (i+2, fieldname, message.as_text().replace("* ","")))
 
             # TODO: move date validation into the DataSheetForm
