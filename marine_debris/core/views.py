@@ -530,7 +530,7 @@ def get_feature_json(geom_json, prop_json):
 def event_search(request):
     t = Timer()
 
-    events = EventOntology.objects.all()
+    query = EventOntology.objects.all()
    
     # Each category is a list of concepts (internal_name) that belong together 
     # in some externally defined grouping.
@@ -546,8 +546,6 @@ def event_search(request):
     # It looks like this kind of search reduces to concepts occuring in a list
     # or individually
 
-    query = EventOntology.objects.all()
-    
     search_groups = request.GET.getlist('c')
     if search_groups:
         search_groups = [x.split(',') for x in search_groups]
@@ -555,12 +553,13 @@ def event_search(request):
         search_groups = [item for sublist in search_groups
                               for item in sublist]
     
-        query = query.filter(internal_name__in=search_groups, field_value__gt=0)
+        query = query.filter(internal_name__in=search_groups)
 
-    format = request.GET.get('format', 'text') # either format=json or you get text
+
+    format_ = request.GET.get('format', 'text') # either format=json or you get text
     date_from = request.GET.get('from')
     date_to = request.GET.get('to')
-    type_ = request.GET.get('type')
+    type_ = request.GET.get('type') # TODO: Make type required, since behavior depends on this
     
     if type_:
         query = query.filter(type=type_)
@@ -571,93 +570,62 @@ def event_search(request):
     if date_to:
         query = query.filter(cleanupdate__lte=date_to)
     
-    # query = query.order_by('internal_name')
-    query = query.order_by('cleanupdate')
+    query = query.filter(field_value_float__gt=0)
+    
+#     query = query.order_by('cleanupdate')
+    
+    if format_ == 'json':
+        srid = settings.GEOJSON_SRID
+        crs = srid_to_proj(srid)
+        
+        # Generating the JSON directly is much faster than assembling data in
+        # python, and then serializing to JSON. It's a bit harder to read though
+        feature_collection = """{
+    "type": "FeatureCollection",
+    "crs": { "type": "name", "properties": {"name": "%s"}},
+    "features": [%s]
+}"""
+        features = []
+        for row in query: 
+            feature = """    {
+        "type": "Feature",
+        "geometry": %(geometry)s,
+        "properties": {
+            "id": "%(field_value_id)s",
+            "count": %(field_value_float)d,
+            "internal_name": "%(internal_name)s",
+            "unit": "%(unit)s",
+            "event_type": "%(type)s",
+            "date": "%(date)s",
+            "displayName": "%(sitename)s / %(date)s"
+        }
+    }""" % dict(field_value_id=row.field_value_id,
+                field_value_float=int(row.field_value_float), # data type is float, but data is int 
+                internal_name=row.internal_name,
+                geometry=row.geometry,
+                type=row.type,
+                unit=row.unit,
+                date=row.cleanupdate.strftime('%m/%d/%Y'),
+                sitename=row.sitename.replace('"', '\\"'))
+            
+            features.append(feature)
+        
+        feature_collection = feature_collection % (crs, ',\n'.join(features))
 
-    if format == 'json':
-        out = '{"You wanted json": "you got json"}'
-        r = HttpResponse(out, mimetype='application/json')
+        print "Data generation time", t.lap()
+        print "JSON Encoding time", t.lap()
+        r = HttpResponse(feature_collection, mimetype='application/json')
     else: 
         out = [','.join((str(item.cleanupdate), item.internal_name, item.field_value)) 
                for item in query]
         out = '\n'.join(out)
         r = HttpResponse(out, mimetype='text/plain')
         
-    print t.lap()
     return r
 
 
-def get_event_geojson_from_view(request):
-    t = Timer()
-    
-#     categories = [['cigarette butts', 'dead animals'], ['a', 'b']]
-#     filter = ['tires', 'birds']
-#     
-#     dates
-#     Event.objects.filter(categories__in=categories)
-#     
-#     qs = Event.objects.filter(field='tires')
-#     qs | qs2
-#     
-#     (qs | qs2) & qs3
-    
-    
-    srid = settings.GEOJSON_SRID
-    crs = srid_to_proj(srid)
-    filter_json = request.GET.get('filter', False)
-    bbox = request.GET.get('bbox', False)
-    
-    print "GET:", request.GET
-    print "Filter\n", filter_json
-    
-    
-    if filter_json and bbox:
-        qs = EventGeoJSONView.objects.filter(simplejson.loads(filter_json), simplejson.loads(bbox))
-    elif filter_json:
-        type_map = {'event_type': 'type'}
-        
-        f = simplejson.loads(filter_json)[0]
-        f = {type_map.get(f['type']): f['value']} # *sigh* 
-        qs = EventGeoJSONView.objects.filter(**f)
-        
-    else:
-        qs = EventGeoJSONView.objects.all()
-    
-#     if not settings.DEMO:
-#         qs = qs.filter(transaction__status='accepted')
-
-    print "+Load filter time", t.lap()
-
-    feature_jsons = []
-    for event in qs: 
-        gj = event.geojson
-        properties = simplejson.dumps({
-            "id": event.id,
-            "event_type": event.type,
-            "date": event.cleanupdate.strftime('%m/%d/%Y'),
-            "displayName": event.displayname 
-        })
-        geo_string = get_feature_json(gj, properties)
-        feature_jsons.append(geo_string)
-
-    print "Time to complete loop", t.lap()
-
-    geojson = """{
-        "type": "FeatureCollection",
-        "crs": { "type": "name", "properties": {"name": "%s"}},
-        "features": [
-            %s
-        ]
-    }""" % (crs, ', \n'.join(feature_jsons),)
-    
-    response = HttpResponse()
-    response['Content-Type'] = 'application/json'
-    response.write(geojson)
-    return response
 
 def get_event_geojson(request):
-    return event_search(request) 
-    return get_event_geojson_from_view(request)
     t = Timer()
     
     srid = settings.GEOJSON_SRID
@@ -696,7 +664,7 @@ def get_event_geojson(request):
              
             geo_string = get_feature_json(gj, properties)
             cached = cache.set(key, geo_string, settings.CACHE_TIMEOUT)
-            return
+            
         feature_jsons.append(geo_string)
     print "Time to complete loop", t.lap()
     

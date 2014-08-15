@@ -850,6 +850,11 @@ f.label,
 f.id field_id,
 fu.short_name unit,
 fv.field_value,
+case when field_value ~ E'^[0-9\.]+$' then
+    cast(field_value as float)
+else
+    NULL
+end as field_value_float,
 fv.id field_value_id,
 ds.id datasheet_id,
 dt.name datatype,
@@ -903,6 +908,9 @@ select count(*) from event_ontology;
     field_id = models.IntegerField()    # FK to Field
     unit = models.TextField()           # Name of the field's "Unit"
     field_value = models.TextField()    # Format-agnostic value field
+    field_value_float = models.FloatField(null=True) # field_value cast to a 
+                                                     # float when that makes 
+                                                     # sense 
     field_value_id = models.IntegerField()  # FK to FieldValue
     datasheet_id = models.IntegerField()    # FK to DataSheet
     datatype = models.TextField()       # Data sheet's datatype
