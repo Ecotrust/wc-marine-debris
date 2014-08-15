@@ -6,11 +6,11 @@
 # cd /etc/cron.daily
 # ln -s /usr/local/apps/wc-marine-debris/marine_debris/refresh_event_ontology.sh
 
-APPDIR=/usr/local/apps/wc-marine_debris
+APPDIR=/usr/local/apps/wc-marine-debris
 PYTHON=/usr/local/venv/marine-debris/bin/python
 
 # run the SQL query (takes about 15 seconds as of 15-Aug)
-psql -U marine_debris < $APPDIR/marine_debris/event_ontology.sql
+psql -U marine_debris < $APPDIR/scripts/event_ontology.sql
 
 # flush the redis cache
 cd $APPDIR/marine_debris
