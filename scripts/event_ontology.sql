@@ -17,7 +17,7 @@ f.label,
 f.id field_id,
 fu.short_name unit,
 fv.field_value,
-case when field_value ~ E'^[0-9]+(\.[0-9]+)?$' then
+case when field_value ~ '^[0-9]+(\.[0-9]+)?$' then
     cast(field_value as float)
 else
     NULL
