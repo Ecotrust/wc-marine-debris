@@ -612,8 +612,8 @@ def event_search(request):
         
         feature_collection = feature_collection % (crs, ',\n'.join(features))
 
-        print "Data generation time", t.lap()
-        print "JSON Encoding time", t.lap()
+#         print "Data generation time", t.lap()
+#         print "JSON Encoding time", t.lap()
         r = HttpResponse(feature_collection, mimetype='application/json')
     else: 
         out = [','.join((str(item.cleanupdate), item.internal_name, item.field_value)) 
