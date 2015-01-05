@@ -605,7 +605,8 @@ def event_search(request):
             "unit": "%(unit)s",
             "event_type": "%(type)s",
             "date": "%(date)s",
-            "displayName": "%(sitename)s / %(date)s"
+            "displayName": "%(sitename)s / %(date)s",
+            "event_id": %(event_id)d
         }
     }""" % dict(field_value_id=row.field_value_id,
                 field_value=row.field_value, # only useful in DG queries
@@ -615,7 +616,8 @@ def event_search(request):
                 type=row.type,
                 unit=row.unit,
                 date=row.cleanupdate.strftime('%m/%d/%Y'),
-                sitename=row.sitename.replace('"', '\\"'))
+                sitename=row.sitename.replace('"', '\\"'),
+                event_id=getattr(row, 'event_id', -1))
             
             features.append(feature)
         

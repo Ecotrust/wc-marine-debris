@@ -841,7 +841,8 @@ select
     fv.field_value as field_value,
     1 as field_value_float,
     e.cleanupdate as cleanupdate,
-    s.sitename as sitename
+    s.sitename as sitename,
+    e.id as event_id
 
 from 
     core_event e
@@ -902,6 +903,7 @@ class EventSearchDerelictGear(models.Model):
     field_value_float = models.FloatField(null=True) # field_value cast to a 
                                                      # float when that makes 
                                                      # sense 
+    event_id = models.IntegerField()
     cleanupdate = models.DateField()
     sitename = models.TextField()
 
