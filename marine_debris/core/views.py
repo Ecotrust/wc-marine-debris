@@ -560,19 +560,26 @@ def event_search(request):
     date_from = request.GET.get('from')
     date_to = request.GET.get('to')
     type_ = request.GET.get('type') # TODO: Make type required, since behavior depends on this
+
+    # construct the query based on the type. 
+    # Derelict Gear Removal *only* returns the fields used to construct this
+    # particular response. Also, the 'count' for DG is always 1.  
+    # Site Cleanups are more general. 
+
+    if type_ == 'Derelict Gear Removal':
+        # The manager on EventSearchDerelictGear only knows "fetch", and knows
+        # how to handle the date range. 
+        query = EventSearchDerelictGear.objects.fetch(date_from, date_to)
+    else:
+        query = query.filter(type='Site Cleanup')
     
-    if type_:
-        query = query.filter(type=type_)
+        if date_from:
+            query = query.filter(cleanupdate__gte=date_from)
+        
+        if date_to:
+            query = query.filter(cleanupdate__lte=date_to)
     
-    if date_from:
-        query = query.filter(cleanupdate__gte=date_from)
-    
-    if date_to:
-        query = query.filter(cleanupdate__lte=date_to)
-    
-    query = query.filter(field_value_float__gt=0)
-    
-#     query = query.order_by('cleanupdate')
+        query = query.filter(field_value_float__gt=0)
     
     if format_ == 'json':
         srid = settings.GEOJSON_SRID
@@ -593,6 +600,7 @@ def event_search(request):
         "properties": {
             "id": "%(field_value_id)s",
             "count": %(field_value_float)d,
+            "field_value": "%(field_value)s",
             "internal_name": "%(internal_name)s",
             "unit": "%(unit)s",
             "event_type": "%(type)s",
@@ -600,6 +608,7 @@ def event_search(request):
             "displayName": "%(sitename)s / %(date)s"
         }
     }""" % dict(field_value_id=row.field_value_id,
+                field_value=row.field_value, # only useful in DG queries
                 field_value_float=int(row.field_value_float), # data type is float, but data is int 
                 internal_name=row.internal_name,
                 geometry=row.geometry,
@@ -622,8 +631,6 @@ def event_search(request):
         r = HttpResponse(out, mimetype='text/plain')
         
     return r
-
-
 
 def get_event_geojson(request):
     t = Timer()

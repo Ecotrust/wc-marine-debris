@@ -830,6 +830,81 @@ class Site (models.Model):
         
         super(Site, self).save(*args, **kwargs)
 
+class EventSearchDerelictGearManager(models.Manager):
+    query = '''
+select 
+    fv.id as field_value_id,
+    f.internal_name as internal_name,
+    ST_AsGeoJSON(s.geometry, 15, 0) as geometry,
+    'Derelict Gear Removal' as type,
+    'count' as unit,
+    fv.field_value as field_value,
+    1 as field_value_float,
+    e.cleanupdate as cleanupdate,
+    s.sitename as sitename
+
+from 
+    core_event e
+    join core_datasheet ds on e.datasheet_id_id = ds.id
+    join core_site s on e.site_id = s.id
+    join core_usertransaction ut on e.transaction_id = ut.id
+        join core_fieldvalue fv on e.id = fv.event_id_id
+            join core_field f on fv.field_id_id = f.id
+
+where
+    ut.status = 'accepted'
+and ds.type_id_id = 2
+and f.internal_name = 'DG_Debris_Type'
+'''
+    def get_queryset(self, *args, **kwargs):
+        raise Exception("You can't query this manager that way; use fetch()")
+    
+    all = get_queryset
+    filter = get_queryset
+    exclude = get_queryset
+    
+
+    def fetch(self, from_=None, to=None):
+        """Get data, optionally filtering by date. 
+        The current method of date paramters allows PGSQL date expressions to
+        leak through, such as 'NOW', or '2015-1-1'
+        This isn't ideal.
+        """
+        constraints = []
+        params = []
+        if from_:
+            constraints.append("and e.cleanupdate > %s")
+            params.append(from_)
+        
+        if to: 
+            constraints.append("and e.cleanupdate < %s")
+            params.append(to)
+        
+        query = self.query + '\n'.join(constraints)
+        
+        return self.raw(query, params)
+
+class EventSearchDerelictGear(models.Model):
+    """An UNMANAGED model to interact with a raw query that provides Derelict
+    gear data for the map view.
+    """
+    class Meta:
+        managed = False
+    
+    objects = EventSearchDerelictGearManager()
+    
+    field_value_id = models.IntegerField(primary_key=True)
+    internal_name = models.TextField()  # Field's internal name
+    geometry = models.TextField()       # GeoJSON blob (not a GEOSGeometry)
+    type = models.TextField()           # Event Type
+    unit = models.TextField()           # Name of the field's "Unit"
+    field_value = models.TextField()    # the kind of DG, i.e., Gillnet
+    field_value_float = models.FloatField(null=True) # field_value cast to a 
+                                                     # float when that makes 
+                                                     # sense 
+    cleanupdate = models.DateField()
+    sitename = models.TextField()
+
 class EventOntology(models.Model):
     """An UNMANAGED model to interact with the materialized view (actually, it's
     a regularly generated table) to retrieve data from the events.
