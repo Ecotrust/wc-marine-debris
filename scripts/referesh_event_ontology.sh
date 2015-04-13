@@ -19,4 +19,4 @@ python manage.py dbshell < $APPDIR/scripts/event_ontology.sql
 
 # flush the redis cache
 cd $APPDIR/marine_debris
-$PYTHON manage.py flush_caches
+python manage.py flush_caches
