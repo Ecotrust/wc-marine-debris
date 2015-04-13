@@ -7,7 +7,7 @@
 # ln -s /usr/local/apps/wc-marine-debris/marine_debris/refresh_event_ontology.sh
 
 APPDIR=/usr/local/apps/wc-marine-debris
-ENV=/usr/local/env/marine-debris
+ENV=/usr/local/env/marine_debris
 
 
 
