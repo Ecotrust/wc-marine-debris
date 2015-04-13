@@ -1310,7 +1310,7 @@ class FieldValue (models.Model):
                 factor = self.from_unit.conversion_factor(self.to_unit)
             else:
                 factor = self.from_unit.conversion_factor(to_unit)
-        except (AttributeError): #from_unit is None
+        except (AttributeError, ConversionError): #from_unit is None
             factor = 1  # TODO maybe we don't want to fail silently here! 
 
         converted_value = factor * orig_val
