@@ -7,10 +7,15 @@
 # ln -s /usr/local/apps/wc-marine-debris/marine_debris/refresh_event_ontology.sh
 
 APPDIR=/usr/local/apps/wc-marine-debris
-PYTHON=/usr/local/venv/marine-debris/bin/python
+ENV=/usr/local/env/marine-debris
+
+
+
+source $ENV/bin/activate
+cd $APPDIR/marine_debris
 
 # run the SQL query (takes about 15 seconds as of 15-Aug)
-psql -U marine_debris < $APPDIR/scripts/event_ontology.sql
+python manage.py dbshell < $APPDIR/scripts/event_ontology.sql
 
 # flush the redis cache
 cd $APPDIR/marine_debris
