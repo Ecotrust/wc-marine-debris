@@ -1298,8 +1298,11 @@ class FieldValue (models.Model):
         '''
         try:
             orig_val = float(self.field_value)
+        except TypeError:
+            # Not something that can be converted to float
+            return self.field_value
         except ValueError:
-            # unless its numeric, just pass it along
+            # Unparsable number
             return self.field_value
 
         try:
