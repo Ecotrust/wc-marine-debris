@@ -11,7 +11,7 @@ ENV=/usr/local/env/marine_debris
 
 
 
-source $ENV/bin/activate
+. $ENV/bin/activate
 cd $APPDIR/marine_debris
 
 # run the SQL query (takes about 15 seconds as of 15-Aug)

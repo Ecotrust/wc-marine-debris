@@ -9,7 +9,7 @@ ENV=/usr/local/env/marine_debris
 LOG_DIR=/usr/local/apps/wc-marine-debris/logs
 LOG=$LOG_DIR/downloads.log
 
-source $ENV/bin/activate
+. $ENV/bin/activate
 mkdir -p $LOG_DIR
 cd $APPDIR/marine_debris
 
